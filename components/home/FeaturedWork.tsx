@@ -1,0 +1,113 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { DriveMedia } from "@/components/ui/DriveMedia";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const DEFAULT_IMAGES = {
+  featured_big:   "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/19.webp",
+  featured_small: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/05.webp",
+};
+
+export default function FeaturedWork() {
+  const sectionRef      = useRef<HTMLDivElement>(null);
+  const whiteRevealRef  = useRef<HTMLDivElement>(null);
+  const bigCardRef      = useRef<HTMLDivElement>(null);
+  const smallCardRef    = useRef<HTMLDivElement>(null);
+  const textRef         = useRef<HTMLDivElement>(null);
+  const [images, setImages] = useState(DEFAULT_IMAGES);
+
+  useEffect(() => {
+    fetch("/api/homepage")
+      .then((r) => r.json())
+      .then((data) => {
+        const slots: { key: string; url: string }[] = data.settings?.homeImages || [];
+        const big   = slots.find((s) => s.key === "featured_big")?.url;
+        const small = slots.find((s) => s.key === "featured_small")?.url;
+        if (big || small) {
+          setImages({
+            featured_big:   big   || DEFAULT_IMAGES.featured_big,
+            featured_small: small || DEFAULT_IMAGES.featured_small,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(whiteRevealRef.current?.firstElementChild || null,
+        { scale: 0, borderRadius: "50%" },
+        { scale: 1, borderRadius: "0%", ease: "none", scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "top top", scrub: true } });
+
+      gsap.from(bigCardRef.current, { scale: 0.8, opacity: 0, duration: 1.2, ease: "power4.out",
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" } });
+
+      gsap.from(smallCardRef.current, { x: 100, opacity: 0, duration: 1, ease: "power4.out", delay: 0.3,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" } });
+
+      gsap.from(textRef.current?.children || null, { y: 40, opacity: 0, stagger: 0.15, duration: 1, ease: "power3.out",
+        scrollTrigger: { trigger: sectionRef.current, start: "top 70%" } });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-32 overflow-hidden">
+      <div ref={whiteRevealRef} className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="relative">
+            <div ref={bigCardRef} className="relative h-[600px] rounded-[2.5rem] overflow-hidden">
+              <DriveMedia
+                url={images.featured_big}
+                mediaType="image"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                alt="Featured Work"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            </div>
+            <div ref={smallCardRef} className="absolute -bottom-8 -right-8 w-48 h-64 rounded-[1.5rem] overflow-hidden border-4 border-[#0a0a0a] shadow-2xl">
+              <DriveMedia
+                url={images.featured_small}
+                mediaType="image"
+                className="w-full h-full object-cover"
+                alt="Featured Detail"
+              />
+            </div>
+          </div>
+
+          <div ref={textRef} className="space-y-8 lg:pl-8">
+            <span className="text-xs uppercase tracking-[0.4em] text-gray-500">Featured Work</span>
+            <h2 className="text-5xl md:text-6xl font-light leading-[1.1]">
+              Crafting visual <em className="italic text-gray-400">legacies</em> beyond the frame
+            </h2>
+            <p className="text-gray-400 leading-relaxed text-lg">
+              Every photograph tells a story. We specialize in capturing those fleeting moments that define your most precious memories.
+            </p>
+            <div className="flex gap-6 flex-wrap">
+              <a href="/works">
+                <button className="bg-white text-black px-10 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:scale-105">
+                  View Portfolio
+                </button>
+              </a>
+              <a href="/booking">
+                <button className="group flex items-center gap-2 text-white font-medium px-6 py-4">
+                  Book Now <span className="group-hover:translate-x-2 transition-transform">→</span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

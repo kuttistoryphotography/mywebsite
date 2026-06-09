@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+# .env.local
+
+# Optional: ignore all env files except example
+.env*
+!.env.example
+.next
+.vercel
