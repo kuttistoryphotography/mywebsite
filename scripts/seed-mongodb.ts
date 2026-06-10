@@ -3,6 +3,9 @@
  * Run: npx ts-node scripts/seed-mongodb.ts
  * Or:  npx tsx scripts/seed-mongodb.ts
  */
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
