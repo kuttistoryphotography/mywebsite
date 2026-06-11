@@ -104,7 +104,7 @@ export default function Hero() {
               {hero.badgeText}
             </span>
           </div> */}
-<h1 className="text-3xl md:text-4xl lg:text-5xl font-light leading-tight tracking-tight perspective-1000">
+<h1 className="text-4xl md:text-5xl font-light leading-[1.1] tracking-tight perspective-1000">
           
             <div className="block overflow-hidden">
               <MagicText text={line1} />{" "}<br />
