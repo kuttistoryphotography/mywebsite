@@ -41,6 +41,13 @@ export interface IHomepageSettings extends Document {
   homeImages: IHomeImageSlot[];
   showcaseSlides: IShowcaseSlide[];
   storyImages: IStoryImage[];
+
+  aboutContent: {
+    title: string;
+    heading: string;
+    description: string;
+  };
+
   updatedAt: Date;
 }
 
@@ -74,13 +81,30 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
         year: String,
       },
     ],
-    storyImages: [
-      {
-        src: String,
-        alt: String,
-      },
-    ],
+   storyImages: [
+  {
+    src: String,
+    alt: String,
   },
+],
+
+aboutContent: {
+  title: {
+    type: String,
+    default: 'About Kutti Story',
+  },
+  heading: {
+    type: String,
+    default: 'We Make Only Authentic Visual Experiences',
+  },
+  description: {
+    type: String,
+    default:
+      'Every frame we create is driven by emotion, story, and authenticity.',
+  },
+},
+  },
+  
   { timestamps: true }
 );
 

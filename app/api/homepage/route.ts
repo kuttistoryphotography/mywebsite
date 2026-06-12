@@ -43,7 +43,12 @@ const DEFAULT_HOME_IMAGES = [
   { key: 'featured_small', label: 'Featured Work Small Image', url: '/03.webp' },
   { key: 'philosophy_bg', label: 'Philosophy Section Background', url: '/04.webp' },
 ];
-
+const DEFAULT_ABOUT_CONTENT = {
+  title: 'About Kutti Story',
+  heading: 'We Make Only Authentic Visual Experiences',
+  description:
+    'Every frame we create is driven by emotion, story, and authenticity.',
+};
 export async function GET() {
   try {
     await connectDB();
@@ -55,6 +60,7 @@ export async function GET() {
         homeImages: DEFAULT_HOME_IMAGES,
         showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
         storyImages: DEFAULT_STORY_IMAGES,
+        aboutContent: DEFAULT_ABOUT_CONTENT,
       });
     }
 
@@ -83,6 +89,7 @@ export async function PUT(request: NextRequest) {
         homeImages: DEFAULT_HOME_IMAGES,
         showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
         storyImages: DEFAULT_STORY_IMAGES,
+        aboutContent: DEFAULT_ABOUT_CONTENT,
       });
     }
 
@@ -94,9 +101,15 @@ export async function PUT(request: NextRequest) {
       settings.showcaseSlides = data;
     } else if (section === 'storyImages') {
       settings.storyImages = data;
+    } else if (section === 'aboutContent') {
+      settings.aboutContent = data;
     }
 
-    settings.markModified(section);
+      if (section === 'aboutContent') {
+      settings.markModified('aboutContent');
+    } else {
+      settings.markModified(section);
+    }
     await settings.save();
 
     return NextResponse.json({ success: true, settings });
