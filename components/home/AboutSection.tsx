@@ -18,6 +18,12 @@ export default function AboutSection() {
   const sparklesRef  = useRef<HTMLSpanElement[]>([]);
 
   const [images, setImages] = useState(DEFAULT_IMAGES);
+  const [aboutContent, setAboutContent] = useState({
+  title: "About Kutti Story",
+  heading: "We Make Only Authentic Visual Experiences",
+  description:
+    "Every frame we create is driven by emotion, story, and authenticity.",
+});
 
   // Fetch dynamic images from homepage settings
   useEffect(() => {
@@ -35,6 +41,9 @@ export default function AboutSection() {
             about_secondary: secondary || DEFAULT_IMAGES.about_secondary,
           });
         }
+        if (data.settings?.aboutContent) {
+  setAboutContent(data.settings.aboutContent);
+}
       })
       .catch(() => {});
   }, []);
@@ -182,12 +191,14 @@ export default function AboutSection() {
         </div>
 
         <div ref={textRef}>
-          <span className="text-sm uppercase tracking-widest text-gray-400">About Kutti Story</span>
+          <span className="text-sm uppercase tracking-widest text-gray-400">
+          {aboutContent.title}
+          </span>
           <h2 ref={headingRef} className="text-4xl md:text-5xl font-semibold mt-4 mb-6 leading-tight cursor-pointer select-none">
-            We Make Only Authentic Visual Experiences
+             {aboutContent.heading}
           </h2>
           <p className="text-gray-400 max-w-xl mb-10 text-lg">
-            Every frame we create is driven by emotion, story, and authenticity.
+            {aboutContent.description}
           </p>
           <button
             ref={buttonRef}
