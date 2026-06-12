@@ -97,6 +97,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      name: "Kutti Story Photography",
+      image: "https://kuttistoryphotography.com/favicon.svg",
+      url: "https://kuttistoryphotography.com",
+      telephone: "+919976733600",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Madurai",
+        addressRegion: "Tamil Nadu",
+        addressCountry: "IN"
+      },
+      areaServed: "Tamil Nadu",
+      priceRange: "₹₹",
+      description:
+        "Professional wedding photography, cinematic wedding photography, candid photography, pre wedding shoots and traditional Tamil wedding photography across Tamil Nadu."
+    }),
+  }}
+/>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
