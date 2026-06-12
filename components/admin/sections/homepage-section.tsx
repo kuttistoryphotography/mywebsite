@@ -52,7 +52,7 @@ interface HomeImageSlot {
 
 export default function HomepageSection() {
   const [activeTab, setActiveTab] = useState<
-    "hero" | "slides" | "stories" | "images"
+   "hero" | "slides" | "stories" | "images" | "about"
   >("hero");
 
   const [hero, setHero] = useState<HeroData>({
@@ -80,6 +80,12 @@ export default function HomepageSection() {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
+  const [aboutContent, setAboutContent] = useState({
+  title: "About Kutti Story",
+  heading: "We Make Only Authentic Visual Experiences",
+  description:
+    "Every frame we create is driven by emotion, story, and authenticity.",
+});
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -130,6 +136,10 @@ export default function HomepageSection() {
             );
           }
         }
+
+        if (data.settings.aboutContent) {
+  setAboutContent(data.settings.aboutContent);
+}
 
         setLoading(false);
       })
@@ -184,6 +194,7 @@ export default function HomepageSection() {
     { id: "slides", label: "Showcase Slides" },
     { id: "stories", label: "Stories Strip" },
     { id: "images", label: "Page Images" },
+    { id: "about", label: "About Section" },
   ];
 
   return (
@@ -584,6 +595,70 @@ export default function HomepageSection() {
             )}
 
             Save Page Images
+                    </button>
+        </div>
+      )}
+
+      {activeTab === "about" && (
+        <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
+          <h3 className="text-white font-semibold text-lg">
+            About Section
+          </h3>
+
+          <div>
+            <label className="block text-zinc-400 text-sm mb-2">
+              Small Title
+            </label>
+            <input
+              value={aboutContent.title}
+              onChange={(e) =>
+                setAboutContent({
+                  ...aboutContent,
+                  title: e.target.value,
+                })
+              }
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="block text-zinc-400 text-sm mb-2">
+              Heading
+            </label>
+            <input
+              value={aboutContent.heading}
+              onChange={(e) =>
+                setAboutContent({
+                  ...aboutContent,
+                  heading: e.target.value,
+                })
+              }
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white"
+            />
+          </div>
+
+          <div>
+            <label className="block text-zinc-400 text-sm mb-2">
+              Description
+            </label>
+            <textarea
+              rows={4}
+              value={aboutContent.description}
+              onChange={(e) =>
+                setAboutContent({
+                  ...aboutContent,
+                  description: e.target.value,
+                })
+              }
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white"
+            />
+          </div>
+
+          <button
+            onClick={() => save("aboutContent", aboutContent)}
+            className="px-6 py-3 bg-amber-500 text-black rounded-xl font-semibold"
+          >
+            Save About Section
           </button>
         </div>
       )}
