@@ -23,6 +23,7 @@ export default function AboutSection() {
   heading: "We Make Only Authentic Visual Experiences",
   description:
     "Every frame we create is driven by emotion, story, and authenticity.",
+    experienceBadge: "10+ Years Experience",
 });
 
   // Fetch dynamic images from homepage settings
@@ -174,7 +175,7 @@ export default function AboutSection() {
             <DriveMedia url={images.about_main} mediaType="image" className="w-full h-full object-cover" alt="" />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-500" />
             <span className="absolute bottom-6 left-6 text-sm uppercase tracking-widest bg-black/50 px-4 py-2 rounded-lg">
-              10+ Years Experience
+              {aboutContent.experienceBadge}
             </span>
             <div className="absolute inset-0 border border-white/10 group-hover:border-white/30 transition-all duration-500 rounded-2xl" />
           </div>

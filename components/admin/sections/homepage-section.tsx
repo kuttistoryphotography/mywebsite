@@ -85,6 +85,7 @@ export default function HomepageSection() {
   heading: "We Make Only Authentic Visual Experiences",
   description:
     "Every frame we create is driven by emotion, story, and authenticity.",
+  experienceBadge: "10+ Years Experience"
 });
 
   const [loading, setLoading] = useState(true);
@@ -653,6 +654,23 @@ export default function HomepageSection() {
               className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white"
             />
           </div>
+
+          <div>
+          <label className="block text-zinc-400 text-sm mb-2">
+           Experience Badge Text
+          </label>
+
+          <input
+           value={aboutContent.experienceBadge || ""}
+           onChange={(e) =>
+            setAboutContent({
+             ...aboutContent,
+            experienceBadge: e.target.value,
+           })
+          }
+          className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-white"
+        />
+         </div>
 
           <button
             onClick={() => save("aboutContent", aboutContent)}

@@ -46,6 +46,8 @@ export interface IHomepageSettings extends Document {
     title: string;
     heading: string;
     description: string;
+    experienceBadge: string;
+
   };
 
   updatedAt: Date;
@@ -99,8 +101,11 @@ aboutContent: {
   },
   description: {
     type: String,
-    default:
-      'Every frame we create is driven by emotion, story, and authenticity.',
+    default: 'Every frame we create is driven by emotion, story, and authenticity.',
+  },
+  experienceBadge: {
+    type: String,
+    default: '10+ Years Experience',
   },
 },
   },
