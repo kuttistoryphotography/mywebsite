@@ -104,15 +104,21 @@ export default function Hero() {
               {hero.badgeText}
             </span>
           </div> */}
-<h1 className="text-4xl md:text-5xl font-light leading-[1.1] tracking-tight perspective-1000">
-          
-            <div className="block overflow-hidden">
-              <MagicText text={line1} />{" "}<br />
-              <span className="italic font-serif text-gray-400">
-                <MagicText text={line2} />
-              </span>
-            </div>
-          </h1>
+<div className="space-y-3">
+  <h3 className="text-red-500 text-3xl font-bold">
+    {hero.subheading}
+  </h3>
+
+  <h1 className="text-4xl md:text-5xl font-light leading-[1.1] tracking-tight perspective-1000">
+    <div className="block overflow-hidden">
+      <MagicText text={line1} />
+      <br />
+      <span className="italic font-serif text-gray-400">
+        <MagicText text={line2} />
+      </span>
+    </div>
+  </h1>
+</div>
 
           <p className="animate-fade text-gray-400 max-w-lg text-lg leading-relaxed">{hero.paragraph}</p>
 
