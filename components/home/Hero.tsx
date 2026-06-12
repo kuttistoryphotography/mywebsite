@@ -105,9 +105,24 @@ export default function Hero() {
             </span>
           </div> */}
 <div className="space-y-3">
-  <h3 className="text-red-500 text-3xl font-bold">
-    {hero.subheading}
-  </h3>
+  <h3
+  className="
+    text-red-500
+    text-3xl
+    font-bold
+    relative
+    inline-block
+    cursor-pointer
+    transition-all
+    duration-500
+    hover:text-white
+    hover:scale-105
+    hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.9)]
+    overflow-hidden
+  "
+>
+  {hero.subheading}
+</h3>
 
   <h1 className="text-4xl md:text-5xl font-light leading-[1.1] tracking-tight perspective-1000">
     <div className="block overflow-hidden">
