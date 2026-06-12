@@ -23,8 +23,9 @@ export default function AboutSection() {
   heading: "We Make Only Authentic Visual Experiences",
   description:
     "Every frame we create is driven by emotion, story, and authenticity.",
-    experienceBadge: "10+ Years Experience",
+    
 });
+const [expanded, setExpanded] = useState(false);
 
   // Fetch dynamic images from homepage settings
   useEffect(() => {
@@ -198,15 +199,18 @@ export default function AboutSection() {
           <h2 ref={headingRef} className="text-4xl md:text-5xl font-semibold mt-4 mb-6 leading-tight cursor-pointer select-none">
              {aboutContent.heading}
           </h2>
-          <p className="text-gray-400 max-w-xl mb-10 text-lg">
-            {aboutContent.description}
-          </p>
+          <p className="text-gray-400 max-w-xl mb-6 text-lg leading-relaxed">
+          {expanded
+          ? aboutContent.description
+         : aboutContent.description.slice(0, 250) + "..."}
+         </p>
           <button
-            ref={buttonRef}
-            className="relative px-8 py-4 border border-white/30 hover:border-white/60 hover:bg-white hover:text-black transition-all duration-500 rounded-full font-medium"
-          >
-            Read More
-          </button>
+         ref={buttonRef}
+         onClick={() => setExpanded(!expanded)}
+         className="relative px-8 py-4 border border-white/30 hover:border-white/60 hover:bg-white hover:text-black transition-all duration-500 rounded-full font-medium"
+        >
+         {expanded ? "Show Less" : "Read More"}
+         </button>
         </div>
       </div>
     </section>
