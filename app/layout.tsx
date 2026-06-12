@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
+    default: "Kutti Story Photography | Wedding Photographer in Madurai",
       template: "%s | Kutti Story Photography"
   },
   description:"Kutti Story Photography is a professional wedding photographer in Madurai specializing in cinematic wedding photography, candid photography, traditional Tamil wedding photography, pre-wedding shoots, post-wedding shoots, baby shower photography and portrait photography across Tamil Nadu.",
