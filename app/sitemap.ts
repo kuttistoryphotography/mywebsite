@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://kuttistoryphotography.com/about",
+      url: "https://kuttistoryphotography.com/about-us",
       lastModified: new Date(),
       priority: 0.9,
     },
