@@ -97,7 +97,25 @@ export default function Hero() {
         </div>
       )}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+      <div
+  className="
+    relative z-10
+    w-full
+    max-w-[1700px]
+    mx-auto
+    px-5
+    sm:px-8
+    lg:px-16
+    xl:px-24
+    grid
+    grid-cols-1
+    lg:grid-cols-2
+    gap-10
+    lg:gap-20
+    items-center
+    min-h-screen
+  "
+>
         <div className="space-y-8">
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
@@ -133,7 +151,18 @@ export default function Hero() {
   />
 </h3>
 
-  <h1 className="text-4xl md:text-5xl font-light leading-[1.1] tracking-tight perspective-1000">
+  <h1
+  className="
+    text-[42px]
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    xl:text-8xl
+    font-light
+    leading-[1]
+    tracking-tight
+  "
+>
     <div className="block overflow-hidden">
       <MagicText text={line1} />
       <br />
@@ -144,7 +173,16 @@ export default function Hero() {
   </h1>
 </div>
 
-          <p className="animate-fade text-gray-400 max-w-lg text-lg leading-relaxed">{hero.paragraph}</p>
+          <p
+  className="
+    animate-fade
+    text-gray-300
+    max-w-2xl
+    text-base
+    md:text-lg
+    leading-relaxed
+  "
+>{hero.paragraph}</p>
 
           <div className="animate-fade flex items-center gap-8">
             <a href="/booking">
@@ -177,7 +215,27 @@ export default function Hero() {
         <div className="relative flex items-center justify-center lg:justify-end">
           <div className="absolute w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl animate-pulse" />
           {hero.heroCardImage && (
-            <div ref={imageWrapperRef} className="relative h-[550px] w-[400px] rounded-[40px] overflow-hidden border-[12px] border-white/5 shadow-2xl">
+            <div
+  ref={imageWrapperRef}
+  className="
+    relative
+    mx-auto
+    lg:mx-0
+    h-[350px]
+    w-[260px]
+    sm:h-[450px]
+    sm:w-[320px]
+    lg:h-[600px]
+    lg:w-[450px]
+    xl:h-[700px]
+    xl:w-[520px]
+    rounded-[40px]
+    overflow-hidden
+    border-[12px]
+    border-white/5
+    shadow-2xl
+  "
+>
               <DriveMedia
                 url={hero.heroCardImage}
                 mediaType="image"
