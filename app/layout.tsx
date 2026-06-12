@@ -16,14 +16,28 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
-    template: "%s | Kutti Story"
+      template: "%s | Kutti Story Photography"
   },
-  description: "Kutti Story specializes in capturing your special moments with stunning wedding and pre-wedding photography. Professional photography services across India.",
-  keywords: ["wedding photography", "pre-wedding photography", "wedding photographer", "photography services", "professional photographer", "Kutti Story"],
-  authors: [{ name: "Kutti Story" }],
+  description:"Kutti Story Photography is a professional wedding photographer in Madurai specializing in cinematic wedding photography, candid photography, traditional Tamil wedding photography, pre-wedding shoots, post-wedding shoots, baby shower photography and portrait photography across Tamil Nadu.",
+keywords: [
+  "Wedding Photographer Madurai",
+  "Wedding Photography Madurai",
+  "Best Wedding Photographer Madurai",
+  "Tamil Wedding Photographer",
+  "Traditional Tamil Wedding Photography",
+  "Candid Wedding Photography",
+  "Cinematic Wedding Photography",
+  "Pre Wedding Photography",
+  "Post Wedding Photography",
+  "Marriage Photography Madurai",
+  "Baby Shower Photography",
+  "Portrait Photography",
+  "Wedding Photographer Tamil Nadu",
+  "Professional Photographer Madurai"
+],  authors: [{ name: "Kutti Story" }],
   creator: "Kutti Story",
   generator: 'v0.app',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+ metadataBase: new URL("https://kuttistoryphotography.com"),
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -36,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://kuttistory.com",
+    url:  "https://kuttistoryphotography.com",
     siteName: "Kutti Story",
     title: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
     description: "Capturing your special moments with stunning photography",
