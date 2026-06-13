@@ -299,10 +299,10 @@ export default function Hero() {
           ref={leftImageRef}
           className="
           absolute
-          left-[120px]
+          left-[180px]
           top-1/2
           -translate-y-1/2
-          z-10
+          z-15
           w-[260px]
           h-[500px]
           rounded-[35px]
@@ -368,8 +368,8 @@ export default function Hero() {
             ref={rightImageRef}
             className="
             absolute
-            z-10
-            right-[120px]
+            z-15
+            right-[180px]
             top-1/2
             -translate-y-1/2
 
