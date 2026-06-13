@@ -91,8 +91,8 @@ export default function Hero() {
     text-white
     flex
     items-center
-    pt-24
-    md:pt-24
+    pt-[70px]
+    md:pt-[90px]
     lg:pt-0
   "
 >
@@ -113,29 +113,28 @@ export default function Hero() {
 
       <div
   className="
-    relative z-10
-    w-full
-    max-w-[1700px]
-    mx-auto
-    px-5
-    sm:px-8
-    lg:px-16
-    xl:px-24
-    grid
-    grid-cols-1
-    lg:grid-cols-2
-    gap-10
-    lg:gap-20
-    items-center
+  relative z-10
+  w-full
+  max-w-[1700px]
+  mx-auto
+  px-5
+  sm:px-8
+  lg:px-16
+  xl:px-24
 
-    pt-10
-    sm:pt-16
-    lg:pt-0
+  grid
+  grid-cols-1
+  lg:grid-cols-2
 
-    min-h-screen
-  "
+  gap-10
+  lg:gap-20
+
+  items-center
+
+  pt-0
+"
 >
-        <div className="space-y-4 md:space-y-8">
+        <div className="space-y-3 md:space-y-6">
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
@@ -186,8 +185,8 @@ export default function Hero() {
 
   <h1
   className="
-    text-[22px]
-    sm:text-[32px]
+    text-[30px]
+    sm:text-[40px]
     md:text-5xl
     lg:text-6xl
     xl:text-7xl
@@ -238,7 +237,7 @@ export default function Hero() {
               { value: hero.statsPassion, label: "Passion" },
             ].map(({ value, label }) => (
               <div key={label}>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{value}</h3>
+                <h3 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{value}</h3>
                 <p className="text-xs uppercase tracking-widest text-gray-500 mt-1">{label}</p>
               </div>
             ))}
