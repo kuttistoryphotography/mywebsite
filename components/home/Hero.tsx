@@ -38,8 +38,6 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
 
-  const leftImageRef = useRef<HTMLDivElement>(null);
-  const rightImageRef = useRef<HTMLDivElement>(null);
 
   const [hero, setHero] = useState<HeroData>(DEFAULT_HERO);
 
@@ -59,21 +57,7 @@ export default function Hero() {
       gsap.from(".animate-fade", { opacity: 0, y: 20, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1 });
       gsap.from(imageWrapperRef.current, { scale: 0.8, opacity: 0, duration: 1.5, ease: "expo.out", delay: 0.5 });
       gsap.to(imageWrapperRef.current, { y: 20, duration: 3, repeat: -1, yoyo: true, ease: "sine.inOut" });
-      gsap.to(leftImageRef.current, {
-      y: -25,
-      duration: 4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      });
 
-      gsap.to(rightImageRef.current, {
-      y: 25,
-      duration: 5,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      });
 
       }, containerRef);
     return () => ctx.revert();
@@ -130,12 +114,12 @@ export default function Hero() {
   className="
   relative z-10
   w-full
-  max-w-[1700px]
+  max-w-[1800px]
   mx-auto
   px-5
   sm:px-8
   lg:px-16
-  xl:px-24
+  xl:px-12
 
   grid
   grid-cols-1
@@ -294,39 +278,7 @@ export default function Hero() {
          h-[850px]
         "
         >
-        {/* Left Image */}
-        <div
-          ref={leftImageRef}
-          className="
-          absolute
-          left-[180px]
-          top-1/2
-          -translate-y-1/2
-          z-15
-          w-[300px]
-          h-[560px]
-          rounded-[35px]
-          overflow-hidden
-          border border-white/10
-          opacity-60
-          scale-90
-          blur-[1px]
-
-          hover:opacity-100
-          hover:scale-100
-          hover:blur-0
-          hover:-translate-x-8
-          hover:scale-105
-          transition-all duration-500
-        "
-        >
-        <DriveMedia
-          url="/images/left.webp"
-          mediaType="image"
-          className="w-full h-full object-cover"
-          alt="Left Image"
-         />
-        </div>  
+          
           <div className="absolute w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl animate-pulse" />
           {hero.heroCardImage && (
             <div
@@ -343,10 +295,10 @@ export default function Hero() {
               sm:w-[320px]
 
               lg:h-[600px]
-              lg:w-[450px]
+              lg:w-[500px]
 
               xl:h-[700px]
-              xl:w-[520px]
+              xl:w-[580px]
 
               rounded-[45px]
               overflow-hidden
@@ -363,48 +315,7 @@ export default function Hero() {
               />
             </div>
           )}
-          {/* Right Side Image */}
-          <div
-            ref={rightImageRef}
-            className="
-            absolute
-            z-15
-            right-[180px]
-            top-1/2
-            -translate-y-1/2
-
-            w-[3000px]
-            h-[560px]
-
-            rounded-[35px]
-            overflow-hidden
-
-            border border-white/10
-            shadow-xl
-
-            opacity-60
-            scale-90
-            blur-[1px]
-
-            hover:opacity-100
-            hover:scale-100
-            hover:blur-0
-
-            hover:translate-x-8 
-
-            transition-all
-          duration-500
-
-            z-10
-           "
-          >
-           <DriveMedia
-             url="/images/right.webp"
-             mediaType="image"
-             className="w-full h-full object-cover"
-             alt="Right Image"
-            />
-          </div>
+          
           {/* <div className="absolute bottom-10 -left-10 bg-white p-4 rounded-2xl shadow-2xl rotate-[-5deg] hidden md:block animate-bounce">
             <p className="text-black text-xs font-bold uppercase tracking-tighter">{hero.awardText}</p>
           </div> */}
