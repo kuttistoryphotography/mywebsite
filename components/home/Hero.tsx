@@ -186,21 +186,26 @@ export default function Hero() {
     text-[30px]
     sm:text-[42px]
     md:text-5xl
-    lg:text-[60px]
-    xl:text-[72px]
-    2xl:text-[80px]
+    lg:text-[52px]
+    xl:text-[62px]
+    2xl:text-[70px]
     font-light
     leading-[1.05]
     tracking-tight
-    max-w-[700px]
+    max-w-[560px]
   "
 >
     <div className="overflow-hidden">
   <MagicText text="Every Life Has a" />
 
-  <div className="italic font-serif text-gray-400">
-    <MagicText text="Story Worth Remembering" />
+  <div className="italic font-serif text-gray-400 leading-[0.95]">
+  <div>
+    <MagicText text="Story Worth" />
   </div>
+  <div>
+    <MagicText text="Remembering" />
+  </div>
+</div>
 </div>
   </h1>
 </div>
