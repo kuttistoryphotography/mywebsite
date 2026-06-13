@@ -86,9 +86,9 @@ export default function Hero() {
     overflow-hidden
     bg-[#0a0a0a]
     text-white
-    pt-[80px]
-    md:pt-[90px]
-    lg:pt-0
+    pt-[100px]
+    md:pt-[120px]
+    lg:pt-[140px]
   "
 >
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
@@ -124,6 +124,7 @@ export default function Hero() {
   gap-10
   lg:gap-20
 
+  lg:items-center
   items-start
 
   pt-0
@@ -137,7 +138,7 @@ export default function Hero() {
               {hero.badgeText}
             </span>
           </div> */}
-<div className="space-y-4 md:space-y-8 pt-4">
+<div className="space-y-4 md:space-y-8 pt-4 lg:pt-0">
 <div className="space-y-2 sm:space-y-3">
 <h3
   className="
@@ -185,14 +186,14 @@ export default function Hero() {
   className="
     text-[30px]
     sm:text-[42px]
-    md:text-5xl
-    lg:text-[52px]
-    xl:text-[62px]
-    2xl:text-[70px]
+    md:text-[52px]
+    lg:text-[58px]
+    xl:text-[66px]
+    2xl:text-[72px]
     font-light
-    leading-[1.05]
+    leading-[1.1]
     tracking-tight
-    max-w-[560px]
+    max-w-[460px]
   "
 >
     <div className="overflow-hidden">
