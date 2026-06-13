@@ -146,7 +146,18 @@ export default function SocialSidebar() {
       `}</style>
 
       <div
-        className="fixed right-0 top-1/2 -translate-y-1/2 z-[200] flex flex-col gap-3 pr-3"
+        className="
+        fixed
+        right-3
+        bottom-28
+        md:top-1/2
+        md:-translate-y-1/2
+        md:bottom-auto
+        z-[200]
+        flex
+        flex-col
+        gap-3
+        "
         aria-label="Social media links"
       >
         {active.map((s) => {

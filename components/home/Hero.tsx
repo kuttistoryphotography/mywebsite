@@ -91,7 +91,7 @@ export default function Hero() {
     text-white
     flex
     items-center
-    pt-32
+    pt-18
     md:pt-24
     lg:pt-0
   "
@@ -135,7 +135,7 @@ export default function Hero() {
     min-h-screen
   "
 >
-        <div className="space-y-6 md:space-y-8">
+        <div className="space-y-5 md:space-y-8 -mt-8 md:mt-0">
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
