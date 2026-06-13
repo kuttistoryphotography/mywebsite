@@ -81,7 +81,21 @@ export default function Hero() {
   const line2 = headingParts.slice(Math.ceil(headingParts.length / 2)).join(" ");
 
   return (
-    <section ref={containerRef} className="relative min-h-screen overflow-hidden bg-[#0a0a0a] text-white flex items-center">
+    <section
+  ref={containerRef}
+  className="
+    relative
+    min-h-screen
+    overflow-hidden
+    bg-[#0a0a0a]
+    text-white
+    flex
+    items-center
+    pt-32
+    md:pt-24
+    lg:pt-0
+  "
+>
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
@@ -113,18 +127,36 @@ export default function Hero() {
     gap-10
     lg:gap-20
     items-center
+
+    pt-10
+    sm:pt-16
+    lg:pt-0
+
     min-h-screen
   "
 >
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
             </span>
           </div> */}
-<div className="space-y-3">
-  <h3 className="group relative inline-block text-gray-200 text-sm font-medium tracking-[0.25em] uppercase cursor-pointer overflow-hidden">
-  <span
+<div className="space-y-2 sm:space-y-3">
+<h3
+  className="
+    group
+    relative
+    inline-block
+    text-xs
+    sm:text-sm
+    text-gray-200
+    font-medium
+    tracking-[0.25em]
+    uppercase
+    cursor-pointer
+    overflow-hidden
+  "
+>  <span
     className="
       relative z-10
       transition-all duration-500
@@ -153,13 +185,13 @@ export default function Hero() {
 
   <h1
   className="
-    text-[42px]
-    sm:text-5xl
-    md:text-6xl
-    lg:text-7xl
-    xl:text-8xl
+    text-[22px]
+    sm:text-[32px]
+    md:text-5xl
+    lg:text-6xl
+    xl:text-7xl
     font-light
-    leading-[1]
+    leading-[1.15]
     tracking-tight
   "
 >
@@ -184,7 +216,7 @@ export default function Hero() {
   "
 >{hero.paragraph}</p>
 
-          <div className="animate-fade flex items-center gap-8">
+          <div className="animate-fade flex flex-col sm:flex-row items-start sm:items-center gap-5">
             <a href="/booking">
               <button className="bg-white text-black px-10 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:scale-105 active:scale-95">
                 {hero.primaryButtonText}
@@ -198,7 +230,7 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="animate-fade grid grid-cols-3 gap-8 p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl max-w-xl">
+          <div className="animate-fade grid grid-cols-3 gap-3 sm:gap-6 p-5 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl w-full max-w-xl">
             {[
               { value: hero.statsYears, label: "Years" },
               { value: hero.statsStories, label: "Stories" },
@@ -212,7 +244,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative flex items-center justify-center lg:justify-end">
+        <div className="hidden lg:flex relative items-center justify-end">
           <div className="absolute w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl animate-pulse" />
           {hero.heroCardImage && (
             <div
