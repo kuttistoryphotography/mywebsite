@@ -76,10 +76,6 @@ export default function Hero() {
     );
   };
 
-  const headingParts = hero.heading.split(/\s+/);
-  const line1 = headingParts.slice(0, Math.ceil(headingParts.length / 2)).join(" ");
-  const line2 = headingParts.slice(Math.ceil(headingParts.length / 2)).join(" ");
-
   return (
     <section
   ref={containerRef}
@@ -133,6 +129,23 @@ export default function Hero() {
 "
 >
         <div className="space-y-4 md:space-y-8 pt-4">
+          <div className="animate-fade grid grid-cols-3 ...">
+          ...
+          </div>
+
+          {/* Mobile Hero Image */}
+          <div className="md:hidden flex justify-center mt-8">
+            <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
+              <DriveMedia
+                url={hero.heroCardImage}
+                mediaType="image"
+                className="w-full h-full object-cover"
+                alt="Professional Shot"
+              />
+            </div>
+          </div>
+
+</div> {/* left content closes */}
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
@@ -184,22 +197,24 @@ export default function Hero() {
   <h1
   className="
     text-[30px]
-    sm:text-[40px]
+    sm:text-[42px]
     md:text-5xl
-    lg:text-6xl
-    xl:text-7xl
+    lg:text-[60px]
+    xl:text-[72px]
+    2xl:text-[80px]
     font-light
-    leading-[1.15]
+    leading-[1.05]
     tracking-tight
+    max-w-[700px]
   "
 >
-    <div className="block overflow-hidden">
-      <MagicText text={line1} />
-      <br />
-      <span className="italic font-serif text-gray-400">
-        <MagicText text={line2} />
-      </span>
-    </div>
+    <div className="overflow-hidden">
+  <MagicText text="Every Life Has a" />
+
+  <div className="italic font-serif text-gray-400">
+    <MagicText text="Story Worth Remembering" />
+  </div>
+</div>
   </h1>
 </div>
 
@@ -242,7 +257,29 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="hidden lg:flex relative items-center justify-end">
+        {/* Mobile Hero Image */}
+        <div className="md:hidden flex justify-center mt-8">
+          <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
+            <DriveMedia
+              url={hero.heroCardImage}
+              mediaType="image"
+              className="w-full h-full object-cover"
+              alt="Professional Shot"
+            />
+          </div>
+        </div>
+
+        <div
+  className="
+  relative
+  hidden
+  md:flex
+  justify-center
+  lg:justify-end
+  mt-10
+  lg:mt-0
+"
+>
           <div className="absolute w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl animate-pulse" />
           {hero.heroCardImage && (
             <div
@@ -256,8 +293,8 @@ export default function Hero() {
     sm:h-[450px]
     sm:w-[320px]
     lg:h-[600px]
-    lg:w-[450px]
-    xl:h-[700px]
+    lg:w-[400px]
+    xl:w-[450px]
     xl:w-[520px]
     rounded-[40px]
     overflow-hidden
