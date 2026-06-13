@@ -303,8 +303,8 @@ export default function Hero() {
           top-1/2
           -translate-y-1/2
           z-15
-          w-[260px]
-          h-[500px]
+          w-[300px]
+          h-[560px]
           rounded-[35px]
           overflow-hidden
           border border-white/10
@@ -373,8 +373,8 @@ export default function Hero() {
             top-1/2
             -translate-y-1/2
 
-            w-[260px]
-            h-[500px]
+            w-[3000px]
+            h-[560px]
 
             rounded-[35px]
             overflow-hidden
