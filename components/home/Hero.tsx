@@ -76,6 +76,7 @@ export default function Hero() {
     );
   };
 
+  
   return (
     <section
   ref={containerRef}
@@ -128,29 +129,15 @@ export default function Hero() {
   pt-0
 "
 >
-        <div className="space-y-4 md:space-y-8 pt-4">
-          <div className="animate-fade grid grid-cols-3 ...">
-          ...
-          </div>
+        
 
-          {/* Mobile Hero Image */}
-          <div className="md:hidden flex justify-center mt-8">
-            <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
-              <DriveMedia
-                url={hero.heroCardImage}
-                mediaType="image"
-                className="w-full h-full object-cover"
-                alt="Professional Shot"
-              />
-            </div>
-          </div>
 
-</div> {/* left content closes */}
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
             </span>
           </div> */}
+<div className="space-y-4 md:space-y-8 pt-4">
 <div className="space-y-2 sm:space-y-3">
 <h3
   className="
@@ -255,7 +242,7 @@ export default function Hero() {
               </div>
             ))}
           </div>
-        </div>
+        
 
         {/* Mobile Hero Image */}
         <div className="md:hidden flex justify-center mt-8">
@@ -268,12 +255,14 @@ export default function Hero() {
             />
           </div>
         </div>
+        
+        </div> {/* LEFT COLUMN END */}
 
         <div
   className="
   relative
   hidden
-  md:flex
+  lg:flex
   justify-center
   lg:justify-end
   mt-10
@@ -293,8 +282,8 @@ export default function Hero() {
     sm:h-[450px]
     sm:w-[320px]
     lg:h-[600px]
-    lg:w-[400px]
-    xl:w-[450px]
+    lg:w-[450px]
+    xl:h-[700px]
     xl:w-[520px]
     rounded-[40px]
     overflow-hidden
