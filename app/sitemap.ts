@@ -1,63 +1,43 @@
 import { MetadataRoute } from "next";
-import connectDB from "@/lib/db";
-import PortfolioItem from "@/models/Portfolio";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.kuttistoryphotography.com";
-
-  const staticPages: MetadataRoute.Sitemap = [
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
     {
-      url: `${baseUrl}`,
+      url: "https://www.kuttistoryphotography.com",
       lastModified: new Date(),
       priority: 1,
     },
     {
-      url: `${baseUrl}/about-us`,
+      url: "https://www.kuttistoryphotography.com/about-us",
       lastModified: new Date(),
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/services`,
+      url: "https://www.kuttistoryphotography.com/services",
       lastModified: new Date(),
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/works`,
+      url: "https://www.kuttistoryphotography.com/works",
       lastModified: new Date(),
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: "https://www.kuttistoryphotography.com/blog",
       lastModified: new Date(),
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/contact-us`,
+      url: "https://www.kuttistoryphotography.com/contact-us",
+      lastModified: new Date(),
+      priority: 0.8,
+    },
+
+    // Portfolio page
+    {
+      url: "https://www.kuttistoryphotography.com/works/love-story-wedding-photography-in-madurai",
       lastModified: new Date(),
       priority: 0.8,
     },
   ];
-
-  try {
-    await connectDB();
-
-    const portfolios = await PortfolioItem.find({
-      published: true,
-    })
-      .select("slug updatedAt")
-      .lean();
-
-    const portfolioPages: MetadataRoute.Sitemap = portfolios.map(
-      (portfolio: any) => ({
-        url: `${baseUrl}/works/${portfolio.slug}`,
-        lastModified: portfolio.updatedAt || new Date(),
-        priority: 0.8,
-      })
-    );
-
-    return [...staticPages, ...portfolioPages];
-  } catch (error) {
-    console.error("Sitemap Error:", error);
-    return staticPages;
-  }
 }
