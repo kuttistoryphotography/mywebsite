@@ -202,7 +202,7 @@ export default function Hero() {
   "
 >
   <div className="overflow-hidden">
-    <div className="whitespace-nowrap">
+    <div className="max-w-[700px]">
       <MagicText text="Wedding Photographer" />
     </div>
 
