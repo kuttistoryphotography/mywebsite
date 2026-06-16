@@ -65,21 +65,48 @@ export default function Hero() {
   }, []);
 
   const MagicText = ({ text }: { text: string }) => {
-    const refs = useRef<HTMLSpanElement[]>([]);
-    const enter = (el: HTMLSpanElement) => gsap.to(el, { y: -8, scale: 1.15, color: "#a855f7", duration: 0.35, ease: "power3.out" });
-    const leave = (el: HTMLSpanElement) => gsap.to(el, { y: 0, scale: 1, color: "#ffffff", duration: 0.35, ease: "power3.out" });
-    return (
-      <>
-        {text.split("").map((char, i) => (
-          <span key={i} ref={(el) => { if (el) refs.current[i] = el; }}
-            onMouseEnter={() => enter(refs.current[i])} onMouseLeave={() => leave(refs.current[i])}
-            className="char inline-block cursor-default">
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
-      </>
-    );
-  };
+  const refs = useRef<HTMLSpanElement[]>([]);
+
+  const enter = (el: HTMLSpanElement) =>
+    gsap.to(el, {
+      y: -8,
+      scale: 1.15,
+      color: "#a855f7",
+      duration: 0.35,
+      ease: "power3.out",
+    });
+
+  const leave = (el: HTMLSpanElement) =>
+    gsap.to(el, {
+      y: 0,
+      scale: 1,
+      color: "#ffffff",
+      duration: 0.35,
+      ease: "power3.out",
+    });
+
+  return (
+    <>
+      {text.split("\n").map((line, lineIndex) => (
+        <div key={lineIndex}>
+          {line.split("").map((char, i) => (
+            <span
+              key={`${lineIndex}-${i}`}
+              ref={(el) => {
+                if (el) refs.current[i] = el;
+              }}
+              onMouseEnter={() => enter(refs.current[i])}
+              onMouseLeave={() => leave(refs.current[i])}
+              className="char inline-block cursor-default"
+            >
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+};
 
   
   return (
@@ -190,18 +217,20 @@ export default function Hero() {
 
 <h1
   className="
-    text-[36px]
-    sm:text-[44px]
-    md:text-[52px]
-    lg:text-[58px]
-    xl:text-[64px]
+    text-[28px]
+    sm:text-[36px]
+    md:text-[44px]
+    lg:text-[52px]
+    xl:text-[58px]
     font-light
-    leading-[1.1]
+    leading-[1.05]
     tracking-tight
-    max-w-[850px]
+    max-w-[700px]
+    whitespace-normal
+    break-words
   "
 >
-  {hero.heading}
+  <MagicText text={hero.heading} />
 </h1>
 
 </div>
