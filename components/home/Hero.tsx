@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { DriveMedia } from "@/components/ui/DriveMedia";
+import { DriveMedia } from "../ui/DriveMedia";
 
 interface HeroData {
   backgroundImage: string;
@@ -22,7 +22,7 @@ interface HeroData {
 const DEFAULT_HERO: HeroData = {
   backgroundImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
   heading: "Capturing Moments Into Eternity",
-  subheading: "Kutti Story Photography",
+  subheading: "Kutti Story Photography - Madurai",
   paragraph:
   "Professional wedding photographer in Madurai specializing in candid wedding photography, cinematic wedding photography, traditional Tamil wedding photography, pre-wedding shoots and post-wedding photography across Tamil Nadu. We don't just capture moments—we preserve emotions through storytelling and timeless imagery.",
   badgeText: "Kutti Story Photography",
@@ -145,6 +145,7 @@ export default function Hero() {
           </div> */}
 <div className="space-y-4 md:space-y-8 pt-4 lg:pt-0">
 <div className="space-y-2 sm:space-y-3">
+  
 <h3
   className="
     group
@@ -214,6 +215,7 @@ export default function Hero() {
     </div>
   </div>
 </h1>
+</div>
 
           <p
   className="
