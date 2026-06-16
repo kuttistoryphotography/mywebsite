@@ -23,27 +23,36 @@ export async function generateMetadata(
   }
 
   return {
-    title:
-      item.metaTitle ||
-      `${item.title} | Kutti Story Photography`,
+  title:
+    item.metaTitle ||
+    `${item.title} | Wedding Photography in Madurai | Kutti Story Photography`,
 
+  description:
+    item.metaDescription ||
+    item.description ||
+    "Professional wedding photography in Madurai by Kutti Story Photography.",
+
+  alternates: {
+    canonical: `https://www.kuttistoryphotography.com/works/${item.slug}`,
+  },
+
+  openGraph: {
+    title: item.title,
     description:
       item.metaDescription ||
-      item.description,
+      item.description ||
+      "Professional wedding photography in Madurai",
 
-    alternates: {
-      canonical: `https://www.kuttistoryphotography.com/works/${item.slug}`,
-    },
+    url: `https://www.kuttistoryphotography.com/works/${item.slug}`,
 
-    openGraph: {
-      title: item.title,
-      description: item.description,
-      images: item.coverImage
-        ? [item.coverImage]
-        : [],
-    },
-  };
-}
+    images: [
+      {
+        url: item.coverImage || "/images/og-image.jpg",
+      },
+    ],
+  },
+};
+} // <-- add this closing brace
 
 export default async function PortfolioPage(
   { params }: Props
