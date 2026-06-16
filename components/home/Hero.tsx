@@ -143,7 +143,7 @@ export default function Hero() {
               {hero.badgeText}
             </span>
           </div> */}
-<div className="space-y-4 md:space-y-8 pt-4 lg:pt-0">
+<div className="space-y-4 md:space-y-8 pt-4 lg:pt-0 lg:pr-10">
 <div className="space-y-2 sm:space-y-3">
   
 <h3
@@ -199,7 +199,7 @@ export default function Hero() {
     font-light
     leading-[1.1]
     tracking-tight
-    max-w-[700px]
+    max-w-[700px] lg:max-w-[800px]
   "
 >
   <div className="overflow-hidden">
