@@ -199,6 +199,8 @@ export default function Hero() {
     leading-[1.1]
     tracking-tight
     max-w-[850px]
+    break-normal
+    whitespace-normal
   "
 >
   <MagicText text={hero.heading} />
