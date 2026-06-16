@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import PaymentSettings from "@/models/PaymentSettings";
+import PaymentSettings from "../../../models/PaymentSettings";
 
 export async function GET() {
   await connectDB();
@@ -27,13 +27,15 @@ export async function PUT(request: Request) {
   if (!settings) {
     settings = await PaymentSettings.create(body);
   } else {
-    await PaymentSettings.findByIdAndUpdate(
+    settings = await PaymentSettings.findByIdAndUpdate(
       settings._id,
-      body
+      body,
+      { new: true }
     );
   }
 
   return NextResponse.json({
     success: true,
+    settings,
   });
 }

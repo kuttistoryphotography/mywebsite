@@ -28,7 +28,8 @@ export default function PaymentModal({
   const [copied, setCopied] = useState(false);
   const [isPartialPayment, setIsPartialPayment] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
-  const upiId = "anantheditz1616-2@okaxis";
+  const [upiId] = useState("anantheditz1616-2@okaxis");
+  const [accountName] = useState("Kutti Story Photography");
 
   const paymentAmount = isPartialPayment && customAmount ? parseFloat(customAmount) : amount;
 
@@ -41,7 +42,7 @@ export default function PaymentModal({
   const generateQRCode = async () => {
     try {
       // UPI payment string format
-      const upiString = `upi://pay?pa=${upiId}&pn=Kutti Story Photography&am=${paymentAmount}&cu=INR&tn=Payment for Booking ${bookingNumber}`;
+      const upiString = `upi://pay?pa=${upiId}&pn=${accountName}&am=${paymentAmount}&cu=INR&tn=Payment for Booking ${bookingNumber}`;
       const qrUrl = await QRCode.toDataURL(upiString, {
         width: 300,
         margin: 2,
