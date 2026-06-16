@@ -23,7 +23,8 @@ const DEFAULT_HERO: HeroData = {
   backgroundImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
   heading: "Capturing Moments Into Eternity",
   subheading: "Kutti Story Photography",
-  paragraph: "We don't just take pictures; we craft visual legacies. Specializing in high-end storytelling and cinematic night shoots.",
+  paragraph:
+  "Professional wedding photographer in Madurai specializing in candid wedding photography, cinematic wedding photography, traditional Tamil wedding photography, pre-wedding shoots and post-wedding photography across Tamil Nadu. We don't just capture moments—we preserve emotions through storytelling and timeless imagery.",
   badgeText: "Kutti Story Photography",
   primaryButtonText: "Book a Session",
   secondaryButtonText: "View Portfolio",
@@ -168,7 +169,7 @@ export default function Hero() {
       group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]
     "
   >
-    {hero.subheading}
+    subheading: "Kutti Story Photography - Madurai"
   </span>
 
   <span
@@ -201,18 +202,15 @@ export default function Hero() {
   "
 >
     <div className="overflow-hidden">
-  <MagicText text="Every Life Has a" />
+  <MagicText text="Wedding Photographer" />
 
-  <div className="italic font-serif text-gray-400 leading-[0.95]">
+<div className="italic font-serif text-gray-400 leading-[0.95]">
   <div>
-    <MagicText text="Story Worth" />
+    <MagicText text="in" />
   </div>
   <div>
-    <MagicText text="Remembering" />
+    <MagicText text="Madurai" />
   </div>
-</div>
-</div>
-  </h1>
 </div>
 
           <p
@@ -227,6 +225,11 @@ export default function Hero() {
 >{hero.paragraph}</p>
 
           <div className="animate-fade flex flex-col sm:flex-row items-start sm:items-center gap-5">
+            <div className="mt-6 text-sm text-gray-400 max-w-2xl">
+              Trusted Wedding Photography Studio in Madurai • Candid Photography •
+              Cinematic Wedding Films • Traditional Tamil Wedding Photography •
+              Pre-Wedding & Post-Wedding Shoots Across Tamil Nadu
+          </div>
             <a href="/booking">
               <button className="bg-white text-black px-10 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:scale-105 active:scale-95">
                 {hero.primaryButtonText}
