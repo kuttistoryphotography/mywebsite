@@ -190,31 +190,18 @@ export default function Hero() {
 
 <h1
   className="
-    text-[32px]
-    sm:text-[42px]
-    md:text-[48px]
-    lg:text-[52px]
-    xl:text-[56px]
+    text-[36px]
+    sm:text-[44px]
+    md:text-[52px]
+    lg:text-[58px]
+    xl:text-[64px]
     font-light
-    leading-[1.05]
+    leading-[1.1]
     tracking-tight
-    max-w-[750px]
+    max-w-[850px]
   "
 >
-  <div className="overflow-hidden">
-    <div className="max-w-[700px]">
-      <MagicText text="Wedding Photographer" />
-    </div>
-
-    <div className="italic font-serif text-gray-400 leading-[0.9] mt-1">
-      <div>
-        <MagicText text="in" />
-      </div>
-      <div>
-        <MagicText text="Madurai" />
-      </div>
-    </div>
-  </div>
+  <MagicText text={hero.heading} />
 </h1>
 
 </div>
