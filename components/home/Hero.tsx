@@ -85,24 +85,33 @@ export default function Hero() {
       ease: "power3.out",
     });
 
+  let counter = 0;
+
   return (
     <>
-      {text.split("\n").map((line, lineIndex) => (
-        <div key={lineIndex}>
-          {line.split("").map((char, i) => (
-            <span
-              key={`${lineIndex}-${i}`}
-              ref={(el) => {
-                if (el) refs.current[i] = el;
-              }}
-              onMouseEnter={() => enter(refs.current[i])}
-              onMouseLeave={() => leave(refs.current[i])}
-              className="char inline-block cursor-default"
-            >
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
-        </div>
+      {text.split(" ").map((word, wordIndex) => (
+        <span
+          key={wordIndex}
+          className="inline-block mr-[0.25em]"
+        >
+          {word.split("").map((char) => {
+            const index = counter++;
+
+            return (
+              <span
+                key={index}
+                ref={(el) => {
+                  if (el) refs.current[index] = el;
+                }}
+                onMouseEnter={() => enter(refs.current[index])}
+                onMouseLeave={() => leave(refs.current[index])}
+                className="char inline-block cursor-default"
+              >
+                {char}
+              </span>
+            );
+          })}
+        </span>
       ))}
     </>
   );
@@ -217,17 +226,15 @@ export default function Hero() {
 
 <h1
   className="
-    text-[28px]
-    sm:text-[36px]
-    md:text-[44px]
-    lg:text-[52px]
-    xl:text-[58px]
+    text-[26px]
+    sm:text-[34px]
+    md:text-[42px]
+    lg:text-[48px]
+    xl:text-[54px]
     font-light
-    leading-[1.05]
+    leading-[1.1]
     tracking-tight
-    max-w-[700px]
-    whitespace-normal
-    break-words
+    max-w-[650px]
   "
 >
   <MagicText text={hero.heading} />
