@@ -169,7 +169,7 @@ export default function Hero() {
       group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]
     "
   >
-    subheading: "Kutti Story Photography - Madurai"
+    {hero.subheading}
   </span>
 
   <span
@@ -187,7 +187,7 @@ export default function Hero() {
   />
 </h3>
 
-  <h1
+ <h1
   className="
     text-[30px]
     sm:text-[42px]
@@ -201,17 +201,19 @@ export default function Hero() {
     max-w-[460px]
   "
 >
-    <div className="overflow-hidden">
-  <MagicText text="Wedding Photographer" />
+  <div className="overflow-hidden">
+    <MagicText text="Wedding Photographer" />
 
-<div className="italic font-serif text-gray-400 leading-[0.95]">
-  <div>
-    <MagicText text="in" />
+    <div className="italic font-serif text-gray-400 leading-[0.95]">
+      <div>
+        <MagicText text="in" />
+      </div>
+      <div>
+        <MagicText text="Madurai" />
+      </div>
+    </div>
   </div>
-  <div>
-    <MagicText text="Madurai" />
-  </div>
-</div>
+</h1>
 
           <p
   className="
