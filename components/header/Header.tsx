@@ -175,14 +175,14 @@ export default function Header() {
         isScrolled ? "bg-black/60 backdrop-blur-md border-b border-white/10" : "bg-transparent"
       }`}
     >
-      <div className="max-w-360 mx-auto px-6 md:px-12 h-[90px] flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 md:px-12 h-[70px] md:h-[80px] flex items-center justify-between">
         
         {/* LOGO: Matching your "Moments" Hero Typography */}
         <div className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white text-black font-bold text-lg">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/20 flex items-center justify-center bg-white text-black font-bold text-sm md:text-lg">
             K
           </div>
-          <div className="flex flex-col leading-none">
+          <div className="hidden sm:flex flex-col leading-none">
             <span className="text-white font-light tracking-[0.2em] text-[10px] uppercase opacity-70">Photography</span>
             <span className="text-white font-serif italic text-xl tracking-tight">Kutti Story</span>
           </div>
