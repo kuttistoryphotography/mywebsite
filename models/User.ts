@@ -16,6 +16,8 @@ export interface IUser extends Document {
   updatedAt: Date;
   city: string;
   state: string;
+  address: string;
+  pincode: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -32,7 +34,10 @@ const UserSchema = new Schema<IUser>(
     emailVerified: { type: Boolean, default: false },
     googleId: { type: String },
     city: { type: String, default: '' },
-    state: { type: String, default: '' }
+state: { type: String, default: '' },
+
+address: { type: String, default: '' },
+pincode: { type: String, default: '' }
 
   },
   { timestamps: true }
