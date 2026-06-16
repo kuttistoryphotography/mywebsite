@@ -38,8 +38,13 @@ keywords: [
 ],  authors: [{ name: "Kutti Story" }],
   creator: "Kutti Story",
   generator: 'v0.app',
- metadataBase: new URL("https://kuttistoryphotography.com"),
-  icons: {
+  metadataBase: new URL("https://www.kuttistoryphotography.com"),
+
+  alternates: {
+  canonical: "https://www.kuttistoryphotography.com",
+},
+
+icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
     ],
@@ -51,7 +56,7 @@ keywords: [
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url:  "https://kuttistoryphotography.com",
+    url: "https://www.kuttistoryphotography.com",
     siteName: "Kutti Story",
     title: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
     description: "Capturing your special moments with stunning photography",
@@ -104,8 +109,8 @@ export default function RootLayout({
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       name: "Kutti Story Photography",
-      image: "https://kuttistoryphotography.com/favicon.svg",
-      url: "https://kuttistoryphotography.com",
+      image: "https://www.kuttistoryphotography.com/favicon.svg",
+      url: "https://www.kuttistoryphotography.com",
       telephone: "+919976733600",
       address: {
         "@type": "PostalAddress",
