@@ -196,17 +196,27 @@ export default function Hero() {
     lg:text-[52px]
     xl:text-[56px]
     font-light
-    leading-[1.15]
+    leading-[1.05]
     tracking-tight
     max-w-[750px]
   "
 >
   <div className="overflow-hidden">
     <div className="whitespace-nowrap">
-      <MagicText text={hero.heading} />
+      <MagicText text="Wedding Photographer" />
+    </div>
+
+    <div className="italic font-serif text-gray-400 leading-[0.9] mt-1">
+      <div>
+        <MagicText text="in" />
+      </div>
+      <div>
+        <MagicText text="Madurai" />
+      </div>
     </div>
   </div>
 </h1>
+
 </div>
 
           <p
