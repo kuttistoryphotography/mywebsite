@@ -188,22 +188,23 @@ export default function Hero() {
   />
 </h3>
 
- <h1
+<h1
   className="
-    text-[30px]
+    text-[32px]
     sm:text-[42px]
-    md:text-[52px]
-    lg:text-[58px]
-    xl:text-[66px]
-    2xl:text-[72px]
+    md:text-[48px]
+    lg:text-[52px]
+    xl:text-[56px]
     font-light
-    leading-[1.1]
+    leading-[1.15]
     tracking-tight
-    max-w-[700px]
+    max-w-[750px]
   "
 >
   <div className="overflow-hidden">
-    <MagicText text={hero.heading} />
+    <div className="whitespace-nowrap">
+      <MagicText text={hero.heading} />
+    </div>
   </div>
 </h1>
 </div>
