@@ -28,7 +28,7 @@ export default function PaymentModal({
   const [copied, setCopied] = useState(false);
   const [isPartialPayment, setIsPartialPayment] = useState(false);
   const [customAmount, setCustomAmount] = useState("");
-  const upiId = "rajaxismdu@axl";
+  const upiId = "anantheditz1616-2@okaxis";
 
   const paymentAmount = isPartialPayment && customAmount ? parseFloat(customAmount) : amount;
 
