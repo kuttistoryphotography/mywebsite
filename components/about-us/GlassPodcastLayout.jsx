@@ -143,9 +143,16 @@ export default function PhotographyAboutSection() {
           <div className="flex-1">
             <h3 className="text-3xl font-bold mb-3 tracking-tight">{settings.storyHeading}</h3>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">{settings.storyParagraph}</p>
-            <button className="text-[11px] font-bold uppercase tracking-widest border-b border-yellow-500 pb-1 hover:text-yellow-500 transition-colors">
-              View Case Study
-            </button>
+            <a
+              href="/about-us"
+              className="group inline-flex items-center text-[11px] font-bold uppercase tracking-[0.25em] border-b border-yellow-500 pb-1 hover:text-yellow-500 transition-all duration-300"
+            >
+             DISCOVER KUTTI STORY
+
+            <span className="ml-2 group-hover:translate-x-2 transition-transform duration-300">
+              →
+            </span>
+           </a>
           </div>
         </div>
 
