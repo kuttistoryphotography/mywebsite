@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Booking from '@/models/Booking';
+import Quote from '@/models/Quote';
 import { getCurrentUser } from '@/lib/auth';
 import { createBulkNotifications, getAdminUserIds } from '@/lib/notifications';
 
@@ -115,9 +116,22 @@ export async function POST(request: NextRequest) {
     }
 
     const bookingNumber = `BK-${Date.now()}`;
+    let bookingUserId = session.userId;
+
+    if (quote_id) {
+     const quote = await Quote.findById(quote_id);
+
+    if (quote) {
+     bookingUserId = String(quote.userId);
+    }
+   }
+
+console.log("SESSION USER:", session.userId);
+console.log("QUOTE ID:", quote_id);
+console.log("BOOKING USER:", bookingUserId);
     const booking = await Booking.create({
       bookingNumber,
-      userId: session.userId,
+      userId: bookingUserId,
       quoteId: quote_id || undefined,
       clientName: client_name,
       clientEmail: client_email,
