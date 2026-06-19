@@ -9,9 +9,13 @@ import { calculateInvoiceItems, calculateInvoiceTotals, resolveInvoiceStatus } f
 export async function GET(request: NextRequest) {
   try {
     const session = await getCurrentUser();
-    // if (!session || session.role !== 'admin') {
-    //   return NextResponse.json({ error: 'Admin access required' }, { status: 401 });
-    // }
+    
+    if (!session) {
+     return NextResponse.json(
+       { error: 'Not authenticated' },
+       { status: 401 }
+     );
+    }
 
     await connectDB();
     const { searchParams } = new URL(request.url);
@@ -20,6 +24,10 @@ export async function GET(request: NextRequest) {
     const status    = searchParams.get('status');
 
     const filter: Record<string, unknown> = {};
+
+    if (session?.role !== 'admin') {
+      filter.userId = session?.userId;
+    }
     if (userId)    filter.userId    = userId;
     if (bookingId) filter.bookingId = bookingId;
     if (status)    filter.status    = status;
