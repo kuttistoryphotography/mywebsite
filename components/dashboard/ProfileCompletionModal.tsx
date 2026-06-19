@@ -18,7 +18,7 @@ export interface ProfileData {
   address: string;
   city: string;
   state: string;
-  pinCode: string;
+  pincode: string;
   preferredContact: "phone" | "whatsapp" | "email";
   weddingDate: string;
   partnerName: string;
@@ -47,7 +47,7 @@ export default function ProfileCompletionModal({
     address: initialData?.address || "",
     city: initialData?.city || "",
     state: initialData?.state || "",
-    pinCode: initialData?.pinCode || "",
+    pincode: initialData?.pincode || "",
     preferredContact: initialData?.preferredContact || "whatsapp",
     weddingDate: initialData?.weddingDate || "",
     partnerName: initialData?.partnerName || "",
@@ -344,9 +344,9 @@ export default function ProfileCompletionModal({
                 </label>
                 <input
                   type="text"
-                  value={formData.pinCode}
+                  value={formData.pincode}
                   onChange={(e) =>
-                    setFormData({ ...formData, pinCode: e.target.value })
+                    setFormData({ ...formData, pincode: e.target.value })
                   }
                   className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
                   placeholder="Enter PIN code"
