@@ -18,6 +18,8 @@ export interface IUser extends Document {
   state: string;
   address: string;
   pincode: string;
+
+  profileCompleted: boolean; // ADD THIS
 }
 
 const UserSchema = new Schema<IUser>(
@@ -37,6 +39,9 @@ const UserSchema = new Schema<IUser>(
     city: { type: String, default: "" },
     state: { type: String, default: "" },
     pincode: { type: String, default: "" },
+    profileCompleted: {
+    type: Boolean,
+    default: false,
 
   },
   { timestamps: true }

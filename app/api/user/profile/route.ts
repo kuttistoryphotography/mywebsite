@@ -52,16 +52,17 @@ export async function PUT(request: NextRequest) {
     await connectDB();
     const body = await request.json();
     const {
-           firstName,
-           lastName,
-           phone,
-           whatsappNumber,
-           avatarUrl,
-           address,
-           city,
-           state,
-           pincode,
-          } = body;
+     firstName,
+     lastName,
+     phone,
+     whatsappNumber,
+     avatarUrl,
+     address,
+     city,
+     state,
+     pincode,
+     profileCompleted,
+    } = body;
 
     const update: Record<string, unknown> = {};
     if (firstName     !== undefined) update.firstName     = firstName;
@@ -74,6 +75,8 @@ export async function PUT(request: NextRequest) {
     if (city !== undefined) update.city = city;
     if (state !== undefined) update.state = state;
     if (pincode !== undefined) update.pincode = pincode;
+    if (profileCompleted !== undefined)
+      update.profileCompleted = profileCompleted;
 
     console.log("UPDATE DATA:", update);
 
