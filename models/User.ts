@@ -33,11 +33,10 @@ const UserSchema = new Schema<IUser>(
     isActive: { type: Boolean, default: true },
     emailVerified: { type: Boolean, default: false },
     googleId: { type: String },
-    city: { type: String, default: '' },
-state: { type: String, default: '' },
-
-address: { type: String, default: '' },
-pincode: { type: String, default: '' }
+    address: { type: String, default: "" },
+    city: { type: String, default: "" },
+    state: { type: String, default: "" },
+    pincode: { type: String, default: "" },
 
   },
   { timestamps: true }

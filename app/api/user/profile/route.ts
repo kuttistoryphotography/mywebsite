@@ -32,6 +32,10 @@ export async function GET() {
         avatarUrl:       user.avatarUrl,
         isActive:        user.isActive,
         emailVerified:   user.emailVerified,
+        address:         user.address,
+        city:            user.city,
+        state:           user.state,
+        pincode:         user.pincode,
       },
     });
   } catch (error) {
@@ -47,7 +51,17 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
-    const { firstName, lastName, phone, whatsappNumber, avatarUrl } = body;
+    const {
+           firstName,
+           lastName,
+           phone,
+           whatsappNumber,
+           avatarUrl,
+           address,
+           city,
+           state,
+           pincode,
+          } = body;
 
     const update: Record<string, unknown> = {};
     if (firstName     !== undefined) update.firstName     = firstName;
@@ -56,6 +70,10 @@ export async function PUT(request: NextRequest) {
     if (whatsappNumber !== undefined) update.whatsappNumber = whatsappNumber;
     // avatarUrl: accepts Google Drive webViewLink or downloadLink
     if (avatarUrl     !== undefined) update.avatarUrl     = avatarUrl;
+    if (address !== undefined) update.address = address;
+    if (city !== undefined) update.city = city;
+    if (state !== undefined) update.state = state;
+    if (pincode !== undefined) update.pincode = pincode;
 
     await User.findByIdAndUpdate(session.userId, update);
     return NextResponse.json({ success: true });
