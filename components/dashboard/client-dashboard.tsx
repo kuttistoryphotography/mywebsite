@@ -306,14 +306,14 @@ export default function ClientDashboard() {
       console.error("Failed to save profile:", error);
     } finally {
       setIsSaving(false);
+      setIsEditing(false);
     }
   };
 
   const handleCancel = () => {
     setEditedProfile(profile);
     setErrors({});
-    setEditPersonal(false);
-    setEditAddress(false);
+    setIsEditing(false);
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -732,7 +732,16 @@ export default function ClientDashboard() {
                       Contact Preferences
                     </h3>
                   </div>
-                  
+                  {editPersonal && (
+                    <div className="flex justify-end mt-6">
+                     <button
+                       onClick={handleSave}
+                       className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400"
+                     >
+                       Save Personal Info
+                     </button>
+                    </div>
+                   )}
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                       Preferred Contact Method
@@ -776,16 +785,6 @@ export default function ClientDashboard() {
                     )}
                     </div>
                     </div>
-                    {editPersonal && (
-                    <div className="flex justify-end mt-6">
-                     <button
-                       onClick={handleSave}
-                       className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400"
-                     >
-                       Save Personal Info
-                     </button>
-                    </div>
-                   )}
                   
                 {/* Account Info */}
                 <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
