@@ -35,14 +35,16 @@ const UserSchema = new Schema<IUser>(
     isActive: { type: Boolean, default: true },
     emailVerified: { type: Boolean, default: false },
     googleId: { type: String },
+
     address: { type: String, default: "" },
     city: { type: String, default: "" },
     state: { type: String, default: "" },
     pincode: { type: String, default: "" },
-    profileCompleted: {
-    type: Boolean,
-    default: false,
 
+    profileCompleted: {
+      type: Boolean,
+      default: false,
+    }, // ← IMPORTANT COMMA HERE
   },
   { timestamps: true }
 );
