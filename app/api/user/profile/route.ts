@@ -75,8 +75,23 @@ export async function PUT(request: NextRequest) {
     if (state !== undefined) update.state = state;
     if (pincode !== undefined) update.pincode = pincode;
 
-    await User.findByIdAndUpdate(session.userId, update);
-    return NextResponse.json({ success: true });
+    console.log("UPDATE DATA:", update);
+
+   const updatedUser = await User.findByIdAndUpdate(
+     session.userId,
+     update,
+    {
+      new: true,
+      runValidators: true,
+    }
+   );
+
+    console.log("UPDATED USER:", updatedUser);
+    
+    return NextResponse.json({
+      success: true,
+      user: updatedUser,
+    });
   } catch (error) {
     console.error('PROFILE UPDATE ERROR:', error);
     return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
