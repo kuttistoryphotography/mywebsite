@@ -52,7 +52,7 @@ interface UserProfile {
   address: string;
   city: string;
   state: string;
-  pinCode: string;
+  pincode: string;
   preferredContact: "phone" | "whatsapp" | "email";
   profilePhoto: string | null;
   profileCompleted: boolean;
@@ -103,7 +103,7 @@ export default function ClientDashboard() {
     address: "",
     city: "",
     state: "",
-    pinCode: "",
+    pincode: "",
     preferredContact: "whatsapp",
     profilePhoto: null,
     profileCompleted: false,
@@ -143,7 +143,7 @@ export default function ClientDashboard() {
             address: userData.address || "",
             city: userData.city || "",
             state: userData.state || "",
-            pinCode: userData.pinCode || "",
+            pincode: userData.pincode || "",
             preferredContact: userData.preferredContact || "whatsapp",
             profilePhoto: userData.avatarUrl,
             profileCompleted: userData.profileCompleted || false,
@@ -235,8 +235,8 @@ export default function ClientDashboard() {
       newErrors.email = "Enter a valid email address";
     }
 
-    if (editedProfile.pinCode && !/^\d{6}$/.test(editedProfile.pinCode)) {
-      newErrors.pinCode = "Enter a valid 6-digit pin code";
+    if (editedProfile.pincode && !/^\d{6}$/.test(editedProfile.pincode)) {
+      newErrors.pincode = "Enter a valid 6-digit pin code";
     }
 
     setErrors(newErrors);
@@ -254,6 +254,16 @@ export default function ClientDashboard() {
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
 
+      console.log("Saving Profile Data:", {
+      firstName,
+      lastName,
+      phone: editedProfile.phone,
+      address: editedProfile.address,
+      city: editedProfile.city,
+      state: editedProfile.state,
+      pincode: editedProfile.pincode,
+    });
+
       const response = await fetch("/api/user/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -264,7 +274,7 @@ export default function ClientDashboard() {
           address: editedProfile.address,
           city: editedProfile.city,
           state: editedProfile.state,
-          pinCode: editedProfile.pinCode,
+          pincode: editedProfile.pincode,
           preferredContact: editedProfile.preferredContact,
           weddingDate: editedProfile.weddingDate,
           partnerName: editedProfile.partnerName,
@@ -362,7 +372,7 @@ export default function ClientDashboard() {
           address: profile.address,
           city: profile.city,
           state: profile.state,
-          pinCode: profile.pinCode,
+          pincode: profile.pincode,
           preferredContact: profile.preferredContact,
           weddingDate: profile.weddingDate,
           partnerName: profile.partnerName,
@@ -696,21 +706,21 @@ export default function ClientDashboard() {
                         <div>
                           <input
                             type="text"
-                            value={editedProfile.pinCode}
+                            value={editedProfile.pincode}
                             onChange={(e) =>
-                              setEditedProfile((prev) => ({ ...prev, pinCode: e.target.value }))
+                              setEditedProfile((prev) => ({ ...prev, pincode: e.target.value }))
                             }
                             className={cn(
                               "w-full px-4 py-3 bg-zinc-800/50 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all",
-                              errors.pinCode ? "border-red-500" : "border-zinc-700"
+                              errors.pincode ? "border-red-500" : "border-zinc-700"
                             )}
                           />
-                          {errors.pinCode && (
-                            <p className="text-[10px] text-red-400 mt-1">{errors.pinCode}</p>
+                          {errors.pinode && (
+                            <p className="text-[10px] text-red-400 mt-1">{errors.pincode}</p>
                           )}
                         </div>
                       ) : (
-                        <p className="text-base font-medium">{profile.pinCode || "Not provided"}</p>
+                        <p className="text-base font-medium">{profile.pincode || "Not provided"}</p>
                       )}
                     </div>
                   </div>
