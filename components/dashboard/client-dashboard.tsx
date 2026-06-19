@@ -80,6 +80,7 @@ export default function ClientDashboard() {
   };
   
   const [activeTab, setActiveTab] = useState(mapTabName(tabFromUrl));
+  const [isEditing, setIsEditing] = useState(false);
   const [editPersonal, setEditPersonal] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -478,6 +479,42 @@ export default function ClientDashboard() {
                       Manage your personal information and preferences
                     </p>
                   </div>
+                  {!isEditing ? (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      <span className="text-sm font-medium">Edit Profile</span>
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleCancel}
+                        className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        <span className="text-sm font-medium">Cancel</span>
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-xl transition-colors disabled:opacity-50"
+                      >
+                        {isSaving ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                            <span className="text-sm font-medium">Saving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-4 h-4" />
+                            <span className="text-sm font-medium">Save Changes</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Profile Photo Section */}
