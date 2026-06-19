@@ -94,8 +94,8 @@ export default function PaymentModal({
         body: JSON.stringify({
           bookingId,
           amount: paymentAmount,
-          utrNumber: utrNumber.trim(),
-          paymentType: isPartialPayment ? "partial" : "full",
+          transactionId: utrNumber.trim(),
+          paymentMethod: "upi",
           notes: notes.trim() || null,
         }),
       });
