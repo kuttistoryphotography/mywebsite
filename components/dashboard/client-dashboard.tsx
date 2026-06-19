@@ -81,6 +81,8 @@ export default function ClientDashboard() {
   
   const [activeTab, setActiveTab] = useState(mapTabName(tabFromUrl));
   const [isEditing, setIsEditing] = useState(false);
+  const [editPersonal, setEditPersonal] = useState(false);
+  const [editAddress, setEditAddress] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
   
@@ -196,6 +198,8 @@ export default function ClientDashboard() {
         
         setProfile(updatedProfile);
         setEditedProfile(updatedProfile);
+        setEditPersonal(false);
+        setEditAddress(false);
         setShowProfileModal(false);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
@@ -294,6 +298,8 @@ export default function ClientDashboard() {
 
         setProfile(updatedProfile);
         setEditedProfile(updatedProfile);
+        setEditPersonal(false);
+        setEditAddress(false);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
       }
@@ -553,18 +559,27 @@ export default function ClientDashboard() {
 
                 {/* Personal Information */}
                 <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
-                  <div className="flex items-center gap-2 mb-6">
-                    <User className="w-5 h-5 text-white-500" />
+                 <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                   <User className="w-5 h-5 text-white" />
                     <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-400">
                       Personal Information
                     </h3>
-                  </div>
+                   </div>
+
+                  <button
+                    onClick={() => setEditPersonal(!editPersonal)}
+                     className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+                </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         Full Name <span className="text-red-400">*</span>
                       </label>
-                      {isEditing ? (
+                      {editPersonal ? (
                         <div>
                           <input
                             type="text"
@@ -589,7 +604,7 @@ export default function ClientDashboard() {
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         Phone Number <span className="text-red-400">*</span>
                       </label>
-                      {isEditing ? (
+                       {editPersonal ? (
                         <div>
                           <input
                             type="tel"
@@ -614,7 +629,7 @@ export default function ClientDashboard() {
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         Email Address <span className="text-red-400">*</span>
                       </label>
-                      {isEditing ? (
+                      {editPersonal ? (
                         <div>
                           <input
                             type="email"
@@ -640,18 +655,28 @@ export default function ClientDashboard() {
 
                 {/* Address Information */}
                 <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
-                  <div className="flex items-center gap-2 mb-6">
+                  <div className="flex items-center justify-between mb-6">
+                   <div className="flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-amber-500" />
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-400">
-                      Address Information
-                    </h3>
-                  </div>
+                     <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-400">
+                       Address Information
+                     </h3>
+                   </div>
+
+                   <button
+                     onClick={() => setEditAddress(!editAddress)}
+                     className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700"
+                   >
+                   <Edit3 className="w-4 h-4" />
+                 </button>
+                </div>
+            
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2 md:col-span-2">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         Full Address
                       </label>
-                      {isEditing ? (
+                      {editAddress ? (
                         <input
                           type="text"
                           value={editedProfile.address}
@@ -664,11 +689,21 @@ export default function ClientDashboard() {
                         <p className="text-base font-medium">{profile.address || "Not provided"}</p>
                       )}
                     </div>
+                    {editAddress && (
+                      <div className="flex justify-end mt-6">
+                       <button
+                         onClick={handleSave}
+                         className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400"
+                       >
+                        Save Address
+                       </button>
+                      </div>
+                    )}
                     <div className="space-y-2">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         City
                       </label>
-                      {isEditing ? (
+                      {editAddress ? (
                         <input
                           type="text"
                           value={editedProfile.city}
@@ -685,7 +720,7 @@ export default function ClientDashboard() {
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         State
                       </label>
-                      {isEditing ? (
+                      {editAddress ? (
                         <input
                           type="text"
                           value={editedProfile.state}
@@ -702,7 +737,7 @@ export default function ClientDashboard() {
                       <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                         Pin Code
                       </label>
-                      {isEditing ? (
+                      {editAddress ? (
                         <div>
                           <input
                             type="text"
@@ -715,7 +750,7 @@ export default function ClientDashboard() {
                               errors.pincode ? "border-red-500" : "border-zinc-700"
                             )}
                           />
-                          {errors.pinode && (
+                          {errors.pincode && (
                             <p className="text-[10px] text-red-400 mt-1">{errors.pincode}</p>
                           )}
                         </div>
@@ -725,6 +760,7 @@ export default function ClientDashboard() {
                     </div>
                   </div>
                 </div>
+                
 
                 {/* Preferences */}
                 <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
@@ -734,11 +770,21 @@ export default function ClientDashboard() {
                       Contact Preferences
                     </h3>
                   </div>
+                  {editPersonal && (
+                    <div className="flex justify-end mt-6">
+                     <button
+                       onClick={handleSave}
+                       className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400"
+                     >
+                       Save Personal Info
+                     </button>
+                    </div>
+                   )}
                   <div className="space-y-2">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
                       Preferred Contact Method
                     </label>
-                    {isEditing ? (
+                    {editPersonal ? (
                       <div className="flex flex-wrap gap-3 mt-3">
                         {[
                           { id: "phone", label: "Phone", icon: Phone },
@@ -775,9 +821,9 @@ export default function ClientDashboard() {
                         <p className="text-base font-medium capitalize">{profile.preferredContact}</p>
                       </div>
                     )}
-                  </div>
-                </div>
-
+                    </div>
+                    </div>
+                  
                 {/* Account Info */}
                 <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-6">
                   <div className="flex items-center gap-2 mb-6">
