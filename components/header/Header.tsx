@@ -40,7 +40,6 @@ const accountMenuItems = [
   { label: "My Packages", href: "/dashboard?tab=packages", icon: Package },
   { label: "Favorites", href: "/dashboard?tab=favorites", icon: Heart },
   { label: "Payments", href: "/dashboard?tab=payments", icon: CreditCard },
-  { label: "Notifications", href: "/dashboard?tab=notifications", icon: Bell },
   { label: "Settings", href: "/dashboard?tab=settings", icon: Settings },
 ];
 
@@ -51,6 +50,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const accountDropdownRef = useRef<HTMLDivElement>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const router = useRouter();
@@ -75,10 +75,15 @@ export default function Header() {
         const res = await fetch('/api/auth/me');
         if (!mounted) return;
         if (res.ok) {
-          const data = await res.json();
-          setIsAuthenticated(true);
-          setUserName(`${data.user.first_name || ''} ${data.user.last_name || ''}`.trim());
-        } else {
+        const data = await res.json();
+
+        setIsAuthenticated(true);
+        setUserRole(data.user.role);
+
+        setUserName(
+          `${data.user.first_name || ''} ${data.user.last_name || ''}`.trim()
+        );
+      } else {
           setIsAuthenticated(false);
           setUserName(null);
         }
@@ -205,7 +210,9 @@ export default function Header() {
 
         {/* Right Side: Notifications + Account Dropdown + Book Now */}
         <div className="hidden md:flex items-center gap-4">
-          {isAuthenticated && <NotificationBell className="text-white/70 hover:text-white transition-colors" />}
+          {isAuthenticated && userRole === "admin" && (
+            <NotificationBell className="text-white/70 hover:text-white transition-colors" />
+        )}
           {!isAuthenticated ? (
             <Link href="/login" className="px-4 py-2.5 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all duration-300 text-sm font-medium">
               Sign In
