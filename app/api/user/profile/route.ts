@@ -36,6 +36,7 @@ export async function GET() {
         city:            user.city,
         state:           user.state,
         pincode:         user.pincode,
+        profileCompleted: user.profileCompleted,
       },
     });
   } catch (error) {
