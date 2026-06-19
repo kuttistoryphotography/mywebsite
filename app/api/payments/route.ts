@@ -60,17 +60,21 @@ export async function POST(request: NextRequest) {
     const payment = await Payment.create({
       bookingId, userId: booking.userId, amount,
       paymentMethod: paymentMethod || 'cash',
-      status: 'completed', transactionId, notes,
+      status: 'pending', transactionId, notes,
     });
 
     // Update booking totals
-    const newTotalPaid = (booking.totalPaid || 0) + amount;
-    const estimatedPrice = booking.estimatedPrice || 0;
-    const paymentStatus = estimatedPrice > 0
-      ? (newTotalPaid >= estimatedPrice ? 'paid' : 'partial')
-      : 'partial';
+    // const newTotalPaid = (booking.totalPaid || 0) + amount;
+    // const estimatedPrice = booking.estimatedPrice || 0;
 
-    await Booking.findByIdAndUpdate(bookingId, { totalPaid: newTotalPaid, paymentStatus });
+    // const paymentStatus = estimatedPrice > 0
+    //   ? (newTotalPaid >= estimatedPrice ? 'paid' : 'partial')
+    //   : 'partial';
+
+    // await Booking.findByIdAndUpdate(
+    //   bookingId,
+    //   { totalPaid: newTotalPaid, paymentStatus }
+    // );
 
     return NextResponse.json({ success: true, id: String(payment._id) }, { status: 201 });
   } catch (error) {
