@@ -114,9 +114,13 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
     try {
       setLoading(true);
       const response = await fetch("/api/invoices/admin");
+      const data = await response.json();
+
+      console.log("ADMIN INVOICES:", data);
+
+      setInvoices(data.invoices || []);
       if (response.ok) {
-        const data = await response.json();
-        setInvoices(data.invoices || []);
+        
       }
     } catch (error) {
       console.error("Error fetching invoices:", error);
