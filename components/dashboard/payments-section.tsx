@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-const [showPaymentModal, setShowPaymentModal] = useState(false);
+import PaymentModal from "./PaymentModal";
 import {
   CreditCard,
   Download,
@@ -71,6 +71,7 @@ interface Invoice {
 }
 
 export default function PaymentsSection() {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"overview" | "transactions" | "invoices">("overview");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -359,7 +360,8 @@ export default function PaymentsSection() {
     const StatusIcon = statusConfig.icon;
 
     return (
-      <div className="space-y-6 animate-in fade-in duration-300">
+  <>
+    <div className="space-y-6 animate-in fade-in duration-300">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -532,8 +534,17 @@ export default function PaymentsSection() {
               })}
           </div>
         </div>
-      </div>
-    );
+            </div>
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        bookingId={selectedInvoice.orderId}
+        bookingNumber={selectedInvoice.orderNumber}
+        amount={selectedInvoice.amountDue || selectedInvoice.total}
+      />
+    </>
+  );
   }
 
   return (
@@ -587,6 +598,7 @@ export default function PaymentsSection() {
             </button>
           )}
         </div>
+        
 
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-5">
           <div className="flex items-center justify-between">
