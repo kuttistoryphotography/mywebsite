@@ -39,6 +39,18 @@ export default function PaymentModal({
     }
   }, [isOpen, paymentAmount]);
 
+  useEffect(() => {
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [isOpen]);
+
   const generateQRCode = async () => {
     try {
       // UPI payment string format
@@ -125,8 +137,8 @@ export default function PaymentModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-[500px] max-h-[85vh] overflow-y-auto shadow-2xl">
         {/* Header */}
         <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
           <div>
@@ -141,7 +153,7 @@ export default function PaymentModal({
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-5 md:p-6 space-y-5">
           {/* Amount */}
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
             <p className="text-sm text-zinc-400 mb-2 text-center">Pending Amount</p>
@@ -203,7 +215,11 @@ export default function PaymentModal({
           {/* QR Code */}
           <div className="bg-white rounded-xl p-4 flex items-center justify-center">
             {qrCodeUrl ? (
-              <img src={qrCodeUrl} alt="Payment QR Code" className="w-64 h-64" />
+              <img
+              src={qrCodeUrl}
+              alt="Payment QR Code"
+              className="w-full max-w-[260px] h-auto object-contain"
+            />
             ) : (
               <div className="w-64 h-64 flex items-center justify-center">
                 <div className="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
@@ -214,9 +230,11 @@ export default function PaymentModal({
           {/* UPI ID */}
           <div>
             <p className="text-sm text-zinc-400 mb-2">UPI ID</p>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 bg-zinc-800/50 border border-zinc-700 rounded-xl px-4 py-3">
-                <p className="font-mono font-medium text-white">{upiId}</p>
+            <div className="flex items-center gap-2 w-full">
+              <div className="flex-1 min-w-0 bg-zinc-800/50 border border-zinc-700 rounded-xl px-4 py-3">
+                <p className="font-mono font-medium text-white break-all text-sm">
+                  {upiId}
+                </p>
               </div>
               <button
                 onClick={handleCopyUPI}
