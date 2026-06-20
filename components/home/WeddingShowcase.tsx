@@ -121,11 +121,31 @@ export default function WeddingShowcase() {
             return (
               <div key={idx} onClick={() => setActiveIndex(idx)} style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "all 1s", transform: isActive ? "scale(1)" : "scale(0.9)", opacity: isActive ? 1 : 0.3, filter: isActive ? "none" : "blur(1px) grayscale(1)", zIndex: isActive ? 30 : 10 }}>
                 {[slide.image1, slide.image2].map((img, i) => (
-                  <div key={i} style={{ position: "relative", overflow: "hidden", borderRadius: "1.5rem", width: isActive ? "300px" : "180px", height: isActive ? "480px" : "300px", transition: "all 1s" }}>
+                  <div
+                    key={i}
+                    className="group hover:-translate-y-3 transition-all duration-700"
+                    style={{
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: "1.5rem",
+                      width: isActive ? "300px" : "180px",
+                      height: isActive ? "480px" : "300px",
+                      transition: "all 1s"
+                    }}
+                  > 
                     <DriveMedia
                       url={img}
                       mediaType="image"
-                      className="w-full h-full object-cover"
+                      className="
+                        w-full
+                        h-full
+                        object-cover
+                        scale-125
+                        group-hover:scale-100
+                        transition-transform
+                        duration-[1500ms]
+                        ease-[cubic-bezier(0.25,1,0.5,1)]
+                      "
                       alt={`Slide ${idx + 1}-${i + 1}`}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)" }} />
