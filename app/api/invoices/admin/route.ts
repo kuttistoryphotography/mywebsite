@@ -209,81 +209,82 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getCurrentUser();
-
     if (!session || session.role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Admin access required' }, { status: 401 });
     }
 
     await connectDB();
-
     const body = await request.json();
+    const { paymentId, action, rejectionReason, id, status, notes } = body;
 
-    const {
-      invoiceId,
-      status,
-      dueDate,
-      notes,
-      items = [],
-      taxRate = 0,
-      discountAmount = 0,
-    } = body;
+    // Support both action-based (from UI) and direct field update
+    const targetId = paymentId || id;
+    if (!targetId) return NextResponse.json({ error: 'Payment ID required' }, { status: 400 });
 
-    if (!invoiceId) {
-      return NextResponse.json(
-        { error: 'Invoice ID required' },
-        { status: 400 }
-      );
+    const payment = await Payment.findById(targetId).populate('bookingId');
+    if (!payment) return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
+
+    if (action === 'verify') {
+      await Payment.findByIdAndUpdate(targetId, { status: 'completed' });
+
+      // Update booking totalPaid
+      const booking = payment.bookingId as any;
+      if (booking) {
+        const allPayments = await Payment.find({ bookingId: booking._id, status: 'completed' });
+        // Include this one (now completed)
+        const newTotal = allPayments.reduce((s: number, p: any) => s + Number(p.amount), 0) + 
+          (payment.status !== 'completed' ? Number(payment.amount) : 0);
+        const estimatedPrice = booking.estimatedPrice || 0;
+        const paymentStatus = estimatedPrice > 0
+          ? newTotal >= estimatedPrice ? 'paid' : 'partial'
+          : 'partial';
+        await Booking.findByIdAndUpdate(booking._id, { totalPaid: newTotal, paymentStatus });
+
+        try {
+          await createNotification(String(booking.userId), {
+            type: 'payment_verified',
+            title: 'Payment Verified',
+            description: `Your payment of ₹${Number(payment.amount).toLocaleString()} has been verified.`,
+            relatedEntityType: 'booking',
+            relatedEntityId: String(booking._id),
+            actionUrl: '/dashboard?tab=bookings',
+          });
+        } catch {}
+      }
+      return NextResponse.json({ success: true });
     }
 
-    const formattedItems = items.map((item: any) => {
-      const quantity = Number(item.quantity || 0);
-      const unitPrice = Number(item.unitPrice || 0);
+    if (action === 'reject') {
+      await Payment.findByIdAndUpdate(targetId, {
+        status: 'failed',
+        notes: rejectionReason || 'Rejected by admin',
+      });
+      const booking = payment.bookingId as any;
+      if (booking?.userId) {
+        try {
+          await createNotification(String(booking.userId), {
+            type: 'payment_rejected',
+            title: 'Payment Rejected',
+            description: `Your payment of ₹${Number(payment.amount).toLocaleString()} was rejected. Reason: ${rejectionReason || 'See admin notes'}`,
+            relatedEntityType: 'booking',
+            relatedEntityId: String(booking._id),
+            actionUrl: '/dashboard?tab=bookings',
+          });
+        } catch {}
+      }
+      return NextResponse.json({ success: true });
+    }
 
-      return {
-        description: item.description || item.itemName || '',
-        quantity,
-        unitPrice,
-        total: quantity * unitPrice,
-      };
-    });
-
-    const subtotal = formattedItems.reduce(
-      (sum: number, item: any) => sum + item.total,
-      0
-    );
-
-    const tax = subtotal * (Number(taxRate) / 100);
-
-    const total =
-      subtotal +
-      tax -
-      Number(discountAmount || 0);
-
-    await Invoice.findByIdAndUpdate(invoiceId, {
-      status,
-      dueDate,
-      notes,
-      items: formattedItems,
-      subtotal,
-      tax,
-      discount: Number(discountAmount || 0),
-      total,
-    });
-
-    return NextResponse.json({
-      success: true,
-    });
+    // Generic update
+    const update: Record<string, unknown> = {};
+    if (status) update.status = status;
+    if (notes !== undefined) update.notes = notes;
+    await Payment.findByIdAndUpdate(targetId, update);
+    return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('[INVOICE_UPDATE_ERROR]', error);
-
-    return NextResponse.json(
-      { error: 'Failed to update invoice' },
-      { status: 500 }
-    );
+    console.error('[PAYMENTS_ADMIN_PUT]', error);
+    return NextResponse.json({ error: 'Failed to update payment' }, { status: 500 });
   }
 }
 
