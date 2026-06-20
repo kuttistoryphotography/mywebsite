@@ -379,7 +379,12 @@ export default function PaymentsSection() {
               <span className="text-sm font-medium">Download PDF</span>
             </button>
             {(selectedInvoice.status === "sent" || selectedInvoice.status === "partially_paid") && (
-              <button className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-medium transition-colors">
+              <button
+                onClick={() => {
+                  console.log("Pay invoice", selectedInvoice);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-medium transition-colors"
+              >
                 <CreditCard className="w-4 h-4" />
                 <span className="text-sm">Pay Now</span>
               </button>
@@ -573,7 +578,12 @@ export default function PaymentsSection() {
             </div>
           </div>
           {totalPending > 0 && (
-            <button className="w-full mt-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-bold rounded-xl transition-colors">
+            <button
+              onClick={() => {
+                setActiveTab("invoices");
+              }}
+              className="w-full mt-4 py-2 bg-amber-500 hover:bg-amber-600 text-black text-sm font-bold rounded-xl transition-colors"
+            >
               Pay Now
             </button>
           )}
