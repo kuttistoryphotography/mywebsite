@@ -137,9 +137,9 @@ export default function PaymentModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] overflow-y-auto">
-      <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-[380px] max-h-[80vh] overflow-y-auto shadow-2xl">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-[180px] max-h-[70vh] overflow-y-auto shadow-2xl">
         {/* Header */}
         <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
           <div>
@@ -304,6 +304,5 @@ export default function PaymentModal({
         </div>
       </div>
     </div>
-  </div>
   );
 }
