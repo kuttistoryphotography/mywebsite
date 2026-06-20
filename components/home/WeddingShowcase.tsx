@@ -112,14 +112,33 @@ export default function WeddingShowcase() {
         </div>
 
         {/* CAROUSEL */}
-        <div style={{ position: "relative", zIndex: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: "3rem", height: "600px" }}>
+        <div
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          style={{
+            position: "relative",
+            zIndex: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "3rem",
+            height: "600px"
+          }}
+        >
           {slides.map((slide, idx) => {
             const isActive = idx === activeIndex;
             const isPrev   = idx === (activeIndex - 1 + slides.length) % slides.length;
             const isNext   = idx === (activeIndex + 1) % slides.length;
             if (!isActive && !isPrev && !isNext) return null;
             return (
-              <div key={idx} onClick={() => setActiveIndex(idx)} style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "all 1s", transform: isActive ? "scale(1)" : "scale(0.9)", opacity: isActive ? 1 : 0.3, filter: isActive ? "none" : "blur(1px) grayscale(1)", zIndex: isActive ? 30 : 10 }}>
+              <div
+              key={idx}
+              onClick={() => setActiveIndex(idx)}
+              onMouseEnter={() => {
+                setIsPaused(true);
+                setActiveIndex(idx);
+              }}
+              style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "all 1s", transform: isActive ? "scale(1.05) translateY(-12px)" : "scale(0.9)", opacity: isActive ? 1 : 0.3, filter: isActive ? "none" : "blur(1px) grayscale(1)", zIndex: isActive ? 30 : 10, boxShadow: isActive ? "0 0 60px rgba(255,255,255,0.12)" : "none" }}>
                 {[slide.image1, slide.image2].map((img, i) => (
                   <div
                     key={i}
