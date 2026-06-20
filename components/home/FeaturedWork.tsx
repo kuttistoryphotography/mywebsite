@@ -59,18 +59,19 @@ export default function FeaturedWork() {
 
   return (
     <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-32 overflow-hidden">
-      <div ref={whiteRevealRef} className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent" />
-      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,0.18),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(220,38,38,0.12),transparent_40%)]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
-            <div ref={bigCardRef} className="relative h-[600px] rounded-[2.5rem] overflow-hidden">
+            <div
+              ref={bigCardRef}
+              className="relative h-[600px] rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(139,92,246,0.15)]"
+            >
               <DriveMedia
                 url={images.featured_big}
                 mediaType="image"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover ken-burns"
                 alt="Featured Work"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -79,7 +80,7 @@ export default function FeaturedWork() {
               <DriveMedia
                 url={images.featured_small}
                 mediaType="image"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover floating-image"
                 alt="Featured Detail"
               />
             </div>
@@ -95,7 +96,7 @@ export default function FeaturedWork() {
             </p>
             <div className="flex gap-6 flex-wrap">
               <a href="/works">
-                <button className="bg-white text-black px-10 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:scale-105">
+                <button className="bg-white text-black px-10 py-4 rounded-full font-semibold transition-all duration-500 hover:scale-110 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
                   View Portfolio
                 </button>
               </a>

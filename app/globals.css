@@ -121,3 +121,116 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* =========================
+   KUTTI STORY PREMIUM EFFECTS
+========================= */
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.ken-burns {
+  animation: kenBurns 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatingImage {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.floating-image {
+  animation: floatingImage 5s ease-in-out infinite;
+}
+
+/* Luxury image shine effect */
+
+.image-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-shine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.25),
+    transparent
+  );
+  transition: all 0.8s ease;
+  z-index: 10;
+}
+
+.image-shine:hover::before {
+  left: 150%;
+}
+
+/* Luxury card glow */
+
+.premium-card {
+  box-shadow:
+    0 0 40px rgba(255,255,255,0.03),
+    0 0 80px rgba(139,92,246,0.08);
+}
+
+/* Purple Aurora Background */
+
+.aurora-bg {
+  position: relative;
+}
+
+.aurora-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(124,58,237,0.15), transparent 40%),
+    radial-gradient(circle at 80% 60%, rgba(220,38,38,0.12), transparent 40%);
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+/* Premium Featured Work Effects */
+
+@keyframes kenBurns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.ken-burns {
+  animation: kenBurns 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatingImage {
+  0%,100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.floating-image {
+  animation: floatingImage 5s ease-in-out infinite;
+}
