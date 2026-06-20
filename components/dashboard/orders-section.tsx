@@ -619,15 +619,17 @@ export default function OrdersSection() {
           <p className="text-red-500">
             Modal State: {String(isPaymentModalOpen)}
           </p>
-          
-          <PaymentModal
-            isOpen={isPaymentModalOpen}
-            onClose={() => setIsPaymentModalOpen(false)}
-            bookingId={selectedOrder.id}
-            amount={pendingAmount}
-            bookingNumber={selectedOrder.orderNumber}
-            onPaymentSuccess={() => fetchOrderPayments(selectedOrder.id)}
-          />
+
+          {isPaymentModalOpen && (
+            <PaymentModal
+              isOpen={true}
+              onClose={() => setIsPaymentModalOpen(false)}
+              bookingId={selectedOrder.id}
+              amount={pendingAmount}
+              bookingNumber={selectedOrder.orderNumber}
+              onPaymentSuccess={() => fetchOrderPayments(selectedOrder.id)}
+            />
+          )}
         </>
       )}
     </div>

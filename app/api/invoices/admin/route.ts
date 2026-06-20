@@ -43,17 +43,42 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       invoices: invoices.map((inv: any) => ({
         id: String(inv._id),
-        invoiceNumber: inv.invoiceNumber,
-        clientName: `${inv.userId?.firstName || ''} ${inv.userId?.lastName || ''}`.trim(),
-        bookingNumber: inv.bookingId?.bookingNumber || '',
-        eventType: inv.bookingId?.eventType || '',
-        total: inv.total || 0,
-        status: inv.status || 'draft',
-        dueDate: inv.dueDate,
-        createdAt: inv.createdAt,
-        pdfUrl: inv.pdfUrl || null,
+
+        invoice_number: inv.invoiceNumber,
+
+        booking_id: String(inv.bookingId?._id || inv.bookingId),
+        user_id: String(inv.userId?._id || inv.userId),
+
+        booking_number: inv.bookingId?.bookingNumber || "",
+        event_type: inv.bookingId?.eventType || "",
+
+        client_name: `${inv.userId?.firstName || ""} ${inv.userId?.lastName || ""}`.trim(),
+        client_email: inv.userId?.email || "",
+
+        status: inv.status || "draft",
+
+        issue_date: inv.createdAt,
+        due_date: inv.dueDate,
+
+        subtotal: inv.subtotal || 0,
+        tax_rate: inv.tax || 0,
+        tax_amount: inv.tax || 0,
+        discount_amount: inv.discount || 0,
+
+        total_amount: inv.total || 0,
+
+        amount_paid: inv.bookingId?.totalPaid || 0,
+        amount_due: Math.max(
+          (inv.total || 0) - (inv.bookingId?.totalPaid || 0),
+          0
+        ),
+
+        notes: inv.notes || "",
+
+        items: inv.items || []
       }))
     });
+
   } catch (error) {
     console.error('[PAYMENTS_ADMIN_GET]', error);
     return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 });
