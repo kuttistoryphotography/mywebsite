@@ -138,11 +138,11 @@ export default function PaymentModal({
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-[500px] max-h-[85vh] overflow-y-auto shadow-2xl">
+      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-[450px] max-h-[80vh] overflow-y-auto shadow-2xl">
         {/* Header */}
         <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold">Make Payment</h2>
+            <h2 className="text-lg font-bold">Make Payment</h2>
             <p className="text-sm text-zinc-500">Booking #{bookingNumber}</p>
           </div>
           <button
@@ -153,11 +153,11 @@ export default function PaymentModal({
           </button>
         </div>
 
-        <div className="p-5 md:p-6 space-y-5">
+        <div className="p-4 md:p-5 space-y-4">
           {/* Amount */}
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
             <p className="text-sm text-zinc-400 mb-2 text-center">Pending Amount</p>
-            <p className="text-2xl font-bold text-amber-400 text-center">
+            <p className="text-xl font-bold text-amber-400 text-center">
               ₹{amount.toLocaleString("en-IN")}
             </p>
             
@@ -218,7 +218,7 @@ export default function PaymentModal({
               <img
               src={qrCodeUrl}
               alt="Payment QR Code"
-              className="w-full max-w-[260px] h-auto object-contain"
+              className="w-full max-w-[220px] h-auto object-contain"
             />
             ) : (
               <div className="w-64 h-64 flex items-center justify-center">
