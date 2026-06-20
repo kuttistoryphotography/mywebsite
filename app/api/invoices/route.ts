@@ -48,6 +48,7 @@ export async function GET(request: NextRequest) {
         return {
           id:             String(inv._id),
           invoice_number: inv.invoiceNumber,
+          pdfUrl: inv.pdfUrl || null,
           booking_id:     booking ? String(booking._id) : String(inv.bookingId),
           user_id:        user    ? String(user._id)    : String(inv.userId),
           booking_number: booking?.bookingNumber || '',

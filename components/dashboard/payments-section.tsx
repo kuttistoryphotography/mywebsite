@@ -52,6 +52,7 @@ interface InvoiceLineItem {
 interface Invoice {
   id: string;
   invoiceNumber: string;
+  pdfUrl?: string | null;
   orderId: string;
   orderNumber: string;
   serviceName: string;
@@ -155,6 +156,7 @@ export default function PaymentsSection() {
 
             return {
               id: String(invoice._id || invoice.id || ''),
+              pdfUrl: invoice.pdfUrl || null,
               invoiceNumber:
                 invoice.invoiceNumber ||
                 invoice.invoice_number ||
