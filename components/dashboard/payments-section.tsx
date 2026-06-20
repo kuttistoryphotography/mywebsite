@@ -346,6 +346,34 @@ export default function PaymentsSection() {
     }).format(amount);
   };
 
+  const handleDownloadPDF = async () => {
+  try {
+    const response = await fetch(
+      `/api/invoices/${selectedInvoice?.id}/pdf`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download PDF");
+    }
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${selectedInvoice?.invoiceNumber}.pdf`;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("PDF Download Error:", error);
+  }
+};
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-IN", {
       day: "numeric",
@@ -377,7 +405,10 @@ export default function PaymentsSection() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors">
+            <button
+              onClick={handleDownloadPDF}
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors"
+            >
               <Download className="w-4 h-4" />
               <span className="text-sm font-medium">Download PDF</span>
             </button>
