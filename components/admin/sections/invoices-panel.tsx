@@ -202,13 +202,13 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
       discountAmount: invoice.discount_amount ?? 0,
       notes: invoice.notes ?? "",
       items: (invoice.items ?? []).length > 0
-        ? (invoice.items ?? []).map((item) => ({
-            itemName: item.item_name,
-            description: item.description ?? "",
-            quantity: item.quantity,
-            unitPrice: item.unit_price,
-          }))
-        : [createEmptyItem()],
+      ? (invoice.items ?? []).map((item: any) => ({
+          itemName: item.item_name || item.description || "",
+          description: item.description || "",
+          quantity: Number(item.quantity || 1),
+          unitPrice: Number(item.unitPrice ?? item.unit_price ?? 0),
+        }))
+      : [createEmptyItem()],
     });
     setShowEditModal(true);
     // close details panel if open
