@@ -509,7 +509,13 @@ export default function OrdersSection() {
               </div>
             </div>
             {pendingAmount > 0 && !isSelectedOrderCancelled && (
-              <button onClick={() => { console.log("Pay Now Clicked"); setIsPaymentModalOpen(true); }} className="w-full mt-4 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-semibold transition-colors">
+              <button 
+               onClick={() => {
+                console.log("Pay Now Clicked");
+                console.log("Opening Modal");
+                setIsPaymentModalOpen(true);
+              }}
+              className="w-full mt-4 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-semibold transition-colors">
                 Pay Now
               </button>
             )}
@@ -610,6 +616,10 @@ export default function OrdersSection() {
             orderNumber={selectedOrder.orderNumber}
             orderId={selectedOrder.id}
           />
+          <p className="text-red-500">
+            Modal State: {String(isPaymentModalOpen)}
+          </p>
+          
           <PaymentModal
             isOpen={isPaymentModalOpen}
             onClose={() => setIsPaymentModalOpen(false)}

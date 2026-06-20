@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+const [showPaymentModal, setShowPaymentModal] = useState(false);
 import {
   CreditCard,
   Download,
@@ -380,9 +381,7 @@ export default function PaymentsSection() {
             </button>
             {(selectedInvoice.status === "sent" || selectedInvoice.status === "partially_paid") && (
               <button
-                onClick={() => {
-                  console.log("Pay invoice", selectedInvoice);
-                }}
+                onClick={() => setShowPaymentModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-medium transition-colors"
               >
                 <CreditCard className="w-4 h-4" />
