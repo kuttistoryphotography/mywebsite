@@ -348,33 +348,17 @@ export default function PaymentsSection() {
     }).format(amount);
   };
 
-  const handleDownloadPDF = async () => {
-  try {
-    const response = await fetch(
-      `/api/invoices/${selectedInvoice?.id}/pdf`
-    );
+  const handleDownloadPDF = () => {
+    console.log("PDF URL:", selectedInvoice?.pdfUrl);
 
-    if (!response.ok) {
-      throw new Error("Failed to download PDF");
+    if (!selectedInvoice?.pdfUrl) {
+      alert("PDF not uploaded yet");
+      return;
     }
 
-    const blob = await response.blob();
+    window.open(selectedInvoice.pdfUrl, "_blank");
+  };
 
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${selectedInvoice?.invoiceNumber}.pdf`;
-
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("PDF Download Error:", error);
-  }
-};
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("en-IN", {
