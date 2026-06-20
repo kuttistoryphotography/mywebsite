@@ -35,52 +35,25 @@ export async function GET(request: NextRequest) {
       filter.status = { $in: statusMap[statusParam] };
     }
 
-    const payments = await Payment.find(filter)
-      .populate('bookingId', 'bookingNumber eventType serviceName')
-      .populate('userId', 'firstName lastName email phone')
-      .sort({ createdAt: -1 });
+    const invoices = await Invoice.find({})
+    .populate('userId', 'firstName lastName email')
+    .populate('bookingId', 'bookingNumber eventType')
+    .sort({ createdAt: -1 });
 
-    // Map model fields → component expected fields
-    const mapped = payments.map((p: any) => {
-      const booking = p.bookingId && typeof p.bookingId === 'object' ? p.bookingId : null;
-      const user    = p.userId    && typeof p.userId    === 'object' ? p.userId    : null;
-
-      // Map internal status → component status values
-      const statusRemap: Record<string, string> = {
-        completed: 'verified',
-        pending:   'verifying',
-        failed:    'rejected',
-        refunded:  'rejected',
-      };
-
-      return {
-        id:              String(p._id),
-        booking_id:      booking ? String(booking._id) : String(p.bookingId),
-        user_id:         user    ? String(user._id)    : String(p.userId),
-        amount:          p.amount,
-        upi_id:          p.paymentMethod === 'upi' ? (p.transactionId || '') : '',
-        utr_number:      p.transactionId || '',
-        payment_status:  statusRemap[p.status] || p.status,
-        payment_type:    p.paymentMethod || 'cash',
-        payment_date:    p.createdAt,
-        verified_by:     null,
-        verified_at:     p.status === 'completed' ? p.updatedAt : null,
-        rejection_reason: p.notes && p.status === 'failed' ? p.notes : null,
-        notes:           p.notes || '',
-        created_at:      p.createdAt,
-        updated_at:      p.updatedAt,
-        booking_number:  booking?.bookingNumber || '',
-        event_type:      booking?.eventType || booking?.serviceName || '',
-        first_name:      user?.firstName || '',
-        last_name:       user?.lastName  || '',
-        email:           user?.email     || '',
-        phone:           user?.phone     || '',
-        verified_by_name: '',
-        verified_by_lastname: '',
-      };
+    return NextResponse.json({
+      invoices: invoices.map((inv: any) => ({
+        id: String(inv._id),
+        invoiceNumber: inv.invoiceNumber,
+        clientName: `${inv.userId?.firstName || ''} ${inv.userId?.lastName || ''}`.trim(),
+        bookingNumber: inv.bookingId?.bookingNumber || '',
+        eventType: inv.bookingId?.eventType || '',
+        total: inv.total || 0,
+        status: inv.status || 'draft',
+        dueDate: inv.dueDate,
+        createdAt: inv.createdAt,
+        pdfUrl: inv.pdfUrl || null,
+      }))
     });
-
-    return NextResponse.json({ payments: mapped });
   } catch (error) {
     console.error('[PAYMENTS_ADMIN_GET]', error);
     return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 });
