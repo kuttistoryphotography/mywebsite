@@ -189,24 +189,26 @@ export default function Header() {
       className={`fixed top-0 left-0 w-full z-[999] transition-colors duration-500 ${
         isScrolled ? "bg-black/60 backdrop-blur-md border-b border-white/10" : "bg-transparent"
       }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 md:px-12 h-[70px] md:h-[80px] flex items-center justify-between">
+    ><div className="max-w-7xl mx-auto px-4 md:px-12 h-[70px] md:h-[80px] flex items-center gap-12">
+      
         
         {/* LOGO: Matching your "Moments" Hero Typography */}
+        {/* LOGO */}
         <div className="flex items-center group cursor-pointer">
-        <Link href="/" className="flex items-center">
-          <Image
-            src={logo}
-            alt="Kutti Story Photography"
-            width={140}
-            height={50}
-            className="h-10 md:h-12 w-auto object-contain"
-            priority
-          />
-        </Link>
+          <Link href="/" className="flex items-center">
+            <Image
+              src={logo}
+              alt="Kutti Story Photography"
+              width={140}
+              height={50}
+              className="h-10 md:h-12 w-auto object-contain"
+              priority
+            />
+          </Link>
+        </div>
 
         {/* NAV: Minimalist High-End Tracking */}
-        <nav className="hidden md:flex items-center gap-10">
+        <nav className="hidden md:flex items-center gap-8 flex-1">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
