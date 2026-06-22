@@ -143,7 +143,7 @@ export default function Hero() {
             className="w-full h-full object-cover"
             alt="Background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-transparent" />
         </div>
       )}
 
