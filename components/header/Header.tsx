@@ -194,21 +194,14 @@ export default function Header() {
         
         {/* LOGO: Matching your "Moments" Hero Typography */}
         <div className="flex items-center group cursor-pointer">
+        <Link href="/" className="flex items-center">
           <Image
             src={logo}
-            alt="Kutti Story"
-            width={100}
-            height={40}
-            className="h-10 md:h-14 w-auto object-contain"
-          />
-        </div>
-        <Link href="/">
-          <Image
-            src={logo}
-            alt="Kutti Story"
-            width={120}
-            height={40}
+            alt="Kutti Story Photography"
+            width={140}
+            height={50}
             className="h-10 md:h-12 w-auto object-contain"
+            priority
           />
         </Link>
 
