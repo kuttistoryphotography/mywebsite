@@ -193,12 +193,12 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 md:px-12 h-[70px] md:h-[80px] flex items-center justify-between">
         
         {/* LOGO: Matching your "Moments" Hero Typography */}
-        <div className="flex items-center gap-3 group cursor-pointer">
+        <div className="flex items-center group cursor-pointer">
           <Image
             src={logo}
             alt="Kutti Story"
-            width={160}
-            height={60}
+            width={100}
+            height={400}
             className="h-10 md:h-14 w-auto object-contain"
           />
         </div>
