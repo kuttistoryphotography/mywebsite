@@ -137,14 +137,14 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
-        <div className="absolute inset-0 z-0 opacity-70">
+        <div className="absolute inset-0 z-0 opacity-60">
           <DriveMedia
             url={hero.backgroundImage}
             mediaType="image"
             className="w-full h-full object-cover"
             alt="Background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-transparent" />
         </div>
       )}
 
@@ -152,7 +152,7 @@ export default function Hero() {
   className="
   relative z-10
   w-full
-  max-w-[2400px]
+  max-w-[2200px]
   mx-auto
   px-5
   sm:px-8
@@ -234,7 +234,7 @@ export default function Hero() {
     lg:text-[48px]
     xl:text-[54px]
     2xl:text-[72px]
-    3xl:text-[90px]
+    min-[2500px]:text-[90px]
     font-light
     leading-[1.1]
     tracking-tight
@@ -338,6 +338,9 @@ export default function Hero() {
 
               xl:h-[700px]
               xl:w-[580px]
+
+              2xl:h-[850px]
+              2xl:w-[700px]
 
               min-[2500px]:h-[1000px]
               min-[2500px]:w-[850px]
