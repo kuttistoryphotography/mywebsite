@@ -52,7 +52,7 @@ interface HomeImageSlot {
 
 export default function HomepageSection() {
   const [activeTab, setActiveTab] = useState<
-   "hero" | "slides" | "stories" | "images" | "about"
+     "hero" | "slides" | "stories" | "images" | "about" | "logo"
   >("hero");
 
   const [hero, setHero] = useState<HeroData>({
@@ -80,6 +80,7 @@ export default function HomepageSection() {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
+  const [siteSettings, setSiteSettings] = useState({ logo: "", });
   const [aboutContent, setAboutContent] = useState({
   title: "About Kutti Story",
   heading: "We Make Only Authentic Visual Experiences",
@@ -126,6 +127,9 @@ export default function HomepageSection() {
                 mediaType: img.mediaType || "image",
               }))
             );
+          }
+          if (data.settings.siteSettings) {
+            setSiteSettings(data.settings.siteSettings);
           }
 
           if (data.settings.homeImages) {
@@ -196,6 +200,7 @@ export default function HomepageSection() {
     { id: "stories", label: "Stories Strip" },
     { id: "images", label: "Page Images" },
     { id: "about", label: "About Section" },
+    { id: "logo", label: "Website Logo" },
   ];
 
   return (
@@ -601,6 +606,7 @@ export default function HomepageSection() {
       )}
 
       {activeTab === "about" && (
+        
         <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
           <h3 className="text-white font-semibold text-lg">
             About Section
@@ -677,6 +683,34 @@ export default function HomepageSection() {
             className="px-6 py-3 bg-amber-500 text-black rounded-xl font-semibold"
           >
             Save About Section
+          </button>
+        </div>
+      )}
+      {activeTab === "logo" && (
+        <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
+          <h3 className="text-white font-semibold text-lg">
+            Website Logo
+          </h3>
+
+          <MediaField
+            label="Website Logo"
+            url={siteSettings.logo}
+            mediaType="image"
+            onChange={(url) =>
+              setSiteSettings({
+                ...siteSettings,
+                logo: url,
+              })
+            }
+            allowedTypes={["image"]}
+            context="homepage"
+          />
+
+          <button
+            onClick={() => save("siteSettings", siteSettings)}
+            className="px-6 py-3 bg-amber-500 text-black rounded-xl font-semibold"
+          >
+            Save Logo
           </button>
         </div>
       )}
