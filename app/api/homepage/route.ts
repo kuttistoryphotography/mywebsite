@@ -43,6 +43,11 @@ const DEFAULT_HOME_IMAGES = [
   { key: 'featured_small', label: 'Featured Work Small Image', url: '/03.webp' },
   { key: 'philosophy_bg', label: 'Philosophy Section Background', url: '/04.webp' },
 ];
+
+const DEFAULT_SITE_SETTINGS = {
+  logo: "/placeholder-logo.png",
+};
+
 const DEFAULT_ABOUT_CONTENT = {
   title: 'About Kutti Story',
   heading: 'We Make Only Authentic Visual Experiences',
@@ -54,9 +59,10 @@ export async function GET() {
     await connectDB();
     let settings = await HomepageSettings.findOne();
 
-    if (!settings) {
+if (!settings) {
       settings = await HomepageSettings.create({
         hero: DEFAULT_HERO,
+        siteSettings: DEFAULT_SITE_SETTINGS,
         homeImages: DEFAULT_HOME_IMAGES,
         showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
         storyImages: DEFAULT_STORY_IMAGES,
@@ -103,13 +109,11 @@ export async function PUT(request: NextRequest) {
       settings.storyImages = data;
     } else if (section === 'aboutContent') {
       settings.aboutContent = data;
+    }else if (section === 'siteSettings') {
+      settings.siteSettings = data;
     }
 
-      if (section === 'aboutContent') {
-      settings.markModified('aboutContent');
-    } else {
       settings.markModified(section);
-    }
     await settings.save();
 
     return NextResponse.json({ success: true, settings });
