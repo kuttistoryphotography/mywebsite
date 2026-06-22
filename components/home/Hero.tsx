@@ -124,13 +124,14 @@ export default function Hero() {
   className="
     relative
     min-h-screen
-    min-[2500px]:min-h-[1200px]
-    overflow-hidden
+    overflow-x-hidden
     bg-[#0a0a0a]
     text-white
     pt-[100px]
     md:pt-[120px]
     lg:pt-[140px]
+    pb-16
+    lg:pb-24
   "
 >
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
@@ -167,7 +168,7 @@ export default function Hero() {
   gap-10
   lg:gap-20
 
-  lg:items-center
+  lg:items-stretch
   items-start
 
   pt-0
@@ -314,7 +315,7 @@ export default function Hero() {
          lg:flex
          items-center
          justify-center
-         h-[850px]
+         min-h-[850px]
         "
         >
           
