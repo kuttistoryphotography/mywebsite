@@ -261,7 +261,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {shown.map(({ type, data, key }) =>
           type === "album" ? (
             <AlbumCard key={key} album={data}
@@ -351,8 +351,8 @@ export default function DynamicPortfolioShowcase() {
     : (filteredGrouped[activeCategory]?.albums.length || 0) + (filteredGrouped[activeCategory]?.portfolio.length || 0) > 0;
 
   return (
-    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-14">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20">
+      <div className="max-w-screen-2xl mx-auto">
         {/* Header */}
         <div className="mb-14">
           <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-3">Portfolio</p>

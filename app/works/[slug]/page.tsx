@@ -66,7 +66,7 @@ export default async function PortfolioPage(
   }
 
   return (
-    <main className="max-w-6xl mx-auto py-20 px-6">
+    <main className="max-w-screen-2xl mx-auto py-20 px-6">
 
       <h1 className="text-4xl font-bold mb-6">
         {item.title}
