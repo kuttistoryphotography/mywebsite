@@ -198,10 +198,19 @@ export default function Header() {
             src={logo}
             alt="Kutti Story"
             width={100}
-            height={400}
+            height={40}
             className="h-10 md:h-14 w-auto object-contain"
           />
         </div>
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="Kutti Story"
+            width={120}
+            height={40}
+            className="h-10 md:h-12 w-auto object-contain"
+          />
+        </Link>
 
         {/* NAV: Minimalist High-End Tracking */}
         <nav className="hidden md:flex items-center gap-10">
