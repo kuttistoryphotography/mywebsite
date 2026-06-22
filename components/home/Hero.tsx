@@ -136,7 +136,7 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
-        <div className="absolute inset-0 z-0 opacity-40">
+        <div className="absolute inset-0 z-0 opacity-70">
           <DriveMedia
             url={hero.backgroundImage}
             mediaType="image"
@@ -237,6 +237,7 @@ export default function Hero() {
     leading-[1.1]
     tracking-tight
     max-w-[850px]
+    2xl:max-w-[1000px]
   "
 >
   <MagicText text={hero.heading} />
