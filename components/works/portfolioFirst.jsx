@@ -71,18 +71,18 @@ const Portfolio = () => {
   const resetMagnetic = (btn) => gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.3)" });
 
   return (
-    <section ref={containerRef} className="bg-black py-12 md:py-20 px-6 md:px-16 text-white min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-black py-12 md:py-20 px-6 md:px-10 xl:px-16 2xl:px-20 text-white min-h-screen">
+      <div className="max-w-screen-2xl mx-auto">
         <div className="mb-10">
           <h2 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
             {headerText.heading.split("magic").map((part, i, arr) => (
               <span key={i}>{part}{i < arr.length - 1 && <span className="text-orange-500">magic</span>}</span>
             ))}
           </h2>
-          <p className="text-zinc-400 text-lg max-w-lg">{headerText.subheading}</p>
+          <p className="text-zinc-400 text-lg max-w-3xl">{headerText.subheading}</p>
         </div>
 
-        <div className="cta-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+        <div className="cta-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-20">
           {services.map((service) => (
             <div key={service.id} className="cta-card group relative h-[500px] rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900">
               <Image src={service.image} alt={service.title} fill className="object-cover opacity-60 group-hover:opacity-80 transition-all duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
