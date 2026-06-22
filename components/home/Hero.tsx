@@ -124,6 +124,7 @@ export default function Hero() {
   className="
     relative
     min-h-screen
+    min-[2500px]:min-h-[1200px]
     overflow-hidden
     bg-[#0a0a0a]
     text-white
@@ -151,7 +152,7 @@ export default function Hero() {
   className="
   relative z-10
   w-full
-  max-w-screen-2xl
+  max-w-[2400px]
   mx-auto
   px-5
   sm:px-8
@@ -233,6 +234,7 @@ export default function Hero() {
     lg:text-[48px]
     xl:text-[54px]
     2xl:text-[72px]
+    3xl:text-[90px]
     font-light
     leading-[1.1]
     tracking-tight
@@ -252,6 +254,8 @@ export default function Hero() {
     max-w-2xl
     text-base
     md:text-lg
+    2xl:text-xl
+    min-[2500px]:text-2xl
     leading-relaxed
   "
 >{hero.paragraph}</p>
@@ -275,7 +279,7 @@ export default function Hero() {
             </a>
           </div>
 
-          <div className="animate-fade grid grid-cols-3 gap-3 sm:gap-6 p-5 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl w-full max-w-xl">
+          <div className="animate-fade grid grid-cols-3 gap-3 sm:gap-6 p-5 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl w-full max-w-xl 2xl:max-w-2xl">
             {[
               { value: hero.statsYears, label: "Years" },
               { value: hero.statsStories, label: "Stories" },
@@ -335,8 +339,8 @@ export default function Hero() {
               xl:h-[700px]
               xl:w-[580px]
 
-              2xl:h-[850px]
-              2xl:w-[700px]
+              min-[2500px]:h-[1000px]
+              min-[2500px]:w-[850px]
 
               rounded-[45px]
               overflow-hidden
