@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import {
   User,
   ShoppingBag,
@@ -52,6 +53,7 @@ export default function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [logo, setLogo] = useState("/placeholder-logo.png");
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const router = useRouter();
 
@@ -94,6 +96,14 @@ export default function Header() {
     };
 
     fetchAuth();
+    fetch("/api/homepage")
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.settings?.siteSettings?.logo) {
+      setLogo(data.settings.siteSettings.logo);
+    }
+  })
+  .catch(() => {});
     window.addEventListener('auth:changed', fetchAuth as EventListener);
 
     const header = headerRef.current;
@@ -184,13 +194,13 @@ export default function Header() {
         
         {/* LOGO: Matching your "Moments" Hero Typography */}
         <div className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/20 flex items-center justify-center bg-white text-black font-bold text-sm md:text-lg">
-            K
-          </div>
-          <div className="hidden sm:flex flex-col leading-none">
-            <span className="text-white font-light tracking-[0.2em] text-[10px] uppercase opacity-70">Photography</span>
-            <span className="text-white font-serif italic text-xl tracking-tight">Kutti Story</span>
-          </div>
+          <Image
+            src={logo}
+            alt="Kutti Story"
+            width={160}
+            height={60}
+            className="h-10 md:h-14 w-auto object-contain"
+          />
         </div>
 
         {/* NAV: Minimalist High-End Tracking */}
