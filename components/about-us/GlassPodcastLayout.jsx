@@ -62,15 +62,33 @@ export default function PhotographyAboutSection() {
     const ctx = gsap.context(() => {
       gsap.from('.animate-card', { y: 50, opacity: 0, duration: 1.2, stagger: 0.1, ease: 'power4.out' })
 
-      const silentStories = document.querySelector('.silent-stories')
-      if (silentStories) {
-        silentStories.addEventListener('mouseenter', () => {
-          gsap.to(silentStories, { color: '#ef4444', textShadow: '0px 0px 15px rgba(239,68,68,0.4)', duration: 0.5, ease: 'power2.out' })
-        })
-        silentStories.addEventListener('mouseleave', () => {
-          gsap.to(silentStories, { color: '#444444', textShadow: '0px 0px 0px rgba(0,0,0,0)', duration: 0.5, ease: 'power2.inOut' })
-        })
-      }
+      const silentStories = document.querySelector('.silent-stories');
+
+      if (!silentStories) return;
+
+      const handleEnter = () => {
+        gsap.to(silentStories, {
+          color: '#ef4444',
+          textShadow: '0px 0px 15px rgba(239,68,68,0.4)',
+          duration: 0.5,
+        });
+      };
+
+      const handleLeave = () => {
+        gsap.to(silentStories, {
+          color: '#444444',
+          textShadow: '0px 0px 0px rgba(0,0,0,0)',
+          duration: 0.5,
+        });
+      };
+
+      silentStories.addEventListener('mouseenter', handleEnter);
+      silentStories.addEventListener('mouseleave', handleLeave);
+
+      return () => {
+        silentStories.removeEventListener('mouseenter', handleEnter);
+        silentStories.removeEventListener('mouseleave', handleLeave);
+      };
     }, containerRef)
     return () => ctx.revert()
   }, [settings])

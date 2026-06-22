@@ -135,10 +135,10 @@ export default function Hero() {
   
   return (
     <section
-  ref={containerRef}
-  className="
+    ref={containerRef}
+    className="
     relative
-    overflow-x-hidden
+     overflow-hidden
     bg-[#0a0a0a]
     text-white
     pt-[100px]
@@ -323,13 +323,13 @@ export default function Hero() {
         </div> {/* LEFT COLUMN END */}
 
         <div
-         className="
-         relative
-         hidden
-         lg:flex
-         items-center
-         justify-center
-         min-h-[850px]
+        className="
+        relative
+        hidden
+        lg:flex
+        items-center
+        justify-center
+        h-full
         "
         >
           
@@ -354,11 +354,11 @@ export default function Hero() {
               xl:h-[700px]
               xl:w-[580px]
 
-              2xl:h-[850px]
-              2xl:w-[700px]
+              2xl:h-[800px]
+              2xl:w-[650px]
 
-              min-[2500px]:h-[1000px]
-              min-[2500px]:w-[850px]
+              min-[2500px]:h-[900px]
+              min-[2500px]:w-[750px]
 
               rounded-[45px]
               overflow-hidden
