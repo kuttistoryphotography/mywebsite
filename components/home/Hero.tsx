@@ -56,8 +56,23 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       gsap.from(".char", { opacity: 0, y: 40, rotateX: -90, stagger: 0.02, duration: 1, ease: "expo.out", delay: 0.3 });
       gsap.from(".animate-fade", { opacity: 0, y: 20, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1 });
-      gsap.from(imageWrapperRef.current, { scale: 0.8, opacity: 0, duration: 1.5, ease: "expo.out", delay: 0.5 });
-      gsap.to(imageWrapperRef.current, { y: 20, duration: 3, repeat: -1, yoyo: true, ease: "sine.inOut" });
+      if (imageWrapperRef.current) {
+      gsap.from(imageWrapperRef.current, {
+        scale: 0.8,
+        opacity: 0,
+        duration: 1.5,
+        ease: "expo.out",
+        delay: 0.5,
+      });
+
+      gsap.to(imageWrapperRef.current, {
+        y: 20,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }
 
 
       }, containerRef);
@@ -123,7 +138,6 @@ export default function Hero() {
   ref={containerRef}
   className="
     relative
-    min-h-screen
     overflow-x-hidden
     bg-[#0a0a0a]
     text-white
