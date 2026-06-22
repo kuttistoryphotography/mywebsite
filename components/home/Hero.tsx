@@ -138,7 +138,7 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
-        <div className="absolute inset-0 z-0 opacity-60">
+        <div className="absolute inset-0 z-0 opacity-40">
           <DriveMedia
             url={hero.backgroundImage}
             mediaType="image"
