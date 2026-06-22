@@ -131,23 +131,24 @@ export default function Hero() {
     </>
   );
 };
-
-  
-  return (
-    <section
-    ref={containerRef}
-    className="
-    relative
-     overflow-hidden
-    bg-[#0a0a0a]
-    text-white
-    pt-[100px]
-    md:pt-[120px]
-    lg:pt-[140px]
-    pb-16
-    lg:pb-24
-  "
->
+     return (
+      <section
+        ref={containerRef}
+        className="
+          relative
+          min-h-screen
+          overflow-hidden
+          bg-[#0a0a0a]
+          text-white
+          pt-[100px]
+          md:pt-[120px]
+          lg:pt-[140px]
+          pb-16
+          lg:pb-24
+          flex
+          items-center
+        "
+      >
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
 
@@ -167,12 +168,13 @@ export default function Hero() {
   className="
   relative z-10
   w-full
-  max-w-[2200px]
+  max-w-[2400px]
   mx-auto
   px-5
   sm:px-8
   lg:px-16
-  xl:px-12
+  xl:px-20
+  2xl:px-32
 
   grid
   grid-cols-1
@@ -253,8 +255,8 @@ export default function Hero() {
     font-light
     leading-[1.1]
     tracking-tight
-    max-w-[850px]
-    2xl:max-w-[1000px]
+    max-w-[1100px]
+    2xl:max-w-[1300px]
   "
 >
   <MagicText text={hero.heading} />
