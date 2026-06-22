@@ -36,11 +36,16 @@ export interface IStoryImage {
   alt: string;
 }
 
+export interface ISiteSettings {
+  logo: string;
+}
+
 export interface IHomepageSettings extends Document {
   hero: IHeroSection;
   homeImages: IHomeImageSlot[];
   showcaseSlides: IShowcaseSlide[];
   storyImages: IStoryImage[];
+  siteSettings: ISiteSettings;
 
   aboutContent: {
     title: string;
@@ -68,6 +73,12 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
       statsPassion: { type: String, default: '100%' },
       heroCardImage: { type: String, default: '' },
       awardText: { type: String, default: 'Award Winning Studio 2024' },
+    },
+    siteSettings: {
+      logo: {
+        type: String,
+        default: "/placeholder-logo.png",
+      },
     },
     homeImages: [
       {
