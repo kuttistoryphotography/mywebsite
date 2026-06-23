@@ -121,6 +121,7 @@ export async function POST(request: NextRequest) {
         relatedEntityId:   String(quote._id),
         actionUrl:         '/admin?tab=quotes',
       });
+      console.log("ADMIN NOTIFICATION CREATED");
     } catch {}
 
     try {

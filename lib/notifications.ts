@@ -33,6 +33,13 @@ export async function createBulkNotifications(userIds: string[], data: Notificat
 
 export async function getAdminUserIds(): Promise<string[]> {
   await connectDB();
-  const admins = await User.find({ role: 'admin', isActive: true }).select('_id');
+
+  const admins = await User.find({
+    role: 'admin',
+    isActive: true,
+  }).select('_id email role isActive');
+
+  console.log("ADMINS FOUND:", admins);
+
   return admins.map((a) => String(a._id));
 }
