@@ -234,7 +234,7 @@ export default function NotificationsSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total</p>
-          <p className="text-2xl font-bold">{notifications.length}</p>
+          <p className="text-2xl font-bold"> { notificationList.filter( (n) => n.type.includes("booking") || n.type.includes("quote") ).length } </p>
         </div>
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Unread</p>

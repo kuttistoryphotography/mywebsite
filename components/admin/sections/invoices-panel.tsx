@@ -600,6 +600,8 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
                           onClick={() => {
                             setSelectedInvoice(invoice);
                             setShowDetailsModal(true);
+                            setSelectedInvoice(invoice);
+
                           }}
                           className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                           title="View"
