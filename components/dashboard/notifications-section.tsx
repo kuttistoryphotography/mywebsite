@@ -29,9 +29,15 @@ export default function NotificationsSection() {
     try {
       setLoading(true);
       const query = filter === "unread" ? "&unreadOnly=true" : "";
-      const response = await fetch(`/api/notifications?limit=50&offset=0${query}`);
+      const response = await fetch(
+        `/api/notifications?limit=50&offset=0${query}`,
+        {
+          cache: "no-store",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
+        console.log("LOADED NOTIFICATIONS:", data.notifications);
         const mapped = (data.notifications || []).map((n: any) => ({
           id: n.id,
           type: n.type,
@@ -53,9 +59,13 @@ export default function NotificationsSection() {
     }
   };
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [filter]);
+      useEffect(() => {
+        fetchNotifications();
+
+        const interval = setInterval(fetchNotifications, 5000);
+
+        return () => clearInterval(interval);
+      }, [filter]);
 
   const handleMarkAsRead = async (notificationId: number) => {
     try {
@@ -235,14 +245,8 @@ export default function NotificationsSection() {
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total</p>
           <p className="text-2xl font-bold">
-{
-  notifications.filter(
-    (n) =>
-      n.type.includes("booking") ||
-      n.type.includes("quote")
-  ).length
-}
-</p>
+            {notifications.length}
+          </p>
         </div>
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Unread</p>
