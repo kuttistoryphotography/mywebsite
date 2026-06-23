@@ -33,56 +33,33 @@ export default function NotificationsSection() {
   const router = useRouter();
   const [notificationList, setNotificationList] = useState<Notification[]>([]);
   const [filter, setFilter] = useState("all");
+  const [showComposeModal, setShowComposeModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const fetchNotifications = async () => {
-  try {
-    setLoading(true);
-    setError(null);
 
-    const response = await fetch(
-      "/api/notifications?limit=100",
-      {
-        cache: "no-store",
+  // Fetch notifications from API
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/notifications?limit=100");
+        if (!response.ok) throw new Error("Failed to fetch notifications");
+        const data = await response.json();
+        setNotificationList(data.notifications || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load notifications");
+        console.error("Error fetching notifications:", err);
+      } finally {
+        setLoading(false);
       }
-    );
+    };
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch notifications");
-    }
-
-    const data = await response.json();
-
-    console.log(
-      "ADMIN NOTIFICATIONS FULL:",
-      JSON.stringify(data.notifications, null, 2)
-    );
-
-    setNotificationList(data.notifications || []);
-  } catch (err) {
-    setError(
-      err instanceof Error
-        ? err.message
-        : "Failed to load notifications"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
-useEffect(() => {
-  fetchNotifications();
-
-  const interval = setInterval(() => {
     fetchNotifications();
-  }, 5000);
+    // No polling — component remounts fresh each time the admin opens this tab.
+  }, []);
 
-  return () => clearInterval(interval);
-}, []);
-
-const unreadCount = notificationList.filter(
-  (n) => !n.is_read
-).length;
+  const unreadCount = notificationList.filter((n) => !n.is_read).length;
 
   const filteredNotifications = notificationList.filter((n) => {
     if (filter === "all") return true;
@@ -258,9 +235,7 @@ const unreadCount = notificationList.filter(
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-red-500">
-             NOTIFICATION 
-          </h1>
+          <h1 className="text-2xl font-bold">Notifications</h1>
           <p className="text-sm text-zinc-500 mt-1">
             System notifications from bookings, payments, and invoices
           </p>
@@ -305,14 +280,14 @@ const unreadCount = notificationList.filter(
         </div>
         <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-500/10 rounded-lg">
-              <MessageSquare className="w-4 h-4 text-purple-500" />
+            <div className="p-2 bg-emerald-500/10 rounded-lg">
+              <CreditCard className="w-4 h-4 text-emerald-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">
-                {notificationList.filter((n) => n.type.includes("quote")).length}
+                {notificationList.filter((n) => n.type.includes("payment") || n.type.includes("invoice")).length}
               </p>
-              <p className="text-xs text-zinc-500">Quotes</p>
+              <p className="text-xs text-zinc-500">Payment/Invoice</p>
             </div>
           </div>
         </div>
@@ -376,7 +351,8 @@ const unreadCount = notificationList.filter(
               key={notification.id}
               onClick={() => handleNotificationClick(notification)}
               className={cn(
-                "bg-zinc-900/50 rounded-2xl border p-5 transition-colors cursor-pointer hover:border-zinc-700",
+                "bg-zinc-900/50 rounded-2xl border p-5 transition-colors",
+                notification.action_url && "cursor-pointer hover:border-zinc-700",
                 !notification.is_read
                   ? "border-amber-500/30 bg-amber-500/5"
                   : "border-zinc-800"
