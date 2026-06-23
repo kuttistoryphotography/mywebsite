@@ -285,9 +285,15 @@ export default function NotificationsSection() {
             </div>
             <div>
               <p className="text-2xl font-bold">
-                {notificationList.filter((n) => n.type.includes("payment") || n.type.includes("invoice")).length}
+                {
+                  notificationList.filter(
+                    (n) =>
+                      n.type.includes("booking") ||
+                      n.type.includes("quote")
+                  ).length
+                }
               </p>
-              <p className="text-xs text-zinc-500">Payment/Invoice</p>
+              <p className="text-xs text-zinc-500">Booking</p>
             </div>
           </div>
         </div>
