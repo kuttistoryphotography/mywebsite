@@ -109,20 +109,28 @@ export async function POST(request: NextRequest) {
     });
 
     // ── Notify admin (in-app + email) ────────────────────────────────────────
-    try {
-      const adminIds = await getAdminUserIds();
-      console.log("ADMIN IDS:", adminIds);
-      console.log("Creating admin notification");
-      await createBulkNotifications(adminIds, {
-        type:              'quote_requested',
-        title:             'New Quote Request',
-        description:       `${client_name} requested a quote for ${service_type}.`,
-        relatedEntityType: 'quote',
-        relatedEntityId:   String(quote._id),
-        actionUrl:         '/admin?tab=quotes',
-      });
-      console.log("ADMIN NOTIFICATION CREATED");
-    } catch {}
+try {
+  const adminIds = await getAdminUserIds();
+
+  console.log("ADMIN IDS:", adminIds);
+  console.log("ADMIN COUNT:", adminIds.length);
+  console.log("Creating admin notification");
+
+  const result = await createBulkNotifications(adminIds, {
+    type: 'quote_requested',
+    title: 'New Quote Request',
+    description: `${client_name} requested a quote for ${service_type}.`,
+    relatedEntityType: 'quote',
+    relatedEntityId: String(quote._id),
+    actionUrl: '/admin?tab=quotes',
+  });
+
+  console.log("NOTIFICATION RESULT:", result);
+  console.log("ADMIN NOTIFICATION CREATED");
+
+} catch (error) {
+  console.error("ADMIN NOTIFICATION ERROR:", error);
+}
 
     try {
       await sendQuoteRequestAdminEmail({
