@@ -53,7 +53,10 @@ export default function NotificationsSection() {
 
     const data = await response.json();
 
-    console.log("ADMIN NOTIFICATIONS:", data.notifications);
+    console.log(
+      "ADMIN NOTIFICATIONS FULL:",
+      JSON.stringify(data.notifications, null, 2)
+    );
 
     setNotificationList(data.notifications || []);
   } catch (err) {
