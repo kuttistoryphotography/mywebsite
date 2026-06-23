@@ -33,56 +33,53 @@ export default function NotificationsSection() {
   const router = useRouter();
   const [notificationList, setNotificationList] = useState<Notification[]>([]);
   const [filter, setFilter] = useState("all");
-  const [showComposeModal, setShowComposeModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const fetchNotifications = async () => {
+  try {
+    setLoading(true);
+    setError(null);
 
-  // Fetch notifications from API
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch(
-          "/api/notifications?limit=100",
-          {
-            cache: "no-store",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch notifications");
-        }
-
-        const data = await response.json();
-        console.log("ADMIN NOTIFICATIONS:", data.notifications);
-        
-        setNotificationList(data.notifications || []);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to load notifications"
-        );
-      } finally {
-        setLoading(false);
+    const response = await fetch(
+      "/api/notifications?limit=100",
+      {
+        cache: "no-store",
       }
-    };
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch notifications");
+    }
+
+    const data = await response.json();
+
+    console.log("ADMIN NOTIFICATIONS:", data.notifications);
+
+    setNotificationList(data.notifications || []);
+  } catch (err) {
+    setError(
+      err instanceof Error
+        ? err.message
+        : "Failed to load notifications"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
 useEffect(() => {
   fetchNotifications();
 
-  const interval = setInterval(fetchNotifications, 5000);
+  const interval = setInterval(() => {
+    fetchNotifications();
+  }, 5000);
 
   return () => clearInterval(interval);
 }, []);
 
-    fetchNotifications();
-    // No polling — component remounts fresh each time the admin opens this tab.
-  }, []);
-
-  const unreadCount = notificationList.filter((n) => !n.is_read).length;
+const unreadCount = notificationList.filter(
+  (n) => !n.is_read
+).length;
 
   const filteredNotifications = notificationList.filter((n) => {
     if (filter === "all") return true;
