@@ -280,20 +280,14 @@ export default function NotificationsSection() {
         </div>
         <div className="bg-zinc-900/50 rounded-xl border border-zinc-800 p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/10 rounded-lg">
-              <CreditCard className="w-4 h-4 text-emerald-500" />
+            <div className="p-2 bg-purple-500/10 rounded-lg">
+              <MessageSquare className="w-4 h-4 text-purple-500" />
             </div>
             <div>
               <p className="text-2xl font-bold">
-                {
-                  notificationList.filter(
-                    (n) =>
-                      n.type.includes("booking") ||
-                      n.type.includes("quote")
-                  ).length
-                }
+                {notificationList.filter((n) => n.type.includes("quote")).length}
               </p>
-              <p className="text-xs text-zinc-500">Booking</p>
+              <p className="text-xs text-zinc-500">Quotes</p>
             </div>
           </div>
         </div>
