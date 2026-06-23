@@ -111,6 +111,8 @@ export async function POST(request: NextRequest) {
     // ── Notify admin (in-app + email) ────────────────────────────────────────
     try {
       const adminIds = await getAdminUserIds();
+      console.log("ADMIN IDS:", adminIds);
+      console.log("Creating admin notification");
       await createBulkNotifications(adminIds, {
         type:              'quote_requested',
         title:             'New Quote Request',
