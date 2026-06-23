@@ -20,6 +20,16 @@ export async function GET(request: NextRequest) {
     const notifications = await Notification.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit);
+      console.log("SESSION USER ID:", session.userId);
+
+      console.log(
+        "NOTIFICATIONS:",
+        notifications.map((n) => ({
+          id: String(n._id),
+          title: n.title,
+          userId: String(n.userId),
+        }))
+      );
 
       console.log("SESSION USER ID:", session.userId);
       console.log("NOTIFICATIONS FOUND:", notifications.length);
