@@ -43,17 +43,40 @@ export default function NotificationsSection() {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/api/notifications?limit=100");
-        if (!response.ok) throw new Error("Failed to fetch notifications");
+
+        const response = await fetch(
+          "/api/notifications?limit=100",
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch notifications");
+        }
+
         const data = await response.json();
+        console.log("ADMIN NOTIFICATIONS:", data.notifications);
+        
         setNotificationList(data.notifications || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load notifications");
-        console.error("Error fetching notifications:", err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to load notifications"
+        );
       } finally {
         setLoading(false);
       }
     };
+
+useEffect(() => {
+  fetchNotifications();
+
+  const interval = setInterval(fetchNotifications, 5000);
+
+  return () => clearInterval(interval);
+}, []);
 
     fetchNotifications();
     // No polling — component remounts fresh each time the admin opens this tab.
@@ -235,7 +258,9 @@ export default function NotificationsSection() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Notifications</h1>
+          <h1 className="text-2xl font-bold text-red-500">
+            ADMIN NOTIFICATION TEST
+          </h1>
           <p className="text-sm text-zinc-500 mt-1">
             System notifications from bookings, payments, and invoices
           </p>
