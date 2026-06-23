@@ -22,6 +22,22 @@ export async function GET(request: NextRequest) {
       .limit(limit);
       console.log("SESSION USER ID:", session.userId);
 
+      console.log("FILTER:", filter);
+
+    const allNotifications = await Notification.find({})
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    console.log(
+      "LATEST DB NOTIFICATIONS:",
+      allNotifications.map((n) => ({
+        title: n.title,
+        userId: String(n.userId),
+        createdAt: n.createdAt,
+      }))
+    );
+      
+
       console.log(
         "NOTIFICATIONS:",
         notifications.map((n) => ({
