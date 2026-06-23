@@ -259,7 +259,7 @@ const unreadCount = notificationList.filter(
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-red-500">
-            ADMIN NOTIFICATION TEST
+             NOTIFICATION 
           </h1>
           <p className="text-sm text-zinc-500 mt-1">
             System notifications from bookings, payments, and invoices
