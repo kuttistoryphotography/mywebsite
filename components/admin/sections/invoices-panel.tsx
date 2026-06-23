@@ -314,6 +314,8 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
   };
 
   const handleUpdateInvoice = async () => {
+    console.log("UPDATE CLICKED");
+    console.log("INVOICE ID:", editingInvoice?.id);  
     setEditError("");
     if (!editingInvoice) return;
 
@@ -340,6 +342,7 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
 
         }),
       });
+
 
       const data = await response.json();
       if (!response.ok) {
