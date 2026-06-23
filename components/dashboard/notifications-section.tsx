@@ -225,9 +225,7 @@ export default function NotificationsSection() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-red-500">
-            NOTIFICATIONS TEST 123
-          </h1>
+          <h1 className="text-2xl font-bold">Notifications</h1>
           <p className="text-sm text-zinc-500 mt-1">
             View all your notifications and updates
           </p>
