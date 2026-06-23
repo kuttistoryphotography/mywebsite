@@ -373,8 +373,7 @@ const unreadCount = notificationList.filter(
               key={notification.id}
               onClick={() => handleNotificationClick(notification)}
               className={cn(
-                "bg-zinc-900/50 rounded-2xl border p-5 transition-colors",
-                notification.action_url && "cursor-pointer hover:border-zinc-700",
+                "bg-zinc-900/50 rounded-2xl border p-5 transition-colors cursor-pointer hover:border-zinc-700",
                 !notification.is_read
                   ? "border-amber-500/30 bg-amber-500/5"
                   : "border-zinc-800"
