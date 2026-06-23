@@ -6,10 +6,13 @@ import { getCurrentUser } from '@/lib/auth';
 export async function GET() {
   try {
     const session = await getCurrentUser();
+    console.log("SESSION:", session);
     if (!session) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     await connectDB();
+    console.log("LOOKING FOR USER:", session.userId);
     const user = await User.findById(session.userId).select('-passwordHash');
+    console.log("USER FOUND:", user);
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
  
     return NextResponse.json({
