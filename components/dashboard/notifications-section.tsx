@@ -29,15 +29,9 @@ export default function NotificationsSection() {
     try {
       setLoading(true);
       const query = filter === "unread" ? "&unreadOnly=true" : "";
-      const response = await fetch(
-        `/api/notifications?limit=50&offset=0${query}`,
-        {
-          cache: "no-store",
-        }
-      );
+      const response = await fetch(`/api/notifications?limit=50&offset=0${query}`);
       if (response.ok) {
         const data = await response.json();
-        console.log("LOADED NOTIFICATIONS:", data.notifications);
         const mapped = (data.notifications || []).map((n: any) => ({
           id: n.id,
           type: n.type,
@@ -59,13 +53,9 @@ export default function NotificationsSection() {
     }
   };
 
-      useEffect(() => {
-        fetchNotifications();
-
-        const interval = setInterval(fetchNotifications, 5000);
-
-        return () => clearInterval(interval);
-      }, [filter]);
+  useEffect(() => {
+    fetchNotifications();
+  }, [filter]);
 
   const handleMarkAsRead = async (notificationId: number) => {
     try {
@@ -244,9 +234,7 @@ export default function NotificationsSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total</p>
-          <p className="text-2xl font-bold">
-            {notifications.length}
-          </p>
+          <p className="text-2xl font-bold">{notifications.length}</p>
         </div>
         <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-4">
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Unread</p>
