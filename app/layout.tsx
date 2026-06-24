@@ -16,26 +16,32 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Best Wedding Photography in Madurai | Kutti Story Photography",
+    default: "Best Wedding Photographer in Madurai | Kutti Story Photography",
       template: "%s | Kutti Story Photography"
   },
-  description:"Kutti Story Photography is a professional wedding photographer in Madurai specializing in cinematic wedding photography, candid photography, traditional Tamil wedding photography, pre-wedding shoots, post-wedding shoots, baby shower photography and portrait photography across Tamil Nadu.",
+  description:
+"Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
+
 keywords: [
-  "Wedding Photographer Madurai",
-  "Wedding Photography Madurai",
-  "Best Wedding Photographer Madurai",
+  "Best Wedding Photographer in Madurai",
+  "Wedding Photographer in Madurai",
+  "Wedding Photography in Madurai",
+  "Candid Wedding Photographer in Madurai",
+  "Candid Wedding Photography Madurai",
+  "Wedding Videography in Madurai",
   "Tamil Wedding Photographer",
   "Traditional Tamil Wedding Photography",
-  "Candid Wedding Photography",
-  "Cinematic Wedding Photography",
-  "Pre Wedding Photography",
-  "Post Wedding Photography",
-  "Marriage Photography Madurai",
-  "Baby Shower Photography",
-  "Portrait Photography",
-  "Wedding Photographer Tamil Nadu",
-  "Professional Photographer Madurai"
-],  authors: [{ name: "Kutti Story" }],
+  "Pre Wedding Photography Madurai",
+  "Post Wedding Photography Madurai",
+  "Engagement Photography Madurai",
+  "Baby Shower Photography Madurai",
+  "Maternity Photography Madurai",
+  "Portrait Photography Madurai",
+  "Professional Photographer Madurai",
+  "Kutti Story Photography"
+], 
+
+ authors: [{ name: "Kutti Story" }],
   creator: "Kutti Story",
   generator: 'v0.app',
   metadataBase: new URL("https://www.kuttistoryphotography.com"),
@@ -58,8 +64,9 @@ icons: {
     locale: "en_IN",
     url: "https://www.kuttistoryphotography.com",
     siteName: "Kutti Story",
-    title: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
-    description: "Capturing your special moments with stunning photography",
+    title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
+    description:
+      "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
     images: [
       {
         url: "/images/og-image.jpg",
@@ -71,8 +78,9 @@ icons: {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kutti Story - Professional Wedding & Pre-Wedding Photography",
-    description: "Capturing your special moments with stunning photography",
+    title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
+    description:
+      "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
     images: ["/images/og-image.jpg"]
   },
   robots: {
@@ -107,8 +115,17 @@ export default function RootLayout({
   dangerouslySetInnerHTML={{
     __html: JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: "Kutti Story Photography",
+      "@type": ["LocalBusiness", "ProfessionalService"],
+      sameAs: ["https://www.instagram.com/kuttistory_photography"],
+            name: "Kutti Story Photography",
+      serviceType: [
+        "Wedding Photography",
+        "Candid Wedding Photography",
+        "Wedding Videography",
+        "Pre Wedding Photography",
+        "Engagement Photography",
+        "Baby Shower Photography"
+      ],
       image: "https://www.kuttistoryphotography.com/favicon.svg",
       url: "https://www.kuttistoryphotography.com",
       telephone: "+919976733600",
@@ -121,7 +138,7 @@ export default function RootLayout({
       areaServed: "Tamil Nadu",
       priceRange: "₹₹",
       description:
-        "Professional wedding photography, cinematic wedding photography, candid photography, pre wedding shoots and traditional Tamil wedding photography across Tamil Nadu."
+      "Best wedding photographer in Madurai offering candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu."
     }),
   }}
 />
