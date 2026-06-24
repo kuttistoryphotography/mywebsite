@@ -1,3 +1,4 @@
+import Link from "next/link";
 export const metadata = {
   title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
   description:
@@ -12,19 +13,95 @@ export default function BestWeddingPhotographerPage() {
       </h1>
 
       <p className="mb-6">
-        Kutti Story Photography is one of the best wedding photographers in
-        Madurai offering candid wedding photography, cinematic wedding films,
-        pre wedding shoots and traditional Tamil wedding photography.
+        Looking for the best wedding photographer in Madurai? Kutti Story Photography
+        specializes in candid wedding photography, cinematic wedding videography,
+        traditional Tamil wedding photography, engagement photography, pre wedding
+        shoots, post wedding shoots and reception photography. We capture timeless
+        wedding stories across Madurai and Tamil Nadu with creativity and emotion.
       </p>
 
-      <h2 className="text-2xl font-semibold mt-10 mb-4">
-        Why Choose Kutti Story Photography?
-      </h2>
+<h2 className="text-2xl font-semibold mt-10 mb-4">
+  Why Choose Kutti Story Photography?
+</h2>
 
-      <p>
-        We capture genuine emotions, timeless memories and beautiful wedding
-        stories across Madurai and Tamil Nadu.
-      </p>
+<p>
+  We capture genuine emotions, timeless memories and beautiful wedding
+  stories across Madurai and Tamil Nadu. Our team specializes in candid
+  wedding photography, cinematic wedding films and traditional Tamil
+  wedding photography.
+</p>
+
+<h2 className="text-3xl font-bold mt-10 mb-4">
+  Our Wedding Photography Services
+</h2>
+
+<ul className="list-disc pl-6 space-y-2">
+  <li>Candid Wedding Photography</li>
+  <li>Traditional Tamil Wedding Photography</li>
+  <li>Cinematic Wedding Videography</li>
+  <li>Pre Wedding Photography</li>
+  <li>Post Wedding Photography</li>
+  <li>Engagement Photography</li>
+  <li>Reception Photography</li>
+</ul>
+
+<h2 className="text-3xl font-bold mt-10 mb-4">
+  Locations We Serve
+</h2>
+
+<p>
+  We provide wedding photography services in Madurai, Dindigul,
+  Theni, Sivakasi, Virudhunagar, Chennai, Pondicherry,
+  Kerala and across Tamil Nadu.
+</p>
+
+<h2 className="text-3xl font-bold mt-10 mb-4">
+  Wedding Photography Packages in Madurai
+</h2>
+
+<p>
+  Kutti Story Photography offers affordable wedding photography and
+  videography packages in Madurai. We provide candid photography,
+  traditional photography, cinematic wedding films, drone coverage,
+  engagement photography and reception photography.
+</p>
+
+<h2 className="text-3xl font-bold mt-10 mb-4">
+  Frequently Asked Questions
+</h2>
+
+        <h3 className="text-xl font-semibold mt-6">
+        Who is the best wedding photographer in Madurai?
+        </h3>
+
+        <p>
+        Kutti Story Photography is known for candid wedding photography,
+        cinematic wedding films and traditional Tamil wedding coverage.
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6">
+        Do you provide wedding videography?
+        </h3>
+
+        <p>
+        Yes, we provide cinematic wedding videography and teaser films.
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6">
+        Do you travel outside Madurai?
+        </h3>
+
+        <p>
+        Yes. We cover weddings across Tamil Nadu and South India.
+        </p>
+
+            <div className="mt-10">
+        <Link href="/works" className="text-amber-500 underline">
+            View Our Wedding Portfolio
+        </Link>
+        </div> 
+        
+
     </main>
   );
 }
