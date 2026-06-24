@@ -169,22 +169,22 @@ export default function Header() {
       }`}
     >
       {/* ─── INNER WRAPPER ─── */}
-      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-[64px] sm:h-[70px] lg:h-[80px] flex items-center justify-between gap-4">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-[64px] sm:h-[70px] lg:h-[80px] flex items-center justify-between gap-4">
 
         {/* ── LOGO ── */}
-        <Link href="/" className="flex items-center flex-shrink-0 z-10">
+        <Link href="/" className="flex items-center flex-shrink-0 z-10 mr-8" >
           <Image
             src={logo}
             alt="Kutti Story Photography"
-            width={140}
-            height={50}
+            width={160}
+            height={60}
             className="h-8 sm:h-9 lg:h-11 w-auto object-contain"
             priority
           />
         </Link>
 
         {/* ── DESKTOP + LAPTOP NAV (lg 1024px+) ── */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-center">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-start pl-12">
           {navItems.map((item) => (
             <Link
               key={item.label}
