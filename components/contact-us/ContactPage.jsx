@@ -63,13 +63,13 @@ const ContactPage = () => {
   };
 
   return (
-    <section className="bg-black text-white py-20 md:py-32 px-6 md:px-16 min-h-screen flex items-center overflow-hidden">
+    <section className="bg-black text-white py-16 md:py-32 px-4 sm:px-6 md:px-16 min-h-screen flex items-center overflow-hidden">
       <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
         {/* ── LEFT: INFO ── */}
         <div ref={infoRef} className="space-y-12 relative z-10">
           <div className="contact-title">
-            <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter leading-tight mb-6">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-extrabold tracking-tighter leading-tight mb-6">
               Get in — <br /> <span className="text-orange-500">touch</span>
             </h1>
             <p className="text-zinc-400 text-lg max-w-md leading-relaxed">

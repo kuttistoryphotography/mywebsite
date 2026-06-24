@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     const invoices = await Invoice.find({})
     .populate('userId', 'firstName lastName email')
-    .populate('bookingId','bookingNumber eventType totalPaid')
+    .populate('bookingId', 'bookingNumber eventType')
     .sort({ createdAt: -1 });
 
     return NextResponse.json({

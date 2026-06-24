@@ -76,7 +76,7 @@ export default function PhilosophySection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 min-h-screen flex items-center justify-center overflow-hidden px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-12 lg:px-20"
       style={{
         backgroundColor: "#080808",
         color: "white",
@@ -93,7 +93,7 @@ export default function PhilosophySection() {
         
         {/* LEFT: THE BIG TITLES (8 Columns) */}
         <div className="lg:col-span-7">
-          <h2 className="text-[11vw] lg:text-[8.5vw] leading-[0.8] font-black uppercase tracking-tighter">
+          <h2 className="text-[13vw] sm:text-[11vw] lg:text-[8.5vw] leading-[0.85] font-black uppercase tracking-tighter">
             {["Organizers", "Of Emotional", "Super Events"].map((t, i) => (
               <span key={i} className="block overflow-hidden py-1">
                 <span

@@ -74,12 +74,12 @@ export default function PhotographyFooter() {
   return (
     <footer
       ref={footerRef}
-      className="bg-black text-white px-6 md:px-16 py-24 w-full overflow-hidden"
+      className="bg-black text-white px-4 sm:px-6 md:px-16 py-16 md:py-24 w-full overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
 
         {/* Cinematic Header Section */}
-        <div className="mb-24 border-b border-zinc-900 pb-16">
+        <div className="mb-12 md:mb-24 border-b border-zinc-900 pb-10 md:pb-16">
           <div className="shutter-text flex items-center gap-3 text-zinc-500 mb-6 tracking-[0.3em] text-xs font-bold uppercase">
             <span className="relative flex h-2 w-2">
               <span className="live-dot absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -87,7 +87,7 @@ export default function PhotographyFooter() {
             </span>
             Capturing the Frame
           </div>
-          <h2 className="shutter-text text-5xl md:text-8xl font-light tracking-tighter leading-none mb-8">
+          <h2 className="shutter-text text-3xl sm:text-5xl md:text-8xl font-light tracking-tighter leading-none mb-6 md:mb-8">
             Every frame tells a <br />
             <span className="italic font-serif text-zinc-400">Kutti Story.</span>
           </h2>
@@ -217,7 +217,7 @@ export default function PhotographyFooter() {
         </div>
 
         {/* Bottom Legal Section */}
-        <div className="mt-32 pt-10 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] text-zinc-600 font-bold uppercase">
+        <div className="mt-16 md:mt-32 pt-8 md:pt-10 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] text-zinc-600 font-bold uppercase">
           <div className="flex gap-8 mb-4 md:mb-0">
             <span>© 2026 Kutti Story Media</span>
             <Link href="#" className="hover:text-zinc-200">Legal</Link>

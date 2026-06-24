@@ -24,6 +24,15 @@ export default function StoriesSection() {
   const canvasRef     = useRef<HTMLCanvasElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [images, setImages] = useState<StoryImage[]>(DEFAULT_IMAGES);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     fetch("/api/homepage")
@@ -95,6 +104,7 @@ export default function StoriesSection() {
   }, [hoveredIndex]);
 
   const handleHover = (index: number) => {
+    if (isMobile) return;
     setHoveredIndex(index);
     stripsRef.current.forEach((el, i) => {
       if (!el) return;
@@ -102,6 +112,7 @@ export default function StoriesSection() {
     });
   };
   const handleLeave = () => {
+    if (isMobile) return;
     setHoveredIndex(null);
     stripsRef.current.forEach((el, i) => {
       if (!el) return;
@@ -109,15 +120,22 @@ export default function StoriesSection() {
     });
   };
 
+  // Mobile carousel navigation
+  const goNext = () => setActiveIndex((prev) => (prev + 1) % images.length);
+  const goPrev = () => setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
+
   return (
-    <section ref={containerRef} className="relative bg-black text-white py-28 px-6 md:px-16 min-h-screen overflow-hidden">
-      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50" />
-      <div className="text-center mb-20 relative z-10">
-        <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tight">
+    <section ref={containerRef} className="relative bg-black text-white py-16 md:py-28 px-4 md:px-16 min-h-screen overflow-hidden">
+      <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50 hidden md:block" />
+
+      <div className="text-center mb-10 md:mb-20 relative z-10">
+        <h2 className="text-3xl sm:text-4xl md:text-6xl font-black uppercase tracking-tight">
           HERE OUR <span className="text-red-600">STORIES</span>
         </h2>
       </div>
-      <div className="relative flex items-center justify-center gap-3 md:gap-5 h-[520px] md:h-[620px] max-w-7xl mx-auto z-10">
+
+      {/* DESKTOP: accordion strips */}
+      <div className="hidden md:flex relative items-center justify-center gap-3 md:gap-5 h-[520px] md:h-[620px] max-w-7xl mx-auto z-10">
         {images.map((item, i) => (
           <div
             key={i}
@@ -142,14 +160,81 @@ export default function StoriesSection() {
           </div>
         ))}
       </div>
-      <div className="flex justify-center gap-5 mt-16 relative z-10">
+
+      {/* MOBILE: swipeable carousel */}
+      <div className="md:hidden relative z-10">
+        {/* Main image */}
+        <div className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden mb-4">
+          <DriveMedia
+            url={images[activeIndex]?.src || ""}
+            mediaType="image"
+            className="absolute inset-0 w-full h-full object-cover"
+            alt={images[activeIndex]?.alt || ""}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+
+          {/* Nav buttons overlay */}
+          <div className="absolute inset-0 flex items-center justify-between px-4">
+            <button
+              onClick={goPrev}
+              className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-lg active:scale-95 transition-transform"
+              aria-label="Previous"
+            >
+              ‹
+            </button>
+            <button
+              onClick={goNext}
+              className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-lg active:scale-95 transition-transform"
+              aria-label="Next"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        {/* Thumbnail strip */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide snap-x snap-mandatory">
+          {images.map((item, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all snap-start ${
+                i === activeIndex ? "border-red-500 scale-105" : "border-white/10 opacity-60"
+              }`}
+            >
+              <DriveMedia
+                url={item.src}
+                mediaType="image"
+                className="w-full h-full object-cover"
+                alt={item.alt}
+              />
+            </button>
+          ))}
+        </div>
+
+        {/* Pagination dots */}
+        <div className="flex justify-center gap-2 mt-4">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`rounded-full transition-all ${
+                i === activeIndex ? "w-6 h-2 bg-red-500" : "w-2 h-2 bg-white/30"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-5 mt-10 md:mt-16 relative z-10">
         <a href="/booking">
-          <button className="bg-red-600 hover:bg-red-700 text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest transition">
+          <button className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold uppercase text-xs tracking-widest transition">
             Tell My Story
           </button>
         </a>
         <a href="/works">
-          <button className="border border-white/20 hover:bg-white/10 text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-widest transition">
+          <button className="w-full sm:w-auto border border-white/20 hover:bg-white/10 text-white px-8 py-4 rounded-full font-bold uppercase text-xs tracking-widest transition">
             See All Stories
           </button>
         </a>

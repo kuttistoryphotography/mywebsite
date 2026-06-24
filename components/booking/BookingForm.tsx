@@ -468,7 +468,7 @@ export default function BookingForm({ onSuccess, isDialog = false }: { onSuccess
       <div className={isDialog ? "w-full" : "w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8"}>
         <div className={isDialog ? "w-full" : "bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-xl overflow-hidden"}>
           {/* Header */}
-          <div className="px-8 py-6 border-b border-zinc-800 flex justify-between items-center">
+          <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-zinc-800 flex justify-between items-center">
             <div>
               <h1 className="text-xl font-bold text-white">Kutti Story Photography</h1>
               <p className="text-sm text-zinc-500">Step {step} of 4</p>

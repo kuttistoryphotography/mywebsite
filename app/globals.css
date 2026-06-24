@@ -244,3 +244,204 @@ body {
 body {
   margin: 0;
 }
+/* =========================
+   RESPONSIVE GLOBAL FIXES
+========================= */
+
+/* Prevent horizontal overflow everywhere */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* Large screen optimization - use full width */
+@media (min-width: 1920px) {
+  .max-w-7xl {
+    max-width: 1600px !important;
+  }
+}
+
+/* Hide scrollbar for thumbnail strips */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Admin panel: prevent content from overflowing on mobile */
+@media (max-width: 767px) {
+  .admin-table-wrap {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix modals on mobile */
+  [role="dialog"],
+  .modal-content {
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 1rem 1rem 0 0 !important;
+  }
+}
+
+/* Swiper / carousel images */
+.swiper-slide img,
+.swiper-slide video,
+.carousel-item img,
+.carousel-item video {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Touch targets minimum size */
+@media (max-width: 767px) {
+  button, a, [role="button"] {
+    min-height: 40px;
+  }
+}
+
+/* Responsive typography scale */
+@media (max-width: 480px) {
+  h1 { font-size: clamp(1.75rem, 8vw, 3rem); }
+  h2 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
+  h3 { font-size: clamp(1.25rem, 5vw, 2rem); }
+}
+
+/* Admin panel sidebar offset for mobile menu button */
+@media (max-width: 1023px) {
+  .admin-content-area {
+    padding-top: 4rem !important;
+  }
+}
+
+/* Fix for WeddingShowcase marquee on small screens */
+@media (max-width: 767px) {
+  .marquee-banner {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Prevent images from overflowing their containers */
+img {
+  max-width: 100%;
+}
+
+/* Large screen: remove side gaps */
+@media (min-width: 1920px) {
+  .container,
+  .max-w-screen-xl,
+  .max-w-screen-2xl {
+    max-width: 1800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Responsive padding for sections */
+@media (max-width: 640px) {
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* =========================
+   ADMIN PANEL RESPONSIVE
+========================= */
+
+/* Wrap admin tables to prevent horizontal overflow */
+@media (max-width: 1023px) {
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem;
+  }
+
+  /* Admin modal full width on mobile */
+  [data-radix-dialog-content],
+  [role="dialog"] > div {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Stack admin stat cards */
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Make admin forms stack nicely */
+  .admin-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce table font on mobile */
+  table {
+    font-size: 0.75rem;
+  }
+
+  /* Admin modals take full screen on mobile */
+  [data-radix-dialog-overlay] + div,
+  .fixed.inset-0 > [class*="max-w"] {
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin: 0;
+    border-radius: 1rem 1rem 0 0;
+    bottom: 0;
+    top: auto;
+    transform: none !important;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* Services page responsive */
+@media (max-width: 767px) {
+  .services-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Large screen: ensure content fills width */
+@media (min-width: 1920px) {
+  main,
+  [class*="max-w-7xl"],
+  [class*="max-w-screen"] {
+    max-width: min(1600px, 90vw);
+  }
+
+  section {
+    padding-left: max(2rem, calc((100vw - 1600px) / 2));
+    padding-right: max(2rem, calc((100vw - 1600px) / 2));
+  }
+}
+
+/* Tablet responsive improvements */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-stats {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .card-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

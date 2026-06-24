@@ -112,7 +112,7 @@ const BlogSection = () => {
 
         const data = await res.json();
         const posts = Array.isArray(data.blogs) ? data.blogs : [];
-
+        console.log('posts----', posts)
         setBlogs(
           posts.map((post) => ({
             id:       post.id,
@@ -137,13 +137,13 @@ const BlogSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-black py-24 px-6 md:px-16 text-white">
+    <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="max-w-xl">
             <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-4">The Journal</p>
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">Photography <br />Insights</h2>
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tighter">Photography <br />Insights</h2>
           </div>
           <button
             onClick={() => router.push("/blog")}

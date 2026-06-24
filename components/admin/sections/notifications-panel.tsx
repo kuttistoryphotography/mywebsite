@@ -29,12 +29,8 @@ export default function AdminNotificationPanel() {
     try {
       setLoading(true);
       const query = filter === "unread" ? "&unreadOnly=true" : "";
-      const response = await fetch(
-        `/api/notifications?limit=20&offset=0${query}`,
-        {
-          cache: "no-store"
-        }
-      );      if (response.ok) {
+      const response = await fetch(`/api/notifications?limit=20&offset=0${query}`);
+      if (response.ok) {
         const data = await response.json();
         const mapped = (data.notifications || []).map((n: any) => ({
           id: n.id,
@@ -57,15 +53,10 @@ export default function AdminNotificationPanel() {
     }
   };
 
-    useEffect(() => {
-      fetchNotifications();
-
-      const interval = setInterval(() => {
-        fetchNotifications();
-      }, 5000); // every 5 sec
-
-      return () => clearInterval(interval);
-    }, [filter]);
+  useEffect(() => {
+    fetchNotifications();
+    // No polling — panel re-fetches fresh data each time it is opened.
+  }, [filter]);
 
   const handleMarkAsRead = async (notificationId: number) => {
     try {
