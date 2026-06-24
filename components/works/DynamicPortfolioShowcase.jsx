@@ -351,8 +351,8 @@ export default function DynamicPortfolioShowcase() {
     : (filteredGrouped[activeCategory]?.albums.length || 0) + (filteredGrouped[activeCategory]?.portfolio.length || 0) > 0;
 
   return (
-    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20">
-      <div className="max-w-screen-2xl mx-auto">
+    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20 w-screen">
+      <div className="w-full max-w-screen-2xl mx-auto border border-red-500">
         {/* Header */}
         <div className="mb-14">
           <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-3">Portfolio</p>
