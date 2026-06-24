@@ -60,6 +60,19 @@ export default function BestWeddingPhotographerPage() {
 </h2>
 
 <p>
+  Every wedding is unique, and our team ensures that every emotion,
+  tradition and celebration is beautifully documented. From intimate
+  ceremonies to grand weddings, we create stunning wedding photographs
+  and cinematic films that couples cherish forever.
+</p>
+
+<p className="mt-4">
+  Our wedding photography packages are designed to suit different budgets
+  while maintaining premium quality. We offer photography, videography,
+  drone coverage, cinematic highlight films and wedding albums.
+</p>
+
+<p>
   Kutti Story Photography offers affordable wedding photography and
   videography packages in Madurai. We provide candid photography,
   traditional photography, cinematic wedding films, drone coverage,
@@ -94,13 +107,27 @@ export default function BestWeddingPhotographerPage() {
         <p>
         Yes. We cover weddings across Tamil Nadu and South India.
         </p>
+        
+        <h2 className="text-3xl font-bold mt-10 mb-4">
+        Book Your Wedding Photographer Today
+        </h2>
 
-            <div className="mt-10">
+        <p>
+        Planning your wedding in Madurai? Contact Kutti Story Photography for
+        professional wedding photography and videography services. Let us
+        capture your special moments with creativity and passion.
+        </p>
+
+        <div className="flex gap-6 mt-6">
         <Link href="/works" className="text-amber-500 underline">
             View Our Wedding Portfolio
         </Link>
-        </div> 
-        
+
+        <Link href="/contact-us" className="text-amber-500 underline">
+            Contact Us
+        </Link>
+        </div>
+                
 
     </main>
   );
