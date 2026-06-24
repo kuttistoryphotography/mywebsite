@@ -239,7 +239,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
   if (total === 0) return null;
 
   return (
-    <section className="mb-20 max-w-[1200px] mx-auto">
+    <section className="mb-20">
       <div className="flex items-end justify-between mb-8 gap-4">
         <div className="flex items-center gap-4">
           <div className="w-1 h-10 rounded-full shrink-0" style={{ background: accent }} />
@@ -352,7 +352,7 @@ export default function DynamicPortfolioShowcase() {
 
   return (
     <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20">
-      <div className="w-full max-w-[1400px] mx-auto">
+      <div className="w-full max-w-[1600px] mx-auto">
         {/* Header */}
         <div className="mb-14">
           <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-3">Portfolio</p>
