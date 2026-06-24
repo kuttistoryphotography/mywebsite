@@ -158,7 +158,7 @@ const [expanded, setExpanded] = useState(false);
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-16 md:py-32 overflow-hidden">
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-gray-400 rounded-full blur-3xl" />
@@ -166,11 +166,11 @@ const [expanded, setExpanded] = useState(false);
 
       <div ref={overlayRef} className="absolute inset-0 bg-[#0a0a0a] z-10" style={{ transformOrigin: "right" }} />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <div className="relative flex gap-10">
+      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-center">
+        <div className="relative flex gap-4 sm:gap-10 justify-center lg:justify-start">
           <div
             ref={(el) => { if (el) imagesRef.current[0] = el; }}
-            className="relative h-[420px] w-[300px] overflow-hidden rounded-2xl shadow-2xl group"
+            className="relative h-[280px] w-[170px] sm:h-[420px] sm:w-[300px] overflow-hidden rounded-2xl shadow-2xl group"
             style={{ perspective: "1000px" }}
           >
             <DriveMedia
@@ -188,7 +188,7 @@ const [expanded, setExpanded] = useState(false);
 
           <div
             ref={(el) => { if (el) imagesRef.current[1] = el; }}
-            className="relative h-[480px] w-[320px] overflow-hidden rounded-2xl shadow-2xl mt-16 group"
+            className="relative h-[320px] w-[185px] sm:h-[480px] sm:w-[320px] overflow-hidden rounded-2xl shadow-2xl mt-8 sm:mt-16 group"
             style={{ perspective: "1000px" }}
           >
             <DriveMedia
@@ -206,7 +206,7 @@ const [expanded, setExpanded] = useState(false);
           <span className="text-sm uppercase tracking-widest text-gray-400">
           {aboutContent.title}
           </span>
-          <h2 ref={headingRef} className="text-4xl md:text-5xl font-semibold mt-4 mb-6 leading-tight cursor-pointer select-none">
+          <h2 ref={headingRef} className="text-2xl sm:text-4xl md:text-5xl font-semibold mt-4 mb-6 leading-tight cursor-pointer select-none">
              {aboutContent.heading}
           </h2>
           <p className="text-gray-400 max-w-xl mb-6 text-lg leading-relaxed">

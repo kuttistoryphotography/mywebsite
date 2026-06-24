@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Eye, FileText, Pencil, Plus, Receipt, XCircle, Trash2 } from "lucide-react";
+import { Eye, FileText, Pencil, Plus, Receipt, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BookingOption {
@@ -312,40 +312,8 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
       items: current.items.filter((_, i) => i !== index),
     }));
   };
-  const handleDeleteInvoice = async (invoiceId: string | number) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this invoice?"
-    );
-
-    if (!confirmed) return;
-
-    try {
-      const response = await fetch(
-        `/api/invoices/admin?id=${invoiceId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.error || "Failed to delete invoice");
-        return;
-      }
-
-      await fetchInvoices();
-
-      alert("Invoice deleted successfully");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete invoice");
-    }
-  };
 
   const handleUpdateInvoice = async () => {
-    console.log("UPDATE CLICKED");
-    console.log("INVOICE ID:", editingInvoice?.id);  
     setEditError("");
     if (!editingInvoice) return;
 
@@ -372,7 +340,6 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
 
         }),
       });
-
 
       const data = await response.json();
       if (!response.ok) {
@@ -600,8 +567,6 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
                           onClick={() => {
                             setSelectedInvoice(invoice);
                             setShowDetailsModal(true);
-                            setSelectedInvoice(invoice);
-
                           }}
                           className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                           title="View"
@@ -614,13 +579,6 @@ export default function InvoicesPanel({ openModalSignal }: InvoicesPanelProps) {
                           title="Edit"
                         >
                           <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteInvoice(invoice.id)}
-                          className="p-2 text-zinc-400 hover:text-red-500 hover:bg-zinc-800 rounded-lg transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

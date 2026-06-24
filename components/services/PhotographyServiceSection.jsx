@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
@@ -117,12 +117,14 @@ export default function PhotographyServiceSection() {
           <p className="text-zinc-400 text-lg max-w-md mb-10 leading-relaxed pointer-events-none">
             {settings.paragraph}
           </p>
+          <Link href="/works">
           <button className="flex items-center gap-3 bg-orange-500 px-8 py-4 rounded-full w-fit group transition-all hover:bg-orange-600">
             Explore Gallery
             <div className="bg-white text-orange-500 rounded-full p-1 group-hover:translate-x-1 transition-transform">
               <ArrowRight size={18} />
             </div>
           </button>
+          </Link>
         </div>
 
         {/* Right — media */}

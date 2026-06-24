@@ -70,12 +70,12 @@ export default function StatsCardsSection() {
   };
 
   return (
-    <section ref={sectionRef} className="relative py-40 bg-[#050505] overflow-hidden">
-      <div className="relative z-10 max-w-[1440px] mx-auto px-8 md:px-16 lg:px-24">
+    <section ref={sectionRef} className="relative py-16 md:py-40 bg-[#050505] overflow-hidden">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-8 md:px-16 lg:px-24">
         
         {/* HEADING */}
-        <div ref={headingRef} className="max-w-3xl mb-24">
-          <h2 className="text-6xl md:text-7xl font-black tracking-tight leading-[1] text-white">
+        <div ref={headingRef} className="max-w-3xl mb-10 md:mb-24">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1] text-white">
             Stories that <br /> build <span className="text-red-600">trust</span>
           </h2>
           <p className="mt-6 text-lg text-white/50">

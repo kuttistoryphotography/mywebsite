@@ -1,5 +1,5 @@
 'use client'
-
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { DriveMedia } from '@/components/ui/DriveMedia'
@@ -117,9 +117,11 @@ export default function PhotographyAboutSection() {
             )}
           </div>
           <div className="flex justify-end relative z-10">
+            <Link href="/works">
             <button className="px-10 py-4 rounded-full border border-yellow-500/50 text-yellow-500 font-medium hover:bg-yellow-500 hover:text-black transition-all duration-500">
               Explore Gallery
             </button>
+            </Link>
           </div>
           <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-red-900/5 blur-[120px] rounded-full group-hover:bg-red-600/10 transition-colors duration-700" />
         </div>

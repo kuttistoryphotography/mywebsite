@@ -58,15 +58,15 @@ export default function FeaturedWork() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative bg-[#0a0a0a] text-white py-16 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,0.18),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(220,38,38,0.12),transparent_40%)]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
           <div className="relative">
             <div
               ref={bigCardRef}
-              className="relative h-[600px] rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(139,92,246,0.15)]"
+              className="relative h-[350px] sm:h-[450px] md:h-[600px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(139,92,246,0.15)]"
             >
               <DriveMedia
                 url={images.featured_big}
@@ -76,7 +76,7 @@ export default function FeaturedWork() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             </div>
-            <div ref={smallCardRef} className="absolute -bottom-8 -right-8 w-48 h-64 rounded-[1.5rem] overflow-hidden border-4 border-[#0a0a0a] shadow-2xl">
+            <div ref={smallCardRef} className="absolute -bottom-6 -right-4 sm:-bottom-8 sm:-right-8 w-32 h-44 sm:w-48 sm:h-64 rounded-[1.5rem] overflow-hidden border-4 border-[#0a0a0a] shadow-2xl">
               <DriveMedia
                 url={images.featured_small}
                 mediaType="image"
@@ -88,7 +88,7 @@ export default function FeaturedWork() {
 
           <div ref={textRef} className="space-y-8 lg:pl-8">
             <span className="text-xs uppercase tracking-[0.4em] text-gray-500">Featured Work</span>
-            <h2 className="text-5xl md:text-6xl font-light leading-[1.1]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-[1.1]">
               Crafting visual <em className="italic text-gray-400">legacies</em> beyond the frame
             </h2>
             <p className="text-gray-400 leading-relaxed text-lg">

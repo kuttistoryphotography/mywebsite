@@ -6,7 +6,6 @@ import { getCurrentUser } from '@/lib/auth';
 export async function GET(request: NextRequest) {
   try {
     const session = await getCurrentUser();
-    console.log("SESSION:", session);
     if (!session) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     await connectDB();
@@ -20,43 +19,6 @@ export async function GET(request: NextRequest) {
     const notifications = await Notification.find(filter)
       .sort({ createdAt: -1 })
       .limit(limit);
-      console.log("SESSION USER ID:", session.userId);
-
-      console.log("FILTER:", filter);
-
-    const allNotifications = await Notification.find({})
-      .sort({ createdAt: -1 })
-      .limit(10);
-
-    console.log(
-      "LATEST DB NOTIFICATIONS:",
-      allNotifications.map((n) => ({
-        title: n.title,
-        userId: String(n.userId),
-        createdAt: n.createdAt,
-      }))
-    );
-      
-
-      console.log(
-        "NOTIFICATIONS:",
-        notifications.map((n) => ({
-          id: String(n._id),
-          title: n.title,
-          userId: String(n.userId),
-        }))
-      );
-
-      console.log("SESSION USER ID:", session.userId);
-      console.log("NOTIFICATIONS FOUND:", notifications.length);
-      console.log(
-        notifications.map((n) => ({
-          title: n.title,
-          type: n.type,
-          isRead: n.isRead,
-          userId: String(n.userId),
-        }))
-      );
 
     const unreadCount = await Notification.countDocuments({ userId: session.userId, isRead: false });
 
