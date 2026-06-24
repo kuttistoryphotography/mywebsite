@@ -239,7 +239,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
   if (total === 0) return null;
 
   return (
-    <section className="mb-20">
+    <section className="mb-20 max-w-[1200px] mx-auto">
       <div className="flex items-end justify-between mb-8 gap-4">
         <div className="flex items-center gap-4">
           <div className="w-1 h-10 rounded-full shrink-0" style={{ background: accent }} />
@@ -261,7 +261,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
         {shown.map(({ type, data, key }) =>
           type === "album" ? (
             <AlbumCard key={key} album={data}
@@ -351,8 +351,8 @@ export default function DynamicPortfolioShowcase() {
     : (filteredGrouped[activeCategory]?.albums.length || 0) + (filteredGrouped[activeCategory]?.portfolio.length || 0) > 0;
 
   return (
-    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20 w-screen">
-      <div className="w-full max-w-screen-2xl mx-auto border border-red-500">
+    <section className="bg-black min-h-screen text-white pt-28 pb-24 px-5 md:px-10 xl:px-16 2xl:px-20">
+      <div className="w-full max-w-[1400px] mx-auto">
         {/* Header */}
         <div className="mb-14">
           <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-3">Portfolio</p>
