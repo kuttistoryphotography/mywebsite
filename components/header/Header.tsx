@@ -169,27 +169,60 @@ export default function Header() {
       }`}
     >
       {/* ─── INNER WRAPPER ─── */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-[64px] sm:h-[70px] lg:h-[80px] flex items-center justify-between gap-4">
-
+      <div className="
+      w-full
+      max-w-[1600px]
+      mx-auto
+      px-4
+      sm:px-6
+      md:px-8
+      lg:px-12
+      xl:px-16
+      2xl:px-24
+      h-[64px]
+      sm:h-[70px]
+      lg:h-[80px]
+      flex
+      items-center
+      justify-between
+      gap-4
+      ">
         {/* ── LOGO ── */}
         <Link href="/" className="flex items-center flex-shrink-0 z-10 mr-8" >
           <Image
             src={logo}
             alt="Kutti Story Photography"
-            width={160}
-            height={60}
-            className="h-8 sm:h-9 lg:h-11 w-auto object-contain"
-            priority
+            width={180}
+            height={70}
+            className="
+            h-8
+            sm:h-9
+            md:h-10
+            lg:h-11
+            xl:h-12
+            2xl:h-14
+            w-auto
+            object-contain
+            "
           />
         </Link>
 
         {/* ── DESKTOP + LAPTOP NAV (lg 1024px+) ── */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-start pl-12">
+        <nav className="
+        hidden
+        lg:flex
+        items-center
+        gap-1
+        xl:gap-2
+        2xl:gap-4
+        flex-1
+        justify-center
+        ">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className={`relative px-3 xl:px-4 py-2 text-[10px] xl:text-[11px] font-semibold tracking-[0.2em] xl:tracking-[0.25em] uppercase transition-all duration-300 group ${
+              className={`relative px-3 xl:px-4 py-2 text-[10px] xl:text-[11px] 2xl:text-[13px] font-semibold tracking-[0.2em] xl:tracking-[0.25em] uppercase transition-all duration-300 group ${
                 isActive(item.href)
                   ? "text-white"
                   : "text-white/55 hover:text-white"
@@ -307,7 +340,7 @@ export default function Header() {
           {/* Book Now — hidden on mobile (<md), shown md+ */}
           <Link
             href="/booking"
-            className="hidden md:inline-flex items-center gap-2 px-4 xl:px-6 py-2 xl:py-2.5 rounded-full bg-white text-black text-[10px] xl:text-[11px] font-bold uppercase tracking-widest hover:bg-amber-400 border border-white hover:border-amber-400 transition-all duration-400 whitespace-nowrap"
+            className="hidden md:inline-flex items-center gap-2 px-4 xl:px-6 2xl:px-8 py-2 xl:py-2.5 2xl:py-3 rounded-full bg-white text-black text-[10px] xl:text-[11px] font-bold uppercase tracking-widest hover:bg-amber-400 border border-white hover:border-amber-400 transition-all duration-400 whitespace-nowrap"
           >
             Book Now
             <span className="text-base leading-none">→</span>
