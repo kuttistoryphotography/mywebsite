@@ -1,19 +1,13 @@
 import { MetadataRoute } from "next";
-import connectDB from "@/lib/mongodb";
+import connectDB from "@/lib/db";
 import Blog from "@/models/Blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  await connectDB();
-
-  const blogs = await Blog.find({}, "slug updatedAt")
-    .sort({ updatedAt: -1 })
-    .lean();
-
   const baseUrl = "https://www.kuttistoryphotography.com";
 
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}`,
+      url: baseUrl,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
@@ -27,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/services`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
+      changeFrequency: "weekly",
       priority: 0.9,
     },
     {
@@ -50,12 +44,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const blogPages: MetadataRoute.Sitemap = blogs.map((blog: any) => ({
-    url: `${baseUrl}/blog/${blog.slug}`,
-    lastModified: blog.updatedAt ?? new Date(),
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  try {
+    await connectDB();
 
-  return [...staticPages, ...blogPages];
+    const blogs = await Blog.find(
+      {
+        published: true,
+        status: "published",
+      },
+      "slug updatedAt"
+    ).lean();
+
+    const blogPages: MetadataRoute.Sitemap = blogs.map((blog: any) => ({
+      url: `${baseUrl}/blog/${blog.slug}`,
+      lastModified: blog.updatedAt ?? new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
+
+    return [...staticPages, ...blogPages];
+  } catch (error) {
+    console.error("Sitemap Error:", error);
+
+    // Return static pages even if the database is unavailable
+    return staticPages;
+  }
 }
