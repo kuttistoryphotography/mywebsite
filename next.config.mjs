@@ -38,8 +38,23 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/contact-us",
-        destination: "/contact-us",
+        source: "/elementor-hf/:path*",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/wp-content/:path*",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/wp-admin/:path*",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/wp-includes/:path*",
+        destination: "/",
         permanent: true,
       },
     ];
