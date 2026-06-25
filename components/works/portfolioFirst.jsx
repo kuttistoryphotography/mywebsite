@@ -167,7 +167,7 @@ console.log('mapped----', mapped);
   return (
     <section
       ref={containerRef}
-      className="bg-black py-10 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 2xl:px-20 text-white min-h-screen"
+      className="bg-black py-10 md:py-20 px-4 sm:px-6 md:px-10 xl:px-16 2xl:px-20 text-white"
     >
       <div className="max-w-screen-2xl mx-auto">
         <div className="mb-10">

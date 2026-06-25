@@ -239,7 +239,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
   if (total === 0) return null;
 
   return (
-    <section className="mb-20">
+    <section className="mb-8">
       <div className="flex items-end justify-between mb-8 gap-4">
         <div className="flex items-center gap-4">
           <div className="w-1 h-10 rounded-full shrink-0" style={{ background: accent }} />
