@@ -137,7 +137,7 @@ function PortfolioCard({ item, onOpen, isFav, onFavToggle }) {
     (item.media?.length || item.images?.length || 0) + (coverImage ? 1 : 0);
 
   return (
-    <article className="group cursor-pointer rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 relative">
+    <article className="group w-full cursor-pointer rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 relative">
       <button onClick={(e) => { e.stopPropagation(); onFavToggle(); }}
         className="absolute top-2.5 left-2.5 z-20 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center hover:scale-110 hover:bg-black/80 transition-all">
         <Heart className={cn("w-4 h-4 transition-colors", isFav ? "text-red-500 fill-red-500" : "text-white/70")} />
@@ -185,7 +185,7 @@ function AlbumCard({ album, onOpen, isFav, onFavToggle }) {
   const totalCount = (album.coverImage ? 1 : 0) + (album.media?.length || 0);
 
   return (
-    <article className="group rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 relative">
+    <article className="group w-full rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 relative">
       <button onClick={(e) => { e.stopPropagation(); onFavToggle(); }}
         className="absolute top-2.5 left-2.5 z-20 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center hover:scale-110 hover:bg-black/80 transition-all">
         <Heart className={cn("w-4 h-4", isFav ? "text-red-500 fill-red-500" : "text-white/70")} />
@@ -261,7 +261,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+      <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
         {shown.map(({ type, data, key }) =>
           type === "album" ? (
             <AlbumCard key={key} album={data}
@@ -352,7 +352,7 @@ export default function DynamicPortfolioShowcase() {
 
   return (
     <section className="w-full bg-black min-h-screen text-white pt-28 pb-24">
-      <div className="w-full max-w-[1400px] mx-auto px-5 md:px-10 xl:px-16 2xl:px-20">
+      <div className="w-full max-w-[1800px] mx-auto px-5 md:px-10 xl:px-16 2xl:px-20">
         {/* Header */}
         <div className="mb-14">
           <p className="text-orange-500 font-mono text-xs tracking-[0.4em] uppercase mb-3">Portfolio</p>
