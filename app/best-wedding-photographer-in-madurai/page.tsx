@@ -1,3 +1,4 @@
+import SEOHero from "@/components/seo/SEOHero";
 import Link from "next/link";
 export const metadata = {
   title: "Best Wedding Photographer in Madurai",
@@ -25,19 +26,15 @@ export const metadata = {
 };
 
 export default function BestWeddingPhotographerPage() {
-  return (
-    <main className="max-w-6xl mx-auto px-6 py-20">
-      <h1 className="text-4xl font-bold mb-6">
-        Best Wedding Photographer in Madurai
-      </h1>
+return (
+  <>
+    <SEOHero
+      title="Best Wedding Photographer in Madurai"
+      description="Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding videography, traditional Tamil wedding photography, engagement photography, pre wedding shoots and luxury wedding albums."
+      image="/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp"
+    />
 
-      <p className="mb-6">
-        Looking for the best wedding photographer in Madurai? Kutti Story Photography
-        specializes in candid wedding photography, cinematic wedding videography,
-        traditional Tamil wedding photography, engagement photography, pre wedding
-        shoots, post wedding shoots and reception photography. We capture timeless
-        wedding stories across Madurai and Tamil Nadu with creativity and emotion.
-      </p>
+    <main className="max-w-6xl mx-auto px-6 py-20">
 
 <h2 className="text-2xl font-semibold mt-10 mb-4">
   Why Choose Kutti Story Photography?
@@ -149,5 +146,6 @@ export default function BestWeddingPhotographerPage() {
                 
 
     </main>
+  </>
   );
 }
