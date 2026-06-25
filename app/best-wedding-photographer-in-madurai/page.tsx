@@ -34,7 +34,8 @@ return (
       image="/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp"
     />
 
-    <main className="max-w-6xl mx-auto px-6 py-20">
+    <main className="bg-[#0a0a0a] text-white">
+     <div className="max-w-6xl mx-auto px-6 py-20 space-y-16">
 
 <h2 className="text-2xl font-semibold mt-10 mb-4">
   Why Choose Kutti Story Photography?
@@ -144,7 +145,7 @@ return (
         </Link>
         </div>
                 
-
+     </div>
     </main>
   </>
   );
