@@ -7,7 +7,7 @@ import PhilosophySection from "./PhilosophySection";
 import FeaturedWork from "./FeaturedWork";
 import StatsCardsSection from "./StatsCardsSection";
 import StoriesSection from"./StoriesSection";
-
+import WeddingCTA from "./WeddingCTA";
 
 export default function HomeFirst() {
   return (
@@ -21,8 +21,8 @@ export default function HomeFirst() {
       <FeaturedWork />
       <StatsCardsSection />
       <StoriesSection  />
-    
-
+      <WeddingCTA />
+      
       
     </>
   );
