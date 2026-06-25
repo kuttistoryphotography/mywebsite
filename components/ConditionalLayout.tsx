@@ -11,15 +11,9 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   const isAdminRoute = pathname?.startsWith("/admin");
   const isDashboardRoute = pathname?.startsWith("/dashboard");
 
-  return (
-    <>
-      {!isAdminRoute && <Header />}
-      {children}
-      {!isAdminRoute && <PhotographyFooter />}
-      {/* Social media floating sidebar — visible on all non-admin pages */}
-      {!isAdminRoute && <SocialSidebar />}
-      {/* Show chatbot on all non-admin pages */}
-      {!isAdminRoute && <AIChatbot />}
-    </>
-  );
+return (
+  <>
+    {children}
+  </>
+);
 }
