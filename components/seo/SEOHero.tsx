@@ -25,7 +25,8 @@ export default function SEOHero({
 
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
+      <div className="relative z-10 w-full px-6">
+        <div className="max-w-7xl mx-auto">
 
         <p className="uppercase tracking-[0.3em] text-red-500 mb-6">
           Kutti Story Photography
@@ -55,8 +56,8 @@ export default function SEOHero({
             View Portfolio
           </Link>
 
+         </div>
         </div>
-
       </div>
     </section>
   );

@@ -34,7 +34,7 @@ return (
       image="/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp"
     />
 
-    <main className="w-full min-h-screen bg-[#0a0a0a] text-white">
+    <main className="w-full bg-[#0a0a0a] text-white">
      <div className="max-w-6xl mx-auto px-6 py-20 space-y-16">
 
 <h2 className="text-2xl font-semibold mt-10 mb-4">
