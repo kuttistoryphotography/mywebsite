@@ -248,4 +248,3 @@ console.log('mapped----', mapped);
   );
 };
 
-export default Portfolio;
