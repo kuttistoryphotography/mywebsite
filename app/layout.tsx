@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Best Wedding Photographer in Madurai | Kutti Story Photography",
-      template: "%s | Kutti Story Photography"
-  },
-  description:
-"Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
+    title: {
+      default: "Kutti Story Photography | Wedding Photography & Videography in Madurai",
+      template: "%s | Kutti Story Photography",
+    },
+    description:
+    "Professional wedding photography and videography in Madurai. Kutti Story Photography offers candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
 
 keywords: [
   "Best Wedding Photographer in Madurai",
@@ -64,7 +64,7 @@ icons: {
     locale: "en_IN",
     url: "https://www.kuttistoryphotography.com",
     siteName: "Kutti Story",
-    title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
+    title: "Kutti Story Photography | Wedding Photography & Videography in Madurai",
     description:
       "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
     images: [

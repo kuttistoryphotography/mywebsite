@@ -1,8 +1,27 @@
 import Link from "next/link";
 export const metadata = {
-  title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
+  title: "Best Wedding Photographer in Madurai",
+
   description:
     "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films and traditional Tamil wedding photography.",
+
+  alternates: {
+    canonical:
+      "https://www.kuttistoryphotography.com/best-wedding-photographer-in-madurai",
+  },
+
+  openGraph: {
+    title: "Best Wedding Photographer in Madurai",
+    description:
+      "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films and traditional Tamil wedding photography.",
+    url: "https://www.kuttistoryphotography.com/best-wedding-photographer-in-madurai",
+  },
+
+  twitter: {
+    title: "Best Wedding Photographer in Madurai",
+    description:
+      "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films and traditional Tamil wedding photography.",
+  },
 };
 
 export default function BestWeddingPhotographerPage() {
