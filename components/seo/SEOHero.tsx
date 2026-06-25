@@ -13,19 +13,19 @@ export default function SEOHero({
 }: SEOHeroProps) {
   return (
     <section
-      className="relative min-h-[90vh] flex items-center bg-black overflow-hidden"
+    className="relative w-full min-h-[90vh] flex items-center bg-black overflow-hidden"
     >
       {/* Background */}
 
       <img
         src={image}
         alt={title}
-        className="absolute inset-0 w-full h-full object-cover opacity-40"
+        className="absolute inset-0 block w-full h-full object-cover opacity-40"
       />
 
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
 
         <p className="uppercase tracking-[0.3em] text-red-500 mb-6">
           Kutti Story Photography
