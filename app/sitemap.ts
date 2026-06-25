@@ -1,137 +1,61 @@
 import { MetadataRoute } from "next";
+import connectDB from "@/lib/mongodb";
+import Blog from "@/models/Blog";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: "https://www.kuttistoryphotography.com",
-      lastModified: new Date(),
-      priority: 1,
-    },
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await connectDB();
 
-    {
-      url: "https://www.kuttistoryphotography.com/about-us",
-      lastModified: new Date(),
-      priority: 0.9,
-    },
+  const blogs = await Blog.find({}, "slug updatedAt")
+    .sort({ updatedAt: -1 })
+    .lean();
 
-    {
-      url: "https://www.kuttistoryphotography.com/services",
-      lastModified: new Date(),
-      priority: 0.9,
-    },
+  const baseUrl = "https://www.kuttistoryphotography.com";
 
+  const staticPages: MetadataRoute.Sitemap = [
     {
-      url: "https://www.kuttistoryphotography.com/works",
+      url: `${baseUrl}`,
       lastModified: new Date(),
-      priority: 0.9,
-    },
-
-    {
-      url: "https://www.kuttistoryphotography.com/blog",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-
-    {
-      url: "https://www.kuttistoryphotography.com/contact-us",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-
-    // Main SEO Pages
-    {
-      url: "https://www.kuttistoryphotography.com/best-wedding-photographer-in-madurai",
-      lastModified: new Date(),
+      changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: "https://www.kuttistoryphotography.com/candid-wedding-photographer-in-madurai",
+      url: `${baseUrl}/about-us`,
       lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: "https://www.kuttistoryphotography.com/pre-wedding-photography-in-madurai",
+      url: `${baseUrl}/services`,
       lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: "https://www.kuttistoryphotography.com/engagement-photography-in-madurai",
+      url: `${baseUrl}/works`,
       lastModified: new Date(),
+      changeFrequency: "weekly",
       priority: 0.9,
     },
     {
-      url: "https://www.kuttistoryphotography.com/wedding-videography-in-madurai",
+      url: `${baseUrl}/blog`,
       lastModified: new Date(),
+      changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: "https://www.kuttistoryphotography.com/wedding-photography-and-videography-in-madurai",
+      url: `${baseUrl}/contact-us`,
       lastModified: new Date(),
-      priority: 0.9,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/baby-shoot-photography-in-madurai",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/maternity-photography-in-madurai",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/birthday-photography-in-madurai",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/event-photography-in-madurai",
-      lastModified: new Date(),
-      priority: 0.8,
-    },
-
-    // Blog Pages
-    {
-      url: "https://www.kuttistoryphotography.com/blog/best-wedding-venues-in-madurai",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/top-pre-wedding-shoot-locations-in-madurai",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/how-to-choose-a-wedding-photographer-in-madurai",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/wedding-photography-price-guide-madurai",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/tamil-wedding-photography-checklist",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/best-time-for-wedding-photography-in-madurai",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-    {
-      url: "https://www.kuttistoryphotography.com/blog/top-wedding-trends-in-tamil-nadu",
-      lastModified: new Date(),
-      priority: 0.7,
-    },
-
-    // Portfolio
-    {
-      url: "https://www.kuttistoryphotography.com/works/love-story-wedding-photography-in-madurai",
-      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.8,
     },
   ];
+
+  const blogPages: MetadataRoute.Sitemap = blogs.map((blog: any) => ({
+    url: `${baseUrl}/blog/${blog.slug}`,
+    lastModified: blog.updatedAt ?? new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...blogPages];
 }
