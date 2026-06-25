@@ -261,7 +261,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
         )}
       </div>
 
-      <div className="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
         {shown.map(({ type, data, key }) =>
           type === "album" ? (
             <AlbumCard key={key} album={data}
