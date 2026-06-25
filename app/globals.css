@@ -445,7 +445,3 @@ img {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
-
-* {
-  outline: 1px solid red !important;
-}
