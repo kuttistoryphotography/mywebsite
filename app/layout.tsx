@@ -1,7 +1,7 @@
 import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+
 import ConditionalLayout from "../components/ConditionalLayout";
 
 const geistSans = Geist({
@@ -147,8 +147,8 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.svg" />
       </head>
       <body
-  className={`${geistSans.variable} ${geistMono.variable} antialiased`}
->
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black overflow-x-hidden w-full min-h-screen`}
+      >
   <Script
     src="https://www.googletagmanager.com/gtag/js?id=G-1D4VY530T4"
     strategy="afterInteractive"
