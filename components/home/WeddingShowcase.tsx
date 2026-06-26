@@ -31,6 +31,10 @@ export default function WeddingShowcase() {
   const [isMobile, setIsMobile]       = useState(false);
 
   useEffect(() => {
+  console.log("Active Index:", activeIndex);
+}, [activeIndex]);
+
+  useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener("resize", check);
