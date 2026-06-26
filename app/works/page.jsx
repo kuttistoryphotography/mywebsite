@@ -30,33 +30,38 @@ export const metadata = {
 export default function WorksPage() {
   return (
     <main>
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          Our Photography Portfolio
-        </h1>
+      <section className="max-w-6xl mx-auto px-6 py-20">
 
-        <p className="text-lg text-gray-600 leading-8 mb-6">
-          Welcome to the Kutti Story Photography portfolio. Explore our collection of
-          wedding photography, candid wedding moments, engagement sessions,
-          pre-wedding shoots, maternity photography, baby showers, birthday
-          celebrations, and cinematic event coverage captured across Madurai,
-          Tamil Nadu, Kerala, and destination wedding locations.
-        </p>
+      <h1 className="text-4xl md:text-5xl font-bold mb-8">
+      Wedding Photography Portfolio – Kutti Story Photography
+      </h1>
 
-        <p className="text-lg text-gray-600 leading-8 mb-6">
-          Every gallery reflects our passion for storytelling through natural
-          emotions, creative compositions, and cinematic editing. We focus on
-          preserving genuine memories that families can cherish for generations.
-        </p>
+      <p className="text-lg text-gray-600 leading-8 mb-6">
+      Welcome to the official portfolio of Kutti Story Photography. Our work showcases real weddings, candid photography, cinematic wedding films, engagement sessions, pre-wedding shoots, maternity photography, baby showers, birthday celebrations, family portraits, and corporate events captured across Madurai, Tamil Nadu, Kerala, and destination wedding locations.
+      </p>
 
-        <p className="text-lg text-gray-600 leading-8">
-          Browse our recent projects below to explore different photography
-          styles, beautiful wedding venues, outdoor locations, and cinematic
-          storytelling. We proudly capture weddings and events throughout
-          Madurai, Tamil Nadu, Kerala, and nearby destinations, creating timeless
-          memories for every couple and family.
-        </p>
+      <p className="text-lg text-gray-600 leading-8 mb-6">
+      Every wedding has its own emotions, traditions, and unforgettable moments. Our goal is to preserve those memories with natural storytelling, artistic compositions, creative lighting, and premium colour grading. We believe photography should tell a story that remains beautiful for generations.
+      </p>
+
+      <h2 className="text-3xl font-semibold mt-12 mb-5">
+      Photography Services We Cover
+      </h2>
+
+      <p className="text-lg text-gray-600 leading-8 mb-6">
+      Our portfolio includes traditional Tamil weddings, Christian weddings, Muslim weddings, destination weddings, engagement ceremonies, pre-wedding shoots, post-wedding sessions, maternity photography, newborn photography, baby shower photography, birthday events, corporate photography, and commercial projects throughout South India.
+      </p>
+
+      <h2 className="text-3xl font-semibold mt-12 mb-5">
+      Serving Tamil Nadu & Kerala
+      </h2>
+
+      <p className="text-lg text-gray-600 leading-8">
+      Kutti Story Photography proudly serves clients across Madurai, Chennai, Coimbatore, Trichy, Salem, Tirunelveli, Dindigul, Theni, Kanyakumari, Kochi, Thrissur, Palakkad, Trivandrum, and other locations throughout Tamil Nadu and Kerala. We also travel for destination weddings anywhere in India.
+      </p>
+
       </section>
+
 
       <GroupPortfolio />
     </main>
