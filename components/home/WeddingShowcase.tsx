@@ -22,6 +22,7 @@ export default function WeddingShowcase() {
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef<number>(0);
   const touchEndX   = useRef<number>(0);
+  const mouseX = useRef(0);
 
   const [slides, setSlides]           = useState<ShowcaseSlide[]>(DEFAULT_SLIDES);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -54,6 +55,24 @@ export default function WeddingShowcase() {
     setActiveIndex((prev) => (prev + 1) % slides.length);
     setTimeout(() => setIsAnimating(false), 900);
   }, [isAnimating, slides.length]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  if (isMobile || isAnimating) return;
+
+  const width = window.innerWidth;
+  const x = e.clientX;
+
+  // Ignore tiny movements
+  if (Math.abs(x - mouseX.current) < 40) return;
+
+  if (x > mouseX.current) {
+    goToNext();
+  } else {
+    goToPrev();
+  }
+
+  mouseX.current = x;
+};
 
   const goToPrev = useCallback(() => {
     if (isAnimating) return;
@@ -152,7 +171,15 @@ export default function WeddingShowcase() {
           className="hidden md:flex"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          style={{ position: "relative", zIndex: 10, alignItems: "center", justifyContent: "center", gap: "3rem", height: "600px" }}
+          onMouseMove={handleMouseMove}
+          style={{
+            position: "relative",
+            zIndex: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "3rem",
+            height: "600px",
+          }}
         >
           {slides.map((slide, idx) => {
             const isActive = idx === activeIndex;
