@@ -217,9 +217,9 @@ export default function AboutTimeline() {
           <p className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-white/40 mb-5 md:mb-6">
             Est. 2018 · Visual storytellers
           </p>
-          <h1 className="text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[8vw] font-black uppercase tracking-tighter leading-none">
+          <h2 className="text-[13vw] sm:text-[11vw] md:text-[9vw] lg:text-[8vw] font-black uppercase tracking-tighter leading-none">
             Our&nbsp;<span className="text-red-600">Legacy</span>
-          </h1>
+          </h2>
           <p className="mt-5 text-white/40 tracking-widest uppercase text-[10px] md:text-xs">
             Scroll to explore the journey
           </p>

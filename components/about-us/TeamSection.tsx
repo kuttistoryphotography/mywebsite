@@ -67,12 +67,12 @@ export default function PhotographyTeamPage() {
             <span className="text-yellow-500 font-mono text-sm tracking-[0.4em] uppercase block mb-4 reveal-up transition-all duration-500 group-hover/title:translate-x-3 group-hover/title:text-white">
               01 / Our People
             </span>
-            <h1 className="text-6xl md:text-8xl font-bold leading-[0.9] reveal-up">
+            <h2 className="text-6xl md:text-8xl font-bold leading-[0.9] reveal-up">
               <span className="block transition-all duration-700 group-hover/mainheader:text-neutral-400">The Minds</span>
               <span className="text-neutral-800 italic transition-all duration-700 group-hover/title:text-yellow-500 group-hover/title:not-italic group-hover/title:pl-4 inline-block">
                 Behind Lens.
               </span>
-            </h1>
+            </h2>
           </div>
           <div className="max-w-sm reveal-up group/para cursor-default relative">
             <div className="absolute -left-6 top-0 w-[2px] h-0 bg-yellow-500 transition-all duration-500 group-hover/para:h-full" />
