@@ -238,7 +238,7 @@ console.log('mapped----', mapped);
           <button
             type="button"
             className="px-10 py-4 border border-zinc-700 rounded-full font-bold hover:bg-white hover:text-black transition-all"
-            onClick={() => router.push("/contact")}
+            onClick={() => router.push("/contact-us")}
           >
             GET IN TOUCH
           </button>
