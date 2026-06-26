@@ -241,17 +241,18 @@ export function DriveLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[500] bg-black/97 flex flex-col"
+      className="fixed inset-0 z-[1100] bg-black/97 flex flex-col"
       onClick={onClose}
     >
-      {/* Header */}
+      {/* Header — sits above navbar (z-[1100]), with safe top padding */}
       <div
-        className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-white/10"
+        className="shrink-0 flex items-center justify-between gap-2 px-3 sm:px-5 py-3 pt-4 border-b border-white/10 bg-black/95 backdrop-blur-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 min-w-0">
+        {/* Left: type badge + title */}
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className={cn(
-            "shrink-0 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full",
+            "shrink-0 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full",
             item.mediaType === "image" ? "bg-blue-500/20 text-blue-400"
               : item.mediaType === "video" ? "bg-purple-500/20 text-purple-400"
               : "bg-red-500/20 text-red-400"
@@ -259,13 +260,13 @@ export function DriveLightbox({
             {item.mediaType}
           </span>
           {(title || item.caption) && (
-            <p className="text-sm text-zinc-300 truncate">{item.caption || title}</p>
+            <p className="text-xs sm:text-sm text-zinc-300 truncate">{item.caption || title}</p>
           )}
+          <span className="text-zinc-600 text-xs shrink-0 ml-1">{idx + 1}/{total}</span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 ml-4">
-          <span className="text-zinc-600 text-xs hidden sm:block">{idx + 1} / {total}</span>
-
+        {/* Right: action buttons */}
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Download */}
           <a
             href={dlUrl}
@@ -273,7 +274,8 @@ export function DriveLightbox({
             target="_blank"
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium transition-colors"
+            title="Download"
           >
             <Download className="w-3.5 h-3.5" />
             <span className="hidden sm:block">Download</span>
@@ -285,7 +287,8 @@ export function DriveLightbox({
             target="_blank"
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium transition-colors"
+            title="Open in new tab"
           >
             <ExternalLink className="w-3.5 h-3.5" />
             <span className="hidden sm:block">View</span>
@@ -293,9 +296,11 @@ export function DriveLightbox({
 
           {renderActions?.(item, idx)}
 
+          {/* Close — always prominent */}
           <button
             onClick={onClose}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-semibold transition-colors border border-white/10"
+            title="Close (Esc)"
           >
             <X className="w-4 h-4" />
             <span className="hidden sm:block">Close</span>
