@@ -69,7 +69,7 @@ icons: {
       "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
     images: [
       {
-        url: "/images/og-image.jpg",
+        url: "/01.webp",
         width: 1200,
         height: 630,
         alt: "Kutti Story Photography"
@@ -81,7 +81,7 @@ icons: {
     title: "Best Wedding Photographer in Madurai | Kutti Story Photography",
     description:
       "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",
-    images: ["/images/og-image.jpg"]
+    images: ["/01.webp"]
   },
   robots: {
     index: true,
@@ -115,7 +115,7 @@ export default function RootLayout({
   dangerouslySetInnerHTML={{
     __html: JSON.stringify({
       "@context": "https://schema.org",
-      "@type": ["LocalBusiness", "ProfessionalService"],
+      "@type": "ProfessionalService",
       sameAs: ["https://www.instagram.com/kuttistory_photography"],
             name: "Kutti Story Photography",
       serviceType: [
@@ -126,17 +126,45 @@ export default function RootLayout({
         "Engagement Photography",
         "Baby Shower Photography"
       ],
-      image: "https://www.kuttistoryphotography.com/favicon.svg",
+      image: "https://www.kuttistoryphotography.com/01.webp",
       url: "https://www.kuttistoryphotography.com",
       telephone: "+919976733600",
       address: {
         "@type": "PostalAddress",
+        streetAddress: "52/32, South Mada Street Periyar, Madurai Main Madurai, Tamil Nadu 625001 India",
         addressLocality: "Madurai",
         addressRegion: "Tamil Nadu",
+        postalCode: "625001",
         addressCountry: "IN"
       },
-      areaServed: "Tamil Nadu",
+      areaServed: {
+        "@type": "State",
+        name: "Tamil Nadu"
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 9.9252,
+        longitude: 78.1198
+      },
+
       priceRange: "₹₹",
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          opens: "09:00",
+          closes: "20:00"
+        }
+      ],
+      
       description:
       "Best wedding photographer in Madurai offering candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu."
     }),
