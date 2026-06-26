@@ -91,9 +91,11 @@ export default function PhotographyFooter() {
             Every frame tells a <br />
             <span className="italic font-serif text-zinc-400">Kutti Story.</span>
           </h2>
+           <Link href="/contact-us" className="inline-block px-8 py-4 bg-orange-500 text-black rounded-full font-bold hover:bg-orange-400 transition">
           <button className="shutter-text group flex items-center gap-4 text-xl hover:text-zinc-400 transition-colors duration-500">
             Book your session <HiOutlineArrowRight className="group-hover:translate-x-4 transition-transform duration-500" />
           </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
