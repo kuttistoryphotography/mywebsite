@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 
 import Hero from "./Hero";
 import AboutSection from "./AboutSection";
@@ -26,28 +25,18 @@ interface HeroData {
   awardText: string;
 }
 
-export default function HomeFirst() {
-  const [hero, setHero] = useState<HeroData | null>(null);
+interface HomeFirstProps {
+  settings: {
+    hero: HeroData;
+  };
+}
 
-  useEffect(() => {
-    fetch("/api/homepage", {
-      cache: "no-store",
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        setHero(data.settings.hero);
-      });
-  }, []);
+export default function HomeFirst({ settings }: HomeFirstProps) {
 
-  if (!hero) {
-    return (
-      <section className="min-h-screen bg-[#0a0a0a]"></section>
-    );
-  }
 
   return (
     <>
-      <Hero hero={hero} />
+      <Hero hero={settings.hero} />
 
       <AboutSection />
       <WeddingShowcase />
