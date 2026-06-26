@@ -373,7 +373,7 @@ export default function DynamicPortfolioShowcase() {
         {!loading && (
           <>
             {/* Category filter pills */}
-            <div className="flex flex-wrap gap-2 mb-14">
+            <div className="flex gap-2 mb-14 overflow-x-auto whitespace-nowrap scrollbar-hide">
               {[{ cat: "all", label: "All", count: totalAll }, ...CATEGORY_ORDER.map((cat) => ({ cat, label: getLabel(cat), count: categoryCount(cat) }))].map(({ cat, label, count }) => {
                 const accent = cat === "all" ? "#f97316" : getAccent(cat);
                 const active = activeCategory === cat;
