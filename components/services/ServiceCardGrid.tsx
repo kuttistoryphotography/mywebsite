@@ -170,9 +170,9 @@ export default function ServiceCardGrid() {
               ))}
             </div>
             <div className="text-sm">
-              <Link href="/about-us">
+              <a href="/about-us">
               <p className="text-orange-500 font-bold text-lg">{settings.expertCount} Experts</p>
-              </Link>
+              </a>
               <p className="text-zinc-400">{settings.expertCardTagline}</p>
             </div>
           </div>
