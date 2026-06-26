@@ -11,7 +11,7 @@ const DEFAULTS = {
   city: 'Madurai',
   state: 'Tamil Nadu',
   pincode: '625016',
-  mapEmbedUrl: '',
+  googleMapsEmbed: '',
   businessHours: 'Mon – Sat: 9 AM – 7 PM',
   instagramUrl: '',
   facebookUrl: '',
@@ -45,10 +45,20 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
 
     const allowedFields = [
-      'email', 'phone', 'whatsapp', 'address', 'city', 'state',
-      'pincode', '', 'businessHours',
-      'instagramUrl', 'facebookUrl', 'youtubeUrl',
-      'twitterUrl', 'telegramUrl',
+      'email',
+      'phone',
+      'whatsapp',
+      'address',
+      'city',
+      'state',
+      'pincode',
+      'googleMapsEmbed',
+      'businessHours',
+      'instagramUrl',
+      'facebookUrl',
+      'youtubeUrl',
+      'twitterUrl',
+      'telegramUrl',
     ];
 
     const update: Record<string, string> = {};
