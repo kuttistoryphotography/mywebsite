@@ -26,7 +26,6 @@ export default function WeddingShowcase() {
 
   const [slides, setSlides]           = useState<ShowcaseSlide[]>(DEFAULT_SLIDES);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isInView, setIsInView]       = useState(false);
   const [isPaused, setIsPaused]       = useState(false);
   const [isMobile, setIsMobile]       = useState(false);
@@ -50,20 +49,12 @@ export default function WeddingShowcase() {
   }, []);
 
   const goToNext = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
     setActiveIndex((prev) => (prev + 1) % slides.length);
-    setTimeout(() => setIsAnimating(false), 900);
-  }, [isAnimating, slides.length]);
-
-
+  }, [slides.length]);
 
   const goToPrev = useCallback(() => {
-    if (isAnimating) return;
-    setIsAnimating(true);
     setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
-    setTimeout(() => setIsAnimating(false), 900);
-  }, [isAnimating, slides.length]);
+  }, [slides.length]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), { threshold: 0.3 });
