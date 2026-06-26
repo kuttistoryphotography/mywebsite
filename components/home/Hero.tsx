@@ -35,17 +35,22 @@ const DEFAULT_HERO: HeroData = {
   awardText: "Award Winning Studio 2024",
 };
 
-interface HeroProps {
-  hero: HeroData;
-}
-
-export default function Hero({ hero }: HeroProps) {
+export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
 
 
-  // Fetch dynamic content
+  const [hero, setHero] = useState<HeroData>(DEFAULT_HERO);
 
+  // Fetch dynamic content
+  useEffect(() => {
+    fetch("/api/homepage")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.settings?.hero) setHero({ ...DEFAULT_HERO, ...data.settings.hero });
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -126,8 +131,6 @@ export default function Hero({ hero }: HeroProps) {
     </>
   );
 };
-
- 
      return (
       <section
         ref={containerRef}
