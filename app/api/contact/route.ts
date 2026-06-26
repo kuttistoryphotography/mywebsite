@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
 
     const allowedFields = [
       'email', 'phone', 'whatsapp', 'address', 'city', 'state',
-      'pincode', 'mapEmbedUrl', 'businessHours',
+      'pincode', '', 'businessHours',
       'instagramUrl', 'facebookUrl', 'youtubeUrl',
       'twitterUrl', 'telegramUrl',
     ];

@@ -14,7 +14,7 @@ interface ContactForm {
   city: string;
   state: string;
   pincode: string;
-  mapEmbedUrl: string;
+  : string;
   businessHours: string;
   instagramUrl: string;
   facebookUrl: string;
@@ -25,7 +25,7 @@ interface ContactForm {
 
 const EMPTY: ContactForm = {
   email: "", phone: "", whatsapp: "", address: "", city: "",
-  state: "", pincode: "", mapEmbedUrl: "", businessHours: "",
+  state: "", pincode: "", : "", businessHours: "",
   instagramUrl: "", facebookUrl: "", youtubeUrl: "",
   twitterUrl: "", telegramUrl: "",
 };
@@ -50,7 +50,7 @@ export default function ContactSection() {
             city:          data.settings.city          || "",
             state:         data.settings.state         || "",
             pincode:       data.settings.pincode       || "",
-            mapEmbedUrl:   data.settings.mapEmbedUrl   || "",
+            :   data.settings.   || "",
             businessHours: data.settings.businessHours || "",
             instagramUrl:  data.settings.instagramUrl  || "",
             facebookUrl:   data.settings.facebookUrl   || "",
@@ -150,8 +150,8 @@ export default function ContactSection() {
         <div>
           <label className="block text-sm font-medium text-zinc-400 mb-2">Google Maps Embed URL (optional)</label>
           <textarea
-            value={form.mapEmbedUrl}
-            onChange={set("mapEmbedUrl")}
+            value={form.}
+            onChange={set("")}
             rows={2}
             className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500 resize-none"
             placeholder="https://www.google.com/maps/embed?pb=..."
