@@ -72,9 +72,9 @@ icons: {
         url: "/01.webp",
         width: 1200,
         height: 630,
-        alt: "Kutti Story Photography"
-      }
-    ]
+        alt: "Kutti Story Photography",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -110,10 +110,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
+        <Script
+  id="structured-data"
+    type="application/ld+json"
+    strategy="beforeInteractive"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
       sameAs: ["https://www.instagram.com/kuttistory_photography"],
@@ -127,11 +129,12 @@ export default function RootLayout({
         "Baby Shower Photography"
       ],
       image: "https://www.kuttistoryphotography.com/01.webp",
+      logo: "https://www.kuttistoryphotography.com/favicon.svg",
       url: "https://www.kuttistoryphotography.com",
       telephone: "+919976733600",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "52/32, South Mada Street Periyar, Madurai Main Madurai, Tamil Nadu 625001 India",
+        streetAddress: "52/32, South Mada Street, Periyar",
         addressLocality: "Madurai",
         addressRegion: "Tamil Nadu",
         postalCode: "625001",
