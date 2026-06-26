@@ -15,8 +15,8 @@ import ContactSettings from "@/models/ContactSettings";
 async function buildSystemPrompt(): Promise<string> {
   let contact = {
     email:         "kuttistoryphotography@gmail.com",
-    phone:         "+91 82489 51574",
-    whatsapp:      "+91 82489 51574",
+    phone:         "+91 93420 13600",
+    whatsapp:      "+91 93420 13600",
     address:       "Periyar",
     city:          "Madurai",
     state:         "Tamil Nadu",

@@ -27,8 +27,8 @@ export interface IContactSettings extends Document {
 const ContactSettingsSchema = new Schema<IContactSettings>(
   {
     email:        { type: String, default: 'kuttistoryphotography@gmail.com' },
-    phone:        { type: String, default: '+91 82489 51574' },
-    whatsapp:     { type: String, default: '+91 82489 51574' },
+    phone:        { type: String, default: '+91 93420 13600' },
+    whatsapp:     { type: String, default: '+91 93420 13600' },
     address:      { type: String, default: 'Periyar' },
     city:         { type: String, default: 'Madurai' },
     state:        { type: String, default: 'Tamil Nadu' },

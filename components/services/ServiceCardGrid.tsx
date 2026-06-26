@@ -34,7 +34,7 @@ const DEFAULTS: CardGridSettings = {
 export default function ServiceCardGrid() {
   const containerRef     = useRef<HTMLDivElement>(null);
   const [whatsappMsg,    setWhatsappMsg]    = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("918248951574");
+  const [whatsappNumber, setWhatsappNumber] = useState("919342013600");
   const [settings,       setSettings]       = useState<CardGridSettings>(DEFAULTS);
   const [ready,          setReady]          = useState(false);
 

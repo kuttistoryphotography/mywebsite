@@ -282,8 +282,8 @@ export default function HelpSection() {
       {/* Quick contact cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { icon: Phone, label: "Call Us", value: "+91 82489 51574", href: "tel:+918248951574" },
-          { icon: MessageCircle, label: "WhatsApp", value: "Chat instantly", href: "https://wa.me/918248951574" },
+          { icon: Phone, label: "Call Us", value: "+91 93420 13600", href: "tel:+919342013600" },
+          { icon: MessageCircle, label: "WhatsApp", value: "Chat instantly", href: "https://wa.me/919342013600" },
           { icon: FileText, label: "Email Us", value: "kuttistoryphotography@gmail.com", href: "mailto:kuttistoryphotography@gmail.com" },
         ].map(({ icon: Icon, label, value, href }) => (
           <a key={label} href={href} target="_blank" rel="noreferrer"

@@ -67,7 +67,7 @@ export default function PhotographerCards() {
   const handleWhatsAppRedirect = () => {
     if (!whatsappMsg.trim()) return;
 
-    const phoneNumber = "918248951574";
+    const phoneNumber = "919342013600";
     const encodedMsg = encodeURIComponent(whatsappMsg);
 
     window.open(
