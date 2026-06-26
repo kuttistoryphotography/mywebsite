@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Send, ArrowRight } from "lucide-react";
+import { Send, ArrowRight, Link } from "lucide-react";
 import { toImageUrl, toPreviewUrl } from "@/lib/media";
 
 interface CardGridSettings {
@@ -170,7 +170,9 @@ export default function ServiceCardGrid() {
               ))}
             </div>
             <div className="text-sm">
+              <Link href="/about-us">
               <p className="text-orange-500 font-bold text-lg">{settings.expertCount} Experts</p>
+              </Link>
               <p className="text-zinc-400">{settings.expertCardTagline}</p>
             </div>
           </div>
