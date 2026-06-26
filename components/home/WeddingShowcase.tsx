@@ -56,23 +56,7 @@ export default function WeddingShowcase() {
     setTimeout(() => setIsAnimating(false), 900);
   }, [isAnimating, slides.length]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-  if (isMobile || isAnimating) return;
 
-  const width = window.innerWidth;
-  const x = e.clientX;
-
-  // Ignore tiny movements
-  if (Math.abs(x - mouseX.current) < 40) return;
-
-  if (x > mouseX.current) {
-    goToNext();
-  } else {
-    goToPrev();
-  }
-
-  mouseX.current = x;
-};
 
   const goToPrev = useCallback(() => {
     if (isAnimating) return;
@@ -171,7 +155,7 @@ export default function WeddingShowcase() {
           className="hidden md:flex"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onMouseMove={handleMouseMove}
+          
           style={{
             position: "relative",
             zIndex: 10,
@@ -190,13 +174,18 @@ export default function WeddingShowcase() {
               <div
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                onMouseEnter={() => { setIsPaused(true); setActiveIndex(idx); }}
-                style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "all 1s", transform: isActive ? "scale(1.05) translateY(-12px)" : "scale(0.9)", opacity: isActive ? 1 : 0.3, filter: isActive ? "none" : "blur(1px) grayscale(1)", zIndex: isActive ? 30 : 10, boxShadow: isActive ? "0 0 60px rgba(255,255,255,0.12)" : "none" }}>
+                onMouseEnter={() => {
+                  if (idx !== activeIndex) {
+                    setIsPaused(true);
+                    setActiveIndex(idx);
+                  }
+                }}
+                style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "transform .9s cubic-bezier(.22,1,.36,1), opacity .8s, filter .8s", transform: isActive ? "translateY(-25px) scale(1.12)" : isPrev ? "translateX(-120px) scale(.82)" : "translateX(120px) scale(.82)", opacity: isActive ? 1 : 0.45, filter: isActive ? "blur(0px)" : "blur(3px) grayscale(1)", zIndex: isActive ? 30 : 10, boxShadow: isActive ? "0 0 60px rgba(255,255,255,0.12)" : "none" }}>
                 {[slide.image1, slide.image2].map((img, i) => (
                   <div
                     key={i}
                     className="group hover:-translate-y-3 transition-all duration-700"
-                    style={{ position: "relative", overflow: "hidden", borderRadius: "1.5rem", width: isActive ? "300px" : "180px", height: isActive ? "480px" : "300px", transition: "all 1s" }}
+                    style={{ position: "relative", overflow: "hidden", borderRadius: "1.5rem", width: isActive ? "340px" : "180px", height: isActive ? "540px" : "300px", transition: "all 1s" }}
                   >
                     <DriveMedia
                       url={img}
