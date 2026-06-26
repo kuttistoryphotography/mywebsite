@@ -131,9 +131,9 @@ export default function WeddingShowcase() {
         </div>
 
         {/* DESKTOP NAV BUTTONS */}
-        <div className="hidden md:flex" style={{ position: "absolute", insetInline: 0, top: "50%", transform: "translateY(-50%)", zIndex: 50, justifyContent: "space-between", paddingInline: "4rem", pointerEvents: "none" }}>
+        <div className="hidden md:flex" style={{ position: "absolute", insetInline: 0, top: "50%", transform: "translateY(-50%)", zIndex: 9999, justifyContent: "space-between", paddingInline: "4rem", pointerEvents: "none" }}>
           {[{ fn: goToPrev, label: "←" }, { fn: goToNext, label: "→" }].map(({ fn, label }) => (
-            <button key={label} onClick={fn} style={{ pointerEvents: "auto", width: "3.5rem", height: "3.5rem", borderRadius: "9999px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.05)", backdropFilter: "blur(40px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.5s", color: "white", fontSize: "1.5rem" }}
+            <button key={label} onClick={() => {  console.log(label);  fn(); }} style={{ pointerEvents: "auto", width: "3.5rem", height: "3.5rem", borderRadius: "9999px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "red", backdropFilter: "blur(40px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.5s", color: "white", fontSize: "1.5rem" }}
               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "white"; e.currentTarget.style.color = "black"; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "white"; }}>
               {label}
