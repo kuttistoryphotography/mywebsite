@@ -14,7 +14,7 @@ export interface IContactSettings extends Document {
   city: string;
   state: string;
   pincode: string;
-  mapEmbedUrl: string;
+  googleMapsEmbed: string;
   businessHours: string;
   instagramUrl: string;
   facebookUrl: string;
@@ -33,7 +33,7 @@ const ContactSettingsSchema = new Schema<IContactSettings>(
     city:         { type: String, default: 'Madurai' },
     state:        { type: String, default: 'Tamil Nadu' },
     pincode:      { type: String, default: '625016' },
-    mapEmbedUrl:  { type: String, default: '' },
+    googleMapsEmbed: { type: String, default: '' },
     businessHours:{ type: String, default: 'Mon – Sat: 9 AM – 7 PM' },
     instagramUrl: { type: String, default: '' },
     facebookUrl:  { type: String, default: '' },

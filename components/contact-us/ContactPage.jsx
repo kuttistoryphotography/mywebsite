@@ -11,7 +11,7 @@ const DEFAULTS = {
   city: "Madurai",
   state: "Tamil Nadu",
   pincode: "625016",
-  mapEmbedUrl: "",
+  googleMapsEmbed: "",
   businessHours: "Mon – Sat: 9 AM – 7 PM",
   instagramUrl: "",
   facebookUrl: "",
@@ -20,7 +20,7 @@ const DEFAULTS = {
 
 const ContactPage = () => {
   const infoRef = useRef(null);
-  const [contact, setContact] = useState(DEFAULTS);
+  const [contact, setContact] = useState({  ...DEFAULTS,  googleMapsEmbed: "", });
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", category: "Wedding Shoot", date: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -157,10 +157,10 @@ const ContactPage = () => {
           </div>
 
           {/* Map */}
-          {contact.mapEmbedUrl && (
+          {contact.googleMapsEmbed && (
             <div className="info-item rounded-2xl overflow-hidden border border-zinc-800 h-48">
               <iframe
-                src={contact.mapEmbedUrl}
+                src={contact.googleMapsEmbed}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
