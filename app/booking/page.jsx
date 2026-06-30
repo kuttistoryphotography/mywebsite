@@ -5,7 +5,11 @@ import BookingForm from "../../components/booking/BookingForm";
 export default function BookingPage() {
   return (
     <>
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-12">
+      {/* Booking Form First */}
+      <BookingForm />
+
+      {/* SEO Content at Bottom */}
+      <section className="max-w-6xl mx-auto px-6 py-20">
         <h1 className="text-4xl md:text-5xl font-bold mb-6">
           Book Your Photography Session
         </h1>
@@ -33,8 +37,6 @@ export default function BookingPage() {
           photographs that you and your family will cherish forever.
         </p>
       </section>
-
-      <BookingForm />
     </>
   );
 }
