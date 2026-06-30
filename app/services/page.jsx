@@ -5,41 +5,106 @@ import ServicesGropu from "../../components/services/servicegropu";
 export default function ServicesPage() {
   return (
     <>
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          Professional Photography & Videography Services in Madurai
-        </h1>
+      <section className="max-w-7xl mx-auto px-6 lg:px-10 py-24 border-t border-white/10">
 
-        <p className="text-lg text-gray-600 leading-8 mb-6">
-          Kutti Story Photography provides professional photography and
-          videography services across Madurai and Tamil Nadu. We specialize in
-          wedding photography, candid photography, cinematic wedding films,
-          traditional wedding coverage, engagement photography, pre-wedding
-          shoots, maternity photography, baby shower photography, birthday
-          events, family portraits, and corporate events.
-        </p>
+        <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-        <p className="text-lg text-gray-600 leading-8 mb-6">
-          Every event is unique, and our experienced team focuses on capturing
-          genuine emotions, beautiful details, and unforgettable moments. We
-          combine creative storytelling with professional editing and cinematic
-          techniques to deliver timeless photographs and films that you will
-          treasure for years.
-        </p>
+          {/* Left Side */}
+          <div>
+            <span className="text-orange-500 uppercase tracking-[0.35em] text-sm font-medium">
+              Our Services
+            </span>
 
-        <p className="text-lg text-gray-600 leading-8 mb-6">
-          Our photography packages are designed to suit different budgets and
-          event sizes. From intimate ceremonies to grand weddings, we provide
-          personalized service, premium-quality albums, high-resolution edited
-          images, cinematic highlight videos, and complete event coverage.
-        </p>
+            <h2 className="text-5xl lg:text-6xl font-bold mt-6 leading-tight">
+              Professional
+              <br />
+              Photography &
+              <br />
+              Videography
+            </h2>
 
-        <p className="text-lg text-gray-600 leading-8">
-          Explore our services below to learn more about each photography and
-          videography package. If you have any questions or need a customized
-          quotation, feel free to contact our team—we're always happy to help
-          make your special moments unforgettable.
-        </p>
+            <p className="mt-8 text-gray-400 text-lg leading-8">
+              Capturing life's most memorable moments with premium photography,
+              cinematic videography, creative storytelling, and professional editing
+              across Madurai and Tamil Nadu.
+            </p>
+
+            <a
+              href="/contact"
+              className="inline-flex items-center gap-3 mt-10 bg-[#ff6b00] hover:bg-orange-600 transition-all duration-300 px-8 py-4 rounded-full text-white font-semibold"
+            >
+              Book Your Session
+              <span>→</span>
+            </a>
+          </div>
+
+          {/* Right Side */}
+          <div className="space-y-8 text-lg text-gray-400 leading-9">
+
+            <p>
+              Kutti Story Photography offers professional photography and
+              videography services throughout Madurai and Tamil Nadu. Our
+              experienced team specializes in candid wedding photography,
+              traditional wedding photography, cinematic wedding films,
+              pre-wedding photography, engagement photography, maternity
+              photography, baby shower photography, newborn and baby
+              photoshoots, birthday celebrations, family portraits, school
+              events, corporate events, product photography, and promotional
+              video production.
+            </p>
+
+            <p>
+              Every celebration tells a unique story. We combine creativity,
+              natural emotions, cinematic composition, premium color grading,
+              drone coverage, and high-end editing techniques to deliver timeless
+              photographs and films that families will cherish forever.
+            </p>
+
+            <p>
+              Whether you need complete wedding coverage, event photography,
+              commercial photography, or social media content creation, our
+              customized packages are designed to match every requirement and
+              budget while maintaining exceptional quality and service.
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Statistics */}
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mt-24 pt-16 border-t border-white/10">
+
+          <div>
+            <h3 className="text-5xl font-bold text-white">150+</h3>
+            <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
+              Weddings Covered
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-5xl font-bold text-white">1000+</h3>
+            <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
+              Happy Clients
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-5xl font-bold text-white">20+</h3>
+            <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
+              Photography Services
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-5xl font-bold text-white">7+</h3>
+            <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
+              Years Experience
+            </p>
+          </div>
+
+        </div>
+
       </section>
 
       <ServicesGropu />
