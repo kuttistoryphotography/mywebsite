@@ -459,10 +459,11 @@ export default function BookingForm({ onSuccess, isDialog = false }: { onSuccess
   }
 
   return (
-    <section className={isDialog ? "bg-transparent" : "min-h-screen bg-zinc-950 flex"}>
+    
+<section className={ isDialog ? "bg-transparent" : "min-h-screen bg-zinc-950 flex pt-24 lg:pt-0" } >
       {/* Left Side - Image */}
       {!isDialog && (
-        <div className="hidden lg:block lg:w-1/2 relative">
+        <div className="hidden lg:block lg:w-1/2 relative pt-24 lg:pt-0">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-zinc-950/50 z-10" />
           <img
             src={
