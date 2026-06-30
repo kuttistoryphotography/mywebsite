@@ -9,7 +9,11 @@
  * Also handles legacy Google Drive URLs for backward compatibility.
  *
  * Usage:
- *   <DriveMedia url={url} mediaType="image" className="w-full h-full object-cover" />
+ *   <DriveMedia
+        url={hero.backgroundImage}
+        mediaType="image"
+        className="w-full h-full object-contain bg-red-500"
+      />
  *   <DriveMedia url={url} mediaType="video" autoPlay muted />
  *   <DriveMedia url={url} mediaType="pdf" />
  *
@@ -382,7 +386,7 @@ export function DriveLightbox({
                 <DriveThumbnail
                   url={it.url}
                   mediaType={it.mediaType}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-[15%_center]"
                   showBadge={it.mediaType !== "image"}
                 />
               </button>
