@@ -21,7 +21,7 @@ export const metadata: Metadata = {
               template: "%s | Kutti Story Photography",
             },
     description:
-                "Looking for the best wedding photography in Madurai? Kutti Story Photography offers candid wedding photography, cinematic wedding films, wedding videography, engagement photography, pre wedding shoots, and traditional Tamil wedding photography across Tamil Nadu.",
+              "Looking for the best wedding photography in Madurai? Kutti Story Photography offers candid wedding photography, cinematic wedding films, wedding videography, engagement photography, pre wedding shoots, and traditional Tamil wedding photography across Tamil Nadu.",
 
 keywords: [
   "Best Wedding Photography in Madurai",
