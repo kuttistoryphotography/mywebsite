@@ -81,6 +81,7 @@ type FormErrors = {
 export default function BookingForm({ onSuccess, isDialog = false }: { onSuccess?: () => void; isDialog?: boolean } = {}) {
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
+  const [bookingImage, setBookingImage] = useState("");
   const [mainCategory, setMainCategory] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [isAnimating, setIsAnimating] = useState(false);
@@ -119,6 +120,17 @@ export default function BookingForm({ onSuccess, isDialog = false }: { onSuccess
         // Invalid data, ignore
       }
     }
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/booking-settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.bookingImage) {
+          setBookingImage(data.bookingImage);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Save to localStorage on change
@@ -453,7 +465,10 @@ export default function BookingForm({ onSuccess, isDialog = false }: { onSuccess
         <div className="hidden lg:block lg:w-1/2 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-zinc-950/50 z-10" />
           <img
-            src="/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/12.webp"
+            src={
+              bookingImage ||
+              "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/12.webp"
+            }
             alt="Wedding photography"
             className="w-full h-full object-cover"
           />
