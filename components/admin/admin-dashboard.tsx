@@ -31,6 +31,7 @@ import AboutSection from "./sections/about-section";
 import ReviewsSection from "./sections/reviews-section";
 import PhotographyCategoriesSection from "./sections/photography-categories-section";
 import FaqSection from "./sections/faq-section";
+import BookingSettingsSection from "./sections/booking-settings-section";
 
 const sidebarTabs = [
   { id: "quotes",         label: "Quotes",           icon: FileText   },
@@ -53,6 +54,11 @@ const sidebarTabs = [
   { id: "settings",       label: "Settings",          icon: Settings   },
   { id: "contact",        label: "Contact Details",   icon: Phone      },
   { id: "faq", label: "FAQ Page", icon: HelpCircle },
+  {
+    id: "booking_settings",
+    label: "Booking Settings",
+    icon: Image,
+  },
 ];
 
 const UNREAD_THROTTLE_MS = 60_000;
@@ -138,6 +144,8 @@ export default function AdminDashboard() {
       case "reviews": return <ReviewsSection />;
       case "services": return <ServicesSection />;
       case "homepage": return <HomepageSection />;
+      case "booking_settings":
+      return <BookingSettingsSection />;
       case "about":    return <AboutSection />;
       case "monthly_quotes": return <MonthlyQuotesSection />;
       case "calendar": return <CalendarSection />;
