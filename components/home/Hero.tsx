@@ -66,8 +66,8 @@ export default function Hero() {
       });
 
       gsap.to(imageWrapperRef.current, {
-        y: 20,
-        duration: 3,
+        y: 8,
+        duration: 4,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
@@ -136,21 +136,23 @@ export default function Hero() {
         ref={containerRef}
         className="
           relative
-          min-h-screen
+          min-h-[100svh]
           overflow-hidden
           bg-[#0a0a0a]
           text-white
-          pt-[100px]
-          md:pt-[120px]
-          lg:pt-[140px]
-          pb-16
-          lg:pb-24
+
+          pt-24
+          lg:pt-28
+
+          pb-12
+          lg:pb-16
+
           flex
           items-center
         "
       >
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
         <div className="absolute inset-0 z-0 opacity-40">
@@ -160,45 +162,60 @@ export default function Hero() {
             className="w-full h-full object-cover"
             alt="Background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-transparent" />
+          <div
+            className="
+              absolute
+              inset-0
+
+              bg-gradient-to-r
+
+              from-black/65
+              via-black/30
+              to-black/10
+            "
+          />
         </div>
       )}
 
-      <div
+<div
   className="
-  relative z-10
-  w-full
-  max-w-[2400px]
-  mx-auto
-  px-5
-  sm:px-8
-  lg:px-16
-  xl:px-20
-  2xl:px-32
+    relative
+    z-10
+    w-full
+    max-w-screen-2xl
+    mx-auto
 
-  grid
-  grid-cols-1
-  lg:grid-cols-2
-  2xl:grid-cols-[1.2fr_1fr]
+    px-6
+    sm:px-8
+    lg:px-10
+    xl:px-12
 
-  gap-10
-  lg:gap-20
+    grid
+    grid-cols-1
+    lg:grid-cols-[48%_52%]
 
-  lg:items-stretch
-  items-start
+    gap-8
+    lg:gap-12
 
-  pt-0
-"
+    items-center
+  "
 >
-        
-
 
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
               {hero.badgeText}
             </span>
           </div> */}
-<div className="space-y-4 md:space-y-8 pt-4 lg:pt-0 lg:pr-10">
+<div
+  className="
+    w-full
+    max-w-[720px]
+    space-y-6
+    lg:space-y-8
+    pt-2
+    lg:pt-0
+  "
+>
 <div className="space-y-2 sm:space-y-3">
   
 <h3
@@ -206,9 +223,7 @@ export default function Hero() {
     group
     relative
     inline-block
-    text-[10px]
-    sm:text-xs
-    md:text-sm
+    text-[clamp(0.75rem,0.8vw,0.9rem)]
     text-gray-200
     font-medium
     tracking-[0.15em]
@@ -221,7 +236,7 @@ export default function Hero() {
       relative z-10
       transition-all duration-500
       group-hover:text-white
-      group-hover:scale-105
+      group-hover:scale-[1.03]
       group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]
     "
   >
@@ -245,18 +260,12 @@ export default function Hero() {
 
 <h1
   className="
-    text-[26px]
-    sm:text-[34px]
-    md:text-[42px]
-    lg:text-[48px]
-    xl:text-[54px]
-    2xl:text-[72px]
-    min-[2500px]:text-[90px]
     font-light
-    leading-[1.1]
     tracking-tight
-    max-w-[1100px]
-    2xl:max-w-[1300px]
+    leading-[1.05]
+    text-[clamp(2.8rem,5vw,5.8rem)]
+
+    max-w-[700px]
   "
 >
   <MagicText text={hero.heading} />
@@ -264,54 +273,80 @@ export default function Hero() {
 
 </div>
 
-          <p
+<p
   className="
     animate-fade
     text-gray-300
-    max-w-2xl
-    text-base
-    md:text-lg
-    2xl:text-xl
-    min-[2500px]:text-2xl
-    leading-relaxed
+    text-[clamp(1rem,1.2vw,1.2rem)]
+    leading-8
+    max-w-[650px]
   "
->{hero.paragraph}</p>
+>
+  {hero.paragraph}</p>
 
-          <div className="animate-fade flex flex-col sm:flex-row items-start sm:items-center gap-5">
-            <div className="mt-6 text-sm text-gray-400 max-w-2xl">
-              Trusted Wedding Photography Studio in Madurai • Candid Photography •
-              Cinematic Wedding Films • Traditional Tamil Wedding Photography •
-              Pre-Wedding & Post-Wedding Shoots Across Tamil Nadu
-          </div>
-            <a href="/booking">
-              <button className="bg-white text-black px-10 py-4 rounded-full font-semibold hover:bg-gray-200 transition-all transform hover:scale-105 active:scale-95">
-                {hero.primaryButtonText}
-              </button>
-            </a>
-            <a href="/works">
-              <button className="group flex items-center gap-2 text-white font-medium">
-                {hero.secondaryButtonText}
-                <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </button>
-            </a>
-          </div>
+                      <div className="animate-fade space-y-6">
 
-          <div className="animate-fade grid grid-cols-3 gap-3 sm:gap-6 p-5 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl w-full max-w-xl 2xl:max-w-2xl">
+                        <div className="flex flex-wrap items-center gap-4">
+
+                          <a href="/booking">
+                            <button className="bg-white text-black px-[clamp(1.5rem,2vw,2.5rem)] py-[clamp(.9rem,1vw,1rem)] rounded-full font-semibold transition-all duration-300 hover:bg-gray-200 hover:scale-105">
+                              {hero.primaryButtonText}
+                            </button>
+                          </a>
+
+                          <a href="/works">
+                            <button className="group flex items-center gap-2 text-white font-medium">
+                              {hero.secondaryButtonText}
+                              <span className="transition-transform duration-300 group-hover:translate-x-2">
+                                →
+                              </span>
+                            </button>
+                          </a>
+
+                        </div>
+
+                        <p className="text-sm text-gray-400 max-w-[680px] leading-7">
+                          Trusted Wedding Photography Studio in Madurai • Candid Photography •
+                          Cinematic Wedding Films • Traditional Tamil Wedding Photography •
+                          Pre-Wedding & Post-Wedding Shoots Across Tamil Nadu
+                        </p>
+
+                      </div>
+
+          <div className="
+            animate-fade
+            grid
+            grid-cols-3
+            gap-6
+
+            w-full
+            max-w-[650px]
+
+            rounded-3xl
+
+            bg-white/5
+            border
+            border-white/10
+
+            backdrop-blur-xl
+
+            p-[clamp(1.25rem,2vw,2rem)]
+          ">
             {[
               { value: hero.statsYears, label: "Years" },
               { value: hero.statsStories, label: "Stories" },
               { value: hero.statsPassion, label: "Passion" },
             ].map(({ value, label }) => (
               <div key={label}>
-                <h3 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{value}</h3>
-                <p className="text-xs uppercase tracking-widest text-gray-500 mt-1">{label}</p>
+                <h3 className="text-[clamp(2rem,2vw,2.75rem)] font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{value}</h3>
+                <p className="text-[clamp(.75rem,.8vw,.9rem)] uppercase tracking-widest text-gray-500 mt-1">{label}</p>
               </div>
             ))}
           </div>
         
 
         {/* Mobile Hero Image */}
-        <div className="md:hidden flex justify-center mt-8">
+        <div className="md:hidden flex justify-end mt-8">
           <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
             <DriveMedia
               url={hero.heroCardImage}
@@ -324,18 +359,36 @@ export default function Hero() {
         
         </div> {/* LEFT COLUMN END */}
 
-        <div
-        className="
-        relative
-        hidden
-        lg:flex
-        items-center
-        justify-center
-        h-full
-        "
-        >
+          <div
+            className="
+              relative
+              hidden
+              lg:flex
+              items-center
+              justify-end
+
+              w-full
+              h-full
+            "
+          >
           
-          <div className="absolute w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl animate-pulse" />
+          <div
+            className="
+              absolute
+              w-[420px]
+              h-[420px]
+
+              lg:w-[500px]
+              lg:h-[500px]
+
+              rounded-full
+              bg-white/5
+              blur-[120px]
+              opacity-70
+              animate-pulse
+            "
+          />
+
           {hero.heroCardImage && (
             <div
               ref={imageWrapperRef}
@@ -343,37 +396,34 @@ export default function Hero() {
               relative
               z-20
               mx-auto
-              translate-x-0
-              h-[650px]
-              w-[420px]
 
-              sm:h-[450px]
-              sm:w-[320px]
+              w-[90%]
+              max-w-[620px]
+              min-w-[320px]
 
-              lg:h-[600px]
-              lg:w-[500px]
+              aspect-[3/4]
 
-              xl:h-[700px]
-              xl:w-[580px]
-
-              2xl:h-[800px]
-              2xl:w-[650px]
-
-              min-[2500px]:h-[900px]
-              min-[2500px]:w-[750px]
-
-              rounded-[45px]
+              rounded-[40px]
               overflow-hidden
-              border-[12px]
+
+              border-[10px]
               border-white/5
+
               shadow-2xl
-             "
+              "
             >
               <DriveMedia
-                url={hero.heroCardImage}
-                mediaType="image"
-                className="w-full h-full object-cover scale-110 hover:scale-100 transition-transform duration-700"
-                alt="Professional Shot"
+                  url={hero.heroCardImage}
+                  mediaType="image"
+                  className="
+                      w-full
+                      h-full
+                      object-cover
+                      transition-transform
+                      duration-700
+                      hover:scale-105
+                  "
+                  alt="Professional Shot"
               />
             </div>
           )}
