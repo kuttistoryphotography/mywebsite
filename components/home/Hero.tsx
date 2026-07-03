@@ -155,7 +155,7 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
-        <div className="absolute inset-0 z-0 opacity-40">
+        <div className="absolute inset-0 z-0 opacity-100">
           <DriveMedia
             url={hero.backgroundImage}
             mediaType="image"
@@ -169,9 +169,9 @@ export default function Hero() {
 
               bg-gradient-to-r
 
-              from-black/65
-              via-black/30
-              to-black/10
+              from-black/30
+              via-black/20
+              to-transparent
             "
           />
         </div>
@@ -351,7 +351,7 @@ export default function Hero() {
             <DriveMedia
               url={hero.heroCardImage}
               mediaType="image"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-left"
               alt="Professional Shot"
             />
           </div>
