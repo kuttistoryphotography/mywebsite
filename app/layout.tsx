@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
+import BootstrapClient from "@/components/BootstrapClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -178,12 +179,14 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.svg" />
       </head>
       <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black overflow-x-hidden w-full min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black overflow-x-hidden w-full min-h-screen`}
       >
-  <Script
-    src="https://www.googletagmanager.com/gtag/js?id=G-1D4VY530T4"
-    strategy="afterInteractive"
-  />
+        <BootstrapClient />
+
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-1D4VY530T4"
+          strategy="afterInteractive"
+        />
 
   <Script id="google-analytics" strategy="afterInteractive">
     {`
