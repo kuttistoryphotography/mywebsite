@@ -169,8 +169,8 @@ export default function Hero() {
 
               bg-gradient-to-r
 
-              from-black/30
-              via-black/20
+              from-black/15
+              via-black/10
               to-transparent
             "
           />
