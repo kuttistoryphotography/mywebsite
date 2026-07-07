@@ -191,7 +191,7 @@ function AlbumCard({ album, onOpen, isFav, onFavToggle }) {
         <Heart className={cn("w-4 h-4", isFav ? "text-red-500 fill-red-500" : "text-white/70")} />
       </button>
 
-      <div onClick={onOpen} className="cursor-pointer relative h-56 overflow-hidden bg-zinc-900">
+      <div onClick={onOpen} className="cursor-pointer relative h-80 overflow-hidden bg-zinc-900">
         {album.coverImage ? (
           coverType === "video" ? (
             <AutoplayVideo url={album.coverImage} className="w-full h-full border-0" />
@@ -261,7 +261,7 @@ function CategorySection({ category, albums, portfolioItems, onOpenAlbum, onOpen
         )}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {shown.map(({ type, data, key }) =>
           type === "album" ? (
             <AlbumCard key={key} album={data}
