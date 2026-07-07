@@ -74,7 +74,7 @@ function BlogCard({ post, onClick }) {
   );
 }
 
-const BlogSection = () => {
+const BlogSection = ({ limit }) => {
   const sectionRef = useRef(null);
   const router = useRouter();
   const [blogs, setBlogs] = useState([]);
@@ -102,7 +102,11 @@ const BlogSection = () => {
 
     (async () => {
       try {
-        const res = await fetch("/api/blog?status=published");
+        const url = limit
+          ? `/api/blog?status=published&limit=${limit}`
+          : "/api/blog?status=published";
+
+        const res = await fetch(url);
         if (!mounted) return;
 
         if (!res.ok) {

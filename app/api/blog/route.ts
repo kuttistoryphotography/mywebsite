@@ -50,41 +50,57 @@ function serializeBlog(b: any, includeContent = true) {
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    const { searchParams } = new URL(request.url);
-    const adminView = searchParams.get('admin') === 'true';
-    const statusFilter = searchParams.get('status');
-    const limitParam = parseInt(searchParams.get('limit') || '10');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = isNaN(limitParam) ? 10 : limitParam;
 
+    const { searchParams } = new URL(request.url);
+
+    const adminView = searchParams.get("admin") === "true";
+    const statusFilter = searchParams.get("status");
+    const limitParam = searchParams.get("limit");
+    const page = parseInt(searchParams.get("page") || "1");
+
+    // ✅ Build filter
     const filter: Record<string, unknown> = {};
+
     if (!adminView) {
-      if (statusFilter === 'published') {
+      if (statusFilter === "published") {
         filter.published = true;
       } else if (!statusFilter) {
         filter.published = true;
       }
     }
 
-    const skip = (page - 1) * limit;
-    const [blogs, total] = await Promise.all([
-      Blog.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
-      Blog.countDocuments(filter),
-    ]);
-    console.log('blllll--------', blogs);
-    
+    // ✅ Base query
+    let query = Blog.find(filter).sort({ createdAt: -1 });
+
+    // ✅ Apply pagination only if limit exists
+    if (limitParam) {
+      const limit = parseInt(limitParam);
+      const skip = (page - 1) * limit;
+
+      query = query.skip(skip).limit(limit);
+    }
+
+    const blogs = await query;
+    const total = await Blog.countDocuments(filter);
+
     return NextResponse.json({
       blogs: blogs.map((b) => serializeBlog(b)),
       total,
       page,
-      totalPages: Math.ceil(total / limit),
+      totalPages: limitParam
+        ? Math.ceil(total / parseInt(limitParam))
+        : 1,
     });
+
   } catch (error) {
-    console.error('[Blog GET]', error);
-    return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
+    console.error("[Blog GET]", error);
+
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    );
   }
 }
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getCurrentUser();
