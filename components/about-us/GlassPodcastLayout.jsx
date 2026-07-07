@@ -28,8 +28,14 @@ export default function PhotographyAboutSection() {
     storyHeading: 'Behind the Lens',
     storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
 
-    storyImage: DEFAULT_IMAGES[1],      // Circle Image
-    storyCoverImage: DEFAULT_IMAGES[0], // NEW
+    storyImage: DEFAULT_IMAGES[1],
+
+    storyGalleryImages: [
+      DEFAULT_IMAGES[0],
+      DEFAULT_IMAGES[1],
+      DEFAULT_IMAGES[2],
+      DEFAULT_IMAGES[3],
+    ],
 
     storyRightImage: DEFAULT_IMAGES[2],
     storyVideo: '',
@@ -60,13 +66,18 @@ export default function PhotographyAboutSection() {
           profileRole:    h?.profileRole   || settings.profileRole,
           storyHeading:   s?.heading       || settings.storyHeading,
           storyParagraph: s?.paragraph     || settings.storyParagraph,
-          storyImage:     s?.image         || DEFAULT_IMAGES[1],
+          storyImage: s?.image || DEFAULT_IMAGES[1],
 
-          storyCoverImage: s?.coverImage   || DEFAULT_IMAGES[0],
+          storyGalleryImages:
+            s?.galleryImages?.length
+              ? s.galleryImages
+              : DEFAULT_IMAGES,
 
-          storyRightImage:  s?.rightImage || DEFAULT_IMAGES[2],
+          storyRightImage:
+            s?.rightImage || DEFAULT_IMAGES[2],
 
-          storyVideo: s?.videoUrl || '',
+          storyVideo:
+            s?.videoUrl || '',
         })
       })
       .catch(() => {})
@@ -156,7 +167,7 @@ export default function PhotographyAboutSection() {
         {/* Cover Image */}
         <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
           <DriveMedia
-            url={settings.storyCoverImage}
+            url={settings.storyGalleryImages[0]}
             mediaType="image"
             className="w-full h-full object-cover"
             alt="Cover Image"
@@ -166,7 +177,7 @@ export default function PhotographyAboutSection() {
         {/* Gallery Image 2 */}
         <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
           <DriveMedia
-            url={settings.images[1]}
+            url={settings.storyGalleryImages[1]}
             mediaType="image"
             className="w-full h-full object-cover"
             alt="Gallery Image 2"
@@ -176,7 +187,7 @@ export default function PhotographyAboutSection() {
         {/* Gallery Image 3 */}
         <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
           <DriveMedia
-            url={settings.images[2]}
+            url={settings.storyGalleryImages[2]}
             mediaType="image"
             className="w-full h-full object-cover"
             alt="Gallery Image 3"
@@ -186,7 +197,7 @@ export default function PhotographyAboutSection() {
         {/* Gallery Image 4 */}
         <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
           <DriveMedia
-            url={settings.images[3]}
+            url={settings.storyGalleryImages[3]}
             mediaType="image"
             className="w-full h-full object-cover"
             alt="Gallery Image 4"

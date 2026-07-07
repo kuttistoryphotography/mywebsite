@@ -12,9 +12,12 @@ interface StoryData {
   heading: string;
   paragraph: string;
 
-  image: string;       // Circle Image
-  coverImage: string;  // NEW
+  image: string;
+
+  galleryImages: string[];
+
   rightImage: string;
+
   videoUrl: string;
 }
 interface TeamMember { name: string; role: string; image: string }
@@ -34,9 +37,13 @@ export default function AboutSection() {
   const [story, setStory] = useState<StoryData>({
     heading: "",
     paragraph: "",
+
     image: "",
-    coverImage: "",
+
+    galleryImages: ["", "", "", ""],
+
     rightImage: "",
+
     videoUrl: "",
   });
   const [team,  setTeam]  = useState<TeamMember[]>([]);
@@ -177,17 +184,73 @@ export default function AboutSection() {
             </div>
           </div>
           <MediaField
-            label="Cover Image"
-            url={story.coverImage}
+            label="Circle Image"
+            url={story.image}
             onChange={(url) =>
               setStory({
                 ...story,
-                coverImage: url,
+                image: url,
               })
             }
             mediaType="image"
             context="about"
           />
+          <MediaField
+            label="Story Gallery Image 1"
+            url={story.galleryImages[0]}
+            onChange={(url) => {
+              const images = [...story.galleryImages];
+              images[0] = url;
+              setStory({
+                ...story,
+                galleryImages: images,
+              });
+            }}
+            mediaType="image"
+            context="about"
+          />
+          <MediaField
+            label="Story Gallery Image 2"
+            url={story.galleryImages[1]}
+            onChange={(url) => {
+              const images = [...story.galleryImages];
+              images[1] = url;
+              setStory({
+                ...story,
+                galleryImages: images,
+              });
+            }}
+            mediaType="image"
+            context="about"
+          />
+          <MediaField
+            label="Story Gallery Image 3"
+            url={story.galleryImages[2]}
+            onChange={(url) => {
+              const images = [...story.galleryImages];
+              images[2] = url;
+              setStory({
+                ...story,
+                galleryImages: images,
+              });
+            }}
+            mediaType="image"
+            context="about"
+          />
+          <MediaField
+          label="Story Gallery Image 4"
+          url={story.galleryImages[3]}
+          onChange={(url) => {
+            const images = [...story.galleryImages];
+            images[3] = url;
+            setStory({
+              ...story,
+              galleryImages: images,
+            });
+          }}
+          mediaType="image"
+          context="about"
+        />
           <MediaField label="Right Card Image" url={story.rightImage} onChange={(url) =>setStory({  ...story,   rightImage: url,  }) } mediaType="image" context="about" />
           <MediaField label="Story Video (plays on hover)" url={story.videoUrl} onChange={(url) => setStory({ ...story, videoUrl: url })} mediaType="video" context="about" />
           <SaveBtn section="story" data={story} />
