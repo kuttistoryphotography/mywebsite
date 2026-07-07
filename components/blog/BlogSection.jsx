@@ -28,8 +28,7 @@ const formatDate = (value) => {
 function BlogCard({ post, onClick }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = post.image && post.image.trim() !== "" && !imgError;
-  const visibleBlogs = showAll ? blogs : blogs.slice(0, 4);
-
+  
   return (
     <div className="blog-card group cursor-pointer" onClick={onClick}>
       {/* Image Container */}
@@ -139,6 +138,10 @@ const BlogSection = ({ limit }) => {
 
     return () => { mounted = false; };
   }, []);
+
+  const visibleBlogs = showAll
+  ? blogs
+  : blogs.slice(0, 4);
 
   return (
     <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
