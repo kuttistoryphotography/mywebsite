@@ -8,8 +8,6 @@ import FeaturedWork from "./FeaturedWork";
 import StatsCardsSection from "./StatsCardsSection";
 import StoriesSection from"./StoriesSection";
 
-
-
 export default function HomeFirst() {
   return (
     <>
@@ -23,7 +21,6 @@ export default function HomeFirst() {
       <StatsCardsSection />
       <StoriesSection  />
       
-
       
     </>
   );

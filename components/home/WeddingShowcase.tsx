@@ -157,7 +157,7 @@ export default function WeddingShowcase() {
             alignItems: "center",
             justifyContent: "center",
             gap: "3rem",
-            height: "600px",
+            height: "750px",
           }}
         >
           {slides.map((slide, idx) => {
@@ -175,7 +175,7 @@ export default function WeddingShowcase() {
                     setActiveIndex(idx);
                   }
                 }}
-                style={{ position: "relative", display: "flex", gap: "1.5rem", cursor: "pointer", transition: "transform .9s cubic-bezier(.22,1,.36,1), opacity .8s, filter .8s", transform: isActive ? "translateY(-25px) scale(1.12)" : isPrev ? "translateX(-120px) scale(.82)" : "translateX(120px) scale(.82)", opacity: isActive ? 1 : 0.45, filter: isActive ? "blur(0px)" : "blur(3px) grayscale(1)", zIndex: isActive ? 30 : 10, boxShadow: isActive ? "0 0 60px rgba(255,255,255,0.12)" : "none" }}>
+                style={{ position: "relative", display: "flex", gap: "2rem", cursor: "pointer", transition: "transform .9s cubic-bezier(.22,1,.36,1), opacity .8s, filter .8s", transform: isActive ? "translateY(-25px) scale(1.12)" : isPrev ? "translateX(-120px) scale(.82)" : "translateX(120px) scale(.82)", opacity: isActive ? 1 : 0.45, filter: isActive ? "blur(0px)" : "blur(3px) grayscale(1)", zIndex: isActive ? 30 : 10, boxShadow: isActive ? "0 0 60px rgba(255,255,255,0.12)" : "none" }}>
                 {[slide.image1, slide.image2].map((img, i) => (
                   <div
                     key={i}
