@@ -58,7 +58,22 @@ export default function AboutSection() {
         const h = data.settings.hero;
         setHero({ heading: h.heading || "", subheading: h.subheading || "", paragraph: h.paragraph || "", highlightWord: h.highlightWord || "", profileName: h.profileName || "", profileRole: h.profileRole || "", profileImage: h.profileImage || "", images: Array.isArray(h.images) ? [...h.images, "","","",""].slice(0, 4) : ["","","",""] });
       }
-      if (data.settings?.story)    setStory(data.settings.story);
+      if (data.settings?.story) {
+  const s = data.settings.story;
+
+      setStory({
+        heading: s.heading || "",
+        paragraph: s.paragraph || "",
+        image: s.image || "",
+
+        galleryImages: Array.isArray(s.galleryImages)
+          ? [...s.galleryImages, "", "", "", ""].slice(0, 4)
+          : ["", "", "", ""],
+
+        rightImage: s.rightImage || "",
+        videoUrl: s.videoUrl || "",
+      });
+    }
       if (Array.isArray(data.settings?.team))     setTeam(data.settings.team);
       if (Array.isArray(data.settings?.timeline)) setTimeline(data.settings.timeline);
       setLoading(false);
@@ -197,9 +212,9 @@ export default function AboutSection() {
           />
           <MediaField
             label="Story Gallery Image 1"
-            url={story.galleryImages[0]}
+            url={story.galleryImages?.[0] || ""}
             onChange={(url) => {
-              const images = [...story.galleryImages];
+              const images = [...(story.galleryImages || ["", "", "", ""])];
               images[0] = url;
               setStory({
                 ...story,
@@ -211,9 +226,9 @@ export default function AboutSection() {
           />
           <MediaField
             label="Story Gallery Image 2"
-            url={story.galleryImages[1]}
+            url={story.galleryImages?.[1] || ""}
             onChange={(url) => {
-              const images = [...story.galleryImages];
+              const images = [...(story.galleryImages || ["", "", "", ""])];
               images[1] = url;
               setStory({
                 ...story,
@@ -225,9 +240,9 @@ export default function AboutSection() {
           />
           <MediaField
             label="Story Gallery Image 3"
-            url={story.galleryImages[2]}
+            url={story.galleryImages?.[2] || ""}
             onChange={(url) => {
-              const images = [...story.galleryImages];
+              const images = [...(story.galleryImages || ["", "", "", ""])];
               images[2] = url;
               setStory({
                 ...story,
@@ -239,9 +254,9 @@ export default function AboutSection() {
           />
           <MediaField
           label="Story Gallery Image 4"
-          url={story.galleryImages[3]}
+          url={story.galleryImages?.[3] || ""}
           onChange={(url) => {
-            const images = [...story.galleryImages];
+            const images = [...(story.galleryImages || ["", "", "", ""])];
             images[3] = url;
             setStory({
               ...story,
