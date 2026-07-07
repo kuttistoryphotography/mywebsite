@@ -79,6 +79,7 @@ const BlogSection = ({ limit }) => {
   const router = useRouter();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -102,7 +103,7 @@ const BlogSection = ({ limit }) => {
 
     (async () => {
       try {
-        const finalLimit = limit ?? 1000;
+        const finalLimit = showAll ? 1000 : 4;
 
         const res = await fetch(
           `/api/blog?status=published&limit=${finalLimit}`
@@ -139,7 +140,7 @@ const BlogSection = ({ limit }) => {
     })();
 
     return () => { mounted = false; };
-  }, []);
+  }, [showAll]);
 
   return (
     <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
@@ -151,12 +152,12 @@ const BlogSection = ({ limit }) => {
             <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tighter">Photography <br />Insights</h2>
           </div>
           <button
-            onClick={() => router.push("/blog")}
+            onClick={() => setShowAll(!showAll)}
             className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 border-b border-zinc-800 pb-2"
           >
-            VIEW ALL STORIES <span>→</span>
+            {showAll ? "SHOW LESS" : "VIEW ALL STORIES"} <span>→</span>
           </button>
-        </div>
+                  </div>
 
         {/* BLOG GRID */}
         <div className="blog-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
