@@ -14,6 +14,7 @@ const DEFAULT_IMAGES = [
 export default function PhotographyAboutSection() {
   const containerRef = useRef(null)
   const heroTextContainerRef = useRef(null)
+  const [playStoryVideo, setPlayStoryVideo] = useState(false)
 
   const [settings, setSettings] = useState({
     heading:        'Capturing the',
@@ -158,7 +159,11 @@ export default function PhotographyAboutSection() {
         {/* ROW 2: CASE STUDY */}
         <div className="animate-card md:col-span-2 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
           <span className="absolute top-6 right-8 text-[9px] text-gray-600 tracking-[0.4em] font-mono">ESTD 2026</span>
-          <div className="relative w-44 h-44 flex-shrink-0 group">
+          <div
+            className="relative w-44 h-44 flex-shrink-0 group"
+            onMouseEnter={() => setPlayStoryVideo(true)}
+            onMouseLeave={() => setPlayStoryVideo(false)}
+          >
             <div className="absolute inset-0 rounded-full bg-yellow-500/10 scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-full h-full rounded-full overflow-hidden border-[4px] border-white/5 shadow-2xl">
               <DriveMedia
@@ -205,10 +210,18 @@ export default function PhotographyAboutSection() {
           <div className="mt-8">
             <div className="relative h-24 w-full rounded-[20px] overflow-hidden">
               <DriveMedia
-                  url={settings.storyRightImage}
-                  mediaType="image"
-                  className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700"
-                  alt="Behind The Lens Right Image"
+                url={
+                  playStoryVideo && settings.storyVideo
+                    ? settings.storyVideo
+                    : settings.storyImage
+                }
+                mediaType={
+                  playStoryVideo && settings.storyVideo
+                    ? "video"
+                    : "image"
+                }
+                className="w-full h-full object-cover"
+                alt="Behind the Lens"
               />
             </div>
             <p className="text-[9px] text-center mt-4 text-gray-700 font-mono tracking-widest">INFO@SUPPORT.COM</p>
