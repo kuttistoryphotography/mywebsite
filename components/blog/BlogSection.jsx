@@ -141,7 +141,7 @@ const BlogSection = ({ limit }) => {
 
   const visibleBlogs = showAll
   ? blogs
-  : blogs.slice(0, 4);
+  : blogs.slice(0, 6);
 
   return (
     <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
