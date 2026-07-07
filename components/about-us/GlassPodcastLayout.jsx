@@ -167,19 +167,23 @@ export default function PhotographyAboutSection() {
             <div className="absolute inset-0 rounded-full bg-yellow-500/10 scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-full h-full rounded-full overflow-hidden border-[4px] border-white/5 shadow-2xl">
               <DriveMedia
-              url={
-                playStoryVideo && settings.storyVideo
-                  ? settings.storyVideo
-                  : settings.storyImage
-              }
-              mediaType={
-                playStoryVideo && settings.storyVideo
-                  ? "video"
-                  : "image"
-              }
-              className="w-full h-full object-cover"
-              alt="Behind the Lens"
-            />
+                url={
+                  playStoryVideo && settings.storyVideo
+                    ? settings.storyVideo
+                    : settings.storyImage
+                }
+                mediaType={
+                  playStoryVideo && settings.storyVideo
+                    ? "video"
+                    : "image"
+                }
+                autoPlay={playStoryVideo}
+                muted
+                loop
+                controls={false}
+                className="w-full h-full object-cover"
+                alt="Behind the Lens"
+              />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center pl-1">
                   <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-black border-b-[6px] border-b-transparent" />
