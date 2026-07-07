@@ -8,7 +8,13 @@ interface HeroData {
   heading: string; subheading: string; paragraph: string; highlightWord: string;
   images: string[]; profileImage: string; profileName: string; profileRole: string;
 }
-interface StoryData { heading: string; paragraph: string; image: string; videoUrl: string }
+interface StoryData {
+  heading: string;
+  paragraph: string;
+  image: string;
+  rightImage: string;
+  videoUrl: string;
+}
 interface TeamMember { name: string; role: string; image: string }
 interface TimelineEntry { id: string; year: string; title: string; text: string; image: string }
 
@@ -23,7 +29,13 @@ type TabId = typeof TABS[number]["id"];
 export default function AboutSection() {
   const [activeTab, setActiveTab] = useState<TabId>("hero");
   const [hero,  setHero]  = useState<HeroData>({ heading: "", subheading: "", paragraph: "", highlightWord: "", images: ["","","",""], profileImage: "", profileName: "", profileRole: "" });
-  const [story, setStory] = useState<StoryData>({ heading: "", paragraph: "", image: "", videoUrl: "" });
+  const [story, setStory] = useState<StoryData>({
+    heading: "",
+    paragraph: "",
+    image: "",
+    rightImage: "",
+    videoUrl: "",
+  });
   const [team,  setTeam]  = useState<TeamMember[]>([]);
   const [timeline, setTimeline] = useState<TimelineEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -161,7 +173,7 @@ export default function AboutSection() {
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:border-amber-500 focus:outline-none resize-none" />
             </div>
           </div>
-          <MediaField label="Story Image" url={story.image} onChange={(url) => setStory({ ...story, image: url })} mediaType="image" context="about" />
+          <MediaField label="Right Card Image" url={story.rightImage} onChange={(url) =>setStory({  ...story,   rightImage: url,  }) } mediaType="image" context="about" />
           <MediaField label="Story Video (plays on hover)" url={story.videoUrl} onChange={(url) => setStory({ ...story, videoUrl: url })} mediaType="video" context="about" />
           <SaveBtn section="story" data={story} />
         </div>
