@@ -102,7 +102,7 @@ const BlogSection = () => {
 
     (async () => {
       try {
-        const res = await fetch("/api/blog?status=published&limit=3");
+        const res = await fetch("/api/blog?status=published");
         if (!mounted) return;
 
         if (!res.ok) {
