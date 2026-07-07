@@ -29,6 +29,7 @@ export interface IAboutSettings extends Document {
     heading: string;
     paragraph: string;
     image: string;
+    rightImage: string;
     videoUrl: string;
   };
   team: ITeamMember[];
@@ -72,6 +73,10 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
       heading:   { type: String, default: 'Behind the Lens' },
       paragraph: { type: String, default: 'Our night sessions showcase natural light and ambient night aesthetics.' },
       image:     { type: String, default: '' },
+
+      // NEW
+      rightImage:{ type: String, default: '' },
+
       videoUrl:  { type: String, default: '' },
     },
     team: {

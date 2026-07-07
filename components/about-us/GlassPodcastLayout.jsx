@@ -24,9 +24,10 @@ export default function PhotographyAboutSection() {
     profileImage:   DEFAULT_IMAGES[0],
     profileName:    'Leslie Alexander',
     profileRole:    'Lead Photographer',
-    storyHeading:   'Behind the Lens',
+    storyHeading: 'Behind the Lens',
     storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
-    storyImage:     DEFAULT_IMAGES[1],
+    storyImage: DEFAULT_IMAGES[1],
+    storyRightImage: DEFAULT_IMAGES[2],
   })
 
   useEffect(() => {
@@ -53,6 +54,11 @@ export default function PhotographyAboutSection() {
           storyHeading:   s?.heading       || settings.storyHeading,
           storyParagraph: s?.paragraph     || settings.storyParagraph,
           storyImage:     s?.image         || imgs[1] || DEFAULT_IMAGES[1],
+
+          storyRightImage:
+            s?.rightImage ||
+            imgs[2] ||
+            DEFAULT_IMAGES[2],
         })
       })
       .catch(() => {})
@@ -190,7 +196,12 @@ export default function PhotographyAboutSection() {
           </div>
           <div className="mt-8">
             <div className="relative h-24 w-full rounded-[20px] overflow-hidden">
-              <DriveMedia url={settings.images[2]} mediaType="image" className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700" alt="footer" />
+              <DriveMedia
+                  url={settings.storyRightImage}
+                  mediaType="image"
+                  className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700"
+                  alt="Behind The Lens Right Image"
+              />
             </div>
             <p className="text-[9px] text-center mt-4 text-gray-700 font-mono tracking-widest">INFO@SUPPORT.COM</p>
           </div>
