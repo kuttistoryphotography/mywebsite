@@ -139,10 +139,17 @@ export default function PhotographyTeamPage() {
           <p className="text-neutral-500 mb-10 max-w-md hover:text-white transition-colors duration-500">
             We are always looking for fresh perspectives to join our night-shoot collective.
           </p>
-          <button className="group relative px-12 py-5 bg-white text-black font-bold uppercase tracking-widest text-xs rounded-full overflow-hidden transition-all hover:pr-16 hover:bg-yellow-500">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeV69v9kyS1KBNLPyQdsV-8F56xImAFJ0_IKKDt3NvDBBEPaQ/viewform?usp=header"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative inline-flex items-center justify-center px-12 py-5 bg-white text-black font-bold uppercase tracking-widest text-xs rounded-full overflow-hidden transition-all hover:pr-16 hover:bg-yellow-500"
+          >
             <span className="relative z-10">Join the Crew</span>
-            <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">→</span>
-          </button>
+            <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">
+              →
+            </span>
+          </a>
         </div>
       </div>
     </section>
