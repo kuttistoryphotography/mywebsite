@@ -29,9 +29,14 @@ export interface IAboutSettings extends Document {
   heading: string;
   paragraph: string;
 
-  image: string;       // Circle Image
-  coverImage: string;  // NEW
+  image: string;
+
+  galleryImages: string[];
+
+  coverImage: string;
+
   rightImage: string;
+
   videoUrl: string;
 };
   team: ITeamMember[];
@@ -72,13 +77,40 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
       profileRole:   { type: String, default: 'Lead Photographer' },
     },
     story: {
-  heading:   { type: String, default: 'Behind the Lens' },
-  paragraph: { type: String, default: 'Our night sessions showcase natural light and ambient night aesthetics.' },
+  heading: {
+    type: String,
+    default: "Behind the Lens",
+  },
 
-  image:      { type: String, default: '' }, // Circle
-  coverImage: { type: String, default: '' }, // NEW
-  rightImage: { type: String, default: '' },
-  videoUrl:   { type: String, default: '' },
+  paragraph: {
+    type: String,
+    default: "Our night sessions showcase natural light and ambient night aesthetics.",
+  },
+
+  image: {
+    type: String,
+    default: "",
+  },
+
+  galleryImages: {
+    type: [String],
+    default: ["", "", "", ""],
+  },
+
+  coverImage: {
+    type: String,
+    default: "",
+  },
+
+  rightImage: {
+    type: String,
+    default: "",
+  },
+
+  videoUrl: {
+    type: String,
+    default: "",
+  },
 },
     team: {
       type: [TeamMemberSchema],
