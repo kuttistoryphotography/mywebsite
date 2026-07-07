@@ -27,7 +27,10 @@ export default function PhotographyAboutSection() {
     profileRole:    'Lead Photographer',
     storyHeading: 'Behind the Lens',
     storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
-    storyImage: DEFAULT_IMAGES[1],
+
+    storyImage: DEFAULT_IMAGES[1],      // Circle Image
+    storyCoverImage: DEFAULT_IMAGES[0], // NEW
+
     storyRightImage: DEFAULT_IMAGES[2],
     storyVideo: '',
   })
@@ -56,6 +59,11 @@ export default function PhotographyAboutSection() {
           storyHeading:   s?.heading       || settings.storyHeading,
           storyParagraph: s?.paragraph     || settings.storyParagraph,
           storyImage:     s?.image         || imgs[1] || DEFAULT_IMAGES[1],
+
+          storyCoverImage:
+          s?.coverImage ||
+          imgs[0] ||
+          DEFAULT_IMAGES[0],
 
           storyRightImage:
             s?.rightImage ||
@@ -150,7 +158,7 @@ export default function PhotographyAboutSection() {
           <div className="grid grid-cols-2 gap-2 h-full">
             {settings.images.map((img, idx) => (
               <div key={idx} className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                <DriveMedia url={img} mediaType="image" className="w-full h-full object-cover" alt={`work ${idx}`} />
+                <DriveMedia url={idx === 0 ? settings.storyCoverImage : img} mediaType="image" className="w-full h-full object-cover" alt={`work ${idx}`} />
               </div>
             ))}
           </div>

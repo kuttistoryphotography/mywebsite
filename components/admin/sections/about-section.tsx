@@ -11,7 +11,9 @@ interface HeroData {
 interface StoryData {
   heading: string;
   paragraph: string;
-  image: string;
+
+  image: string;       // Circle Image
+  coverImage: string;  // NEW
   rightImage: string;
   videoUrl: string;
 }
@@ -33,6 +35,7 @@ export default function AboutSection() {
     heading: "",
     paragraph: "",
     image: "",
+    coverImage: "",
     rightImage: "",
     videoUrl: "",
   });
@@ -173,6 +176,18 @@ export default function AboutSection() {
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:border-amber-500 focus:outline-none resize-none" />
             </div>
           </div>
+          <MediaField
+            label="Cover Image"
+            url={story.coverImage}
+            onChange={(url) =>
+              setStory({
+                ...story,
+                coverImage: url,
+              })
+            }
+            mediaType="image"
+            context="about"
+          />
           <MediaField label="Right Card Image" url={story.rightImage} onChange={(url) =>setStory({  ...story,   rightImage: url,  }) } mediaType="image" context="about" />
           <MediaField label="Story Video (plays on hover)" url={story.videoUrl} onChange={(url) => setStory({ ...story, videoUrl: url })} mediaType="video" context="about" />
           <SaveBtn section="story" data={story} />
