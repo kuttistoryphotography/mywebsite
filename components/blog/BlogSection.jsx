@@ -109,7 +109,6 @@ const BlogSection = ({ limit }) => {
         );
 
         if (!mounted) return;
-        if (!mounted) return;
 
         if (!res.ok) {
           setBlogs([]);

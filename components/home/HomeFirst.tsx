@@ -7,6 +7,7 @@ import PhilosophySection from "./PhilosophySection";
 import FeaturedWork from "./FeaturedWork";
 import StatsCardsSection from "./StatsCardsSection";
 import StoriesSection from"./StoriesSection";
+import BlogSection from "../blog/BlogSection";
 
 
 export default function HomeFirst() {
@@ -21,6 +22,9 @@ export default function HomeFirst() {
       <FeaturedWork />
       <StatsCardsSection />
       <StoriesSection  />
+      <StoriesSection />
+      <BlogSection limit={4} />
+
 
       
     </>
