@@ -102,11 +102,13 @@ const BlogSection = ({ limit }) => {
 
     (async () => {
       try {
-        const url = limit
-          ? `/api/blog?status=published&limit=${limit}`
-          : "/api/blog?status=published";
+        const finalLimit = limit ?? 1000;
 
-        const res = await fetch(url);
+        const res = await fetch(
+          `/api/blog?status=published&limit=${finalLimit}`
+        );
+
+        if (!mounted) return;
         if (!mounted) return;
 
         if (!res.ok) {
