@@ -36,7 +36,9 @@ export default function PhotographyAboutSection() {
   })
 
   useEffect(() => {
-    fetch('/api/about')
+    fetch('/api/about?ts=' + Date.now(), {
+      cache: 'no-store',
+    })
       .then((r) => r.json())
       .then((data) => {
         const h = data.settings?.hero

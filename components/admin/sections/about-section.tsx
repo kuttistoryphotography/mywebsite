@@ -188,18 +188,6 @@ export default function AboutSection() {
             mediaType="image"
             context="about"
           />
-          <MediaField
-            label="Cover Image"
-            url={story.coverImage}
-            onChange={(url) =>
-              setStory({
-                ...story,
-                coverImage: url,
-              })
-            }
-            mediaType="image"
-            context="about"
-          />
           <MediaField label="Right Card Image" url={story.rightImage} onChange={(url) =>setStory({  ...story,   rightImage: url,  }) } mediaType="image" context="about" />
           <MediaField label="Story Video (plays on hover)" url={story.videoUrl} onChange={(url) => setStory({ ...story, videoUrl: url })} mediaType="video" context="about" />
           <SaveBtn section="story" data={story} />
