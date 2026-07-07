@@ -72,14 +72,14 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
       profileRole:   { type: String, default: 'Lead Photographer' },
     },
     story: {
-      heading:   { type: String, default: 'Behind the Lens' },
-      paragraph: { type: String, default: 'Our night sessions showcase natural light and ambient night aesthetics.' },
+  heading:   { type: String, default: 'Behind the Lens' },
+  paragraph: { type: String, default: 'Our night sessions showcase natural light and ambient night aesthetics.' },
 
-      image:      { type: String, default: '' }, // Circle
-      coverImage: { type: String, default: '' }, // NEW
-      rightImage: { type: String, default: '' },
-      videoUrl:   { type: String, default: '' },
-    },
+  image:      { type: String, default: '' }, // Circle
+  coverImage: { type: String, default: '' }, // NEW
+  rightImage: { type: String, default: '' },
+  videoUrl:   { type: String, default: '' },
+},
     team: {
       type: [TeamMemberSchema],
       default: [
