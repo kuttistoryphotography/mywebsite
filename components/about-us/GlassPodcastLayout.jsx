@@ -28,6 +28,7 @@ export default function PhotographyAboutSection() {
     storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
     storyImage: DEFAULT_IMAGES[1],
     storyRightImage: DEFAULT_IMAGES[2],
+    storyVideo: '',
   })
 
   useEffect(() => {
@@ -59,6 +60,8 @@ export default function PhotographyAboutSection() {
             s?.rightImage ||
             imgs[2] ||
             DEFAULT_IMAGES[2],
+
+          storyVideo: s?.videoUrl || '',
         })
       })
       .catch(() => {})
@@ -158,7 +161,12 @@ export default function PhotographyAboutSection() {
           <div className="relative w-44 h-44 flex-shrink-0 group">
             <div className="absolute inset-0 rounded-full bg-yellow-500/10 scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-full h-full rounded-full overflow-hidden border-[4px] border-white/5 shadow-2xl">
-              <DriveMedia url={settings.storyImage} mediaType="image" className="w-full h-full object-cover" alt="Feature" />
+              <DriveMedia
+                url={settings.storyVideo || settings.storyImage}
+                mediaType={settings.storyVideo ? "video" : "image"}
+                className="w-full h-full object-cover"
+                alt="Feature"
+              />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center pl-1">
                   <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-black border-b-[6px] border-b-transparent" />
