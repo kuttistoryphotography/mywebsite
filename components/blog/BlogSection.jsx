@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 const estimateReadTime = (html = "") => {
   const words = html.replace(/<[^>]*>/g, " ").trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.ceil(words / 220));
+  
   return `${minutes} min read`;
 };
 
@@ -27,6 +28,7 @@ const formatDate = (value) => {
 function BlogCard({ post, onClick }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = post.image && post.image.trim() !== "" && !imgError;
+  const visibleBlogs = showAll ? blogs : blogs.slice(0, 4);
 
   return (
     <div className="blog-card group cursor-pointer" onClick={onClick}>
@@ -103,11 +105,7 @@ const BlogSection = ({ limit }) => {
 
     (async () => {
       try {
-        const finalLimit = showAll ? 1000 : 4;
-
-        const res = await fetch(
-          `/api/blog?status=published&limit=${finalLimit}`
-        );
+        const res = await fetch("/api/blog?status=published");
 
         if (!mounted) return;
 
@@ -140,7 +138,7 @@ const BlogSection = ({ limit }) => {
     })();
 
     return () => { mounted = false; };
-  }, [showAll]);
+  }, []);
 
   return (
     <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
@@ -161,7 +159,7 @@ const BlogSection = ({ limit }) => {
 
         {/* BLOG GRID */}
         <div className="blog-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {blogs.map((post) => (
+          {visibleBlogs.map((post) => (
             <BlogCard
               key={post.id}
               post={post}
