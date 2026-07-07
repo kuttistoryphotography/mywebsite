@@ -14,7 +14,6 @@ const DEFAULT_IMAGES = [
 export default function PhotographyAboutSection() {
   const containerRef = useRef(null)
   const heroTextContainerRef = useRef(null)
-  const [playStoryVideo, setPlayStoryVideo] = useState(false)
 
   const [settings, setSettings] = useState({
     heading:        'Capturing the',
@@ -25,26 +24,13 @@ export default function PhotographyAboutSection() {
     profileImage:   DEFAULT_IMAGES[0],
     profileName:    'Leslie Alexander',
     profileRole:    'Lead Photographer',
-    storyHeading: 'Behind the Lens',
+    storyHeading:   'Behind the Lens',
     storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
-
-    storyImage: DEFAULT_IMAGES[1],
-
-    storyGalleryImages: [
-      DEFAULT_IMAGES[0],
-      DEFAULT_IMAGES[1],
-      DEFAULT_IMAGES[2],
-      DEFAULT_IMAGES[3],
-    ],
-
-    storyRightImage: DEFAULT_IMAGES[2],
-    storyVideo: '',
+    storyImage:     DEFAULT_IMAGES[1],
   })
 
   useEffect(() => {
-    fetch('/api/about?ts=' + Date.now(), {
-      cache: 'no-store',
-    })
+    fetch('/api/about')
       .then((r) => r.json())
       .then((data) => {
         const h = data.settings?.hero
@@ -66,18 +52,7 @@ export default function PhotographyAboutSection() {
           profileRole:    h?.profileRole   || settings.profileRole,
           storyHeading:   s?.heading       || settings.storyHeading,
           storyParagraph: s?.paragraph     || settings.storyParagraph,
-          storyImage: s?.image || DEFAULT_IMAGES[1],
-
-          storyGalleryImages:
-            s?.galleryImages?.length
-              ? s.galleryImages
-              : DEFAULT_IMAGES,
-
-          storyRightImage:
-            s?.rightImage || DEFAULT_IMAGES[2],
-
-          storyVideo:
-            s?.videoUrl || '',
+          storyImage:     s?.image         || imgs[1] || DEFAULT_IMAGES[1],
         })
       })
       .catch(() => {})
@@ -163,78 +138,21 @@ export default function PhotographyAboutSection() {
         {/* ROW 2: MINI GALLERY */}
         <div className="animate-card md:col-span-1 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-4">
           <div className="grid grid-cols-2 gap-2 h-full">
-
-        {/* Cover Image */}
-        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-          <DriveMedia
-            url={settings.storyGalleryImages[0]}
-            mediaType="image"
-            className="w-full h-full object-cover"
-            alt="Cover Image"
-          />
+            {settings.images.map((img, idx) => (
+              <div key={idx} className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+                <DriveMedia url={img} mediaType="image" className="w-full h-full object-cover" alt={`work ${idx}`} />
+              </div>
+            ))}
+          </div>
         </div>
-
-        {/* Gallery Image 2 */}
-        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-          <DriveMedia
-            url={settings.storyGalleryImages[1]}
-            mediaType="image"
-            className="w-full h-full object-cover"
-            alt="Gallery Image 2"
-          />
-        </div>
-
-        {/* Gallery Image 3 */}
-        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-          <DriveMedia
-            url={settings.storyGalleryImages[2]}
-            mediaType="image"
-            className="w-full h-full object-cover"
-            alt="Gallery Image 3"
-          />
-        </div>
-
-        {/* Gallery Image 4 */}
-        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-          <DriveMedia
-            url={settings.storyGalleryImages[3]}
-            mediaType="image"
-            className="w-full h-full object-cover"
-            alt="Gallery Image 4"
-          />
-        </div>
-
-          </div>   {/* closes grid */}
-        </div>       {/* closes animate-card */}
 
         {/* ROW 2: CASE STUDY */}
         <div className="animate-card md:col-span-2 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
           <span className="absolute top-6 right-8 text-[9px] text-gray-600 tracking-[0.4em] font-mono">ESTD 2026</span>
-          <div
-            className="relative w-44 h-44 flex-shrink-0 group"
-            onMouseEnter={() => setPlayStoryVideo(true)}
-            onMouseLeave={() => setPlayStoryVideo(false)}
-          >
+          <div className="relative w-44 h-44 flex-shrink-0 group">
             <div className="absolute inset-0 rounded-full bg-yellow-500/10 scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-full h-full rounded-full overflow-hidden border-[4px] border-white/5 shadow-2xl">
-              <DriveMedia
-                url={
-                  playStoryVideo && settings.storyVideo
-                    ? settings.storyVideo
-                    : settings.storyImage
-                }
-                mediaType={
-                  playStoryVideo && settings.storyVideo
-                    ? "video"
-                    : "image"
-                }
-                autoPlay={playStoryVideo}
-                muted
-                loop
-                controls={false}
-                className="w-full h-full object-cover"
-                alt="Behind the Lens"
-              />
+              <DriveMedia url={settings.storyImage} mediaType="image" className="w-full h-full object-cover" alt="Feature" />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center pl-1">
                   <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-black border-b-[6px] border-b-transparent" />
@@ -272,12 +190,7 @@ export default function PhotographyAboutSection() {
           </div>
           <div className="mt-8">
             <div className="relative h-24 w-full rounded-[20px] overflow-hidden">
-              <DriveMedia
-                  url={settings.storyRightImage}
-                  mediaType="image"
-                  className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700"
-                  alt="Behind The Lens Right Image"
-              />
+              <DriveMedia url={settings.images[2]} mediaType="image" className="w-full h-full object-cover opacity-40 hover:opacity-100 transition-opacity duration-700" alt="footer" />
             </div>
             <p className="text-[9px] text-center mt-4 text-gray-700 font-mono tracking-widest">INFO@SUPPORT.COM</p>
           </div>
