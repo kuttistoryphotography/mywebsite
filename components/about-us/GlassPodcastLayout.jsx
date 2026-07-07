@@ -60,17 +60,11 @@ export default function PhotographyAboutSection() {
           profileRole:    h?.profileRole   || settings.profileRole,
           storyHeading:   s?.heading       || settings.storyHeading,
           storyParagraph: s?.paragraph     || settings.storyParagraph,
-          storyImage:     s?.image         || imgs[1] || DEFAULT_IMAGES[1],
+          storyImage:     s?.image         || DEFAULT_IMAGES[1],
 
-          storyCoverImage:
-          s?.coverImage ||
-          imgs[0] ||
-          DEFAULT_IMAGES[0],
+          storyCoverImage: s?.coverImage   || DEFAULT_IMAGES[0],
 
-          storyRightImage:
-            s?.rightImage ||
-            imgs[2] ||
-            DEFAULT_IMAGES[2],
+          storyRightImage:  s?.rightImage || DEFAULT_IMAGES[2],
 
           storyVideo: s?.videoUrl || '',
         })
@@ -158,13 +152,49 @@ export default function PhotographyAboutSection() {
         {/* ROW 2: MINI GALLERY */}
         <div className="animate-card md:col-span-1 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-4">
           <div className="grid grid-cols-2 gap-2 h-full">
-            {settings.images.map((img, idx) => (
-              <div key={idx} className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                <DriveMedia url={idx === 0 ? settings.storyCoverImage : img} mediaType="image" className="w-full h-full object-cover" alt={`work ${idx}`} />
-              </div>
-            ))}
-          </div>
+
+        {/* Cover Image */}
+        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+          <DriveMedia
+            url={settings.storyCoverImage}
+            mediaType="image"
+            className="w-full h-full object-cover"
+            alt="Cover Image"
+          />
         </div>
+
+        {/* Gallery Image 2 */}
+        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+          <DriveMedia
+            url={settings.images[1]}
+            mediaType="image"
+            className="w-full h-full object-cover"
+            alt="Gallery Image 2"
+          />
+        </div>
+
+        {/* Gallery Image 3 */}
+        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+          <DriveMedia
+            url={settings.images[2]}
+            mediaType="image"
+            className="w-full h-full object-cover"
+            alt="Gallery Image 3"
+          />
+        </div>
+
+        {/* Gallery Image 4 */}
+        <div className="relative aspect-square rounded-[20px] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+          <DriveMedia
+            url={settings.images[3]}
+            mediaType="image"
+            className="w-full h-full object-cover"
+            alt="Gallery Image 4"
+          />
+        </div>
+
+          </div>   {/* closes grid */}
+        </div>       {/* closes animate-card */}
 
         {/* ROW 2: CASE STUDY */}
         <div className="animate-card md:col-span-2 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
