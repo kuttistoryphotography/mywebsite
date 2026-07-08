@@ -52,10 +52,17 @@ export interface ISiteSettings {
 
 export interface IHomepageSettings extends Document {
   hero: IHeroSection;
+  
   homeImages: IHomeImageSlot[];
   showcaseSlides: IShowcaseSlide[];
   storyImages: IStoryImage[];
   siteSettings: ISiteSettings;
+   philosophy: {
+    leftLines: string[];
+    label: string;
+    heading: string;
+    description: string;
+  };
 
   aboutContent: {
     title: string;
@@ -146,13 +153,35 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
       },
     ],
    storyImages: [
-  {
-    src: String,
-    alt: String,
-  },
-],
+    {
+      src: String,
+      alt: String,
+    },
+  ],
 
-aboutContent: {
+  philosophy: {
+  leftLines: {
+    type: [String],
+    default: [],
+  },
+
+  label: {
+    type: String,
+    default: "",
+  },
+
+  heading: {
+    type: String,
+    default: "",
+  },
+
+  description: {
+    type: String,
+    default: "",
+  },
+},
+
+  aboutContent: {
   title: {
     type: String,
     default: 'About Kutti Story',
