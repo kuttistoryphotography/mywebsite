@@ -115,7 +115,10 @@ export default function AboutTimeline() {
   }
 
   return (
-    <section ref={mainRef} className="relative bg-black text-white w-full overflow-hidden">
+    <section
+    ref={mainRef}
+    className="relative bg-transparent text-white w-full overflow-hidden"
+>
 
       {/* ════════════════════════════════════
           BACKGROUND — full-bleed sticky layer
