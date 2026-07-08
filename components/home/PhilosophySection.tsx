@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -13,8 +13,27 @@ export default function PhilosophySection() {
   const titleLinesRef = useRef<(HTMLSpanElement | null)[]>([]);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
+  const [philosophy, setPhilosophy] = useState({
+    leftLines: [
+      "Organizers",
+      "Of Emotional",
+      "Super Events",
+    ],
+    label: "Our Philosophy",
+    heading:
+      "We are visual storytellers capturing real emotions through light, timing, and human connection.",
+    description:
+      "Every wedding is a story waiting to be told.",
+  });
 
   useEffect(() => {
+    fetch("/api/homepage")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.settings?.philosophy) {
+        setPhilosophy(data.settings.philosophy);
+      }
+    });
     const ctx = gsap.context(() => {
       // 1. TITLES: Reveal with a slight tilt
       gsap.from(titleLinesRef.current, {
@@ -94,7 +113,7 @@ export default function PhilosophySection() {
         {/* LEFT: THE BIG TITLES (8 Columns) */}
         <div className="lg:col-span-7">
           <h2 className="text-[13vw] sm:text-[11vw] lg:text-[8.5vw] leading-[0.85] font-black uppercase tracking-tighter">
-            {["Organizers", "Of Emotional", "Super Events"].map((t, i) => (
+            {philosophy.leftLines.map((t, i) => (
               <span key={i} className="block overflow-hidden py-1">
                 <span
                   ref={(el) => { titleLinesRef.current[i] = el; }}
@@ -121,10 +140,14 @@ export default function PhilosophySection() {
               className="text-gray-400 text-lg md:text-xl leading-relaxed group-hover:text-white transition-colors duration-500"
             >
               <span className="text-white font-mono text-xs tracking-[0.3em] block mb-4 opacity-50 uppercase">
-                // Our Philosophy
+                // {philosophy.label}
               </span>
-              We are visual storytellers capturing real emotions through light,
-              timing, and human connection. Every wedding is a story waiting to be told.
+              {philosophy.heading}
+
+              <br />
+              <br />
+
+              {philosophy.description}
             </p>
             {/* Subtle Magic Glint effect on hover */}
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
