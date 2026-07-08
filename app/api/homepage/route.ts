@@ -7,6 +7,12 @@ import { getCurrentUser } from '@/lib/auth';
 const DEFAULT_HERO = {
   backgroundImage: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp',
   heading: 'Capturing Moments Into Eternity',
+  backgroundMediaType: 'image',
+
+  backgroundOpacity: 100,
+  backgroundBlur: 0,
+  backgroundBrightness: 100,
+  overlayOpacity: 20,
   subheading: 'Kutti Story Photography',
   paragraph: "We don't just take pictures; we craft visual legacies. Specializing in high-end storytelling and cinematic night shoots.",
   badgeText: 'Kutti Story Photography',
@@ -101,6 +107,7 @@ export async function PUT(request: NextRequest) {
 
     if (section === 'hero') {
       Object.assign(settings.hero, data);
+      settings.markModified('hero');
     } else if (section === 'homeImages') {
       settings.homeImages = data;
     } else if (section === 'showcaseSlides') {
