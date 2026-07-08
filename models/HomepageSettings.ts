@@ -3,6 +3,13 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 // Hero section
 export interface IHeroSection {
   backgroundImage: string;
+  backgroundMediaType: string;
+
+  backgroundOpacity: number;
+  backgroundBlur: number;
+  backgroundBrightness: number;
+  overlayOpacity: number;
+
   heading: string;
   subheading: string;
   paragraph: string;
@@ -12,7 +19,10 @@ export interface IHeroSection {
   statsYears: string;
   statsStories: string;
   statsPassion: string;
+
   heroCardImage: string;
+  heroCardMediaType: string;
+
   awardText: string;
 }
 
@@ -60,20 +70,61 @@ export interface IHomepageSettings extends Document {
 
 const HomepageSettingsSchema = new Schema<IHomepageSettings>(
   {
-    hero: {
-      backgroundImage: { type: String, default: '' },
-      heading: { type: String, default: 'Capturing Moments Into Eternity' },
-      subheading: { type: String, default: 'Kutti Story Photography' },
-      paragraph: { type: String, default: "We don't just take pictures; we craft visual legacies." },
-      badgeText: { type: String, default: 'Kutti Story Photography' },
-      primaryButtonText: { type: String, default: 'Book a Session' },
-      secondaryButtonText: { type: String, default: 'View Portfolio' },
-      statsYears: { type: String, default: '7+' },
-      statsStories: { type: String, default: '213+' },
-      statsPassion: { type: String, default: '100%' },
-      heroCardImage: { type: String, default: '' },
-      awardText: { type: String, default: 'Award Winning Studio 2024' },
-    },
+  hero: {
+  backgroundImage: { type: String, default: "" },
+
+  backgroundMediaType: {
+    type: String,
+    default: "image",
+  },
+
+  backgroundOpacity: {
+    type: Number,
+    default: 100,
+  },
+
+  backgroundBlur: {
+    type: Number,
+    default: 0,
+  },
+
+  backgroundBrightness: {
+    type: Number,
+    default: 100,
+  },
+
+  overlayOpacity: {
+    type: Number,
+    default: 20,
+  },
+
+  heading: { type: String, default: "Capturing Moments Into Eternity" },
+  subheading: { type: String, default: "Kutti Story Photography" },
+  paragraph: {
+    type: String,
+    default: "We don't just take pictures; we craft visual legacies.",
+  },
+
+  badgeText: { type: String, default: "Kutti Story Photography" },
+  primaryButtonText: { type: String, default: "Book a Session" },
+  secondaryButtonText: { type: String, default: "View Portfolio" },
+
+  statsYears: { type: String, default: "7+" },
+  statsStories: { type: String, default: "213+" },
+  statsPassion: { type: String, default: "100%" },
+
+  heroCardImage: { type: String, default: "" },
+
+  heroCardMediaType: {
+    type: String,
+    default: "image",
+  },
+
+  awardText: {
+    type: String,
+    default: "Award Winning Studio 2024",
+  },
+},
     siteSettings: {
       logo: {
         type: String,
@@ -124,8 +175,14 @@ aboutContent: {
   { timestamps: true }
 );
 
+
+
+delete (mongoose.models as any).HomepageSettings;
+
 const HomepageSettings: Model<IHomepageSettings> =
-  mongoose.models.HomepageSettings ||
-  mongoose.model<IHomepageSettings>('HomepageSettings', HomepageSettingsSchema);
+  mongoose.model<IHomepageSettings>(
+    "HomepageSettings",
+    HomepageSettingsSchema
+  );
 
 export default HomepageSettings;

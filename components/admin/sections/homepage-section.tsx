@@ -111,13 +111,32 @@ export default function HomepageSection() {
         if (data.settings) {
           if (data.settings.hero) {
             setHero({
+              backgroundImage: "",
+              backgroundMediaType: "image",
+
+              backgroundOpacity: 100,
+              backgroundBlur: 0,
+              backgroundBrightness: 100,
+              overlayOpacity: 20,
+
+              heading: "",
+              subheading: "",
+              paragraph: "",
+
+              badgeText: "",
+              primaryButtonText: "",
+              secondaryButtonText: "",
+
+              statsYears: "",
+              statsStories: "",
+              statsPassion: "",
+
+              heroCardImage: "",
+              heroCardMediaType: "image",
+
+              awardText: "",
+
               ...data.settings.hero,
-
-              backgroundMediaType:
-                data.settings.hero.backgroundMediaType || "image",
-
-              heroCardMediaType:
-                data.settings.hero.heroCardMediaType || "image",
             });
           }
 
