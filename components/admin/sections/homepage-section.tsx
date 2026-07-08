@@ -57,8 +57,14 @@ interface HomeImageSlot {
 
 export default function HomepageSection() {
   const [activeTab, setActiveTab] = useState<
-     "hero" | "slides" | "stories" | "images" | "about" | "logo"
-  >("hero");
+  | "hero"
+  | "slides"
+  | "stories"
+  | "images"
+  | "about"
+  | "philosophy"
+  | "logo"
+>("hero");
 
   const [hero, setHero] = useState<HeroData>({
     backgroundImage: "",
@@ -93,12 +99,29 @@ export default function HomepageSection() {
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
   const [siteSettings, setSiteSettings] = useState({ logo: "", });
   const [aboutContent, setAboutContent] = useState({
-  title: "About Kutti Story",
-  heading: "We Make Only Authentic Visual Experiences",
-  description:
-    "Every frame we create is driven by emotion, story, and authenticity.",
-  experienceBadge: "10+ Years Experience"
-});
+    title: "About Kutti Story",
+    heading: "We Make Only Authentic Visual Experiences",
+    description:
+      "Every frame we create is driven by emotion, story, and authenticity.",
+    experienceBadge: "10+ Years Experience"
+  });
+  const [philosophy, setPhilosophy] = useState({
+    leftLines: [
+      "ORGANIZE",
+      "OF",
+      "EMOTIONAL",
+      "SUPER",
+      "EVENTS",
+    ],
+
+    label: "// OUR PHILOSOPHY",
+
+    heading:
+      "We are visual storytellers capturing real emotions through light, timing and human connection.",
+
+    description:
+      "Every wedding is a story waiting to be told.",
+  });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -173,8 +196,11 @@ export default function HomepageSection() {
         }
 
         if (data.settings.aboutContent) {
-  setAboutContent(data.settings.aboutContent);
-}
+          setAboutContent(data.settings.aboutContent);
+        }
+        if (data.settings.philosophy) {
+          setPhilosophy(data.settings.philosophy);
+        }
 
         setLoading(false);
       })
@@ -225,13 +251,14 @@ export default function HomepageSection() {
   ];
 
   const tabs = [
-    { id: "hero", label: "Hero Section" },
-    { id: "slides", label: "Showcase Slides" },
-    { id: "stories", label: "Stories Strip" },
-    { id: "images", label: "Page Images" },
-    { id: "about", label: "About Section" },
-    { id: "logo", label: "Website Logo" },
-  ];
+  { id: "hero", label: "Hero Section" },
+  { id: "slides", label: "Showcase Slides" },
+  { id: "stories", label: "Stories Strip" },
+  { id: "images", label: "Page Images" },
+  { id: "about", label: "About Section" },
+  { id: "philosophy", label: "Philosophy Section" },
+  { id: "logo", label: "Website Logo" },
+];
 
   return (
     <div className="space-y-6">
@@ -827,6 +854,139 @@ export default function HomepageSection() {
           </button>
         </div>
       )}
+
+      {activeTab === "philosophy" && (
+        <div className="space-y-8">
+
+          <div className="bg-white rounded-xl border p-6">
+
+            <h2 className="text-xl font-bold mb-6">
+              Philosophy Section
+            </h2>
+
+            <label className="block font-medium mb-2">
+              Left Large Heading
+            </label>
+
+            {philosophy.leftLines.map((line, index) => (
+              <input
+                key={index}
+                value={line}
+                onChange={(e) => {
+                  const lines = [...philosophy.leftLines];
+                  lines[index] = e.target.value;
+
+                  setPhilosophy({
+                    ...philosophy,
+                    leftLines: lines,
+                  });
+                }}
+                className="w-full border rounded-lg px-4 py-2 mb-3"
+              />
+            ))}
+
+            <div className="flex gap-3 mt-4">
+
+              <button
+                type="button"
+                onClick={() =>
+                  setPhilosophy({
+                    ...philosophy,
+                    leftLines: [...philosophy.leftLines, ""],
+                  })
+                }
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              >
+                + Add Line
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setPhilosophy({
+                    ...philosophy,
+                    leftLines: philosophy.leftLines.slice(0, -1),
+                  })
+                }
+                disabled={philosophy.leftLines.length <= 1}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                Remove Last Line
+              </button>
+
+            </div>
+
+            <div className="mt-8">
+              <label className="block font-medium mb-2">
+                Small Label
+              </label>
+
+              <input
+                value={philosophy.label}
+                onChange={(e) =>
+                  setPhilosophy({
+                    ...philosophy,
+                    label: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+
+            <div className="mt-6">
+              <label className="block font-medium mb-2">
+                Right Heading
+              </label>
+
+              <input
+                value={philosophy.heading}
+                onChange={(e) =>
+                  setPhilosophy({
+                    ...philosophy,
+                    heading: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+
+            <div className="mt-6">
+              <label className="block font-medium mb-2">
+                Description
+              </label>
+
+              <textarea
+                rows={6}
+                value={philosophy.description}
+                onChange={(e) =>
+                  setPhilosophy({
+                    ...philosophy,
+                    description: e.target.value,
+                  })
+                }
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+            
+            <button
+              onClick={() => save("philosophy", philosophy)}
+              disabled={saving}
+              className="mt-8 flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black rounded-xl font-semibold transition-colors disabled:opacity-50"
+            >
+              {saving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+
+              Save Philosophy
+            </button>
+
+            </div>   {/* closes bg-white */}
+            </div>   {/* closes space-y-8 */}
+
+            )}
+      
       {activeTab === "logo" && (
         <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
           <h3 className="text-white font-semibold text-lg">
@@ -856,5 +1016,6 @@ export default function HomepageSection() {
         </div>
       )}
     </div>
+      
   );
 }

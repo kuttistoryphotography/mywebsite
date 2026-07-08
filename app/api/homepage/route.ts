@@ -60,6 +60,25 @@ const DEFAULT_ABOUT_CONTENT = {
   description:
     'Every frame we create is driven by emotion, story, and authenticity.',
 };
+
+const DEFAULT_PHILOSOPHY = {
+  leftLines: [
+    "ORGANIZE",
+    "OF",
+    "EMOTIONAL",
+    "SUPER",
+    "EVENTS",
+  ],
+
+  label: "// OUR PHILOSOPHY",
+
+  heading:
+    "We are visual storytellers capturing real emotions through light, timing and human connection.",
+
+  description:
+    "Every wedding is a story waiting to be told.",
+};
+
 export async function GET() {
   try {
     await connectDB();
@@ -67,13 +86,14 @@ export async function GET() {
 
 if (!settings) {
       settings = await HomepageSettings.create({
-        hero: DEFAULT_HERO,
-        siteSettings: DEFAULT_SITE_SETTINGS,
-        homeImages: DEFAULT_HOME_IMAGES,
-        showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
-        storyImages: DEFAULT_STORY_IMAGES,
-        aboutContent: DEFAULT_ABOUT_CONTENT,
-      });
+      hero: DEFAULT_HERO,
+      homeImages: DEFAULT_HOME_IMAGES,
+      showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
+      storyImages: DEFAULT_STORY_IMAGES,
+      aboutContent: DEFAULT_ABOUT_CONTENT,
+      philosophy: DEFAULT_PHILOSOPHY,
+      siteSettings: DEFAULT_SITE_SETTINGS,
+    });
     }
 
     return NextResponse.json({ settings });
@@ -116,6 +136,8 @@ export async function PUT(request: NextRequest) {
       settings.storyImages = data;
     } else if (section === 'aboutContent') {
       settings.aboutContent = data;
+    }else if (section === 'philosophy') {
+      settings.philosophy = data;
     }else if (section === 'siteSettings') {
       settings.siteSettings = data;
     }
