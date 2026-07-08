@@ -59,7 +59,8 @@ export default function Hero() {
   const imageWrapperRef = useRef<HTMLDivElement>(null);
 
 
-  const [hero, setHero] = useState<HeroData>(DEFAULT_HERO);
+  const [hero, setHero] = useState<HeroData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch dynamic content
   useEffect(() => {
@@ -77,9 +78,16 @@ export default function Hero() {
             heroCardMediaType:
               data.settings.hero.heroCardMediaType || "image",
           });
+        } else {
+          setHero(DEFAULT_HERO);
         }
+
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setHero(DEFAULT_HERO);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -132,7 +140,7 @@ export default function Hero() {
 
   let counter = 0;
 
-  return (
+   return (
     <>
       {text.split(" ").map((word, wordIndex) => (
         <span
@@ -161,6 +169,15 @@ export default function Hero() {
     </>
   );
 };
+
+    if (loading || !hero) {
+      return (
+        <section className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </section>
+      );
+    }
+    
      return (
       <section
         ref={containerRef}
