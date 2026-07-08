@@ -127,8 +127,8 @@ export default function AboutTimeline() {
               key={`bg-${item.id}`}
               className={`absolute inset-0 transition-all duration-[1400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
                 activeTab === idx
-                  ? 'opacity-35 scale-100 blur-none'
-                  : 'opacity-0 scale-105 blur-sm'
+                ? 'opacity-80 scale-100 blur-none'
+                : 'opacity-0 scale-105 blur-sm'
               }`}
             >
               <DriveMedia
@@ -137,7 +137,7 @@ export default function AboutTimeline() {
                 className="w-full h-full object-cover"
                 alt="background"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/80" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
             </div>
           ))}
         </div>
