@@ -133,14 +133,27 @@ export async function PUT(request: NextRequest) {
       settings.storyImages = data;
     } else if (section === 'aboutContent') {
       settings.aboutContent = data;
-    } else if (section === 'philosophy') {
-      settings.philosophy = data;
+    } else if (section === "philosophy") {
+      console.log("Incoming philosophy:", data);
+
+      settings.philosophy = {
+        leftLines: data.leftLines,
+        label: data.label,
+        heading: data.heading,
+        description: data.description,
+      };
+
+      console.log("Before save:", settings.philosophy);
+
+      settings.markModified("philosophy");
     } else if (section === 'siteSettings') {
       settings.siteSettings = data;
     }
 
     settings.markModified(section);
     await settings.save();
+
+    console.log("After save:", settings.philosophy);
 
     return NextResponse.json({ success: true, settings });
   } catch (error) {
