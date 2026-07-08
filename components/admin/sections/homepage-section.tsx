@@ -881,7 +881,7 @@ export default function HomepageSection() {
                     leftLines: lines,
                   });
                 }}
-                className="w-full border rounded-lg px-4 py-2 mb-3"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-3 bg-white text-black"
               />
             ))}
 
@@ -929,7 +929,7 @@ export default function HomepageSection() {
                     label: e.target.value,
                   })
                 }
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black"
               />
             </div>
 
@@ -946,7 +946,7 @@ export default function HomepageSection() {
                     heading: e.target.value,
                   })
                 }
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black"
               />
             </div>
 
@@ -964,7 +964,7 @@ export default function HomepageSection() {
                     description: e.target.value,
                   })
                 }
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black"
               />
             </div>
             
