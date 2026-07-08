@@ -133,14 +133,13 @@ export async function PUT(request: NextRequest) {
       settings.storyImages = data;
     } else if (section === 'aboutContent') {
       settings.aboutContent = data;
-    }else if (section === 'philosophy') {
+    } else if (section === 'philosophy') {
       settings.philosophy = data;
-      settings.markModified("philosophy");
-    }else if (section === 'siteSettings') {
+    } else if (section === 'siteSettings') {
       settings.siteSettings = data;
     }
 
-      settings.markModified(section);
+    settings.markModified(section);
     await settings.save();
 
     return NextResponse.json({ success: true, settings });
