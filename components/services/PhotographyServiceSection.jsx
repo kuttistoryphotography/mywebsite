@@ -11,6 +11,8 @@ export default function PhotographyServiceSection() {
   const sectionRef  = useRef(null);
   const heroTextRef = useRef(null);
 
+  const [loading, setLoading] = useState(true);
+
   const [settings, setSettings] = useState({
     heading:       "Moments Over",
     subheading:    "Our Services",
@@ -37,8 +39,11 @@ export default function PhotographyServiceSection() {
             heroVideoType: h.heroVideoType || "video",
           });
         }
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -79,6 +84,14 @@ export default function PhotographyServiceSection() {
   const renderUrl = mediaType === "video"
     ? toPreviewUrl(mediaUrl)          // Drive /preview embed for <iframe>
     : toImageUrl(mediaUrl, 1600);     // lh3 CDN direct image for <img>
+
+  if (loading) {
+    return (
+      <section className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="text-white text-lg">What We Capture...</div>
+      </section>
+    );
+  }
 
   return (
     <section ref={sectionRef} className="relative bg-[#0a0a0a] min-h-screen text-white overflow-hidden">
