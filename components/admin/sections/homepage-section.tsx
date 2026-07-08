@@ -982,10 +982,9 @@ export default function HomepageSection() {
               Save Philosophy
             </button>
 
-            </div>   {/* closes bg-white */}
-            </div>   {/* closes space-y-8 */}
-
-            )}
+            </div>
+            </div>
+        )}
       
       {activeTab === "logo" && (
         <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
