@@ -173,11 +173,11 @@ export default function Hero() {
     if (loading || !hero) {
       return (
         <section className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-          <div className="text-white text-lg">Loading...</div>
+          <div className="text-white text-lg">WElcome To Kutti Story...</div>
         </section>
       );
     }
-    
+
      return (
       <section
         ref={containerRef}
