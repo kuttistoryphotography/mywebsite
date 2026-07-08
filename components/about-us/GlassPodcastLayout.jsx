@@ -15,6 +15,7 @@ export default function PhotographyAboutSection() {
   const containerRef = useRef(null)
   const heroTextContainerRef = useRef(null)
   const [playStoryVideo, setPlayStoryVideo] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [settings, setSettings] = useState({
     heading:        'Capturing the',
@@ -49,7 +50,10 @@ export default function PhotographyAboutSection() {
       .then((data) => {
         const h = data.settings?.hero
         const s = data.settings?.story
-        if (!h && !s) return
+        if (!h && !s) {
+          setLoading(false);
+          return;
+        }
 
         const imgs = Array.isArray(h?.images) && h.images.filter(Boolean).length
           ? h.images.filter(Boolean)
@@ -79,8 +83,11 @@ export default function PhotographyAboutSection() {
           storyVideo:
             s?.videoUrl || '',
         })
+        setLoading(false)
       })
-      .catch(() => {})
+      .catch(() => {
+        setLoading(false);
+      })
   }, [])
 
   useEffect(() => {
@@ -117,6 +124,14 @@ export default function PhotographyAboutSection() {
     }, containerRef)
     return () => ctx.revert()
   }, [settings])
+
+  if (loading) {
+      return (
+        <section className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-white text-lg">Loading...</div>
+        </section>
+      );
+    }
 
   return (
     <section ref={containerRef} className="min-h-screen bg-black p-4 md:p-10 flex items-center justify-center text-white font-sans overflow-hidden">
