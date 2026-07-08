@@ -128,7 +128,7 @@ export default function PhotographyAboutSection() {
   if (loading) {
       return (
         <section className="min-h-screen bg-black flex items-center justify-center">
-          <div className="text-white text-lg">Loading...</div>
+          <div className="text-white text-lg">The Heart Behind the Camera...</div>
         </section>
       );
     }
