@@ -97,7 +97,7 @@ export default function PhilosophySection() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-[900px] lg:min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-12 lg:px-20"
       style={{
         backgroundColor: "#080808",
         color: "white",
@@ -113,8 +113,8 @@ export default function PhilosophySection() {
       <div className="max-w-[1440px] w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-center">
         
         {/* LEFT: THE BIG TITLES (8 Columns) */}
-        <div className="lg:col-span-7">
-          <h2 className="text-[13vw] sm:text-[11vw] lg:text-[8.5vw] leading-[0.85] font-black uppercase tracking-tighter">
+        <div className="lg:col-span-7 flex items-center min-h-[600px]">
+          <h2 className="text-[11vw] sm:text-[9vw] lg:text-[7vw] leading-[0.95] font-black uppercase tracking-tight">
             {philosophy.leftLines.map((t, i) => (
               <span key={i} className="block overflow-hidden py-1">
                 <span
