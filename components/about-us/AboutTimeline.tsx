@@ -21,7 +21,8 @@ const DEFAULT_TIMELINE: TimelineEntry[] = [
 ]
 
 export default function AboutTimeline() {
-  const [timeline, setTimeline]   = useState<TimelineEntry[]>(DEFAULT_TIMELINE)
+  const [timeline, setTimeline] = useState<TimelineEntry[]>([])
+  const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState(0)
   const [isMobile, setIsMobile]   = useState(false)
   const mainRef   = useRef<HTMLElement>(null)
@@ -41,19 +42,29 @@ export default function AboutTimeline() {
     fetch('/api/about')
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data.settings?.timeline) && data.settings.timeline.length) {
+        if (
+          Array.isArray(data.settings?.timeline) &&
+          data.settings.timeline.length
+        ) {
           setTimeline(
             data.settings.timeline.map((e: TimelineEntry, i: number) => ({
-              id:    e.id    || DEFAULT_TIMELINE[i]?.id    || `entry-${i}`,
-              year:  e.year  || DEFAULT_TIMELINE[i]?.year  || '',
-              title: e.title || DEFAULT_TIMELINE[i]?.title || '',
-              text:  e.text  || DEFAULT_TIMELINE[i]?.text  || '',
-              image: e.image || DEFAULT_TIMELINE[i]?.image || '',
+              id: e.id || DEFAULT_TIMELINE[i]?.id || `entry-${i}`,
+              year: e.year || DEFAULT_TIMELINE[i]?.year || "",
+              title: e.title || DEFAULT_TIMELINE[i]?.title || "",
+              text: e.text || DEFAULT_TIMELINE[i]?.text || "",
+              image: e.image || DEFAULT_TIMELINE[i]?.image || "",
             }))
-          )
+          );
+        } else {
+          setTimeline(DEFAULT_TIMELINE);
         }
+
+        setLoading(false);
       })
-      .catch(() => {})
+      .catch(() => {
+          setTimeline(DEFAULT_TIMELINE);
+          setLoading(false);
+      })
   }, [])
 
   /* ── ScrollTrigger: detect active panel ── */
@@ -112,6 +123,14 @@ export default function AboutTimeline() {
   const scrollToFirst = () => {
     const target = document.getElementById(timeline[0].id)
     target?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  if (loading) {
+    return (
+      <div className="h-screen bg-black flex items-center justify-center">
+        <span className="text-white">Loading...</span>
+      </div>
+    );
   }
 
   return (
