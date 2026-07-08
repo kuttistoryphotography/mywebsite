@@ -30,6 +30,8 @@ export default function PhilosophySection() {
     fetch("/api/homepage")
     .then((res) => res.json())
     .then((data) => {
+      console.log("Homepage API", data);
+
       if (data.settings?.philosophy) {
         setPhilosophy(data.settings.philosophy);
       }
