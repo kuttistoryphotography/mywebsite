@@ -3,24 +3,42 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { DriveMedia } from "../ui/DriveMedia";
+import { MediaType } from "@/lib/media";
 
 interface HeroData {
   backgroundImage: string;
+  backgroundMediaType: MediaType;
+
+  backgroundOpacity: number;
+  backgroundBlur: number;
+  backgroundBrightness: number;
+  overlayOpacity: number;
+
   heading: string;
   subheading: string;
   paragraph: string;
+
   badgeText: string;
   primaryButtonText: string;
   secondaryButtonText: string;
+
   statsYears: string;
   statsStories: string;
   statsPassion: string;
+
   heroCardImage: string;
+  heroCardMediaType: MediaType;
+
   awardText: string;
 }
 
 const DEFAULT_HERO: HeroData = {
   backgroundImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
+  backgroundMediaType: "image",
+  backgroundOpacity: 100,
+  backgroundBlur: 0,
+  backgroundBrightness: 100,
+  overlayOpacity: 20,
   heading: "Capturing Moments Into Eternity",
   subheading: "Kutti Story Photography - Madurai",
   paragraph:
@@ -32,6 +50,7 @@ const DEFAULT_HERO: HeroData = {
   statsStories: "213+",
   statsPassion: "100%",
   heroCardImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
+  heroCardMediaType: "image",
   awardText: "Award Winning Studio 2024",
 };
 
@@ -47,7 +66,18 @@ export default function Hero() {
     fetch("/api/homepage")
       .then((r) => r.json())
       .then((data) => {
-        if (data.settings?.hero) setHero({ ...DEFAULT_HERO, ...data.settings.hero });
+        if (data.settings?.hero) {
+          setHero({
+            ...DEFAULT_HERO,
+            ...data.settings.hero,
+
+            backgroundMediaType:
+              data.settings.hero.backgroundMediaType || "image",
+
+            heroCardMediaType:
+              data.settings.hero.heroCardMediaType || "image",
+          });
+        }
       })
       .catch(() => {});
   }, []);
@@ -155,51 +185,52 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full" />
 
       {hero.backgroundImage && (
-        <div className="absolute inset-0 z-0 opacity-100">
-          <DriveMedia
-            url={hero.backgroundImage}
-            mediaType="image"
-            className="w-full h-full object-cover"
-            alt="Background"
-          />
-          <div
-            className="
-              absolute
-              inset-0
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          opacity: (hero.backgroundOpacity ?? 100) / 100,
+          filter: `blur(${hero.backgroundBlur ?? 0}px) brightness(${hero.backgroundBrightness ?? 100}%)`,
+        }}
+      >
+        <DriveMedia
+          url={hero.backgroundImage}
+          mediaType="image"
+          className="w-full h-full object-cover"
+          alt="Background"
+        />
 
-              bg-gradient-to-r
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"
+          style={{
+            opacity: (hero.overlayOpacity ?? 20) / 100,
+          }}
+        />
+      </div>
+    )}
 
-              from-black/15
-              via-black/10
-              to-transparent
-            "
-          />
-        </div>
-      )}
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-screen-2xl
+          mx-auto
 
-<div
-  className="
-    relative
-    z-10
-    w-full
-    max-w-screen-2xl
-    mx-auto
+          px-6
+          sm:px-8
+          lg:px-10
+          xl:px-12
 
-    px-6
-    sm:px-8
-    lg:px-10
-    xl:px-12
+          grid
+          grid-cols-1
+          lg:grid-cols-[48%_52%]
 
-    grid
-    grid-cols-1
-    lg:grid-cols-[48%_52%]
+          gap-8
+          lg:gap-12
 
-    gap-8
-    lg:gap-12
-
-    items-center
-  "
->
+          items-center
+        "
+      >
 
           {/* <div className="animate-fade">
             <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">

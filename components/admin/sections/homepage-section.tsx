@@ -9,6 +9,11 @@ interface HeroData {
   backgroundImage: string;
   backgroundMediaType: MediaType;
 
+  backgroundOpacity: number;
+  backgroundBlur: number;
+  backgroundBrightness: number;
+  overlayOpacity: number;
+
   heading: string;
   subheading: string;
   paragraph: string;
@@ -57,6 +62,12 @@ export default function HomepageSection() {
 
   const [hero, setHero] = useState<HeroData>({
     backgroundImage: "",
+
+    backgroundOpacity: 100,
+    backgroundBlur: 0,
+    backgroundBrightness: 100,
+    overlayOpacity: 20,
+
     backgroundMediaType: "image",
 
     heading: "",
@@ -75,7 +86,7 @@ export default function HomepageSection() {
     heroCardMediaType: "image",
 
     awardText: "",
-  });
+});
 
   const [slides, setSlides] = useState<Slide[]>([]);
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
@@ -256,6 +267,117 @@ export default function HomepageSection() {
             context="homepage"
             previewHeight="h-36"
           />
+
+          {/* Background Effects */}
+            <div className="bg-zinc-800/50 border border-zinc-700 rounded-2xl p-5 space-y-5">
+              <h4 className="text-white font-semibold">
+                Background Effects
+              </h4>
+
+              {/* Opacity */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <label className="text-sm text-zinc-300">
+                    Background Opacity
+                  </label>
+                  <span className="text-amber-400 text-sm">
+                    {hero.backgroundOpacity}%
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={hero.backgroundOpacity}
+                  onChange={(e) =>
+                    setHero({
+                      ...hero,
+                      backgroundOpacity: Number(e.target.value),
+                    })
+                  }
+                  className="w-full accent-amber-500"
+                />
+              </div>
+
+              {/* Blur */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <label className="text-sm text-zinc-300">
+                    Background Blur
+                  </label>
+                  <span className="text-amber-400 text-sm">
+                    {hero.backgroundBlur}px
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="20"
+                  value={hero.backgroundBlur}
+                  onChange={(e) =>
+                    setHero({
+                      ...hero,
+                      backgroundBlur: Number(e.target.value),
+                    })
+                  }
+                  className="w-full accent-amber-500"
+                />
+              </div>
+
+              {/* Brightness */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <label className="text-sm text-zinc-300">
+                    Background Brightness
+                  </label>
+                  <span className="text-amber-400 text-sm">
+                    {hero.backgroundBrightness}%
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="50"
+                  max="150"
+                  value={hero.backgroundBrightness}
+                  onChange={(e) =>
+                    setHero({
+                      ...hero,
+                      backgroundBrightness: Number(e.target.value),
+                    })
+                  }
+                  className="w-full accent-amber-500"
+                />
+              </div>
+
+              {/* Overlay */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <label className="text-sm text-zinc-300">
+                    Overlay Darkness
+                  </label>
+                  <span className="text-amber-400 text-sm">
+                    {hero.overlayOpacity}%
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={hero.overlayOpacity}
+                  onChange={(e) =>
+                    setHero({
+                      ...hero,
+                      overlayOpacity: Number(e.target.value),
+                    })
+                  }
+                  className="w-full accent-amber-500"
+                />
+              </div>
+            </div>
 
           <MediaField
             label="Hero Card Image"
