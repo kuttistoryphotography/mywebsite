@@ -120,8 +120,8 @@ export default function AboutTimeline() {
       {/* ════════════════════════════════════
           BACKGROUND — full-bleed sticky layer
       ════════════════════════════════════ */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0">
           {timeline.map((item, idx) => (
             <div
               key={`bg-${item.id}`}
@@ -131,13 +131,12 @@ export default function AboutTimeline() {
                 : 'opacity-0 scale-105 blur-sm'
               }`}
             >
-              <DriveMedia
-                url={item.image}
-                mediaType="image"
+              <img
+                src={item.image}
                 className="w-full h-full object-cover"
                 alt="background"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
+              <div className="absolute inset-0 bg-black/10" />
             </div>
           ))}
         </div>
