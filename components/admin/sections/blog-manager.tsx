@@ -166,8 +166,9 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
     setSaving(true);
     try {
       const payload = {
-        title:            formData.title.trim(),
-        category:         formData.category.trim() || "General",
+        title: formData.title.trim(),
+        slug: formData.slug.trim(),
+        category: formData.category.trim() || "General",
         excerpt:          formData.excerpt,
         content:          formData.content,
         cover_image:      formData.cover_image,
