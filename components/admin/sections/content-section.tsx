@@ -78,6 +78,14 @@ const CATEGORIES = [
   "food-shoot","album","ads","other",
 ];
 
+function createSlug(text: string) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 // ─── Upload helper ────────────────────────────────────────────────────────────
 
 async function uploadToGoogleDrive(file: File, context = "portfolio"): Promise<string> {
@@ -529,7 +537,26 @@ export default function ContentSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-2">Title *</label>
-                    <input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    <input 
+                    value={formData.title} 
+                    onChange={(e) => {
+                      const title = e.target.value;
+                      const slug = createSlug(title);
+
+                      setFormData((prev) => ({
+                        ...prev,
+
+                        title,
+
+                        canonical_url: `https://www.kuttistoryphotography.com/portfolio/${slug}`,
+
+                        seo_title:
+                          prev.seo_title || `${title} | Kutti Story Photography`,
+
+                        meta_title:
+                          prev.meta_title || `${title} | Kutti Story Photography`,
+                      }));
+                    }}
                       className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
                       placeholder="e.g., Priya & Arjun Wedding" />
                   </div>
@@ -947,7 +974,7 @@ export default function ContentSection() {
                     {formData.seo_title || formData.meta_title || `${formData.title || "Portfolio Title"} | Photography`}
                   </p>
                   <p className="text-emerald-500 text-xs truncate">
-                    yoursite.com/portfolio/{formData.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "slug"}
+                    https://www.kuttistoryphotography.com/portfolio/{createSlug(formData.title) || "slug"}
                   </p>
                   <p className="text-zinc-400 text-xs line-clamp-2">
                     {formData.seo_description || formData.meta_description || formData.description || "Add a meta description to improve click-through rates."}
