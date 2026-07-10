@@ -65,6 +65,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       },
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
+    console.error("Portfolio API Error:", error);
+
+    return NextResponse.json(
+      {
+        error: "Failed to fetch",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
 }
