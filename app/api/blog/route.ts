@@ -178,6 +178,10 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+
+    console.log("========= PUT BLOG =========");
+    console.log(body);
+
     const {
       id,
       title,
@@ -247,7 +251,14 @@ export async function PUT(request: NextRequest) {
     if (schema_type !== undefined)
       update.schemaType = schema_type;
 
-    await Blog.findByIdAndUpdate(id, update);
+    const updated = await Blog.findByIdAndUpdate(
+      id,
+      update,
+      { new: true }
+    );
+
+    console.log("UPDATED BLOG:");
+    console.log(updated);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });

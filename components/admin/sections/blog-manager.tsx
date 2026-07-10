@@ -186,12 +186,14 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
 
       const url = "/api/blog";
       const method = editing ? "PUT" : "POST";
+      console.log("Sending payload:", payload);
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
+      console.log("Response:", res.status, data);
       if (!res.ok) { alert(data.error || "Failed to save blog post"); return; }
       setShowModal(false);
       await fetchBlogs();
