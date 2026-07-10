@@ -6,20 +6,72 @@ import { MediaType } from '@/lib/media';
 // mediaType because Google Drive URLs are identical for all file types.
 
 export interface IPortfolioMedia {
-  url:          string;
-  mediaType:    MediaType;   // "image" | "video" | "pdf" — REQUIRED
-  caption?:     string;
-  sortOrder:    number;
+  url: string;
+  mediaType: MediaType;
+
+  // SEO
+  alt?: string;
+  caption?: string;
+  aiText?: string;
+
+  sortOrder: number;
   driveFileId?: string;
 }
 
+export interface IPortfolioSEO {
+  seoTitle?: string;
+  metaDescription?: string;
+
+  focusKeywords?: string[];
+  geoKeywords?: string[];
+
+  aeoQuestions?: string[];
+
+  aiDescription?: string;
+
+  canonicalUrl?: string;
+
+  schemaType?: string;
+
+  robots?: string;
+}
+
 const PortfolioMediaSchema = new Schema<IPortfolioMedia>({
-  url:         { type: String, required: true },
-  mediaType:   { type: String, enum: ['image', 'video', 'pdf'], required: true, default: 'image' },
-  caption:     String,
-  sortOrder:   { type: Number, default: 0 },
+  url: {
+    type: String,
+    required: true,
+  },
+
+  mediaType: {
+    type: String,
+    enum: ['image', 'video', 'pdf'],
+    required: true,
+    default: 'image',
+  },
+
+  alt: {
+    type: String,
+    default: "",
+  },
+
+  caption: {
+    type: String,
+    default: "",
+  },
+
+  aiText: {
+    type: String,
+    default: "",
+  },
+
+  sortOrder: {
+    type: Number,
+    default: 0,
+  },
+
   driveFileId: String,
 }, { _id: false });
+
 
 // ─── Portfolio item ───────────────────────────────────────────────────────────
 
@@ -49,8 +101,12 @@ export interface IPortfolioItem extends Document {
   metaTitle?:      string;
   metaDescription?: string;
   ogImage?:        string;
-  focusKeywords:   string[];
-  viewCount:       number;
+  focusKeywords: string[];
+
+  // New SEO Object
+  seo?: IPortfolioSEO;
+
+  viewCount: number;
   sortOrder:       number;
   createdBy?:      mongoose.Types.ObjectId;
   createdAt:       Date;
@@ -80,6 +136,52 @@ const PortfolioItemSchema = new Schema<IPortfolioItem>(
     metaDescription: String,
     ogImage:         String,
     focusKeywords:   [String],
+    seo: {
+      seoTitle: {
+        type: String,
+        default: "",
+      },
+
+      metaDescription: {
+        type: String,
+        default: "",
+      },
+
+      focusKeywords: {
+        type: [String],
+        default: [],
+      },
+
+      geoKeywords: {
+        type: [String],
+        default: [],
+      },
+
+      aeoQuestions: {
+        type: [String],
+        default: [],
+      },
+
+      aiDescription: {
+        type: String,
+        default: "",
+      },
+
+      canonicalUrl: {
+        type: String,
+        default: "",
+      },
+
+      schemaType: {
+        type: String,
+        default: "ImageGallery",
+      },
+
+      robots: {
+        type: String,
+        default: "index,follow",
+      },
+    },
     viewCount:       { type: Number, default: 0 },
     sortOrder:       { type: Number, default: 0 },
     createdBy:       { type: Schema.Types.ObjectId, ref: 'User' },
