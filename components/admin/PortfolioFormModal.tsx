@@ -47,6 +47,9 @@ export default function PortfolioFormModal({
   const [newUrl,       setNewUrl]       = useState("");
   const [newMediaType, setNewMediaType] = useState<MediaType>("image");
   const [newCaption,   setNewCaption]   = useState("");
+
+  const [newAlt, setNewAlt] = useState("");
+  const [newAiText, setNewAiText] = useState("");
   const [uploadingNew, setUploadingNew] = useState(false);
   const newFileRef = useRef<HTMLInputElement>(null);
 
@@ -97,11 +100,21 @@ export default function PortfolioFormModal({
   // Add a URL-pasted gallery item
   const addGalleryItem = () => {
     if (!newUrl.trim()) return;
+
     setMediaItems((prev) => [
       ...prev,
-      makeMediaItem(newUrl.trim(), newMediaType, { caption: newCaption, sortOrder: prev.length }),
+      makeMediaItem(newUrl.trim(), newMediaType, {
+        alt: newAlt,
+        caption: newCaption,
+        aiText: newAiText,
+        sortOrder: prev.length,
+      }),
     ]);
-    setNewUrl(""); setNewCaption("");
+
+    setNewUrl("");
+    setNewCaption("");
+    setNewAlt("");
+    setNewAiText("");
   };
 
   // Upload a file to Drive → add to gallery
@@ -121,9 +134,15 @@ export default function PortfolioFormModal({
           file.type.startsWith("video/") ? "video" :
           file.type === "application/pdf" ? "pdf" :
           "image";
+
         setMediaItems((prev) => [
           ...prev,
-          makeMediaItem(data.url, inferred, { sortOrder: prev.length }),
+          makeMediaItem(data.url, inferred, {
+            alt: "",
+            caption: "",
+            aiText: "",
+            sortOrder: prev.length,
+          }),
         ]);
       }
     } catch (err: any) {
@@ -146,12 +165,52 @@ export default function PortfolioFormModal({
     setLoading(true);
     try {
       await onSubmit({
-        ...formData,
-        cover_image:    coverUrl,
-        coverMediaType,
-        media:          mediaItems,
-        images:         mediaItems.map((m) => m.url), // legacy compat
-      });
+      ...formData,
+
+      cover_image: coverUrl,
+      coverMediaType,
+
+      media: mediaItems.map((item, index) => ({
+        ...item,
+
+        // Save ALT text for the cover image
+        alt: item.alt || "",
+
+        caption: item.caption || "",
+        aiText: item.aiText || "",
+      })),
+
+      images: mediaItems.map((m) => m.url),
+
+      seo: {
+        seoTitle: formData.seo_title,
+
+        canonicalUrl: formData.seo_url,
+
+        focusKeywords: formData.focus_keywords
+          .split(",")
+          .map((k: string) => k.trim())
+          .filter((x: string) => x.length > 0),
+
+        geoKeywords: formData.geo_keywords
+          .split(",")
+          .map((k: string) => k.trim())
+          .filter((x: string) => x.length > 0),
+
+        aeoQuestions: formData.aeo_questions
+          .split("\n")
+          .map((q: string) => q.trim())
+          .filter((x: string) => x.length > 0),
+
+        aiDescription: formData.ai_description,
+
+        schemaType: formData.schema_type,
+
+        robots: formData.robots,
+
+        metaDescription: formData.meta_description,
+      },
+    });
       onClose();
     } catch (err) {
       console.error(err);
@@ -298,38 +357,66 @@ export default function PortfolioFormModal({
             {/* Add by URL */}
             <div className="bg-zinc-800/50 rounded-xl border border-zinc-700 p-4 space-y-3">
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Add item</p>
-              <div className="flex gap-2 flex-wrap">
+              <div className="space-y-3">
                 <input
                   value={newUrl}
                   onChange={(e) => setNewUrl(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addGalleryItem())}
-                  placeholder="Paste Google Drive URL…"
-                  className="flex-1 min-w-40 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  placeholder="Paste Google Drive URL..."
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg"
                 />
-                {/* Type selector */}
-                <div className="flex gap-1">
-                  {(["image", "video", "pdf"] as MediaType[]).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setNewMediaType(t)}
-                      className={cn(
-                        "px-3 py-2 rounded-lg text-xs font-semibold border transition-all capitalize",
-                        newMediaType === t ? typeColors[t] : "bg-zinc-800 border-zinc-700 text-zinc-500 hover:text-white"
-                      )}
-                    >
-                      {t}
-                    </button>
-                  ))}
+
+                <input
+                  value={newAlt}
+                  onChange={(e) => setNewAlt(e.target.value)}
+                  placeholder="Image ALT Text"
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+
+                <input
+                  value={newCaption}
+                  onChange={(e) => setNewCaption(e.target.value)}
+                  placeholder="Image Caption"
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+
+                <textarea
+                  rows={3}
+                  value={newAiText}
+                  onChange={(e) => setNewAiText(e.target.value)}
+                  placeholder="AI Description"
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg resize-none"
+                />
+
+                <div className="flex justify-between items-center">
+
+                  <div className="flex gap-1">
+                    {(["image", "video", "pdf"] as MediaType[]).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setNewMediaType(t)}
+                        className={cn(
+                          "px-3 py-2 rounded-lg text-xs font-semibold border capitalize",
+                          newMediaType === t
+                            ? typeColors[t]
+                            : "bg-zinc-800 border-zinc-700 text-zinc-500"
+                        )}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={addGalleryItem}
+                    className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-semibold"
+                  >
+                    Add
+                  </button>
+
                 </div>
-                <button
-                  type="button"
-                  onClick={addGalleryItem}
-                  disabled={!newUrl.trim()}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg text-sm font-semibold disabled:opacity-40 transition-colors"
-                >
-                  Add
-                </button>
+
               </div>
 
               {/* Upload files */}
@@ -350,22 +437,59 @@ export default function PortfolioFormModal({
 
             {/* Gallery grid */}
             {mediaItems.length > 0 && (
-              <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-64 overflow-y-auto pr-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-h-[700px] overflow-y-auto pr-2">
                 {mediaItems.map((m, i) => (
                   <div
                     key={i}
-                    className={cn(
-                      "relative group rounded-xl overflow-hidden border aspect-square bg-zinc-800",
-                      typeColors[m.mediaType]
-                    )}
+                    className="relative group border border-zinc-700 rounded-xl overflow-hidden bg-zinc-900"
                   >
                     {/* Thumbnail */}
-                    <DriveThumbnail
-                      url={m.url}
-                      mediaType={m.mediaType}
-                      className="w-full h-full object-cover"
-                      showBadge={false}
-                    />
+                    <div className="aspect-square relative">
+                      <DriveThumbnail
+                        url={m.url}
+                        mediaType={m.mediaType}
+                        className="w-full h-full object-cover"
+                        showBadge={false}
+                      />
+                    </div>
+
+                    <div className="p-3 space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Image ALT Text"
+                        value={m.alt || ""}
+                        onChange={(e) => {
+                          const items = [...mediaItems];
+                          items[i].alt = e.target.value;
+                          setMediaItems(items);
+                        }}
+                        className="w-full px-2 py-2 bg-zinc-800 border border-zinc-700 rounded text-sm"
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="Image Caption"
+                        value={m.caption || ""}
+                        onChange={(e) => {
+                          const items = [...mediaItems];
+                          items[i].caption = e.target.value;
+                          setMediaItems(items);
+                        }}
+                        className="w-full px-2 py-2 bg-zinc-800 border border-zinc-700 rounded text-sm"
+                      />
+
+                      <textarea
+                        rows={2}
+                        placeholder="AI Description"
+                        value={m.aiText || ""}
+                        onChange={(e) => {
+                          const items = [...mediaItems];
+                          items[i].aiText = e.target.value;
+                          setMediaItems(items);
+                        }}
+                        className="w-full px-2 py-2 bg-zinc-800 border border-zinc-700 rounded text-sm resize-none"
+                      />
+                    </div>
 
                     {/* Type override buttons on hover */}
                     <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
@@ -402,10 +526,12 @@ export default function PortfolioFormModal({
                     </span>
                   </div>
                 ))}
+                
               </div>
             )}
+
           </section>
-          
+
           {/* ── SEO, GEO & AI Optimization ── */}
           <section className="space-y-4">
             <h3 className="text-amber-500 font-semibold">
@@ -514,6 +640,7 @@ export default function PortfolioFormModal({
                 <label className="block text-sm font-medium mb-1">
                   AI Description
                 </label>
+
                 <textarea
                   rows={6}
                   value={formData.ai_description}
@@ -525,6 +652,52 @@ export default function PortfolioFormModal({
                   }
                   className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg resize-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Schema Type
+                </label>
+
+                <select
+                  value={formData.schema_type}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      schema_type: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                >
+                  <option value="ImageGallery">ImageGallery</option>
+                  <option value="Article">Article</option>
+                  <option value="BlogPosting">BlogPosting</option>
+                  <option value="PhotographyBusiness">PhotographyBusiness</option>
+                  <option value="LocalBusiness">LocalBusiness</option>
+                  <option value="Event">Event</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Robots
+                </label>
+
+                <select
+                  value={formData.robots}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      robots: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                >
+                  <option value="index,follow">index,follow</option>
+                  <option value="noindex,nofollow">noindex,nofollow</option>
+                  <option value="index,nofollow">index,nofollow</option>
+                  <option value="noindex,follow">noindex,follow</option>
+                </select>
               </div>
 
             </div>

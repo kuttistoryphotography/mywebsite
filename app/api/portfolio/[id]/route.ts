@@ -49,7 +49,19 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         meta_description: item.metaDescription,
         og_image:         item.ogImage,
         focus_keywords:   item.focusKeywords,
+        seo: {
+                seoTitle: item.seo?.seoTitle || "",
+                metaDescription: item.seo?.metaDescription || "",
+                canonicalUrl: item.seo?.canonicalUrl || "",
+                focusKeywords: item.seo?.focusKeywords || [],
+                geoKeywords: item.seo?.geoKeywords || [],
+                aeoQuestions: item.seo?.aeoQuestions || [],
+                aiDescription: item.seo?.aiDescription || "",
+                schemaType: item.seo?.schemaType || "ImageGallery",
+                robots: item.seo?.robots || "index,follow",
+              },
         created_at:       item.createdAt,
+        
       },
     });
   } catch (error) {

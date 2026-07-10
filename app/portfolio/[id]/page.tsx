@@ -15,10 +15,24 @@ interface PortfolioItem {
   event_date: string | null;
   location: string | null;
   client_name: string | null;
+
   meta_title: string | null;
   meta_description: string | null;
   og_image: string | null;
   focus_keywords: string[];
+
+  seo?: {
+    seoTitle?: string;
+    metaDescription?: string;
+    canonicalUrl?: string;
+    focusKeywords?: string[];
+    geoKeywords?: string[];
+    aeoQuestions?: string[];
+    aiDescription?: string;
+    schemaType?: string;
+    robots?: string;
+  };
+
   created_at: string;
 }
 
