@@ -166,6 +166,7 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
     setSaving(true);
     try {
       const payload = {
+         id: editing?.id,
         title: formData.title.trim(),
         slug: formData.slug.trim(),
         category: formData.category.trim() || "General",
@@ -183,7 +184,7 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
         schema_type:      formData.schema_type,
       };
 
-      const url = editing ? `/api/blog/${editing.id}` : "/api/blog";
+      const url = "/api/blog";
       const method = editing ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
@@ -205,7 +206,9 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this blog post?")) return;
     try {
-      const res = await fetch(`/api/blog/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/blog?id=${id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       if (!res.ok) { alert(data.error || "Failed to delete"); return; }
       await fetchBlogs();
@@ -215,11 +218,14 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
   const toggleStatus = async (post: BlogItem) => {
     const nextStatus: BlogStatus = post.status === "published" ? "draft" : "published";
     try {
-      const res = await fetch(`/api/blog/${post.id}`, {
+      const res = await fetch(`/api/blog`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: nextStatus }),
-      });
+        body: JSON.stringify({
+          id: post.id,
+          status: nextStatus,
+        }),
+        });
       const data = await res.json();
       if (!res.ok) { alert(data.error || "Failed to update status"); return; }
       await fetchBlogs();
@@ -228,10 +234,13 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
 
   const toggleFeatured = async (post: BlogItem) => {
     try {
-      const res = await fetch(`/api/blog/${post.id}`, {
+      const res = await fetch(`/api/blog`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_featured: !post.is_featured }),
+        body: JSON.stringify({
+            id: post.id,
+            is_featured: !post.is_featured,
+        }),
       });
       const data = await res.json();
       if (!res.ok) { alert(data.error || "Failed to update"); return; }
