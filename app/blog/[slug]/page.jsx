@@ -14,8 +14,13 @@ export async function generateMetadata({ params }) {
 
   const title = blog.meta_title || blog.title;
   const description = blog.meta_description || blog.excerpt || "Photography insights from Kutti Story.";
-  const image = blog.og_image || blog.cover_image || "/images/og-default.jpg";
-  const canonicalPath = blog.canonical_url || `/blog/${blog.slug}`;
+  const image =
+        blog.og_image ||
+        blog.cover_image ||
+        "https://www.kuttistoryphotography.com/images/og-default.jpg";
+  const canonicalPath =
+        blog.canonical_url?.trim() ||
+        `https://www.kuttistoryphotography.com/blog/${blog.slug}`;
 
   return {
     title,
@@ -28,6 +33,7 @@ export async function generateMetadata({ params }) {
       description,
       type: "article",
       url: canonicalPath,
+      siteName: "Kutti Story Photography",
       images: [{ url: image }],
     },
     twitter: {

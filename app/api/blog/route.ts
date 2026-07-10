@@ -111,8 +111,21 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const body = await request.json();
     const {
-      title, content, excerpt, cover_image, category, tags, status, is_featured,
-      meta_title, meta_description, og_image, canonical_url, focus_keywords, schema_type,
+      title,
+      slug,
+      content,
+      excerpt,
+      cover_image,
+      category,
+      tags,
+      status,
+      is_featured,
+      meta_title,
+      meta_description,
+      og_image,
+      canonical_url,
+      focus_keywords,
+      schema_type,
     } = body;
 
     if (!title?.trim()) {
@@ -123,11 +136,13 @@ export async function POST(request: NextRequest) {
     }
 
     const isPublished = status === 'published';
-    const slug = await buildUniqueSlug(title);
+    const finalSlug = slug?.trim()
+  ? await buildUniqueSlug(slug)
+  : await buildUniqueSlug(title);
 
     const blog = await Blog.create({
       title:          title.trim(),
-      slug,
+      slug:           finalSlug,
       content,
       excerpt:        excerpt || '',
       coverImage:     cover_image || '',
@@ -163,21 +178,74 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
-    const { id, title, content, excerpt, coverImage, tags, published, metaTitle, metaDescription } = body;
+    const {
+      id,
+      title,
+      slug,
+      content,
+      excerpt,
+      cover_image,
+      category,
+      tags,
+      status,
+      is_featured,
+      meta_title,
+      meta_description,
+      og_image,
+      canonical_url,
+      focus_keywords,
+      schema_type,
+    } = body;
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
     const update: Record<string, unknown> = {};
-    if (title !== undefined) { update.title = title; update.slug = await buildUniqueSlug(title, id); }
-    if (content !== undefined) update.content = content;
-    if (excerpt !== undefined) update.excerpt = excerpt;
-    if (coverImage !== undefined) update.coverImage = coverImage;
-    if (tags !== undefined) update.tags = tags;
-    if (published !== undefined) {
-      update.published = published;
-      if (published) update.publishedAt = new Date();
+    if (title !== undefined) {
+      update.title = title;
+
+      update.slug = await buildUniqueSlug(
+        slug?.trim() || title,
+        id
+      );
     }
-    if (metaTitle !== undefined) update.metaTitle = metaTitle;
-    if (metaDescription !== undefined) update.metaDescription = metaDescription;
+    if (content !== undefined) update.content = content;
+
+    if (excerpt !== undefined) update.excerpt = excerpt;
+
+    if (cover_image !== undefined) update.coverImage = cover_image;
+
+    if (category !== undefined) update.category = category;
+
+    if (tags !== undefined) update.tags = tags;
+
+    if (status !== undefined) {
+      update.status = status;
+      update.published = status === "published";
+
+      if (status === "published") {
+        update.publishedAt = new Date();
+      }
+    }
+
+    if (is_featured !== undefined)
+      update.isFeatured = is_featured;
+
+    if (meta_title !== undefined)
+      update.metaTitle = meta_title;
+
+    if (meta_description !== undefined)
+      update.metaDescription = meta_description;
+
+    if (og_image !== undefined)
+      update.ogImage = og_image;
+
+    if (canonical_url !== undefined)
+      update.canonicalUrl = canonical_url;
+
+    if (focus_keywords !== undefined)
+      update.focusKeywords = focus_keywords;
+
+    if (schema_type !== undefined)
+      update.schemaType = schema_type;
 
     await Blog.findByIdAndUpdate(id, update);
     return NextResponse.json({ success: true });
