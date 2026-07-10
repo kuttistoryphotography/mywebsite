@@ -246,7 +246,11 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
     setUploadingCover(true);
     try {
       const url = await uploadToGoogleDrive(file);
-      setFormData((prev) => ({ ...prev, cover_image: url }));
+      setFormData((prev) => ({
+        ...prev,
+        cover_image: url,
+        og_image: prev.og_image || url,
+      }));
     } catch (err: any) {
       alert("Cover upload failed: " + err.message);
     } finally {
@@ -401,24 +405,32 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
               {/* Title + Category */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Title *</label>
-                  <input type="text" value={formData.title}
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Title *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
                     onChange={(e) => {
-                    const title = e.target.value;
-                    const slug = title
-                      .toLowerCase()
-                      .trim()
-                      .replace(/[^\w\s-]/g, "")
-                      .replace(/\s+/g, "-")
-                      .replace(/-+/g, "-");
+                      const title = e.target.value;
+                      const slug = title
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, "")
+                        .replace(/\s+/g, "-")
+                        .replace(/-+/g, "-");
 
-                    setFormData((p) => ({
-                      ...p,
-                      title,
-                      slug,
-                      canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
-                    }));
-                  }} />
+                      setFormData((p) => ({
+                        ...p,
+                        title,
+                        slug,
+                        canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                        meta_title: p.meta_title || title,
+                      }));
+                    }}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    placeholder="Enter blog title"
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-2">Category</label>
@@ -432,11 +444,20 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
               {/* Excerpt */}
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Excerpt</label>
-                <textarea value={formData.excerpt}
-                  onChange={(e) => setFormData((p) => ({ ...p, excerpt: e.target.value }))}
-                  rows={2}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 resize-none"
-                  placeholder="Short summary for blog listing" />
+                <textarea
+                  value={formData.excerpt}
+                  onChange={(e) => {
+                    const excerpt = e.target.value;
+
+                    setFormData((p) => ({
+                      ...p,
+                      excerpt,
+
+                      // Auto-fill Meta Description only if it's empty
+                      meta_description: p.meta_description || excerpt,
+                    }));
+                  }}
+                />
               </div>
 
               {/* ── Cover Image ── */}
@@ -446,7 +467,15 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
 
                 {coverMode === "url" ? (
                   <input type="text" value={formData.cover_image}
-                    onChange={(e) => setFormData((p) => ({ ...p, cover_image: e.target.value }))}
+                    onChange={(e) => {
+                      const url = e.target.value;
+
+                      setFormData((p) => ({
+                        ...p,
+                        cover_image: url,
+                        og_image: p.og_image || url,
+                      }));
+                    }}
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
                     placeholder="https://example.com/image.jpg or paste any URL" />
                 ) : (
@@ -565,10 +594,13 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-2">Canonical URL</label>
-                  <input type="text" value={formData.canonical_url}
-                    onChange={(e) => setFormData((p) => ({ ...p, canonical_url: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="https://yourdomain.com/blog/your-slug" />
+                  <input
+                    type="text"
+                    value={formData.canonical_url}
+                    readOnly
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2.5 text-zinc-400 cursor-not-allowed"
+                    placeholder="Generated automatically"
+                  />
                 </div>
               </div>
             <div>
@@ -579,12 +611,20 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
               <input
                 type="text"
                 value={formData.slug}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const slug = e.target.value
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, "")
+                    .replace(/\s+/g, "-")
+                    .replace(/-+/g, "-");
+
                   setFormData((p) => ({
                     ...p,
-                    slug: e.target.value,
-                  }))
-                }
+                    slug,
+                    canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                  }));
+                }}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
                 placeholder="best-wedding-photography-packages-madurai-2026"
               />
