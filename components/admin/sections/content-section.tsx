@@ -59,6 +59,17 @@ interface PortfolioItem {
   og_image:         string | null;
   focus_keywords:   string[];
   created_at:       string;
+  seo?: {
+  seoTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  focusKeywords?: string[];
+  geoKeywords?: string[];
+  aeoQuestions?: string[];
+  aiDescription?: string;
+  schemaType?: string;
+  robots?: string;
+};
 }
 
 const CATEGORIES = [
@@ -138,6 +149,14 @@ export default function ContentSection() {
     meta_description: "",
     og_image:         "",
     focus_keywords:   [] as string[],
+    seo_title: "",
+    seo_description: "",
+    canonical_url: "",
+    geo_keywords: [] as string[],
+    aeo_questions: [] as string[],
+    ai_description: "",
+    schema_type: "ImageGallery",
+    robots: "index,follow",
   });
 
   const [newGalleryUrl,  setNewGalleryUrl]  = useState("");
@@ -180,13 +199,23 @@ export default function ContentSection() {
     featured: false, published: false,
     meta_title: "", meta_description: "", og_image: "",
     focus_keywords: [] as string[],
+    seo_title: "",
+    seo_description: "",
+    canonical_url: "",
+    geo_keywords: [] as string[],
+    aeo_questions: [] as string[],
+    ai_description: "",
+    schema_type: "ImageGallery",
+    robots: "index,follow",
   });
 
   const openCreateModal = () => {
     setEditingItem(null);
     setFormData(resetForm());
-    setNewGalleryUrl(""); setNewKeyword("");
-    setCoverMode("url"); setGalleryMode("url");
+    setNewGalleryUrl("");
+    setNewKeyword("");
+    setCoverMode("url"); 
+    setGalleryMode("url");
     setShowModal(true);
   };
 
@@ -223,6 +252,14 @@ export default function ContentSection() {
       meta_description: item.meta_description || "",
       og_image:         item.og_image || "",
       focus_keywords:   Array.isArray(item.focus_keywords) ? item.focus_keywords : [],
+      seo_title: item.seo?.seoTitle || "",
+      seo_description: item.seo?.metaDescription || "",
+      canonical_url: item.seo?.canonicalUrl || "",
+      geo_keywords: item.seo?.geoKeywords || [],
+      aeo_questions: item.seo?.aeoQuestions || [],
+      ai_description: item.seo?.aiDescription || "",
+      schema_type: item.seo?.schemaType || "ImageGallery",
+      robots: item.seo?.robots || "index,follow",
     });
     setNewGalleryUrl(""); setNewKeyword("");
     setCoverMode("url"); setGalleryMode("url");
@@ -242,12 +279,24 @@ export default function ContentSection() {
 
       const payload: Record<string, unknown> = {
         ...formData,
-        // Send typed media array to the new API
-        media:   gallery,
-        // Also send flat images array for legacy route handlers
-        images:  gallery.map((g) => g.url),
-        cover_image:    formData.cover_image,
+
+        media: gallery,
+        images: gallery.map((g) => g.url),
+
+        cover_image: formData.cover_image,
         coverMediaType: formData.coverMediaType,
+
+        seo: {
+          seoTitle: formData.seo_title,
+          metaDescription: formData.seo_description,
+          canonicalUrl: formData.canonical_url,
+          focusKeywords: formData.focus_keywords,
+          geoKeywords: formData.geo_keywords,
+          aeoQuestions: formData.aeo_questions,
+          aiDescription: formData.ai_description,
+          schemaType: formData.schema_type,
+          robots: formData.robots,
+        },
       };
 
       if (editingItem) payload.id = editingItem.id;
@@ -675,6 +724,151 @@ export default function ContentSection() {
                 <h3 className="text-sm font-semibold text-white mb-4">SEO Settings</h3>
 
                 <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    SEO Title
+                  </label>
+
+                  <input
+                    value={formData.seo_title}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        seo_title: e.target.value,
+                      })
+                    }
+                    placeholder="SEO Title"
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    Canonical URL
+                  </label>
+
+                  <input
+                    value={formData.canonical_url}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        canonical_url: e.target.value,
+                      })
+                    }
+                    placeholder="https://www.kuttistoryphotography.com/portfolio/..."
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    GEO Keywords
+                  </label>
+
+                  <textarea
+                    value={formData.geo_keywords.join(", ")}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        geo_keywords: e.target.value
+                          .split(",")
+                          .map((k) => k.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    rows={3}
+                    placeholder="Madurai, Theni, Dindigul, Chennai..."
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    AEO Questions
+                  </label>
+
+                  <textarea
+                    value={formData.aeo_questions.join("\n")}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        aeo_questions: e.target.value
+                          .split("\n")
+                          .map((q) => q.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    rows={5}
+                    placeholder={`What is the best wedding photographer in Madurai?
+                    How much does wedding photography cost?
+                    Why choose Kutti Story Photography?`}
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    AI Description
+                  </label>
+
+                  <textarea
+                    value={formData.ai_description}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        ai_description: e.target.value,
+                      })
+                    }
+                    rows={5}
+                    placeholder="Describe this portfolio for AI search engines like ChatGPT, Gemini, Claude..."
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    Schema Type
+                  </label>
+
+                  <select
+                    value={formData.schema_type}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        schema_type: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-xl text-white"
+                  >
+                    <option value="ImageGallery">ImageGallery</option>
+                    <option value="Photograph">Photograph</option>
+                    <option value="CreativeWork">CreativeWork</option>
+                    <option value="Event">Event</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-zinc-300 mb-2 block">
+                    Robots
+                  </label>
+
+                  <select
+                    value={formData.robots}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        robots: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-xl text-white"
+                  >
+                    <option value="index,follow">index,follow</option>
+                    <option value="noindex,follow">noindex,follow</option>
+                    <option value="index,nofollow">index,nofollow</option>
+                    <option value="noindex,nofollow">noindex,nofollow</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-zinc-300">Meta Title</label>
                     <span className={cn("text-xs", formData.meta_title.length > 60 ? "text-red-400" : formData.meta_title.length > 50 ? "text-amber-400" : "text-zinc-500")}>
@@ -750,13 +944,13 @@ export default function ContentSection() {
                 <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800">
                   <p className="text-xs text-zinc-500 mb-2">Google Search Preview:</p>
                   <p className="text-blue-400 text-sm font-medium truncate">
-                    {formData.meta_title || `${formData.title || "Portfolio Title"} | Photography`}
+                    {formData.seo_title || formData.meta_title || `${formData.title || "Portfolio Title"} | Photography`}
                   </p>
                   <p className="text-emerald-500 text-xs truncate">
                     yoursite.com/portfolio/{formData.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "slug"}
                   </p>
                   <p className="text-zinc-400 text-xs line-clamp-2">
-                    {formData.meta_description || formData.description || "Add a meta description to improve click-through rates."}
+                    {formData.seo_description || formData.meta_description || formData.description || "Add a meta description to improve click-through rates."}
                   </p>
                 </div>
               </div>

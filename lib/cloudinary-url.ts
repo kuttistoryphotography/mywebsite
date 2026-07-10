@@ -222,25 +222,48 @@ export function guessMediaType(urlOrMime = ''): MediaType {
 // ─── MediaItem ────────────────────────────────────────────────────────────────
 
 export interface MediaItem {
-  url:           string;
-  mediaType:     MediaType;
-  caption?:      string;
-  sortOrder?:    number;
+  url: string;
+
+  mediaType: MediaType;
+
+  // SEO
+  alt?: string;
+
+  caption?: string;
+
+  aiText?: string;
+
+  sortOrder?: number;
+
   /** Cloudinary public_id — stored for deletion/transformation */
-  publicId?:     string;
+  publicId?: string;
 }
 
 export function makeMediaItem(
   url: string,
   mediaType: MediaType,
-  opts: { caption?: string; sortOrder?: number; publicId?: string } = {}
+  opts: {
+      alt?: string;
+      caption?: string;
+      aiText?: string;
+      sortOrder?: number;
+      publicId?: string;
+  } = {}
 ): MediaItem {
   return {
-    url,
-    mediaType,
-    caption:   opts.caption,
-    sortOrder: opts.sortOrder ?? 0,
-    publicId:  opts.publicId,
+      url,
+
+      mediaType,
+
+      alt: opts.alt,
+
+      caption: opts.caption,
+
+      aiText: opts.aiText,
+
+      sortOrder: opts.sortOrder ?? 0,
+
+      publicId: opts.publicId,
   };
 }
 
@@ -249,9 +272,17 @@ export function stringsToMediaItems(
   typeOverrides: Record<string, MediaType> = {}
 ): MediaItem[] {
   return urls.map((url, i) => ({
-    url,
-    mediaType: typeOverrides[url] ?? guessMediaType(url),
-    sortOrder: i,
+      url,
+
+      mediaType: typeOverrides[url] ?? guessMediaType(url),
+
+      alt: "",
+
+      caption: "",
+
+      aiText: "",
+
+      sortOrder: i,
   }));
 }
 

@@ -79,11 +79,13 @@ export async function POST(request: NextRequest) {
     const {
       title, category, description,
       cover_image, coverMediaType,
-      // Accept either typed `media` array or legacy flat `images` array + typeMap
       media, images, imageTypeMap,
       tags, featured, published,
       event_date, location, client_name,
-      meta_title, meta_description, og_image, focus_keywords, sort_order,
+      meta_title, meta_description, og_image,
+      focus_keywords,
+      seo,
+      sort_order,
     } = body;
 
     if (!title || !category) {
@@ -113,8 +115,11 @@ export async function POST(request: NextRequest) {
       published:      !!published,
       eventDate:      event_date ? new Date(event_date) : undefined,
       location, clientName: client_name,
-      metaTitle: meta_title, metaDescription: meta_description,
-      ogImage: og_image, focusKeywords: focus_keywords || [],
+      metaTitle: meta_title, 
+      metaDescription: meta_description,
+      ogImage: og_image, 
+      focusKeywords: focus_keywords || [],
+      seo: seo || {},
       sortOrder: sort_order || 0,
       createdBy: session.userId,
     });

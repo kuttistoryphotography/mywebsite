@@ -64,26 +64,34 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     };
   }
 
-  const title = item.meta_title || `${item.title} - ${item.category} Photography | Kutti Story`;
-  const description = item.meta_description || item.description || `Professional ${item.category} photography by Kutti Story. View our stunning ${item.title} portfolio.`;
+  const title =
+    item.seo?.seoTitle ||
+    item.meta_title ||
+    `${item.title} - ${item.category} Photography | Kutti Story`;
+
+  const description =
+    item.seo?.metaDescription ||
+    item.meta_description ||
+    item.description ||
+    `Professional ${item.category} photography by Kutti Story.`;
   const ogImage = item.og_image || item.cover_image || '/images/default-og.jpg';
   
   // Safely handle focus_keywords (could be array or string from API)
-  let keywords = `${item.category}, photography, wedding, pre-wedding, ${item.location || 'India'}`;
-  if (item.focus_keywords) {
-    if (Array.isArray(item.focus_keywords) && item.focus_keywords.length > 0) {
-      keywords = item.focus_keywords.join(', ');
-    }
-  }
+  const keywords =
+  [
+    ...(item.seo?.focusKeywords || item.focus_keywords || []),
+    ...(item.seo?.geoKeywords || []),
+  ].join(", ") ||
+  `${item.category}, photography`;
   
   return {
     title,
     description,
     keywords,
     openGraph: {
-      title,
-      description,
-      images: [
+    title,
+    description,
+    images: [
         {
           url: ogImage,
           width: 1200,
@@ -100,12 +108,67 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       images: [ogImage],
     },
     alternates: {
-      canonical: `/portfolio/${id}`,
+      canonical:
+        item.seo?.canonicalUrl ||
+        `${process.env.NEXT_PUBLIC_BASE_URL}/portfolio/${id}`,
     },
+
+    robots: item.seo?.robots || "index,follow",
+    
   };
 }
 
-export default async function PortfolioDetailPage({ params }: { params: Promise<{ id: string }> }) {
+function generateSchema(item: PortfolioItem) {
+    return {
+      "@context": "https://schema.org",
+      "@type": item.seo?.schemaType || "ImageGallery",
+
+      name: item.title,
+
+      description:
+        item.seo?.metaDescription ||
+        item.meta_description ||
+        item.description,
+
+      image: item.cover_image,
+
+      url:
+        item.seo?.canonicalUrl ||
+        `${process.env.NEXT_PUBLIC_BASE_URL}/portfolio/${item.id}`,
+
+      creator: {
+        "@type": "Organization",
+        name: "Kutti Story Photography",
+        url: "https://www.kuttistoryphotography.com",
+      },
+    };
+  }
+
+export default async function PortfolioDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  return <PortfolioDetailClient id={id} />;
+
+  const item = await getPortfolioItem(id);
+
+  if (!item) {
+    return <PortfolioDetailClient id={id} />;
+  }
+
+  const schema = generateSchema(item);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema),
+        }}
+      />
+
+      <PortfolioDetailClient id={id} />
+    </>
+  );
 }
