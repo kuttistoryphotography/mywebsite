@@ -40,6 +40,7 @@ interface BlogManagerProps {
 
 const emptyForm = {
   title: "",
+  slug: "",
   category: "General",
   excerpt: "",
   content: "",
@@ -135,8 +136,9 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
   const openEditModal = (post: BlogItem) => {
     setEditing(post);
     setFormData({
-      title:               post.title || "",
-      category:            post.category || "General",
+      title: post.title || "",
+      slug: post.slug || "",
+      category: post.category || "General",
       excerpt:             post.excerpt || "",
       content:             post.content || "",
       cover_image:         post.cover_image || "",
@@ -396,13 +398,26 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
             {/* Scrollable body */}
             <div className="flex-1 overflow-y-auto p-6 space-y-5">
               {/* Title + Category */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-2">Title *</label>
                   <input type="text" value={formData.title}
-                    onChange={(e) => setFormData((p) => ({ ...p, title: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Blog title" />
+                    onChange={(e) => {
+                    const title = e.target.value;
+                    const slug = title
+                      .toLowerCase()
+                      .trim()
+                      .replace(/[^\w\s-]/g, "")
+                      .replace(/\s+/g, "-")
+                      .replace(/-+/g, "-");
+
+                    setFormData((p) => ({
+                      ...p,
+                      title,
+                      slug,
+                      canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                    }));
+                  }} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-2">Category</label>
@@ -555,6 +570,24 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
                     placeholder="https://yourdomain.com/blog/your-slug" />
                 </div>
               </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Slug
+              </label>
+
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData((p) => ({
+                    ...p,
+                    slug: e.target.value,
+                  }))
+                }
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                placeholder="best-wedding-photography-packages-madurai-2026"
+              />
+            </div>
               <div>
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Focus Keywords (comma separated)</label>
                 <input type="text" value={formData.focus_keywords_text}
