@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import PortfolioItem from '@/models/Portfolio';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
+    const { id } = await params;
     const item = await PortfolioItem.findOne({
       $or: [
-        { slug: params.id },
-        ...(params.id.match(/^[a-f\d]{24}$/i) ? [{ _id: params.id }] : []),
+        { slug: id },
+        ...(id.match(/^[a-f\d]{24}$/i) ? [{ _id: id }] : []),
       ],
     });
 
