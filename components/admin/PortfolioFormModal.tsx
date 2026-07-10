@@ -63,6 +63,23 @@ export default function PortfolioFormModal({
     display_order:    editData?.display_order    || 0,
     meta_title:       editData?.meta_title       || "",
     meta_description: editData?.meta_description || "",
+    seo_title: editData?.seo?.seoTitle || "",
+
+    seo_url: editData?.seo?.canonicalUrl || "",
+
+    geo_keywords: editData?.seo?.geoKeywords?.join(", ") || "",
+
+    focus_keywords: editData?.seo?.focusKeywords?.join(", ") || "",
+
+    aeo_questions: editData?.seo?.aeoQuestions?.join("\n") || "",
+
+    ai_description: editData?.seo?.aiDescription || "",
+
+    cover_alt: editData?.media?.[0]?.alt || "",
+
+    schema_type: editData?.seo?.schemaType || "ImageGallery",
+
+    robots: editData?.seo?.robots || "index,follow",
   });
 
   if (!isOpen) return null;
@@ -387,6 +404,130 @@ export default function PortfolioFormModal({
                 ))}
               </div>
             )}
+          </section>
+          
+          {/* ── SEO, GEO & AI Optimization ── */}
+          <section className="space-y-4">
+            <h3 className="text-amber-500 font-semibold">
+              SEO, GEO & AI Optimization
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  SEO URL
+                </label>
+                <input
+                  value={formData.seo_url}
+                  onChange={(e) =>
+                    setFormData({ ...formData, seo_url: e.target.value })
+                  }
+                  placeholder="https://www.kuttistoryphotography.com/portfolio/..."
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  SEO Title
+                </label>
+                <input
+                  value={formData.seo_title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, seo_title: e.target.value })
+                  }
+                  placeholder="Best Wedding Photography in Madurai..."
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-1">
+                  Focus Keywords
+                </label>
+                <input
+                  value={formData.focus_keywords}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      focus_keywords: e.target.value,
+                    })
+                  }
+                  placeholder="wedding photography, candid photography..."
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-1">
+                  GEO Keywords
+                </label>
+                <input
+                  value={formData.geo_keywords}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      geo_keywords: e.target.value,
+                    })
+                  }
+                  placeholder="Madurai, Theni, Dindigul..."
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-1">
+                  Cover Image ALT Text
+                </label>
+                <input
+                  value={formData.cover_alt}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      cover_alt: e.target.value,
+                    })
+                  }
+                  placeholder="Bride and Groom Wedding Photography in Madurai"
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-1">
+                  AEO Questions
+                </label>
+                <textarea
+                  rows={5}
+                  value={formData.aeo_questions}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      aeo_questions: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg resize-none"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-1">
+                  AI Description
+                </label>
+                <textarea
+                  rows={6}
+                  value={formData.ai_description}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      ai_description: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg resize-none"
+                />
+              </div>
+
+            </div>
           </section>
 
           {/* ── SEO & Publishing ── */}
