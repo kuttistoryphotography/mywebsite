@@ -334,21 +334,22 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
               : "space-y-4"
           )}
         >
-          <p className="text-red-500">
-            Current View: {viewMode}
-          </p>
+          
           {visiblePosts.map((post) => (
             <div
               key={post.id}
               className={cn(
-                "bg-zinc-900/50 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-colors",
-                viewMode === "grid" ? "p-4" : "p-5"
+                "bg-zinc-900/50 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-colors flex",
+                viewMode === "grid"
+                  ? "p-4 h-full"
+                  : "p-5"
               )}
             >
               <div
                 className={cn(
+                  "w-full",
                   viewMode === "grid"
-                    ? "flex flex-col"
+                    ? "flex flex-col h-full"
                     : "flex items-start gap-4"
                 )}
               >
@@ -371,7 +372,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                 <div
                   className={cn(
                     "flex-1 min-w-0",
-                    viewMode === "grid" && "flex flex-col"
+                    viewMode === "grid" && "flex flex-col h-full"
                   )}
                 >
                   <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -389,7 +390,14 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                       <span className="px-2 py-0.5 rounded-full text-xs bg-zinc-800 text-zinc-400">{post.category}</span>
                     )}
                   </div>
-                  <p className="text-sm text-zinc-500 mb-2 line-clamp-1">{post.excerpt || "No excerpt"}</p>
+                  <p
+                    className={cn(
+                      "text-sm text-zinc-500 mb-2",
+                      viewMode === "grid"
+                        ? "line-clamp-3 flex-1"
+                        : "line-clamp-1"
+                    )}
+                  >{post.excerpt || "No excerpt"}</p>
                   <div className="flex items-center gap-4 text-xs text-zinc-600">
                     <span>{new Date(post.created_at).toLocaleDateString("en-IN")}</span>
                     {post.status === "published" && <span>{post.view_count} views</span>}
@@ -400,7 +408,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                   className={cn(
                     "flex items-center gap-1 shrink-0",
                     viewMode === "grid"
-                      ? "mt-4 justify-end"
+                      ? "mt-auto pt-4 justify-end border-t border-zinc-800"
                       : ""
                   )}
                 >
