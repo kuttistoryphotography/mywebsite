@@ -535,7 +535,11 @@ export default function ContentSection() {
         </>
       )}
 
-      {activeTab === "blog" && <BlogManager onCountChange={setBlogCount} />}
+      {activeTab === "blog" &&
+       <BlogManager
+        onCountChange={setBlogCount}
+        viewMode={viewMode}
+      />}
 
       {/* Create / Edit Modal */}
       {showModal && (

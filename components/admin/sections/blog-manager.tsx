@@ -85,6 +85,7 @@ function ModeToggle({ mode, setMode }: { mode: MediaMode; setMode: (m: MediaMode
 }
 
 export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerProps) {
+  console.log("BLOG VIEW MODE =", viewMode);
   const [posts, setPosts] = useState<BlogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
