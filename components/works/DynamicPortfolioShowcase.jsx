@@ -84,6 +84,8 @@ const CATEGORY_ORDER = [
   "post-wedding",
   "engagement",
   "reception",
+  "maternity",
+  "baby-shower",
   "outdoor",
   "indoor",
   "baby-shoot",
@@ -96,7 +98,7 @@ const CATEGORY_ORDER = [
 ];
 
 const CATEGORY_META = {
-  photography:        { label: "Photography",     accent: "#f97316" },
+  photography:    { label: "Photography", accent: "#f97316" },
   wedding:        { label: "Wedding",     accent: "#f97316" },
   "pre-wedding":  { label: "Pre Wedding", accent: "#a855f7" },
   outdoor:        { label: "Outdoor",     accent: "#22c55e" },
@@ -111,6 +113,9 @@ const CATEGORY_META = {
   engagement:     {  label: "Engagement", accent: "#ec4899",},
   indoor:         {  label: "Indoor",     accent: "#14b8a6", },
   reception:      {  label: "Reception",  accent: "#f43f5e", },
+  maternity:      {  label: "Maternity",  accent: "#a855f7", },
+
+  "baby-shower":  {  label: "Baby Shower",  accent: "#ec4899", },
 };
 const getLabel  = (cat) => CATEGORY_META[cat]?.label  ?? cat;
 const getAccent = (cat) => CATEGORY_META[cat]?.accent ?? "#f97316";
