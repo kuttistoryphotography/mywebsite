@@ -8,18 +8,20 @@ const DEFAULT_CATEGORIES = [
   { id: '2',  name: 'Pre Wedding',  slug: 'pre-wedding',  is_active: true, display_order: 2 },
   { id: '3',  name: 'Post Wedding', slug: 'post-wedding', is_active: true, display_order: 3 },
   { id: '4',  name: 'Engagement',   slug: 'engagement',   is_active: true, display_order: 4 },
-
   { id: '5',  name: 'Reception',    slug: 'reception',    is_active: true, display_order: 5 },
 
-  { id: '6',  name: 'Outdoor',      slug: 'outdoor',      is_active: true, display_order: 6 },
-  { id: '7',  name: 'Indoor',       slug: 'indoor',       is_active: true, display_order: 7 },
-  { id: '8',  name: 'Baby Shoot',   slug: 'baby-shoot',   is_active: true, display_order: 8 },
-  { id: '9',  name: 'Product',      slug: 'product',      is_active: true, display_order: 9 },
-  { id: '10', name: 'Corporate',    slug: 'corporate',    is_active: true, display_order: 10 },
-  { id: '11', name: 'Ads',          slug: 'ads',          is_active: true, display_order: 11 },
-  { id: '12', name: 'Food Shoot',   slug: 'food-shoot',   is_active: true, display_order: 12 },
-  { id: '13', name: 'Album',        slug: 'album',        is_active: true, display_order: 13 },
-  { id: '14', name: 'Other',        slug: 'other',        is_active: true, display_order: 14 },
+  { id: '6',  name: 'Maternity',    slug: 'maternity',    is_active: true, display_order: 6 },
+  { id: '7',  name: 'Baby Shower',  slug: 'baby-shower',  is_active: true, display_order: 7 },
+
+  { id: '8',  name: 'Outdoor',      slug: 'outdoor',      is_active: true, display_order: 8 },
+  { id: '9',  name: 'Indoor',       slug: 'indoor',       is_active: true, display_order: 9 },
+  { id: '10', name: 'Baby Shoot',   slug: 'baby-shoot',   is_active: true, display_order: 10 },
+  { id: '11', name: 'Product',      slug: 'product',      is_active: true, display_order: 11 },
+  { id: '12', name: 'Corporate',    slug: 'corporate',    is_active: true, display_order: 12 },
+  { id: '13', name: 'Ads',          slug: 'ads',          is_active: true, display_order: 13 },
+  { id: '14', name: 'Food Shoot',   slug: 'food-shoot',   is_active: true, display_order: 14 },
+  { id: '15', name: 'Album',        slug: 'album',        is_active: true, display_order: 15 },
+  { id: '16', name: 'Other',        slug: 'other',        is_active: true, display_order: 16 },
 ];
 
 export async function GET(request: NextRequest) {

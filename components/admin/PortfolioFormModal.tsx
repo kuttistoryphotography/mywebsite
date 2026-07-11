@@ -15,8 +15,14 @@ interface PortfolioFormModalProps {
   categories:  any[];
 }
 
-const generateSlug = (title: string) =>
-  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const generateSlug = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
 
 export default function PortfolioFormModal({
   isOpen,
@@ -271,7 +277,15 @@ export default function PortfolioFormModal({
                 <label className="block text-sm font-medium mb-1.5">Slug *</label>
                 <input
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      slug: generateSlug(e.target.value),
+                      seo_url: `https://www.kuttistoryphotography.com/works/${generateSlug(
+                        e.target.value
+                      )}`,
+                    })
+                  }
                   required
                   className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
