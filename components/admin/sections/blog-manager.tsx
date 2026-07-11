@@ -368,7 +368,12 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                   </div>
                 )}
 
-                <div className="flex-1 min-w-0">
+                <div
+                  className={cn(
+                    "flex-1 min-w-0",
+                    viewMode === "grid" && "flex flex-col"
+                  )}
+                >
                   <div className="flex items-center gap-3 mb-1 flex-wrap">
                     <h3 className="font-semibold text-lg truncate">{post.title}</h3>
                     <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium",
@@ -391,7 +396,14 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 shrink-0">
+                <div
+                  className={cn(
+                    "flex items-center gap-1 shrink-0",
+                    viewMode === "grid"
+                      ? "mt-4 justify-end"
+                      : ""
+                  )}
+                >
                   <button onClick={() => toggleStatus(post)}
                     className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                     title={post.status === "published" ? "Unpublish" : "Publish"}>
