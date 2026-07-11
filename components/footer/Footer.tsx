@@ -222,34 +222,34 @@ export default function PhotographyFooter() {
         {/* Bottom Footer */}
         <div className="mt-16 md:mt-32 pt-10 border-t border-zinc-900">
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="flex flex-col md:flex-row justify-between gap-10">
 
             {/* Brand */}
-            <div>
+            <div className="md:w-1/3">
               <h3 className="text-2xl font-semibold text-white">
                 Kutti Story Photography
               </h3>
 
-              <p className="text-zinc-400 mt-3 leading-7">
+              <p className="text-zinc-400 mt-3 leading-7 max-w-sm">
                 Capturing Life, One Story at a Time.
               </p>
             </div>
 
             {/* Contact */}
-            <div>
+            <div className="md:w-1/3 md:text-center">
               <h4 className="text-white font-semibold mb-4">
                 Contact Us
               </h4>
 
               <div className="space-y-3 text-zinc-400 text-sm">
                 <p>📍 Madurai, Tamil Nadu</p>
-                <p>📞 +91 9342013600</p>
+                <p>📞 +91 93420 13600</p>
                 <p>✉️ kuttistoryphotography@gmail.com</p>
               </div>
             </div>
 
             {/* Links */}
-            <div>
+            <div className="md:w-1/3 md:text-right">
               <h4 className="text-white font-semibold mb-4">
                 Quick Links
               </h4>
@@ -275,7 +275,7 @@ export default function PhotographyFooter() {
 
           </div>
 
-          <div className="border-t border-zinc-900 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500">
+          <div className="border-t border-zinc-900 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center w-full text-sm text-zinc-500">
 
             <p>
               © 2026 Kutti Story Photography. All Rights Reserved.
