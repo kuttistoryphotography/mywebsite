@@ -68,7 +68,9 @@ export default function PortfolioFormModal({
     meta_description: editData?.meta_description || "",
     seo_title: editData?.seo?.seoTitle || "",
 
-    seo_url: editData?.seo?.canonicalUrl || "",
+    seo_url:
+      editData?.seo?.canonicalUrl ||
+      `https://www.kuttistoryphotography.com/works/${editData?.slug || ""}`,
 
     geo_keywords: editData?.seo?.geoKeywords?.join(", ") || "",
 
@@ -88,7 +90,15 @@ export default function PortfolioFormModal({
   if (!isOpen) return null;
 
   const handleTitleChange = (title: string) => {
-    setFormData({ ...formData, title, slug: generateSlug(title), meta_title: title });
+    const slug = generateSlug(title);
+
+    setFormData({
+      ...formData,
+      title,
+      slug,
+      meta_title: title,
+      seo_url: `https://www.kuttistoryphotography.com/works/${slug}`,
+    });
   };
 
   // Cover change from MediaField
@@ -546,11 +556,8 @@ export default function PortfolioFormModal({
                 </label>
                 <input
                   value={formData.seo_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, seo_url: e.target.value })
-                  }
-                  placeholder="https://www.kuttistoryphotography.com/portfolio/..."
-                  className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg"
+                  readOnly
+                  className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-400 cursor-not-allowed"
                 />
               </div>
 
