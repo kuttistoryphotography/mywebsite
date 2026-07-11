@@ -36,6 +36,7 @@ interface BlogItem {
 
 interface BlogManagerProps {
   onCountChange?: (count: number) => void;
+  viewMode: "grid" | "list";
 }
 
 const emptyForm = {
@@ -83,7 +84,7 @@ function ModeToggle({ mode, setMode }: { mode: MediaMode; setMode: (m: MediaMode
   );
 }
 
-export default function BlogManager({ onCountChange }: BlogManagerProps) {
+export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerProps) {
   const [posts, setPosts] = useState<BlogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -325,10 +326,28 @@ export default function BlogManager({ onCountChange }: BlogManagerProps) {
           <button onClick={fetchBlogs} className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition">Retry</button>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div
+          className={cn(
+            viewMode === "grid"
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              : "space-y-4"
+          )}
+        >
           {visiblePosts.map((post) => (
-            <div key={post.id} className="bg-zinc-900/50 rounded-2xl border border-zinc-800 p-5 hover:border-zinc-700 transition-colors">
-              <div className="flex items-start gap-4">
+            <div
+              key={post.id}
+              className={cn(
+                "bg-zinc-900/50 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-colors",
+                viewMode === "grid" ? "p-4" : "p-5"
+              )}
+            >
+              <div
+                className={cn(
+                  viewMode === "grid"
+                    ? "flex flex-col"
+                    : "flex items-start gap-4"
+                )}
+              >
                 {/* Thumbnail */}
                 {post.cover_image ? (
                   <img src={toImageUrl(post.cover_image, 200)} alt={post.title}
