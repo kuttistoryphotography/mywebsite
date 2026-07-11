@@ -77,6 +77,7 @@ const CATEGORIES = [
   "wedding",
   "pre-wedding",
   "post-wedding",
+  "reception",
   "engagement",
   "outdoor",
   "indoor",
