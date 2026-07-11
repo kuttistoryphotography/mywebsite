@@ -355,7 +355,12 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                 {/* Thumbnail */}
                 {post.cover_image ? (
                   <img src={toImageUrl(post.cover_image, 200)} alt={post.title}
-                    className="w-16 h-16 rounded-xl object-cover shrink-0 border border-zinc-700"
+                    className={cn(
+                      "rounded-xl object-cover border border-zinc-700",
+                      viewMode === "grid"
+                        ? "w-full h-48 mb-4"
+                        : "w-16 h-16 shrink-0"
+                    )}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                 ) : (
                   <div className="w-16 h-16 rounded-xl bg-zinc-800 flex items-center justify-center shrink-0">
