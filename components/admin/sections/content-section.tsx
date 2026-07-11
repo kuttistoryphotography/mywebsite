@@ -73,9 +73,20 @@ interface PortfolioItem {
 }
 
 const CATEGORIES = [
-  "photography","wedding-photography","wedding","pre-wedding",
-  "outdoor","baby-shoot","product","corporate",
-  "food-shoot","album","ads","other",
+  "photography",
+  "wedding",
+  "pre-wedding",
+  "post-wedding",
+  "engagement",
+  "outdoor",
+  "indoor",
+  "baby-shoot",
+  "product",
+  "corporate",
+  "ads",
+  "food-shoot",
+  "album",
+  "other",
 ];
 
 function createSlug(text: string) {
