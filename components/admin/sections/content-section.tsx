@@ -916,27 +916,27 @@ export default function ContentSection() {
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-zinc-300">Meta Title</label>
-                    <span className={cn("text-xs", formData.meta_title.length > 60 ? "text-red-400" : formData.meta_title.length > 50 ? "text-amber-400" : "text-zinc-500")}>
-                      {formData.meta_title.length}/60
+                    <span className={cn("text-xs", formData.meta_title.length > 150 ? "text-red-400" : formData.meta_title.length > 200 ? "text-amber-400" : "text-zinc-500")}>
+                      {formData.meta_title.length}/150
                     </span>
                   </div>
                   <input value={formData.meta_title} onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
                     placeholder={formData.title ? `${formData.title} | Photography` : "Enter meta title"}
-                    maxLength={70}
+                    maxLength={200}
                     className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 text-sm" />
                 </div>
 
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-zinc-300">Meta Description</label>
-                    <span className={cn("text-xs", formData.meta_description.length > 160 ? "text-red-400" : formData.meta_description.length > 140 ? "text-amber-400" : "text-zinc-500")}>
-                      {formData.meta_description.length}/160
+                    <span className={cn("text-xs", formData.meta_description.length > 300 ? "text-red-400" : formData.meta_description.length > 250 ? "text-amber-400" : "text-zinc-500")}>
+                      {formData.meta_description.length}/300
                     </span>
                   </div>
                   <textarea value={formData.meta_description} onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
-                    maxLength={170} rows={3}
+                    maxLength={300} rows={3}
                     className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 text-sm resize-none"
-                    placeholder="Enter a compelling description (140–160 characters)" />
+                    placeholder="Enter a compelling description (up to 300 characters)" />
                 </div>
 
                 <div className="mb-4">
