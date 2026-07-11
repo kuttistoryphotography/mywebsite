@@ -333,6 +333,9 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
               : "space-y-4"
           )}
         >
+          <p className="text-red-500">
+            Current View: {viewMode}
+          </p>
           {visiblePosts.map((post) => (
             <div
               key={post.id}
