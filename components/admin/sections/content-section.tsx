@@ -430,11 +430,19 @@ export default function ContentSection() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setViewMode("grid")}
+          <button
+            onClick={() => {
+              console.log("GRID CLICKED");
+              setViewMode("grid");
+            }}
             className={cn("p-2 rounded-lg transition-colors", viewMode === "grid" ? "bg-zinc-800 text-white" : "text-zinc-500 hover:text-white")}>
             <Grid className="w-4 h-4" />
           </button>
-          <button onClick={() => setViewMode("list")}
+          <button
+            onClick={() => {
+              console.log("LIST CLICKED");
+              setViewMode("list");
+            }}
             className={cn("p-2 rounded-lg transition-colors", viewMode === "list" ? "bg-zinc-800 text-white" : "text-zinc-500 hover:text-white")}>
             <List className="w-4 h-4" />
           </button>
