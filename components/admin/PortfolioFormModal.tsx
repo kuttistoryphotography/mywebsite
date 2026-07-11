@@ -273,9 +273,11 @@ export default function PortfolioFormModal({
                   className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
+              
               <div className="bg-red-500 text-white p-2 rounded">
                 TEST SLUG
               </div>
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium mb-1.5">Slug *</label>
                 <input
