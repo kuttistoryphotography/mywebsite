@@ -78,8 +78,20 @@ function useFavorites() {
 
 /* ─── Constants ── */
 const CATEGORY_ORDER = [
-  "photography", "wedding","pre-wedding","outdoor","baby-shoot",
-  "product","corporate","ads","food-shoot","album","other",
+  "photography",
+  "wedding",
+  "pre-wedding",
+  "post-wedding",
+  "engagement",
+  "outdoor",
+  "indoor",
+  "baby-shoot",
+  "product",
+  "corporate",
+  "ads",
+  "food-shoot",
+  "album",
+  "other",
 ];
 const CATEGORY_META = {
   photography:        { label: "Photography",     accent: "#f97316" },
@@ -93,6 +105,9 @@ const CATEGORY_META = {
   "food-shoot":   { label: "Food Shoot",  accent: "#84cc16" },
   album:          { label: "Album",       accent: "#06b6d4" },
   other:          { label: "Other",       accent: "#94a3b8" },
+  "post-wedding": { label: "Post Wedding",  accent: "#8b5cf6", },
+  engagement:     {  label: "Engagement", accent: "#ec4899",},
+  indoor:         {  label: "Indoor",  accent: "#14b8a6", },
 };
 const getLabel  = (cat) => CATEGORY_META[cat]?.label  ?? cat;
 const getAccent = (cat) => CATEGORY_META[cat]?.accent ?? "#f97316";
