@@ -83,6 +83,7 @@ const CATEGORY_ORDER = [
   "pre-wedding",
   "post-wedding",
   "engagement",
+  "reception",
   "outdoor",
   "indoor",
   "baby-shoot",
@@ -93,6 +94,7 @@ const CATEGORY_ORDER = [
   "album",
   "other",
 ];
+
 const CATEGORY_META = {
   photography:        { label: "Photography",     accent: "#f97316" },
   wedding:        { label: "Wedding",     accent: "#f97316" },
@@ -107,7 +109,8 @@ const CATEGORY_META = {
   other:          { label: "Other",       accent: "#94a3b8" },
   "post-wedding": { label: "Post Wedding",  accent: "#8b5cf6", },
   engagement:     {  label: "Engagement", accent: "#ec4899",},
-  indoor:         {  label: "Indoor",  accent: "#14b8a6", },
+  indoor:         {  label: "Indoor",     accent: "#14b8a6", },
+  reception:      {  label: "Reception",  accent: "#f43f5e", },
 };
 const getLabel  = (cat) => CATEGORY_META[cat]?.label  ?? cat;
 const getAccent = (cat) => CATEGORY_META[cat]?.accent ?? "#f97316";
