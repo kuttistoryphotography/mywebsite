@@ -72,7 +72,22 @@ interface PortfolioItem {
 };
 }
 
-const [categories, setCategories] = useState<string[]>([]);
+const CATEGORIES = [
+  "photography",
+  "wedding",
+  "pre-wedding",
+  "post-wedding",
+  "engagement",
+  "outdoor",
+  "indoor",
+  "baby-shoot",
+  "product",
+  "corporate",
+  "ads",
+  "food-shoot",
+  "album",
+  "other",
+];
 
 function createSlug(text: string) {
   return text
@@ -175,23 +190,7 @@ export default function ContentSection() {
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    fetchPortfolioItems();
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("/api/categories?active=true");
-      const data = await res.json();
-
-      if (data.categories) {
-        setCategories(data.categories.map((c: any) => c.slug));
-      }
-    } catch (error) {
-      console.error("Failed to load categories:", error);
-    }
-  };
+  useEffect(() => { fetchPortfolioItems(); }, []);
 
   const fetchPortfolioItems = async () => {
     try {
@@ -577,14 +576,13 @@ export default function ContentSection() {
                     <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500">
                       <option value="" disabled>Select category</option>
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat
-                            .split("-")
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(" ")}
-                        </option>
-                      ))}
+                      {CATEGORIES.map((cat) => 
+                      <option key={cat} value={cat}>
+                        {cat
+                          .split("-")
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ")}
+                      </option>)}
                     </select>
                   </div>
                 </div>
