@@ -81,6 +81,7 @@ const CATEGORIES = [
   "engagement",
   "outdoor",
   "indoor",
+  "baby-shoot",
   "maternity",
   "baby-shower",
   "product",
