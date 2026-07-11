@@ -219,15 +219,80 @@ export default function PhotographyFooter() {
         </div>
 
         {/* Bottom Legal Section */}
-        <div className="mt-16 md:mt-32 pt-8 md:pt-10 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center text-[10px] tracking-[0.2em] text-zinc-600 font-bold uppercase">
-          <div className="flex gap-8 mb-4 md:mb-0">
-            <span>© 2026 Kutti Story Media</span>
-            <Link href="#" className="hover:text-zinc-200">Legal</Link>
-            <Link href="#" className="hover:text-zinc-200">Privacy</Link>
+        {/* Bottom Footer */}
+        <div className="mt-16 md:mt-32 pt-10 border-t border-zinc-900">
+
+          <div className="grid md:grid-cols-3 gap-10">
+
+            {/* Brand */}
+            <div>
+              <h3 className="text-2xl font-semibold text-white">
+                Kutti Story Photography
+              </h3>
+
+              <p className="text-zinc-400 mt-3 leading-7">
+                Capturing Life, One Story at a Time.
+              </p>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">
+                Contact Us
+              </h4>
+
+              <div className="space-y-3 text-zinc-400 text-sm">
+                <p>📍 Madurai, Tamil Nadu</p>
+                <p>📞 +91 9342013600</p>
+                <p>✉️ kuttistoryphotography@gmail.com</p>
+              </div>
+            </div>
+
+            {/* Links */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">
+                Quick Links
+              </h4>
+
+              <div className="flex flex-col gap-3 text-sm">
+                <Link href="/about-us" className="text-zinc-400 hover:text-white">
+                  About Us
+                </Link>
+
+                <Link href="/works" className="text-zinc-400 hover:text-white">
+                  Portfolio
+                </Link>
+
+                <Link href="/blog" className="text-zinc-400 hover:text-white">
+                  Blog
+                </Link>
+
+                <Link href="/contact-us" className="text-zinc-400 hover:text-white">
+                  Contact
+                </Link>
+              </div>
+            </div>
+
           </div>
-          <div className="text-zinc-800">
-            Shot on 35mm Digital
+
+          <div className="border-t border-zinc-900 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500">
+
+            <p>
+              © 2026 Kutti Story Photography. All Rights Reserved.
+            </p>
+
+            <div className="flex gap-6 mt-4 md:mt-0">
+              <Link href="/privacy-policy" className="hover:text-white">
+                Privacy Policy
+              </Link>
+
+              <Link href="/terms-and-conditions" className="hover:text-white">
+                Terms & Conditions
+              </Link>
+            </div>
+
           </div>
+
         </div>
       </div>
     </footer>
