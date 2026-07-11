@@ -157,6 +157,7 @@ export default function ContentSection() {
   // Form state — gallery uses GalleryItem[] so mediaType is always explicit
   const [formData, setFormData] = useState({
     title:            "",
+    slug:             "",
     category:         "",
     description:      "",
     cover_image:      "",
@@ -214,12 +215,20 @@ export default function ContentSection() {
   // ── Modal helpers ─────────────────────────────────────────────────────────
 
   const resetForm = () => ({
-    title: "", category: "", description: "",
-    cover_image: "", coverMediaType: "image" as MediaType,
+    title: "", 
+    slug:  "",
+    category: "", 
+    description: "",
+    cover_image: "", 
+    coverMediaType: "image" as MediaType,
     gallery: [] as GalleryItem[],
-    client_name: "", location: "", event_date: "",
-    featured: false, published: false,
-    meta_title: "", meta_description: "", og_image: "",
+    client_name: "", 
+    location: "", 
+    event_date: "",
+    featured: false, 
+    published: false,
+    meta_title: "", 
+    meta_description: "", og_image: "",
     focus_keywords: [] as string[],
     seo_title: "",
     seo_description: "",
@@ -260,6 +269,7 @@ export default function ContentSection() {
 
     setFormData({
       title:            item.title,
+      slug:             item.slug || "",
       category:         item.category,
       description:      item.description || "",
       cover_image:      item.cover_image || "",
@@ -573,8 +583,8 @@ export default function ContentSection() {
 
                       setFormData((prev) => ({
                         ...prev,
-
                         title,
+                        slug,
 
                         canonical_url: `https://www.kuttistoryphotography.com/portfolio/${slug}`,
 
@@ -588,6 +598,36 @@ export default function ContentSection() {
                       className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
                       placeholder="e.g., Priya & Arjun Wedding" />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-400 mb-2">
+                      Slug
+                    </label>
+
+                    <input
+                      value={formData.slug}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          slug: createSlug(e.target.value),
+                          canonical_url: `https://www.kuttistoryphotography.com/portfolio/${createSlug(
+                            e.target.value
+                          )}`,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="sidharth-roja-wedding"
+                    />
+
+                    <p className="text-xs text-zinc-500 mt-1">
+                      URL:
+                      <span className="text-emerald-400">
+                        {" "}
+                        /portfolio/{formData.slug || "your-slug"}
+                      </span>
+                    </p>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-zinc-400 mb-2">Category *</label>
                     <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}
