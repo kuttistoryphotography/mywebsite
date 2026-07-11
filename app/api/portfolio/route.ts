@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const body = await request.json();
     const {
-      title, category, description,
+      title, slug, category, description,
       cover_image, coverMediaType,
       media, images, imageTypeMap,
       tags, featured, published,
@@ -105,10 +105,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title and category are required' }, { status: 400 });
     }
 
-    const slugBase = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    let slug = slugBase;
+    const slugBase =
+      slug ||
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+    let finalSlug = slugBase;
     let suffix = 1;
-    while (await PortfolioItem.findOne({ slug })) { slug = `${slugBase}-${++suffix}`; }
+
+    while (await PortfolioItem.findOne({ slug: finalSlug })) {
+      finalSlug = `${slugBase}-${++suffix}`;
+    }
 
     // Build typed media array
     let typedMedia = media && Array.isArray(media) ? media : [];
@@ -118,7 +127,8 @@ export async function POST(request: NextRequest) {
     }
 
     const item = await PortfolioItem.create({
-      title, slug, category, description,
+      title, slug: finalSlug,
+      category, description,
       coverImage:     cover_image,
       coverMediaType: coverMediaType || 'image',
       media:          typedMedia,
@@ -187,9 +197,27 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    if (updates.title) {
-      const slugBase = (updates.title as string).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      update.slug = slugBase;
+    const slugBase =
+      (updates.slug as string) ||
+      (updates.title as string)
+        ?.toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+    if (slugBase) {
+      let finalSlug = slugBase;
+      let suffix = 1;
+
+      while (
+        await PortfolioItem.findOne({
+          slug: finalSlug,
+          _id: { $ne: id },
+        })
+      ) {
+        finalSlug = `${slugBase}-${++suffix}`;
+      }
+
+      update.slug = finalSlug;
     }
 
     await PortfolioItem.findByIdAndUpdate(id, update);
