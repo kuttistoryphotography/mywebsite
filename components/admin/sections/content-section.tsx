@@ -398,6 +398,8 @@ export default function ContentSection() {
 
   // ─────────────────────────────────────────────────────────────────────────
 
+  console.log("VIEW MODE =", viewMode);
+
   return (
     <div className="space-y-6">
       {/* Header */}
