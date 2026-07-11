@@ -916,13 +916,22 @@ export default function ContentSection() {
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-medium text-zinc-300">Meta Title</label>
-                    <span className={cn("text-xs", formData.meta_title.length > 150 ? "text-red-400" : formData.meta_title.length > 200 ? "text-amber-400" : "text-zinc-500")}>
-                      {formData.meta_title.length}/150
+                    <span
+                      className={cn(
+                        "text-xs",
+                        formData.meta_title.length > 100
+                          ? "text-red-400"
+                          : formData.meta_title.length > 80
+                          ? "text-amber-400"
+                          : "text-zinc-500"
+                      )}
+                    >
+                      {formData.meta_title.length}/100
                     </span>
                   </div>
                   <input value={formData.meta_title} onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
                     placeholder={formData.title ? `${formData.title} | Photography` : "Enter meta title"}
-                    maxLength={200}
+                    maxLength={100}
                     className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 text-sm" />
                 </div>
 
