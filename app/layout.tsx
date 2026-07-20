@@ -112,68 +112,177 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script
-  id="structured-data"
-    type="application/ld+json"
-    strategy="beforeInteractive"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "ProfessionalService",
-      sameAs: ["https://www.instagram.com/kuttistory_photography"],
-            name: "Kutti Story Photography",
-      serviceType: [
-        "Wedding Photography",
-        "Candid Wedding Photography",
-        "Wedding Videography",
-        "Pre Wedding Photography",
-        "Engagement Photography",
-        "Baby Shower Photography"
-      ],
-      image: "https://www.kuttistoryphotography.com/01.webp",
-      logo: "https://www.kuttistoryphotography.com/favicon.svg",
-      url: "https://www.kuttistoryphotography.com",
-      telephone: "+919976733600",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "52/32, South Mada Street, Periyar",
-        addressLocality: "Madurai",
-        addressRegion: "Tamil Nadu",
-        postalCode: "625001",
-        addressCountry: "IN"
-      },
-      areaServed: {
-        "@type": "State",
-        name: "Tamil Nadu"
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: 9.9252,
-        longitude: 78.1198
-      },
+        id="structured-data"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://www.kuttistoryphotography.com/#business",
 
-      priceRange: "₹₹",
-      openingHoursSpecification: [
-        {
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
+          sameAs: [
+            "https://www.instagram.com/kuttistory_photography",
+            "https://www.facebook.com/profile.php?id=100088807664790",
+            "https://youtube.com/@kuttistoryphotography",
+            "https://www.threads.com/@kuttistory_photography",
+            "https://www.linkedin.com/in/kutti-story-photography",
+            "https://x.com/kuttistoryphoto",
+            "https://maps.app.goo.gl/F8i95dRbthYoTHSJ7"
           ],
-          opens: "09:00",
-          closes: "20:00"
-        }
-      ],
-      
-      description:
-      "Best wedding photographer in Madurai offering candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu."
-    }),
-  }}
-/>
+
+          name: "Kutti Story Photography",
+          foundingDate: "2018",
+
+          knowsAbout: [
+            "Wedding Photography",
+            "Candid Wedding Photography",
+            "Wedding Videography",
+            "Pre Wedding Photography",
+            "Post Wedding Photography",
+            "Engagement Photography",
+            "Baby Photography",
+            "Maternity Photography",
+            "Birthday Photography",
+            "Drone Photography",
+          ],
+
+          identifier: "Kutti Story Photography",
+
+          founder: {
+            "@type": "Person",
+            name: "ANANTH P"
+          },
+
+          serviceType: [
+            "Wedding Photography",
+            "Candid Wedding Photography",
+            "Wedding Videography",
+            "Pre Wedding Photography",
+            "Engagement Photography",
+            "Baby Shower Photography"
+          ],
+
+          currenciesAccepted: "INR",
+          paymentAccepted: [
+            "Cash",
+            "UPI",
+            "Bank Transfer"
+          ],
+
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Photography Services",
+            itemListElement: [
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Wedding Photography",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Candid Wedding Photography",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Wedding Videography",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Pre Wedding Photography",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Engagement Photography",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Baby Shower Photography",
+                },
+              },
+            ],
+          },
+
+          image: "https://www.kuttistoryphotography.com/01.webp",
+          photo: "https://www.kuttistoryphotography.com/01.webp",
+          logo: "https://www.kuttistoryphotography.com/favicon.svg",
+          url: "https://www.kuttistoryphotography.com",
+          mainEntityOfPage: "https://www.kuttistoryphotography.com",
+          hasMap: "https://maps.app.goo.gl/F8i95dRbthYoTHSJ7",
+          telephone: "+91 9976733600",
+          "email": "kuttistoryphotography@gmail.com",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+91 9976733600",
+            contactType: "customer service",
+            areaServed: "IN",
+            availableLanguage: ["English", "Tamil"],
+          },
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "52/32, South Mada Street, Periyar",
+            addressLocality: "Madurai",
+            addressRegion: "Tamil Nadu",
+            postalCode: "625001",
+            addressCountry: "IN"
+          },
+
+          areaServed: [
+            {
+              "@type": "City",
+              name: "Madurai"
+            },
+            {
+              "@type": "State",
+              name: "Tamil Nadu"
+            }
+          ],
+
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: 9.9252,
+            longitude: 78.1198
+          },
+
+          priceRange: "₹₹",
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday"
+              ],
+              opens: "09:00",
+              closes: "20:00"
+            }
+          ],
+          
+          description:
+          "Best wedding photographer in Madurai offering candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu."
+        }),
+      }}
+    />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
