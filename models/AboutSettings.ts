@@ -82,42 +82,44 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
         type: String,
         default: 'Wedding Photographer & Cinematographer',
       },
-    story: {
-  heading: {
-    type: String,
-    default: "Behind the Lens",
-  },
+      },
 
-  paragraph: {
-    type: String,
-    default: "Our night sessions showcase natural light and ambient night aesthetics.",
-  },
+      story: {
+      heading: {
+        type: String,
+        default: "Behind the Lens",
+      },
 
-  image: {
-    type: String,
-    default: "",
-  },
+      paragraph: {
+        type: String,
+        default: "Our night sessions showcase natural light and ambient night aesthetics.",
+      },
 
-  galleryImages: {
-    type: [String],
-    default: ["", "", "", ""],
-  },
+      image: {
+        type: String,
+        default: "",
+      },
 
-  coverImage: {
-    type: String,
-    default: "",
-  },
+      galleryImages: {
+        type: [String],
+        default: ["", "", "", ""],
+      },
 
-  rightImage: {
-    type: String,
-    default: "",
-  },
+      coverImage: {
+        type: String,
+        default: "",
+      },
 
-  videoUrl: {
-    type: String,
-    default: "",
-  },
-},
+      rightImage: {
+        type: String,
+        default: "",
+      },
+
+      videoUrl: {
+        type: String,
+        default: "",
+      },
+    },
     team: {
       type: [TeamMemberSchema],
       default: [],
