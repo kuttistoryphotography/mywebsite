@@ -73,9 +73,15 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
       highlightWord: { type: String, default: 'Silent Stories' },
       images:        { type: [String], default: [] },
       profileImage:  { type: String, default: '' },
-      profileName:   { type: String, default: 'Leslie Alexander' },
-      profileRole:   { type: String, default: 'Lead Photographer' },
-    },
+      profileName: {
+        type: String,
+        default: 'Kutti Story Photography',
+      },
+
+      profileRole: {
+        type: String,
+        default: 'Wedding Photographer & Cinematographer',
+      },
     story: {
   heading: {
     type: String,
@@ -114,13 +120,9 @@ const AboutSettingsSchema = new Schema<IAboutSettings>(
 },
     team: {
       type: [TeamMemberSchema],
-      default: [
-        { name: 'Kaiya Rhiel Madsen', role: 'Creative Director',    image: '' },
-        { name: 'Charlie Stanton',    role: 'Lead Cinematographer', image: '' },
-        { name: 'Makenna Kenter',     role: 'Studio Manager',       image: '' },
-        { name: 'Angel Mango',        role: 'Senior Retoucher',     image: '' },
-      ],
+      default: [],
     },
+
     timeline: {
       type: [TimelineEntrySchema],
       default: [

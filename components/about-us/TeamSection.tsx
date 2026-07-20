@@ -9,32 +9,25 @@ gsap.registerPlugin(ScrollTrigger)
 
 interface TeamMember { name: string; role: string; image: string }
 
-const DEFAULT_TEAM: TeamMember[] = [
-  { name: 'Kaiya Rhiel Madsen', role: 'Creative Director',    image: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/01.webp' },
-  { name: 'Charlie Stanton',    role: 'Lead Cinematographer', image: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/02.webp' },
-  { name: 'Makenna Kenter',     role: 'Studio Manager',       image: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/03.webp' },
-  { name: 'Angel Mango',        role: 'Senior Retoucher',     image: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/04.webp' },
-]
 
 export default function PhotographyTeamPage() {
   const containerRef = useRef(null)
-  const [team, setTeam] = useState<TeamMember[]>(DEFAULT_TEAM)
-
+  const [team, setTeam] = useState<TeamMember[]>([])
+  
   useEffect(() => {
     fetch('/api/about')
-      .then((r) => r.json())
+      .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data.settings?.team) && data.settings.team.length) {
-          setTeam(
-            data.settings.team.map((m: TeamMember, i: number) => ({
-              name:  m.name  || DEFAULT_TEAM[i]?.name  || '',
-              role:  m.role  || DEFAULT_TEAM[i]?.role  || '',
-              image: m.image || DEFAULT_TEAM[i]?.image || '',
-            }))
-          )
+        if (Array.isArray(data.settings?.team)) {
+          setTeam(data.settings.team)
+        } else {
+          setTeam([])
         }
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error("Failed to load team:", err)
+        setTeam([])
+      })
   }, [])
 
   useEffect(() => {
@@ -89,7 +82,8 @@ export default function PhotographyTeamPage() {
         </div>
 
         {/* TEAM GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-24 items-start">
+          {team.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-24 items-start">
           {team.map((member, index) => (
             <div
               key={index}
@@ -127,8 +121,9 @@ export default function PhotographyTeamPage() {
                 </div>
               </div>
             </div>
-          ))}
+            ))}
         </div>
+)}
 
         {/* FOOTER CTA */}
         <div className="mt-48 flex flex-col items-center text-center">
