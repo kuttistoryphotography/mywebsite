@@ -213,7 +213,7 @@ export default function Hero() {
           url={hero.backgroundImage}
           mediaType="image"
           className="w-full h-full object-cover"
-          alt="Background"
+          alt="Best Wedding Photography in Madurai by Kutti Story Photography"
         />
 
         <div
@@ -396,12 +396,14 @@ export default function Hero() {
         {/* Mobile Hero Image */}
         <div className="md:hidden flex justify-end mt-8">
           <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
+            
             <DriveMedia
               url={hero.heroCardImage}
               mediaType="image"
               className="w-full h-full object-cover object-left"
-              alt="Professional Shot"
+              alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
             />
+
           </div>
         </div>
         
@@ -471,7 +473,7 @@ export default function Hero() {
                       duration-700
                       hover:scale-105
                   "
-                  alt="Professional Shot"
+                  alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
               />
             </div>
           )}
