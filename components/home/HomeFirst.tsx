@@ -27,12 +27,35 @@ export default function HomeFirst() {
           baby photography, and destination weddings across Tamil Nadu.
         </p>
 
-        <p className="mt-6 text-gray-300 leading-8 text-lg">
-          Our goal is to capture genuine emotions, beautiful moments, and timeless
-          memories through creative storytelling. From intimate ceremonies to
-          grand celebrations, we provide professional photography and videography
-          services that preserve every special moment of your wedding day.
-        </p>
+        <div className="mt-10 flex flex-wrap gap-4">
+          <a
+            href="/wedding-photography-madurai"
+            className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
+          >
+            Wedding Photography
+          </a>
+
+          <a
+            href="/candid-wedding-photography-madurai"
+            className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
+          >
+            Candid Photography
+          </a>
+
+          <a
+            href="/engagement-photography-madurai"
+            className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
+          >
+            Engagement
+          </a>
+
+          <a
+            href="/pre-wedding-photography-madurai"
+            className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
+          >
+            Pre Wedding
+          </a>
+        </div>
       </section>
 
       <AboutSection />
