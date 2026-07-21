@@ -15,9 +15,9 @@ export default function HomeFirst() {
 
       {/* SEO Section */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-white">
-        <h2 className="text-4xl font-bold mb-6">
-          Best Wedding Photography in Madurai
-        </h2>
+        <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          Best Wedding Photographer in Madurai | Kutti Story Photography
+        </h1>
 
         <p className="text-gray-300 leading-8 text-lg">
           Kutti Story Photography is a professional wedding photography company in
