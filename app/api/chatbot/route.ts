@@ -15,12 +15,12 @@ import ContactSettings from "@/models/ContactSettings";
 async function buildSystemPrompt(): Promise<string> {
   let contact = {
     email:         "kuttistoryphotography@gmail.com",
-    phone:         "+91 93420 13600",
+    phone:         "+91 93420 13600, +91 99767 33600",
     whatsapp:      "+91 93420 13600",
-    address:       "Periyar",
+    address:       "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple, Madurai, Tamil Nadu 625001",
     city:          "Madurai",
     state:         "Tamil Nadu",
-    pincode:       "625016",
+    pincode:       "625001",
     businessHours: "Mon – Sat: 9 AM – 7 PM",
     instagramUrl:  "",
     facebookUrl:   "",

@@ -5,12 +5,12 @@ import gsap from "gsap";
 
 const DEFAULTS = {
   email: "kuttistoryphotography@gmail.com",
-  phone: "+91 93420 13600",
+  phone: "+91 93420 13600, +91 99767 33600",
   whatsapp: "+91 93420 13600",
-  address: "Periyar",
+  address: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
   city: "Madurai",
   state: "Tamil Nadu",
-  pincode: "625016",
+  pincode: "625001",
   googleMapsEmbed: "",
   businessHours: "Mon – Sat: 9 AM – 7 PM",
   instagramUrl: "",
@@ -89,9 +89,21 @@ const ContactPage = () => {
             {/* Phone */}
             <div className="info-item group cursor-pointer">
               <p className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-bold mb-2">Call Anytime</p>
-              <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="text-lg md:text-xl font-medium group-hover:text-orange-400 transition-colors duration-300">
-                {contact.phone}
-              </a>
+              <div className="space-y-1">
+                <a
+                  href="tel:+919342013600"
+                  className="block text-lg md:text-xl font-medium group-hover:text-orange-400 transition-colors duration-300"
+                >
+                  +91 93420 13600
+                </a>
+
+                <a
+                  href="tel:+919976733600"
+                  className="block text-lg md:text-xl font-medium group-hover:text-orange-400 transition-colors duration-300"
+                >
+                  +91 99767 33600
+                </a>
+              </div>
             </div>
 
             {/* WhatsApp */}

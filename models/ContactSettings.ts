@@ -27,12 +27,12 @@ export interface IContactSettings extends Document {
 const ContactSettingsSchema = new Schema<IContactSettings>(
   {
     email:        { type: String, default: 'kuttistoryphotography@gmail.com' },
-    phone:        { type: String, default: '+91 93420 13600' },
+    phone:        { type: String, default: '+91 93420 13600, +91 99767 33600' },
     whatsapp:     { type: String, default: '+91 93420 13600' },
-    address:      { type: String, default: 'Periyar' },
+    address:      { type: String, default: '52/32 South Mada Street, Near Koodal Azhagar Perumal Temple' },
     city:         { type: String, default: 'Madurai' },
     state:        { type: String, default: 'Tamil Nadu' },
-    pincode:      { type: String, default: '625016' },
+    pincode:      { type: String, default: '625001' },
     googleMapsEmbed: { type: String, default: '' },
     businessHours:{ type: String, default: 'Mon – Sat: 9 AM – 7 PM' },
     instagramUrl: { type: String, default: '' },

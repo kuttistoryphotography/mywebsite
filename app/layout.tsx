@@ -225,18 +225,27 @@ export default function RootLayout({
           url: "https://www.kuttistoryphotography.com",
           mainEntityOfPage: "https://www.kuttistoryphotography.com",
           hasMap: "https://maps.app.goo.gl/F8i95dRbthYoTHSJ7",
-          telephone: "+91 9976733600",
+          telephone: "+91 9342013600",
           "email": "kuttistoryphotography@gmail.com",
-          contactPoint: {
-            "@type": "ContactPoint",
-            telephone: "+91 9976733600",
-            contactType: "customer service",
-            areaServed: "IN",
-            availableLanguage: ["English", "Tamil"],
-          },
+          contactPoint: [
+            {
+              "@type": "ContactPoint",
+              telephone: "+91 9342013600",
+              contactType: "customer service",
+              areaServed: "IN",
+              availableLanguage: ["English", "Tamil"]
+            },
+            {
+              "@type": "ContactPoint",
+              telephone: "+91 9976733600",
+              contactType: "customer service",
+              areaServed: "IN",
+              availableLanguage: ["English", "Tamil"]
+            }
+          ],
           address: {
             "@type": "PostalAddress",
-            streetAddress: "52/32, South Mada Street, Periyar",
+            streetaddress: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
             addressLocality: "Madurai",
             addressRegion: "Tamil Nadu",
             postalCode: "625001",
