@@ -126,7 +126,7 @@ export default function PortfolioDetailClient({ id }: { id: string }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
           <Link href="/works"
-            className="absolute top-6 left-6 z-10 flex items-center gap-2 px-4 py-2 bg-black/50 backdrop-blur-md rounded-full text-white hover:bg-black/70 transition">
+            className="absolute top-[120px] left-6 z-[9999] flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full text-white hover:bg-black/80 transition">
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Back</span>
           </Link>
