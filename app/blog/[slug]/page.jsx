@@ -1,5 +1,6 @@
 import BlogPost from "../../../components/blog/blogpost";
 import { getBlogBySlug } from "@/lib/getBlog";
+import Script from "next/script";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
@@ -22,9 +23,21 @@ export async function generateMetadata({ params }) {
         blog.canonical_url?.trim() ||
         `https://www.kuttistoryphotography.com/blog/${blog.slug}`;
 
+  const publishedTime = blog.createdAt;
+  const modifiedTime = blog.updatedAt || blog.createdAt;
+
   return {
+    metadataBase: new URL("https://www.kuttistoryphotography.com"),
+
     title,
     description,
+    
+    authors: [
+      {
+        name: blog.author_name,
+      },
+    ],
+
     alternates: {
       canonical: canonicalPath,
     },
@@ -34,18 +47,73 @@ export async function generateMetadata({ params }) {
       type: "article",
       url: canonicalPath,
       siteName: "Kutti Story Photography",
-      images: [{ url: image }],
+      publishedTime,
+      modifiedTime,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
+
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      creator: "@kuttistoryphoto",
       images: [image],
     },
-    keywords: blog.focus_keywords || blog.tags || [],
+
+    keywords:
+    blog.focus_keywords?.length
+      ? blog.focus_keywords
+      : blog.tags,
   };
 }
 
-export default function BlogPosts() {
-  return <BlogPost />;
+export default async function BlogPosts({ params }) {
+  const resolvedParams = await params;
+  const blog = await getBlogBySlug(resolvedParams?.slug);
+
+  return (
+    <>
+      {blog && (
+        <Script
+          id="blog-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BlogPosting",
+              headline: blog.title,
+              description: blog.meta_description || blog.excerpt,
+              url: blog.canonical_url || `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
+              image: blog.og_image || blog.cover_image,
+              datePublished: blog.published_at || blog.createdAt,
+              dateModified: blog.createdAt,
+              author: {
+                "@type": "Organization",
+                name: blog.author_name,
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "Kutti Story Photography",
+                logo: {
+                  "@type": "ImageObject",
+                  url: "https://www.kuttistoryphotography.com/favicon.svg",
+                },
+              },
+
+              inLanguage: "en-IN",
+              
+            }),
+          }}
+        />
+      )}
+      <BlogPost />
+    </>
+  );
 }

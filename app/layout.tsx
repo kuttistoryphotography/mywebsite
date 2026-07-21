@@ -44,7 +44,7 @@ keywords: [
 
  authors: [{ name: "Kutti Story" }],
   creator: "Kutti Story",
-  generator: 'v0.app',
+  
   metadataBase: new URL("https://www.kuttistoryphotography.com"),
 
   alternates: {
@@ -64,7 +64,7 @@ icons: {
     type: "website",
     locale: "en_IN",
     url: "https://www.kuttistoryphotography.com",
-    siteName: "Kutti Story",
+    siteName: "Kutti Story Photography",
     title: "Best Wedding Photography in Madurai | Kutti Story Photography",
     description:
       "Looking for the best wedding photographer in Madurai? Kutti Story Photography specializes in candid wedding photography, cinematic wedding films, pre wedding shoots, engagement photography and traditional Tamil wedding photography across Tamil Nadu.",

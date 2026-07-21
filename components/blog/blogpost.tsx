@@ -165,18 +165,30 @@ export default function BlogPost() {
             <div className="animate-line h-px flex-1 bg-zinc-800" />
           </div>
 
-          <h1 className="blog-title text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-balance">
+          <h1
+            itemProp="headline"
+            className="blog-title text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-balance"
+          >
             {post.title}
           </h1>
 
           <div className="flex flex-wrap gap-12 pt-12">
             <div className="meta-item">
               <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Author</p>
-              <p className="font-medium">{post.author_name || "Kutti Story Team"}</p>
+              <div itemProp="author" itemScope itemType="https://schema.org/Organization">
+                <p itemProp="name" className="font-medium">
+                  {post.author_name || "Kutti Story Photography"}
+                </p>
+              </div>
             </div>
             <div className="meta-item">
               <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Published</p>
-              <p className="font-mono text-sm">{formatDate(post.published_at || post.created_at)}</p>
+              <p
+                itemProp="datePublished"
+                className="font-mono text-sm"
+              >
+                {formatDate(post.published_at || post.created_at)}
+              </p>
             </div>
             <div className="meta-item">
               <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Reading Time</p>
@@ -193,10 +205,11 @@ export default function BlogPost() {
             <Image
               src={toImageUrl(post.cover_image, 2000)}
               alt={post.title}
+              itemProp="image"
               fill
               className="object-cover brightness-90"
               priority
-              unoptimized
+              
             />
           </div>
         </section>
@@ -211,7 +224,11 @@ export default function BlogPost() {
 
       {/* --- CONTENT --- */}
       <section className="py-24 px-6">
-        <article className="max-w-3xl mx-auto">
+        <article
+          className="max-w-3xl mx-auto"
+          itemScope
+          itemType="https://schema.org/BlogPosting"
+        >
           <div className="prose prose-invert max-w-none">
             <style>{`
               .prose p { font-size: 1.25rem; line-height: 1.7; color: #a1a1aa; margin-bottom: 2rem; font-weight: 300; }
@@ -220,7 +237,10 @@ export default function BlogPost() {
               .prose li { list-style: none; font-size: 1.1rem; padding: 1.5rem 0; border-top: 1px solid #27272a; color: #d4d4d8; }
               .prose li:before { content: '0' counter(list-item) '.'; margin-right: 1rem; color: #f97316; font-family: monospace; }
             `}</style>
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div
+              itemProp="articleBody"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
           </div>
 
           {/* --- ENHANCED GALLERY --- */}
@@ -237,8 +257,9 @@ export default function BlogPost() {
                   >
                     <Image
                       src={imgSrc || "/placeholder.svg"}
-                      alt="Gallery image"
+                      alt={`${post.title} - Gallery Image ${idx + 1}`}
                       fill
+                      loading="lazy"
                       className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
                   </div>

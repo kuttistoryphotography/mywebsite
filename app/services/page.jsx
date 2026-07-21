@@ -32,7 +32,7 @@ export default function ServicesPage() {
             </p>
 
             <a
-              href="/contact"
+              href="/contact-us"
               className="inline-flex items-center gap-3 mt-10 bg-[#ff6b00] hover:bg-orange-600 transition-all duration-300 px-8 py-4 rounded-full text-white font-semibold"
             >
               Book Your Session

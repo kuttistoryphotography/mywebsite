@@ -31,7 +31,7 @@ export default function BlogPage() {
             </p>
 
             <a
-              href="/contact"
+              href="/contact-us"
               className="inline-flex items-center gap-3 mt-10 bg-[#ff6b00] hover:bg-orange-600 transition px-8 py-4 rounded-full text-white font-semibold"
             >
               Book Your Session

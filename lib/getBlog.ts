@@ -99,7 +99,7 @@ function mapBlog(b: any, includeContent = true): BlogPost {
     slug:           b.slug,
     excerpt:        b.excerpt || '',
     content:        includeContent ? (b.content || '') : '',
-    author_name:    '',
+    author_name:    "Kutti Story Photography",
     cover_image:    b.coverImage || '',
     category:       b.category || 'General',
     tags:           b.tags || [],
