@@ -90,6 +90,14 @@ export default async function BlogPosts({ params }) {
               "@type": "BlogPosting",
               headline: blog.title,
               description: blog.meta_description || blog.excerpt,
+              
+              mainEntityOfPage: {
+                "@type": "WebPage",
+                "@id":
+                  blog.canonical_url ||
+                  `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
+              },
+
               url: blog.canonical_url || `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
               image: blog.og_image || blog.cover_image,
               datePublished: blog.published_at || blog.createdAt,
@@ -108,7 +116,7 @@ export default async function BlogPosts({ params }) {
               },
 
               inLanguage: "en-IN",
-              
+
             }),
           }}
         />
