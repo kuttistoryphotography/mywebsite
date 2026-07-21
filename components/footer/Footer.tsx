@@ -139,19 +139,52 @@ export default function PhotographyFooter() {
             <div className="shutter-text space-y-6">
               <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-600">Galleries</h4>
               <ul className="space-y-4 text-sm font-medium">
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Weddings</Link></li>
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Street Life</Link></li>
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Portraits</Link></li>
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">The Archives</Link></li>
+                <li>
+                  <Link href="/works" className="text-zinc-400 hover:text-white transition-colors">
+                    Wedding Portfolio
+                  </Link>
+                </li>
+
+                <li>
+                  <Link href="/works" className="text-zinc-400 hover:text-white transition-colors">
+                    Engagement Photography
+                  </Link>
+                </li>
+
+                <li>
+                  <Link href="/works" className="text-zinc-400 hover:text-white transition-colors">
+                    Couple Portraits
+                  </Link>
+                </li>
+
+                <li>
+                  <Link href="/blog" className="text-zinc-400 hover:text-white transition-colors">
+                    Photography Stories
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div className="shutter-text space-y-6">
               <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-600">Studio</h4>
               <ul className="space-y-4 text-sm font-medium">
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Our Process</Link></li>
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Equipment</Link></li>
-                <li><Link href="#" className="text-zinc-400 hover:text-white transition-colors">Workshops</Link></li>
+                <li>
+                    <Link href="/about-us" className="text-zinc-400 hover:text-white transition-colors">
+                      About Us
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link href="/services" className="text-zinc-400 hover:text-white transition-colors">
+                      Our Services
+                    </Link>
+                  </li>
+
+                  <li>
+                    <Link href="/contact-us" className="text-zinc-400 hover:text-white transition-colors">
+                      Book a Shoot
+                    </Link>
+                  </li>
               </ul>
             </div>
 
@@ -277,9 +310,15 @@ export default function PhotographyFooter() {
 
           <div className="border-t border-zinc-900 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center w-full text-sm text-zinc-500">
 
-            <p>
-              © 2026 Kutti Story Photography. All Rights Reserved.
-            </p>
+            <div className="flex flex-col">
+              <p>
+                © {new Date().getFullYear()} Kutti Story Photography. All Rights Reserved.
+              </p>
+
+              <p className="text-xs text-zinc-600 mt-2">
+                Website Designed & Developed by Kutti Story Media.
+              </p>
+            </div>
 
             <div className="flex gap-6 mt-4 md:mt-0">
               <Link href="/privacy-policy" className="hover:text-white">
