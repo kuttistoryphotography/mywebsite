@@ -493,7 +493,7 @@ export default function DynamicPortfolioShowcase() {
                   }}
                   className="px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold"
                 >
-                  📖 View Complete Wedding
+                  📸 View Portfolio
                 </button>
               )}
 
