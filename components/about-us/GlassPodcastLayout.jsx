@@ -18,16 +18,16 @@ export default function PhotographyAboutSection() {
   const [loading, setLoading] = useState(true)
 
   const [settings, setSettings] = useState({
-    heading:        'Capturing the',
-    highlightWord:  'Silent Stories',
-    subheading:     'We specialize in outdoor night shoots and cinematic storytelling, bringing out the soul of every moment.',
+    heading:        'Capturing Love Stories',
+    highlightWord:  'Love Stories',
+    subheading:     'We specialize in cinematic wedding photography, candid storytelling, and premium wedding films across Madurai and Tamil Nadu.',
     paragraph:      '',
     images:         DEFAULT_IMAGES,
     profileImage:   DEFAULT_IMAGES[0],
-    profileName:    'Leslie Alexander',
-    profileRole:    'Lead Photographer',
-    storyHeading: 'Behind the Lens',
-    storyParagraph: 'Our night sessions showcase natural light and ambient night aesthetics.',
+    profileName:    'Kutti Story Photography',
+    profileRole:    'Wedding Photographer & Cinematographer',
+    storyHeading:   'Our Journey',
+    storyParagraph: 'Since 2018, Kutti Story Photography has been capturing timeless wedding memories with cinematic storytelling, artistic photography, and heartfelt moments across Tamil Nadu.',
 
     storyImage: DEFAULT_IMAGES[1],
 
@@ -224,7 +224,7 @@ export default function PhotographyAboutSection() {
 
         {/* ROW 2: CASE STUDY */}
         <div className="animate-card md:col-span-2 bg-[#0d0d0d] border border-white/5 rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-          <span className="absolute top-6 right-8 text-[9px] text-gray-600 tracking-[0.4em] font-mono">ESTD 2026</span>
+          <span className="absolute top-6 right-8 text-[9px] text-gray-600 tracking-[0.4em] font-mono">ESTD 2018</span>
           <div
             className="relative w-44 h-44 flex-shrink-0 group"
             onMouseEnter={() => setPlayStoryVideo(true)}
@@ -264,7 +264,7 @@ export default function PhotographyAboutSection() {
               href="/about-us"
               className="group inline-flex items-center text-[11px] font-bold uppercase tracking-[0.25em] border-b border-yellow-500 pb-1 hover:text-yellow-500 transition-all duration-300"
             >
-             DISCOVER KUTTI STORY
+             ABOUT KUTTI STORY
 
             <span className="ml-2 group-hover:translate-x-2 transition-transform duration-300">
               →
@@ -278,7 +278,12 @@ export default function PhotographyAboutSection() {
           <div>
             <h4 className="text-[10px] uppercase tracking-[0.3em] text-gray-600 mb-6 font-bold">Expertise</h4>
             <div className="flex flex-wrap gap-2">
-              {['Portrait', 'Night', 'Cinematic', 'Outdoor'].map((tag) => (
+              {[
+                'Wedding',
+                'Candid',
+                'Pre Wedding',
+                'Cinematic'
+              ].map((tag) => (
                 <span key={tag} className="px-4 py-2 rounded-full border border-white/5 bg-white/[0.02] text-[9px] uppercase font-bold tracking-wider hover:border-yellow-500/50 transition-all cursor-default">
                   {tag}
                 </span>
@@ -294,7 +299,7 @@ export default function PhotographyAboutSection() {
                   alt="Behind The Lens Right Image"
               />
             </div>
-            <p className="text-[9px] text-center mt-4 text-gray-700 font-mono tracking-widest">INFO@SUPPORT.COM</p>
+            <p className="text-[9px] text-center mt-4 text-gray-700 font-mono tracking-widest">kuttistoryphotography@gmail.com</p>
           </div>
         </div>
 
