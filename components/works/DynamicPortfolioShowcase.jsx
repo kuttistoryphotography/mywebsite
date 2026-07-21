@@ -324,6 +324,7 @@ export default function DynamicPortfolioShowcase() {
   const [lightboxCtx,    setLightboxCtx]    = useState(null); // { items, title, parentType }
   const { favIds, toggle: toggleFav, toggleMedia } = useFavorites();
   const router = useRouter();
+  const [currentSlug, setCurrentSlug] = useState(null);
   
 
   useEffect(() => {
@@ -354,13 +355,23 @@ export default function DynamicPortfolioShowcase() {
   const openPortfolio = useCallback((item) => {
     const items = portfolioToMediaItems(item);
     if (!items.length) return;
+
+    setCurrentSlug(item.slug);
+
     setLightboxCtx({
         items,
         title: item.title,
         parentType: "portfolio",
         slug: item.slug
     });
-  }, []);
+
+    window.history.pushState(
+        {},
+        "",
+        `/works/${item.slug}`
+    );
+
+}, []);
 
   /* Group by category */
   const grouped = {};
