@@ -341,7 +341,7 @@ export default function WeddingPhotographyMadurai() {
 
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <a
-            href="/contact"
+            href="/contact-us"
             className="rounded-lg bg-white px-6 py-3 font-semibold text-black transition hover:opacity-90"
           >
             Contact Us

@@ -66,16 +66,21 @@ interface DriveMediaProps {
 export function DriveMedia({
   url,
   mediaType,
-  autoPlay  = false,
-  muted     = true,
-  controls  = true,
-  loop      = false,
+  autoPlay = false,
+  muted = true,
+  controls = true,
+  loop = false,
   className = "",
   imgClassName = "",
-  alt       = "",
+  alt = "",
   imageWidth = 1600,
+
+  loading = "lazy",
+  fetchPriority = "auto",
+
   onError,
 }: DriveMediaProps) {
+
   const [errored, setErrored] = useState(false);
 
   if (!url) return <MediaPlaceholder mediaType={mediaType} className={className} />;
@@ -87,9 +92,9 @@ export function DriveMedia({
         src={toImageUrl(url, imageWidth)}
         alt={alt}
         className={cn("block", className, imgClassName)}
-        loading="lazy"
+        loading={loading}
         decoding="async"
-        fetchPriority="low"
+        fetchPriority={fetchPriority}
         onError={() => {
           setErrored(true);
           onError?.();

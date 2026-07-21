@@ -214,6 +214,8 @@ export default function Hero() {
           mediaType="image"
           className="w-full h-full object-cover"
           alt="Best Wedding Photography in Madurai by Kutti Story Photography"
+          loading="eager"
+          fetchPriority="high"
         />
 
         <div
