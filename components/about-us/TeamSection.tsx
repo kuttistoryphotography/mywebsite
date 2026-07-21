@@ -129,7 +129,8 @@ export default function PhotographyTeamPage() {
         <div className="mt-48 flex flex-col items-center text-center">
           <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-800 to-transparent mb-20" />
           <h3 className="text-4xl font-bold mb-8 group cursor-default">
-            Do you have a <span className="text-yellow-500 transition-all duration-300 group-hover:px-4">vision?</span>
+            Do you have a 
+            <span className="text-yellow-500 transition-all duration-300 group-hover:px-4">vision?</span>
           </h3>
           <p className="text-neutral-500 mb-10 max-w-md hover:text-white transition-colors duration-500">
             We are always looking for fresh perspectives to join our night-shoot collective.

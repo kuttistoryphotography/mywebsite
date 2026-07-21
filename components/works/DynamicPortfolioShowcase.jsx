@@ -7,6 +7,7 @@ import {
 import { DriveThumbnail, DriveLightbox, AutoplayVideo } from "@/components/ui/DriveMedia";
 import { MediaItem, MediaType, makeMediaItem, toImageUrl } from "@/lib/media";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 /* ─── useFavorites ── */
 function useFavorites() {
@@ -322,6 +323,8 @@ export default function DynamicPortfolioShowcase() {
   // Store lightbox context so we know the parentType when saving
   const [lightboxCtx,    setLightboxCtx]    = useState(null); // { items, title, parentType }
   const { favIds, toggle: toggleFav, toggleMedia } = useFavorites();
+  const router = useRouter();
+  
 
   useEffect(() => {
     let alive = true;
@@ -351,7 +354,12 @@ export default function DynamicPortfolioShowcase() {
   const openPortfolio = useCallback((item) => {
     const items = portfolioToMediaItems(item);
     if (!items.length) return;
-    setLightboxCtx({ items, title: item.title, parentType: "portfolio" });
+    setLightboxCtx({
+        items,
+        title: item.title,
+        parentType: "portfolio",
+        slug: item.slug
+    });
   }, []);
 
   /* Group by category */
@@ -446,30 +454,53 @@ export default function DynamicPortfolioShowcase() {
           title={lightboxCtx.title}
           onClose={() => setLightboxCtx(null)}
           renderActions={(item) => (
-            <button
-              onClick={async (e) => {
-                e.stopPropagation();
-                await toggleMedia({
-                  mediaUrl:    item.url,
-                  mediaType:   item.mediaType,        // ← "image" | "video" from makeMediaItem
-                  parentTitle: lightboxCtx.title,
-                  parentType:  lightboxCtx.parentType, // ← "album" | "portfolio" (was hardcoded "media")
-                  category:    "",
-                });
-              }}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors",
-                favIds.has(item.url)
-                  ? "bg-red-500/20 text-red-400 hover:bg-red-500/10"
-                  : "bg-zinc-800 text-zinc-400 hover:text-red-400"
+            <div className="flex items-center gap-2">
+
+              {lightboxCtx.parentType === "portfolio" && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/portfolio/${lightboxCtx.slug}`);
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold"
+                >
+                  📖 View Complete Wedding
+                </button>
               )}
-            >
-              <Heart className={cn("w-3.5 h-3.5", favIds.has(item.url) ? "fill-red-400 text-red-400" : "")} />
-              {favIds.has(item.url) ? "Saved" : "Save"}
-            </button>
+
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  await toggleMedia({
+                    mediaUrl: item.url,
+                    mediaType: item.mediaType,
+                    parentTitle: lightboxCtx.title,
+                    parentType: lightboxCtx.parentType,
+                    category: "",
+                  });
+                }}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors",
+                  favIds.has(item.url)
+                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/10"
+                    : "bg-zinc-800 text-zinc-400 hover:text-red-400"
+                )}
+              >
+                <Heart
+                  className={cn(
+                    "w-3.5 h-3.5",
+                    favIds.has(item.url)
+                      ? "fill-red-400 text-red-400"
+                      : ""
+                  )}
+                />
+                {favIds.has(item.url) ? "Saved" : "Save"}
+              </button>
+
+            </div>
           )}
         />
-      )}
+        )}
     </section>
   );
 }
