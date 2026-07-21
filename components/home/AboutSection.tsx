@@ -8,6 +8,13 @@ const DEFAULT_IMAGES = {
   about_secondary: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/11.webp",
 };
 
+interface AboutContent {
+    title: string;
+    heading: string;
+    description: string;
+    experienceBadge: string;
+  }
+
 export default function AboutSection() {
   const sectionRef   = useRef<HTMLElement | null>(null);
   const imagesRef    = useRef<HTMLDivElement[]>([]);
@@ -18,13 +25,14 @@ export default function AboutSection() {
   const sparklesRef  = useRef<HTMLSpanElement[]>([]);
 
   const [images, setImages] = useState(DEFAULT_IMAGES);
-  const [aboutContent, setAboutContent] = useState({
-  title: "About Kutti Story",
-  heading: "Why Choose Kutti Story Photography for Your Wedding in Madurai",
-  description:
-    "Since 2018, Kutti Story Photography has been capturing timeless wedding stories across Madurai and Tamil Nadu. Our team specializes in candid wedding photography, cinematic wedding films, traditional Tamil wedding photography, engagement sessions, pre-wedding shoots, maternity photography, baby photography, and destination weddings. Every frame is crafted to preserve genuine emotions and unforgettable memories.",
-    
-});
+  const [aboutContent, setAboutContent] = useState<AboutContent>({
+    title: "About Kutti Story",
+    heading: "We Make Only Authentic Visual Experiences",
+    description:
+      "Every frame we create is driven by emotion, story, and authenticity.",
+    experienceBadge: "7+ Years Experience",
+  });
+
 const [expanded, setExpanded] = useState(false);
 
   // Fetch dynamic images from homepage settings
