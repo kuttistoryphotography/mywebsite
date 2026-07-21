@@ -20,6 +20,19 @@ function useFavorites() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+        setLightboxCtx(null);
+        setCurrentSlug(null);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+        window.removeEventListener("popstate", handlePopState);
+    };
+}, []);
+
   const toggle = useCallback(async (item, itemType) => {
     const id    = String(item.id || item._id || "");
     const isFav = favIds.has(id);
@@ -463,7 +476,12 @@ export default function DynamicPortfolioShowcase() {
         <DriveLightbox
           items={lightboxCtx.items}
           title={lightboxCtx.title}
-          onClose={() => setLightboxCtx(null)}
+          onClose={() => {
+              setLightboxCtx(null);
+              setCurrentSlug(null);
+
+              window.history.pushState({}, "", "/works");
+          }}
           renderActions={(item) => (
             <div className="flex items-center gap-2">
 
