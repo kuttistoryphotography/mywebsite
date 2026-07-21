@@ -81,46 +81,86 @@ export default async function BlogPosts({ params }) {
   return (
     <>
       {blog && (
-        <Script
-          id="blog-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "BlogPosting",
-              headline: blog.title,
-              description: blog.meta_description || blog.excerpt,
-              
-              mainEntityOfPage: {
-                "@type": "WebPage",
-                "@id":
+        <>
+          <Script
+            id="blog-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                headline: blog.title,
+                description: blog.meta_description || blog.excerpt,
+
+                mainEntityOfPage: {
+                  "@type": "WebPage",
+                  "@id":
+                    blog.canonical_url ||
+                    `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
+                },
+
+                url:
                   blog.canonical_url ||
                   `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
-              },
 
-              url: blog.canonical_url || `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
-              image: blog.og_image || blog.cover_image,
-              datePublished: blog.published_at || blog.createdAt,
-              dateModified: blog.createdAt,
-              author: {
-                "@type": "Organization",
-                name: blog.author_name,
-              },
-              publisher: {
-                "@type": "Organization",
-                name: "Kutti Story Photography",
-                logo: {
-                  "@type": "ImageObject",
-                  url: "https://www.kuttistoryphotography.com/favicon.svg",
+                image: blog.og_image || blog.cover_image,
+                datePublished: blog.published_at || blog.createdAt,
+                dateModified: blog.createdAt,
+
+                author: {
+                  "@type": "Organization",
+                  name: blog.author_name,
                 },
-              },
 
-              inLanguage: "en-IN",
+                publisher: {
+                  "@type": "Organization",
+                  name: "Kutti Story Photography",
+                  logo: {
+                    "@type": "ImageObject",
+                    url: "https://www.kuttistoryphotography.com/favicon.svg",
+                  },
+                },
 
-            }),
-          }}
-        />
+                inLanguage: "en-IN",
+              }),
+            }}
+          />
+
+          <Script
+            id="breadcrumb-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: "https://www.kuttistoryphotography.com",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Blog",
+                    item: "https://www.kuttistoryphotography.com/blog",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: blog.title,
+                    item:
+                      blog.canonical_url ||
+                      `https://www.kuttistoryphotography.com/blog/${blog.slug}`,
+                  },
+                ],
+              }),
+            }}
+          />
+        </>
       )}
+
       <BlogPost />
     </>
   );
