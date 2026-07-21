@@ -105,24 +105,11 @@ export default function CandidWeddingPhotographerPage() {
         </p>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-3xl font-bold mb-4">
-          Our Candid Wedding Photography Packages
-        </h2>
-
-        <p className="leading-8">
-          We offer customized candid wedding photography packages for intimate
-          weddings, traditional Tamil weddings, destination weddings, engagement
-          ceremonies, receptions, and complete wedding celebrations. Our packages can
-          include candid photography, cinematic videography, drone coverage, premium
-          wedding albums, and professional editing.
-        </p>
-      </section>
-
-      <p>
-        Candid photography captures authentic emotions and beautiful moments
-        naturally. From bride and groom reactions to family celebrations,
-        every moment tells a unique story.
+      <p className="leading-8 mt-6">
+        Candid wedding photography focuses on capturing genuine emotions rather
+        than staged poses. From the bride's smile and the groom's reaction to
+        joyful family celebrations and heartfelt moments, every photograph tells
+        a meaningful story that you can cherish for a lifetime.
       </p>
 
       <h2 className="text-3xl font-bold mt-10 mb-4">

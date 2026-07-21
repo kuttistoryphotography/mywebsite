@@ -39,17 +39,21 @@ import { cn } from "@/lib/utils";
 // ─── DriveMedia ───────────────────────────────────────────────────────────────
 
 interface DriveMediaProps {
-  url:        string;
-  mediaType:  MediaType;
-  autoPlay?:  boolean;
-  muted?:     boolean;
-  controls?:  boolean;
-  loop?:      boolean;
+  url: string;
+  mediaType: MediaType;
+  autoPlay?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  loop?: boolean;
   className?: string;
   imgClassName?: string;
-  alt?:       string;
+  alt?: string;
   imageWidth?: number;
-  onError?:   () => void;
+
+  loading?: "lazy" | "eager";
+  fetchPriority?: "high" | "low" | "auto";
+
+  onError?: () => void;
 }
 
 /**
@@ -84,7 +88,12 @@ export function DriveMedia({
         alt={alt}
         className={cn("block", className, imgClassName)}
         loading="lazy"
-        onError={() => { setErrored(true); onError?.(); }}
+        decoding="async"
+        fetchPriority="low"
+        onError={() => {
+          setErrored(true);
+          onError?.();
+        }}
       />
     );
   }

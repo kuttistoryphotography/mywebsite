@@ -186,7 +186,7 @@ export default function WeddingShowcase() {
                       url={img}
                       mediaType="image"
                       className="w-full h-full object-cover scale-125 group-hover:scale-100 transition-transform duration-[1500ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
-                      alt={`Slide ${idx + 1}-${i + 1}`}
+                      alt={`Best Wedding Photography in Madurai - Kutti Story Photography - Wedding Portfolio ${idx + 1} Image ${i + 1}`}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)" }} />
                   </div>
@@ -225,7 +225,7 @@ export default function WeddingShowcase() {
                         url={img}
                         mediaType="image"
                         className="w-full h-full object-cover"
-                        alt={`Slide ${idx + 1}-${i + 1}`}
+                        alt={`Best Wedding Photography in Madurai - Kutti Story Photography - Wedding Portfolio ${idx + 1} Image ${i + 1}`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     </div>
