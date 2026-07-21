@@ -275,7 +275,7 @@ export default function PhotographyFooter() {
               </h4>
 
               <div className="space-y-3 text-zinc-400 text-sm">
-                <p>📍 Madurai, Tamil Nadu</p>
+                <p>📍 52/32, S Mada St, Periyar, Madurai Main, Madurai, Tamil Nadu, 625016</p>
                 <p>📞 +91 93420 13600</p>
                 <p>✉️ kuttistoryphotography@gmail.com</p>
               </div>
