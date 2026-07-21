@@ -14,6 +14,13 @@ interface AboutContent {
     description: string;
     experienceBadge: string;
   }
+const DEFAULT_ABOUT_CONTENT: AboutContent = {
+  title: "About Kutti Story",
+  heading: "We Make Only Authentic Visual Experiences",
+  description:
+    "Every frame we create is driven by emotion, story, and authenticity.",
+  experienceBadge: "7+ Years Experience",
+};
 
 export default function AboutSection() {
   const sectionRef   = useRef<HTMLElement | null>(null);
@@ -25,13 +32,8 @@ export default function AboutSection() {
   const sparklesRef  = useRef<HTMLSpanElement[]>([]);
 
   const [images, setImages] = useState(DEFAULT_IMAGES);
-  const [aboutContent, setAboutContent] = useState<AboutContent>({
-    title: "About Kutti Story",
-    heading: "We Make Only Authentic Visual Experiences",
-    description:
-      "Every frame we create is driven by emotion, story, and authenticity.",
-    experienceBadge: "7+ Years Experience",
-  });
+  const [aboutContent, setAboutContent] =
+  useState<AboutContent>(DEFAULT_ABOUT_CONTENT);
 
 const [expanded, setExpanded] = useState(false);
 
@@ -52,11 +54,14 @@ const [expanded, setExpanded] = useState(false);
           });
         }
         if (data.settings?.aboutContent) {
-  setAboutContent(data.settings.aboutContent);
-}
-      })
-      .catch(() => {});
-  }, []);
+          setAboutContent({
+            ...DEFAULT_ABOUT_CONTENT,
+            ...data.settings.aboutContent,
+          });
+        }
+            })
+            .catch(() => {});
+        }, []);
 
   useEffect(() => {
     let ctx: any;
@@ -185,7 +190,7 @@ const [expanded, setExpanded] = useState(false);
              url={images.about_main}
              mediaType="image"
              className="w-full h-full object-cover scale-125 group-hover:scale-100 transition-transform duration-1000 ease-out"
-             alt=""
+             alt="Bride and groom candid wedding photography by Kutti Story Photography in Madurai"
           />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-500" />
             <span className="absolute bottom-6 left-6 text-sm uppercase tracking-widest bg-black/50 px-4 py-2 rounded-lg">
@@ -203,7 +208,7 @@ const [expanded, setExpanded] = useState(false);
               url={images.about_secondary}
               mediaType="image"
               className="w-full h-full object-cover scale-125 group-hover:scale-100 transition-transform duration-1000 ease-out"
-              alt=""
+              alt="Professional wedding photography in Madurai by Kutti Story Photography"
           />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-500" />
             <div className="absolute inset-0 border border-white/10 group-hover:border-white/30 transition-all duration-500 rounded-2xl" />
