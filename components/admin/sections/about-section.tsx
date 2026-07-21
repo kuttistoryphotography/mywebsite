@@ -141,10 +141,10 @@ export default function AboutSection() {
           <p className="text-zinc-500 text-sm">Controls the main About Us hero layout — large text, gallery grid, and profile card.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {([
-              { key: "heading",       label: "Main Heading",      ph: "Capturing the Silent Stories…" },
-              { key: "highlightWord", label: "Highlight Word/Phrase (muted colour)", ph: "Silent Stories" },
-              { key: "profileName",   label: "Profile Name",      ph: "Leslie Alexander" },
-              { key: "profileRole",   label: "Profile Role",      ph: "Lead Photographer" },
+              { key: "heading",       label: "Main Heading",      ph: "Capturing Life's Beautiful Stories" },
+              { key: "highlightWord", label: "Highlight Word/Phrase (muted colour)", ph: "Beautiful Stories" },
+              { key: "profileName",   label: "Profile Name",      ph: "Kutti Story Photography" },
+              { key: "profileRole",   label: "Profile Role",      ph: "Founder & Lead Photographer" },
             ] as const).map(({ key, label, ph }) => (
               <div key={key}>
                 <label className="block text-zinc-400 text-sm mb-1.5">{label}</label>
@@ -155,13 +155,13 @@ export default function AboutSection() {
             ))}
             <div className="md:col-span-2">
               <label className="block text-zinc-400 text-sm mb-1.5">Subheading</label>
-              <textarea value={hero.subheading} rows={2} placeholder="We specialize in outdoor night shoots…"
+              <textarea value={hero.subheading} rows={2} placeholder="Capturing timeless weddings, engagements, portraits, and unforgettable moments across Tamil Nadu."
                 onChange={(e) => setHero({ ...hero, subheading: e.target.value })}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:border-amber-500 focus:outline-none resize-none" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-zinc-400 text-sm mb-1.5">Body Paragraph</label>
-              <textarea value={hero.paragraph} rows={3} placeholder="Bringing out the soul of every moment…"
+              <textarea value={hero.paragraph} rows={3} placeholder="Since 2018, Kutti Story Photography has been capturing heartfelt wedding stories with cinematic photography and videography."
                 onChange={(e) => setHero({ ...hero, paragraph: e.target.value })}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white text-sm focus:border-amber-500 focus:outline-none resize-none" />
             </div>

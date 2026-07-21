@@ -245,7 +245,7 @@ export default function RootLayout({
           ],
           address: {
             "@type": "PostalAddress",
-            streetaddress: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
+            streetAddress: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
             addressLocality: "Madurai",
             addressRegion: "Tamil Nadu",
             postalCode: "625001",
