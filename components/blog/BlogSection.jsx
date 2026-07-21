@@ -164,7 +164,10 @@ const BlogSection = ({ limit }) => {
                   </div>
 
         {/* BLOG GRID */}
-        <div className="blog-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="blog-grid grid grid-cols-1 gap-4">
+          <p className="text-red-500 text-2xl">
+            Visible Blogs: {visibleBlogs.length}
+          </p>
           {visibleBlogs.map((post) => (
             <BlogCard
               key={post.id}
