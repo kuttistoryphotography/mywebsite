@@ -143,6 +143,9 @@ const BlogSection = ({ limit }) => {
   ? blogs
   : blogs.slice(0, 6);
 
+  console.log("blogs:", blogs.length);
+  console.log("visibleBlogs:", visibleBlogs.length);
+
   return (
     <section ref={sectionRef} className="bg-black py-16 md:py-24 px-4 sm:px-6 md:px-16 text-white">
       <div className="max-w-7xl mx-auto">
