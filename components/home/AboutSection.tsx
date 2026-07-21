@@ -20,9 +20,9 @@ export default function AboutSection() {
   const [images, setImages] = useState(DEFAULT_IMAGES);
   const [aboutContent, setAboutContent] = useState({
   title: "About Kutti Story",
-  heading: "We Make Only Authentic Visual Experiences",
+  heading: "Why Choose Kutti Story Photography for Your Wedding in Madurai",
   description:
-    "Every frame we create is driven by emotion, story, and authenticity.",
+    "Since 2018, Kutti Story Photography has been capturing timeless wedding stories across Madurai and Tamil Nadu. Our team specializes in candid wedding photography, cinematic wedding films, traditional Tamil wedding photography, engagement sessions, pre-wedding shoots, maternity photography, baby photography, and destination weddings. Every frame is crafted to preserve genuine emotions and unforgettable memories.",
     
 });
 const [expanded, setExpanded] = useState(false);
