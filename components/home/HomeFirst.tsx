@@ -16,8 +16,8 @@ export default function HomeFirst() {
       {/* SEO Section */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-white">
         <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          Best Wedding Photographer in Madurai | Kutti Story Photography
-        </h1>
+        Best Wedding Photographer in Madurai | Kutti Story Photography
+      </h1>
 
         <p className="text-gray-300 leading-8 text-lg">
           Kutti Story Photography is a professional wedding photography company in
@@ -36,21 +36,21 @@ export default function HomeFirst() {
           </a>
 
           <a
-            href="/candid-wedding-photography-madurai"
+            href="/candid-wedding-photographer-in-madurai"
             className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
           >
             Candid Photography
           </a>
 
           <a
-            href="/engagement-photography-madurai"
+            href="/engagement-photography-in-madurai"
             className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
           >
             Engagement
           </a>
 
           <a
-            href="/pre-wedding-photography-madurai"
+            href="/pre-wedding-photography-in-madurai"
             className="px-5 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition"
           >
             Pre Wedding
