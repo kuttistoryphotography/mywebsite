@@ -1,14 +1,137 @@
 import Link from "next/link";
+import Script from "next/script";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Wedding Photography and Videography in Madurai | Kutti Story Photography",
+
+export const metadata: Metadata = {
+  title:
+    "Wedding Photography and Videography in Madurai | Kutti Story Photography",
+
   description:
-    "Professional wedding photography and videography in Madurai. Candid photography, cinematic wedding films, drone coverage and traditional wedding coverage by Kutti Story Photography.",
+    "Kutti Story Photography offers complete wedding photography and videography services in Madurai including candid wedding photography, cinematic wedding films, drone coverage, traditional wedding photography and premium wedding albums.",
+
+  keywords: [
+    "Wedding Photography and Videography in Madurai",
+    "Wedding Photographer Madurai",
+    "Candid Wedding Photography Madurai",
+    "Cinematic Wedding Films Madurai",
+    "Wedding Videography Madurai",
+    "Drone Wedding Coverage Madurai",
+    "Traditional Wedding Photography Madurai",
+    "Kutti Story Photography"
+  ],
+
+  alternates: {
+    canonical:
+      "https://www.kuttistoryphotography.com/wedding-photography-and-videography-in-madurai",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  openGraph: {
+    title:
+      "Wedding Photography and Videography in Madurai | Kutti Story Photography",
+
+    description:
+      "Complete wedding photography and cinematic videography services in Madurai by Kutti Story Photography.",
+
+    url:
+      "https://www.kuttistoryphotography.com/wedding-photography-and-videography-in-madurai",
+
+    siteName:
+      "Kutti Story Photography",
+
+    type:
+      "website",
+
+    images: [
+      {
+        url:
+          "https://www.kuttistoryphotography.com/01.webp",
+        width: 1200,
+        height: 630,
+        alt:
+          "Wedding Photography and Videography in Madurai - Kutti Story Photography",
+      },
+    ],
+  },
+
+  twitter: {
+    card:
+      "summary_large_image",
+
+    title:
+      "Wedding Photography and Videography in Madurai",
+
+    description:
+      "Professional wedding photography and cinematic wedding films in Madurai by Kutti Story Photography.",
+
+    images: [
+      "https://www.kuttistoryphotography.com/01.webp",
+    ],
+  },
 };
 
 export default function WeddingPhotographyVideographyPage() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-20">
+      <Script
+        id="wedding-photo-video-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+        "@context":"https://schema.org",
+        "@type":"Service",
+
+        "name":
+        "Wedding Photography and Videography in Madurai",
+
+        "provider":{
+        "@type":"LocalBusiness",
+
+        "name":
+        "Kutti Story Photography",
+
+        "url":
+        "https://www.kuttistoryphotography.com",
+
+        "telephone":
+        "+91 9342013600",
+
+        "address":{
+        "@type":"PostalAddress",
+
+        "streetAddress":
+        "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
+
+        "addressLocality":
+        "Madurai",
+
+        "addressRegion":
+        "Tamil Nadu",
+
+        "postalCode":
+        "625001",
+
+        "addressCountry":
+        "IN"
+        }
+        },
+
+        "areaServed":
+        "Madurai",
+
+        "serviceType":
+        "Wedding Photography and Videography",
+
+        "description":
+        "Complete wedding photography, candid photography, cinematic wedding films, drone coverage and traditional wedding coverage in Madurai."
+        })
+        }}
+        />
       <h1 className="text-4xl font-bold mb-6">
         Wedding Photography and Videography in Madurai
       </h1>
