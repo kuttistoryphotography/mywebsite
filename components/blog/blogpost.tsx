@@ -14,7 +14,10 @@ type BlogPostData = {
   excerpt: string;
   content: string;
   author_name: string;
+
   cover_image: string;
+  image_alt: string;
+
   category: string;
   tags?: string[];
   is_featured?: boolean;
@@ -204,7 +207,7 @@ export default function BlogPost() {
           <div ref={imageRef} className="absolute inset-0 w-full h-[120%]">
             <Image
               src={toImageUrl(post.cover_image, 2000)}
-              alt={post.title}
+              alt={post.image_alt || post.title}
               itemProp="image"
               fill
               className="object-cover brightness-90"

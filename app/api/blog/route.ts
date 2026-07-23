@@ -265,25 +265,34 @@ export async function PUT(request: NextRequest) {
     console.log(existing?.imageAlt);
 
     const updated = await Blog.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          imageAlt: image_alt,
-          ...update,
-        },
+    id,
+    {
+      $set: {
+        imageAlt: image_alt,
+        ...update,
       },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
-    console.log("UPDATED:", updated);
+  console.log("UPDATED:", updated);
 
-    console.log("UPDATED BLOG:");
-    console.log(updated?.imageAlt);
-    console.log(updated);
-    return NextResponse.json({ success: true });
+  // 👇 ADD THESE LINES HERE
+  const check = await Blog.findById(id);
+
+  console.log("CHECK FROM DB:");
+  console.log(check?.imageAlt);
+  console.log(check);
+
+  // Existing logs
+  console.log("UPDATED BLOG:");
+  console.log(updated?.imageAlt);
+  console.log(updated);
+
+  return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
   }
