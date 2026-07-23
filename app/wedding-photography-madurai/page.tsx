@@ -85,7 +85,7 @@ export default function WeddingPhotographyMadurai() {
               telephone: "+91-9342013600",
               address: {
                 "@type": "PostalAddress",
-                streetAddress: "Your Office Address",
+                streetAddress: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
                 addressLocality: "Madurai",
                 addressRegion: "Tamil Nadu",
                 postalCode: "625001",
