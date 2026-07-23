@@ -264,38 +264,34 @@ export async function PUT(request: NextRequest) {
     console.log("BEFORE UPDATE:");
     console.log(existing?.imageAlt);
 
+    console.log("IMAGE ALT FROM BODY:", image_alt);
+    console.log("UPDATE OBJECT:", update);
+
     const updated = await Blog.findByIdAndUpdate(
-    id,
-    {
-      $set: {
-        imageAlt: image_alt,
-        ...update,
-      },
-    },
-    {
-      new: true,
-      runValidators: true,
+      id,
+      update,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    console.log("UPDATED imageAlt:", updated?.imageAlt);
+
+    const check = await Blog.findById(id);
+
+    console.log("DB imageAlt:", check?.imageAlt);
+    console.log(check);
+
+    return NextResponse.json({ success: true });
+      } catch (error) {
+      console.error("[BLOG PUT ERROR]", error);
+
+      return NextResponse.json(
+        { error: "Failed to update blog" },
+        { status: 500 }
+      );
     }
-  );
-
-  console.log("UPDATED:", updated);
-
-  // 👇 ADD THESE LINES HERE
-  const check = await Blog.findById(id);
-
-  console.log("CHECK FROM DB:");
-  console.log(check?.imageAlt);
-  console.log(check);
-
-  // Existing logs
-  console.log("UPDATED BLOG:");
-  console.log(updated?.imageAlt);
-  console.log(updated);
-
-  return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
-  }
 }
 
 export async function DELETE(request: NextRequest) {
