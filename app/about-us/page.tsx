@@ -21,8 +21,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.kuttistoryphotography.com/about-us",
   },
-};
 
+  openGraph: {
+  title: "About Kutti Story Photography | Best Wedding Photographer in Madurai",
+  description:
+    "Kutti Story Photography is a trusted wedding photography and videography team in Madurai...",
+  url: "https://www.kuttistoryphotography.com/about-us",
+  siteName: "Kutti Story Photography",
+  type: "website",
+},
+
+};
 
 export default function AboutUsPage() {
   return (
