@@ -14,6 +14,7 @@ export function serializeBlog(blog: any) {
     content: blog.content || '',
 
     cover_image: blog.coverImage || '',
+    image_alt:  blog.imageAlt || '',
     author_name: blog.authorName || '',
     category: blog.category || '',
     tags: blog.tags || [],
@@ -100,6 +101,7 @@ export async function PUT(
       content,
       excerpt,
       cover_image,
+      image_alt,   // <-- ADD THIS
       category,
       tags,
       status,
@@ -118,12 +120,14 @@ export async function PUT(
     if (content !== undefined) update.content = content;
     if (excerpt !== undefined) update.excerpt = excerpt;
     if (cover_image !== undefined) update.coverImage = cover_image;
+    if (image_alt !== undefined)
+       update.imageAlt = image_alt;
     if (category !== undefined) update.category = category;
     if (tags !== undefined) update.tags = tags;
     if (is_featured !== undefined) update.isFeatured = !!is_featured;
     if (meta_title !== undefined) update.metaTitle = meta_title;
     if (meta_description !== undefined)
-      update.metaDescription = meta_description;
+       update.metaDescription = meta_description;
     if (og_image !== undefined) update.ogImage = og_image;
     if (canonical_url !== undefined)
       update.canonicalUrl = canonical_url;
@@ -131,7 +135,6 @@ export async function PUT(
       update.focusKeywords = focus_keywords;
     if (schema_type !== undefined)
       update.schemaType = schema_type;
-
     if (status !== undefined) {
       update.status = status;
       update.published = status === 'published';
