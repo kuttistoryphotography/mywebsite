@@ -30,6 +30,7 @@ function serializeBlog(b: any, includeContent = true) {
     excerpt:          b.excerpt || '',
     content:          includeContent ? (b.content || '') : '',
     cover_image:      b.coverImage || '',
+    image_alt:        b.imageAlt || '',
     author_name:      '',
     category:         b.category || 'General',
     tags:             b.tags || [],
@@ -116,6 +117,7 @@ export async function POST(request: NextRequest) {
       content,
       excerpt,
       cover_image,
+      image_alt,
       category,
       tags,
       status,
@@ -146,6 +148,7 @@ export async function POST(request: NextRequest) {
       content,
       excerpt:        excerpt || '',
       coverImage:     cover_image || '',
+      imageAlt:       image_alt || '',
       category:       category || 'General',
       tags:           Array.isArray(tags) ? tags : [],
       published:      isPublished,
@@ -189,6 +192,7 @@ export async function PUT(request: NextRequest) {
       content,
       excerpt,
       cover_image,
+      image_alt,
       category,
       tags,
       status,
@@ -216,6 +220,8 @@ export async function PUT(request: NextRequest) {
     if (excerpt !== undefined) update.excerpt = excerpt;
 
     if (cover_image !== undefined) update.coverImage = cover_image;
+
+    if (image_alt !== undefined)  update.imageAlt = image_alt;
 
     if (category !== undefined) update.category = category;
 
@@ -251,13 +257,31 @@ export async function PUT(request: NextRequest) {
     if (schema_type !== undefined)
       update.schemaType = schema_type;
 
+    console.log("UPDATE OBJECT:");
+    console.log(update);
+    const existing = await Blog.findById(id);
+
+    console.log("BEFORE UPDATE:");
+    console.log(existing?.imageAlt);
+
     const updated = await Blog.findByIdAndUpdate(
       id,
-      update,
-      { new: true }
+      {
+        $set: {
+          imageAlt: image_alt,
+          ...update,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
+    console.log("UPDATED:", updated);
+
     console.log("UPDATED BLOG:");
+    console.log(updated?.imageAlt);
     console.log(updated);
     return NextResponse.json({ success: true });
   } catch (error) {
