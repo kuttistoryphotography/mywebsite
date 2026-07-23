@@ -147,7 +147,10 @@ export function toImageUrl(url: string, widthPx = 1600): string {
   if (!url) return url;
 
   if (isCloudinaryUrl(url) && url.includes('/image/upload/')) {
-    return url.replace('/image/upload/', `/image/upload/w_${widthPx},q_auto,f_auto/`);
+    return url.replace(
+      '/image/upload/',
+      `/image/upload/c_limit,w_${widthPx},dpr_auto,q_auto,f_auto/`
+    );
   }
 
   // Legacy Drive
