@@ -10,6 +10,9 @@ export async function GET(
     await connectDB();
     const resolvedParams = await params;
     const blog = await getBlogBySlug(resolvedParams.slug);
+    console.log("API BLOG:", blog);
+    console.log("API IMAGE ALT:", blog?.image_alt);
+
     console.log('bllll------', blog);
     
     if (!blog) {
