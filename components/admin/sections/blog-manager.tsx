@@ -174,7 +174,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
     setSaving(true);
     try {
       const payload = {
-         id: editing?.id,
+        id: editing?.id,
         title: formData.title.trim(),
         slug: formData.slug.trim(),
         category: formData.category.trim() || "General",
@@ -196,6 +196,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
       const url = "/api/blog";
       const method = editing ? "PUT" : "POST";
       console.log("Sending payload:", payload);
+      console.log(payload);
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -362,7 +363,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
               >
                 {/* Thumbnail */}
                 {post.cover_image ? (
-                  <img src={toImageUrl(post.cover_image, 200)} alt={post.title}
+                  <img src={toImageUrl(post.cover_image, 200)} alt={post.image_alt || post.title}
                     className={cn(
                       "rounded-xl object-cover border border-zinc-700",
                       viewMode === "grid"
