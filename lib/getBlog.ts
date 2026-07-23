@@ -118,12 +118,19 @@ function mapBlog(b: any, includeContent = true): BlogPost {
   };
 }
 
-export async function getAllBlogs(limit = 10, publishedOnly = true): Promise<BlogPost[]> {
+export async function getAllBlogs(limit = 0, publishedOnly = true): Promise<BlogPost[]> {
   await connectDB();
+
   const filter = publishedOnly ? { published: true } : {};
-  const blogs = await Blog.find(filter)
-    .sort({ createdAt: -1 })
-    .limit(limit);
+
+  let query = Blog.find(filter).sort({ createdAt: -1 });
+
+  if (limit > 0) {
+    query = query.limit(limit);
+  }
+
+  const blogs = await query;
+
   return blogs.map((b) => mapBlog(b, false));
 }
 
