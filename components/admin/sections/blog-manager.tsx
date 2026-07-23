@@ -19,6 +19,7 @@ interface BlogItem {
   content: string;
   author_name: string;
   cover_image: string;
+  image_alt: string;
   category: string;
   tags: string[];
   status: BlogStatus;
@@ -45,7 +46,10 @@ const emptyForm = {
   category: "General",
   excerpt: "",
   content: "",
+
   cover_image: "",
+  image_alt: "",
+
   status: "draft" as BlogStatus,
   is_featured: false,
   tagsText: "",
@@ -144,6 +148,8 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
       excerpt:             post.excerpt || "",
       content:             post.content || "",
       cover_image:         post.cover_image || "",
+      image_alt:           post.image_alt || "",
+
       status:              post.status || "draft",
       is_featured:         Boolean(post.is_featured),
       tagsText:            Array.isArray(post.tags) ? post.tags.join(", ") : "",
@@ -175,6 +181,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
         excerpt:          formData.excerpt,
         content:          formData.content,
         cover_image:      formData.cover_image,
+        image_alt:        formData.image_alt,
         status:           formData.status,
         is_featured:      formData.is_featured,
         tags:             parseTags(formData.tagsText),
@@ -564,6 +571,30 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                     </button>
                   </div>
                 )}
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Image Alt Text
+                  </label>
+
+                  <input
+                    type="text"
+                    value={formData.image_alt}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        image_alt: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    placeholder="Describe the cover image for SEO and accessibility"
+                  />
+
+                  <p className="text-xs text-zinc-500 mt-2">
+                    Example: Romantic outdoor couple photoshoot in Madurai captured by Kutti Story Photography during golden hour.
+                  </p>
+                </div>
+
               </div>
 
               {/* ── Content Media Upload (Google Drive) ── */}

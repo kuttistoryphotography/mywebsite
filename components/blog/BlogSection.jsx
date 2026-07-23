@@ -36,7 +36,7 @@ function BlogCard({ post, onClick }) {
         {hasImage ? (
           <Image
             src={post.image}
-            alt={post.title}
+            alt={post.image_alt || post.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-110"
