@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DriveMedia } from "@/components/ui/DriveMedia";
+import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -94,17 +95,32 @@ export default function FeaturedWork() {
             <p className="text-gray-400 leading-relaxed text-lg">
               Every photograph tells a story. We specialize in capturing those fleeting moments that define your most precious memories.
             </p>
+            <p className="text-gray-500 text-sm max-w-xl">
+              Explore our complete collection of wedding, engagement, maternity, baby shoot,
+              and candid photography on our dedicated portfolio website.
+            </p>
             <div className="flex gap-6 flex-wrap">
-              <a href="/works">
-                <button className="bg-white text-black px-10 py-4 rounded-full font-semibold transition-all duration-500 hover:scale-110 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
-                  View Portfolio
-                </button>
-              </a>
-              <a href="/booking">
-                <button className="group flex items-center gap-2 text-white font-medium px-6 py-4">
-                  Book Now <span className="group-hover:translate-x-2 transition-transform">→</span>
-                </button>
-              </a>
+              <div className="flex gap-6 flex-wrap">
+                <Link
+                  href="https://kuttistoryphotography.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View our complete wedding photography portfolio"
+                  className="inline-block bg-white text-black px-10 py-4 rounded-full font-semibold transition-all duration-500 hover:scale-110 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+                >
+                  View Full Portfolio
+                </Link>
+
+                <Link
+                  href="/booking"
+                  className="group flex items-center gap-2 text-white font-medium px-6 py-4"
+                >
+                  Book Now
+                  <span className="group-hover:translate-x-2 transition-transform">
+                    →
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
