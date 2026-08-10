@@ -100,7 +100,7 @@ export default function ServiceCardGrid() {
   return (
         <div
           ref={containerRef}
-          className="w-full max-w-6xl mx-auto px-6"
+          className="w-full max-w-7xl mx-auto px-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -129,7 +129,7 @@ export default function ServiceCardGrid() {
 
         {/* CARD 2 — Storytelling */}
         <div className="sg-card group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2rem] p-6 flex gap-5 items-center overflow-hidden h-[250px]">
-          <div className="relative w-24 h-32 rounded-2xl overflow-hidden shrink-0 shadow-xl bg-zinc-800">
+          <div className="relative w-28 h-36 rounded-2xl overflow-hidden shrink-0 shadow-xl bg-zinc-800">
             {storyRenderUrl && (
               storyIsVideo ? (
                 <iframe
