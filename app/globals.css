@@ -422,19 +422,6 @@ img {
   }
 }
 
-/* Large screen: ensure content fills width */
-@media (min-width: 1920px) {
-  main,
-  [class*="max-w-7xl"],
-  [class*="max-w-screen"] {
-    max-width: min(1600px, 90vw);
-  }
-
-  section {
-    padding-left: max(2rem, calc((100vw - 1600px) / 2));
-    padding-right: max(2rem, calc((100vw - 1600px) / 2));
-  }
-}
 
 /* Tablet responsive improvements */
 @media (min-width: 768px) and (max-width: 1023px) {
