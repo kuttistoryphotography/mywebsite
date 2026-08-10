@@ -69,8 +69,8 @@ export default function PhotographyShowcase() {
   }, []);
 
   return (
-    <section className="bg-[#0a0a0a] py-20 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full bg-black text-white pt-8 pb-20 px-6 md:px-10">
+      <div className="w-full max-w-[1400px] mx-auto">
 
         {/* Header */}
         <div className="mb-12 text-center">
@@ -79,8 +79,14 @@ export default function PhotographyShowcase() {
               {subheading}
             </p>
           )}
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">{heading}</h2>
-          <p className="text-zinc-400 text-lg max-w-xl mx-auto">{description}</p>
+
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            {heading}
+          </h2>
+
+          <p className="text-zinc-400 text-lg max-w-xl mx-auto">
+            {description}
+          </p>
         </div>
 
         {/* Grid */}
@@ -95,9 +101,13 @@ export default function PhotographyShowcase() {
                 src={item.src}
                 alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                onError={(e) => { (e.target as HTMLImageElement).style.opacity = "0.2"; }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.opacity = "0.2";
+                }}
               />
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
               <div className="absolute bottom-0 left-0 p-5">
                 <h3 className="text-white font-bold text-lg group-hover:text-orange-400 transition-colors">
                   {item.title}

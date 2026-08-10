@@ -100,7 +100,7 @@ export default function PhotographyServiceSection() {
         <div className="glow-2 absolute bottom-[15%] left-[5%] w-[500px] h-[500px] bg-zinc-800/20 blur-[130px] rounded-full" />
       </div>
 
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-12 px-6 md:px-10 pt-32 pb-32">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-12 px-6 md:px-10 pt-24 pb-8">
 
         {/* Left — text */}
         <div
