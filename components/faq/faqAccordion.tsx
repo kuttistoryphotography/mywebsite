@@ -38,7 +38,7 @@ export default function FaqAccordion() {
     "Frequently Asked Questions"
   );
 
-  const [subheading, setSubheading] = useState("FAQs");
+  const [subheading, setSubheading] = useState();
 
   const [description, setDescription] = useState(
     "Everything you need to know about our photography services."
