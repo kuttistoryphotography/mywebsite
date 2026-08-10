@@ -102,7 +102,7 @@ export default function ServiceCardGrid() {
       <div className="relative z-10 grid lg:grid-cols-3 gap-6 px-6 md:px-20">
 
         {/* CARD 1 — WhatsApp */}
-        <div className="sg-card backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col justify-between h-[320px]">
+        <div className="sg-card backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col justify-between h-[250px]">
           <h3 className="text-2xl font-medium text-white leading-tight">
             {settings.whatsappCardTitle}
           </h3>
@@ -125,7 +125,7 @@ export default function ServiceCardGrid() {
         </div>
 
         {/* CARD 2 — Storytelling */}
-        <div className="sg-card group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-8 flex gap-6 items-center overflow-hidden h-[320px]">
+        <div className="sg-card group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-8 flex gap-6 items-center overflow-hidden h-[250px]">
           <div className="relative w-32 h-44 rounded-2xl overflow-hidden shrink-0 shadow-xl bg-zinc-800">
             {storyRenderUrl && (
               storyIsVideo ? (
@@ -159,7 +159,7 @@ export default function ServiceCardGrid() {
         </div>
 
         {/* CARD 3 — Experts */}
-        <div className="sg-card backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col justify-between h-[320px]">
+        <div className="sg-card backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col justify-between h-[250px]">
           <h3 className="text-2xl font-medium text-white leading-tight">
             {settings.expertCardTitle}
           </h3>
