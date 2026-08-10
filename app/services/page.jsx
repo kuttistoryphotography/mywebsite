@@ -9,7 +9,7 @@ export default function ServicesPage() {
       <ServicesGropu />
 
       {/* SEO Section */}
-      <section className="max-w-7xl mx-auto px-6 lg:px-10 py-24 border-t border-white/10">
+      <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-8 pb-24 border-t border-white/10">
         <div className="grid lg:grid-cols-2 gap-20 items-start">
           {/* Left Side */}
           <div>
