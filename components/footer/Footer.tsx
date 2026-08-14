@@ -283,6 +283,33 @@ export default function PhotographyFooter() {
                 <p>✉️ kuttistoryphotography@gmail.com</p>
               </div>
             </div>
+            
+            {/* Brand */}
+            <div className="md:w-1/3">
+              <a
+                href="https://www.kuttistoryphotography.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block"
+              >
+                <h3 className="text-2xl font-semibold text-white hover:text-orange-400 transition-colors">
+                  Kutti Story Photography
+                </h3>
+              </a>
+
+              <p className="text-zinc-400 mt-3 leading-7 max-w-sm">
+                Capturing Life, One Story at a Time.
+              </p>
+
+              <a
+                href="https://www.kuttistoryphotography.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-4 text-sm text-zinc-500 hover:text-white transition-colors"
+              >
+                www.kuttistoryphotography.in
+              </a>
+            </div>
 
             {/* Links */}
             <div className="md:w-1/3 md:text-right">
