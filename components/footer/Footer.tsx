@@ -275,7 +275,10 @@ export default function PhotographyFooter() {
               </h4>
 
               <div className="space-y-3 text-zinc-400 text-sm">
-                <p>📍 52/32, S Mada St, Periyar, Madurai Main, Madurai, Tamil Nadu, 625016</p>
+                <p className="leading-6">
+                  📍 Door No: 39, KUTTISTORY PHOTOGRAPHY, BY PASS, near PORKUDAM ENTRANCE,
+                  opp. KFC, RS 62/5E, S S Colony, Madurai, Tamil Nadu 625016
+                </p>
                 <p>📞 +91 93420 13600</p>
                 <p>✉️ kuttistoryphotography@gmail.com</p>
               </div>
