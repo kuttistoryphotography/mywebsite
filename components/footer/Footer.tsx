@@ -251,14 +251,13 @@ export default function PhotographyFooter() {
           </div>
         </div>
 
-        {/* Bottom Legal Section */}
         {/* Bottom Footer */}
         <div className="mt-16 md:mt-32 pt-10 border-t border-zinc-900">
 
-          <div className="flex flex-col md:flex-row justify-between gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
 
             {/* Brand */}
-            <div className="md:w-1/3">
+            <div>
               <h3 className="text-2xl font-semibold text-white">
                 Kutti Story Photography
               </h3>
@@ -269,68 +268,87 @@ export default function PhotographyFooter() {
             </div>
 
             {/* Contact */}
-            <div className="md:w-1/3 md:text-center">
+            <div>
               <h4 className="text-white font-semibold mb-4">
                 Contact Us
               </h4>
 
               <div className="space-y-3 text-zinc-400 text-sm">
                 <p className="leading-6">
-                  📍 Door No: 39, KUTTISTORY PHOTOGRAPHY, BY PASS, near PORKUDAM ENTRANCE,
-                  opp. KFC, RS 62/5E, S S Colony, Madurai, Tamil Nadu 625016
+                  📍 Door No: 39, KUTTISTORY PHOTOGRAPHY, BY PASS,
+                  near PORKUDAM ENTRANCE, opp. KFC, RS 62/5E,
+                  S S Colony, Madurai, Tamil Nadu 625016
                 </p>
+
                 <p>📞 +91 93420 13600</p>
+
                 <p>✉️ kuttistoryphotography@gmail.com</p>
               </div>
             </div>
-            
-            {/* Brand */}
-            <div className="md:w-1/3">
+
+            {/* Brand Website */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">
+                Brand
+              </h4>
+
               <a
                 href="https://www.kuttistoryphotography.in"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block"
               >
-                <h3 className="text-2xl font-semibold text-white hover:text-orange-400 transition-colors">
+                <h3 className="text-xl font-semibold text-white hover:text-orange-400 transition-colors">
                   Kutti Story Photography
                 </h3>
               </a>
 
-              <p className="text-zinc-400 mt-3 leading-7 max-w-sm">
-                Capturing Life, One Story at a Time.
+              <p className="text-zinc-400 mt-3 leading-7">
+                Our Brand Website
               </p>
 
               <a
                 href="https://www.kuttistoryphotography.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-4 text-sm text-zinc-500 hover:text-white transition-colors"
+                className="inline-block mt-2 text-sm text-zinc-500 hover:text-white transition-colors"
               >
                 www.kuttistoryphotography.in
               </a>
             </div>
 
-            {/* Links */}
-            <div className="md:w-1/3 md:text-right">
+            {/* Quick Links */}
+            <div>
               <h4 className="text-white font-semibold mb-4">
                 Quick Links
               </h4>
 
               <div className="flex flex-col gap-3 text-sm">
-                <Link href="/about-us" className="text-zinc-400 hover:text-white">
+                <Link
+                  href="/about-us"
+                  className="text-zinc-400 hover:text-white transition-colors"
+                >
                   About Us
                 </Link>
 
-                <Link href="/works" className="text-zinc-400 hover:text-white">
+                <Link
+                  href="/works"
+                  className="text-zinc-400 hover:text-white transition-colors"
+                >
                   Portfolio
                 </Link>
 
-                <Link href="/blog" className="text-zinc-400 hover:text-white">
+                <Link
+                  href="/blog"
+                  className="text-zinc-400 hover:text-white transition-colors"
+                >
                   Blog
                 </Link>
 
-                <Link href="/contact-us" className="text-zinc-400 hover:text-white">
+                <Link
+                  href="/contact-us"
+                  className="text-zinc-400 hover:text-white transition-colors"
+                >
                   Contact
                 </Link>
               </div>
@@ -338,11 +356,13 @@ export default function PhotographyFooter() {
 
           </div>
 
+          {/* Copyright */}
           <div className="border-t border-zinc-900 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center w-full text-sm text-zinc-500">
 
             <div className="flex flex-col">
               <p>
-                © {new Date().getFullYear()} Kutti Story Photography. All Rights Reserved.
+                © {new Date().getFullYear()} Kutti Story Photography.
+                All Rights Reserved.
               </p>
 
               <p className="text-xs text-zinc-600 mt-2">
@@ -351,11 +371,17 @@ export default function PhotographyFooter() {
             </div>
 
             <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="/privacy-policy" className="hover:text-white">
+              <Link
+                href="/privacy-policy"
+                className="hover:text-white transition-colors"
+              >
                 Privacy Policy
               </Link>
 
-              <Link href="/terms-and-conditions" className="hover:text-white">
+              <Link
+                href="/terms-and-conditions"
+                className="hover:text-white transition-colors"
+              >
                 Terms & Conditions
               </Link>
             </div>
