@@ -172,9 +172,7 @@ export default function Hero() {
 
     if (loading || !hero) {
       return (
-        <section className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-          <div className="text-white text-lg">Welcome to the World of Kutti Story Photography...</div>
-        </section>
+        <section className="min-h-screen bg-[#0a0a0a]" />
       );
     }
 

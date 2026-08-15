@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
 import BootstrapClient from "@/components/BootstrapClient";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -295,6 +296,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black overflow-x-hidden w-full min-h-screen`}
       >
+        {/* WEBSITE INTRO / LOADING SCREEN */}
+        <LoadingScreen />
+
         <BootstrapClient />
 
         <Script
@@ -302,19 +306,19 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
-  <Script id="google-analytics" strategy="afterInteractive">
-    {`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-1D4VY530T4');
-    `}
-  </Script>
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-1D4VY530T4');
+          `}
+        </Script>
 
-  <ConditionalLayout>
-    {children}
-  </ConditionalLayout>
-</body>
+        <ConditionalLayout>
+          {children}
+        </ConditionalLayout>
+      </body>
     </html>
   );
 }
