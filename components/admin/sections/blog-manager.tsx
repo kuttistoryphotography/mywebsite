@@ -65,9 +65,29 @@ async function uploadToGoogleDrive(file: File): Promise<string> {
   const fd = new FormData();
   fd.append("file", file);
   fd.append("context", "blog");
-  const res = await fetch("/api/upload", { method: "POST", body: fd });
-  const data = await res.json();
-  if (!data.success || !data.url) throw new Error(data.error || "Upload failed");
+
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: fd,
+  });
+
+  const contentType = res.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await res.json()
+    : { error: await res.text() };
+
+  console.log("Upload response:", res.status, data);
+
+  if (!res.ok) {
+    throw new Error(
+      data?.error || `Upload failed with status ${res.status}`
+    );
+  }
+
+  if (!data?.success || !data?.url) {
+    throw new Error(data?.error || "Upload succeeded but no media URL was returned");
+  }
+
   return data.url;
 }
 
