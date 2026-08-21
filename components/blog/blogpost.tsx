@@ -226,65 +226,220 @@ export default function BlogPost() {
         </section>
       )}
 
-      {/* --- CONTENT --- */}
-      <section className="py-24 px-6">
+      {/* --- MAGAZINE CONTENT --- */}
+      <section className="py-20 md:py-32 px-6">
         <article
-          className="max-w-3xl mx-auto"
+          className="max-w-5xl mx-auto"
           itemScope
           itemType="https://schema.org/BlogPosting"
         >
-          <div className="prose prose-invert max-w-none">
+          <div className="blog-magazine-content">
             <style>{`
-              .prose p { font-size: 1.25rem; line-height: 1.7; color: #a1a1aa; margin-bottom: 2rem; font-weight: 300; }
-              .prose h3 { font-size: 2.5rem; font-weight: 700; color: white; margin-top: 4rem; letter-spacing: -0.05em; }
-              .prose ul { padding-left: 0; margin: 3rem 0; }
-              .prose li { list-style: none; font-size: 1.1rem; padding: 1.5rem 0; border-top: 1px solid #27272a; color: #d4d4d8; }
-              .prose li:before { content: '0' counter(list-item) '.'; margin-right: 1rem; color: #f97316; font-family: monospace; }
+              .blog-magazine-content {
+                max-width: 100%;
+              }
+
+              /* Text */
+              .blog-magazine-content p {
+                max-width: 760px;
+                margin: 0 auto 2rem;
+                font-size: 1.15rem;
+                line-height: 1.9;
+                color: #a1a1aa;
+                font-weight: 300;
+              }
+
+              /* First paragraph */
+              .blog-magazine-content > p:first-child,
+              .blog-magazine-content .lead {
+                font-size: 1.45rem;
+                line-height: 1.8;
+                color: #d4d4d8;
+              }
+
+              /* Headings */
+              .blog-magazine-content h1,
+              .blog-magazine-content h2,
+              .blog-magazine-content h3 {
+                max-width: 900px;
+                margin: 5rem auto 1.5rem;
+                color: white;
+                font-weight: 700;
+                letter-spacing: -0.04em;
+                line-height: 1.05;
+              }
+
+              .blog-magazine-content h2 {
+                font-size: clamp(2rem, 5vw, 4rem);
+              }
+
+              .blog-magazine-content h3 {
+                font-size: clamp(1.5rem, 3vw, 2.5rem);
+              }
+
+              /* Lists */
+              .blog-magazine-content ul,
+              .blog-magazine-content ol {
+                max-width: 760px;
+                margin: 2.5rem auto;
+                padding-left: 1.5rem;
+                color: #d4d4d8;
+              }
+
+              .blog-magazine-content li {
+                margin-bottom: 1rem;
+                line-height: 1.8;
+              }
+
+              /* MAGAZINE IMAGES */
+              .blog-magazine-content img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-width: 100%;
+                object-fit: cover;
+                margin: 5rem auto;
+                border-radius: 2px;
+              }
+
+              /* Image 1 - Full cinematic width */
+              .blog-magazine-content img:nth-of-type(1) {
+                width: min(100%, 1200px);
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+              }
+
+              /* Image 2 - Portrait editorial */
+              .blog-magazine-content img:nth-of-type(2) {
+                width: min(65%, 700px);
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                margin-left: 0;
+              }
+
+              /* Image 3 - Wide */
+              .blog-magazine-content img:nth-of-type(3) {
+                width: 100%;
+                aspect-ratio: 21 / 9;
+                object-fit: cover;
+              }
+
+              /* Image 4 - Right aligned portrait */
+              .blog-magazine-content img:nth-of-type(4) {
+                width: min(60%, 650px);
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                margin-right: 0;
+              }
+
+              /* Image 5 - Large feature */
+              .blog-magazine-content img:nth-of-type(5) {
+                width: 100%;
+                aspect-ratio: 3 / 2;
+                object-fit: cover;
+              }
+
+              /* Image 6 - Medium centered */
+              .blog-magazine-content img:nth-of-type(6) {
+                width: min(75%, 850px);
+                aspect-ratio: 3 / 2;
+                object-fit: cover;
+              }
+
+              /* Image 7 - Portrait left */
+              .blog-magazine-content img:nth-of-type(7) {
+                width: min(55%, 600px);
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                margin-left: 0;
+              }
+
+              /* Image 8 - Full wide */
+              .blog-magazine-content img:nth-of-type(8) {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+              }
+
+              /* Image 9 - Right editorial */
+              .blog-magazine-content img:nth-of-type(9) {
+                width: min(65%, 700px);
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                margin-right: 0;
+              }
+
+              /* Image 10 - Final cinematic image */
+              .blog-magazine-content img:nth-of-type(10) {
+                width: 100%;
+                aspect-ratio: 21 / 9;
+                object-fit: cover;
+              }
+
+              .blog-magazine-content blockquote {
+                max-width: 850px;
+                margin: 5rem auto;
+                padding: 2rem 0 2rem 2rem;
+                border-left: 2px solid #f97316;
+                font-size: clamp(1.5rem, 3vw, 2.5rem);
+                line-height: 1.4;
+                color: white;
+              }
+
+              /* Mobile */
+              @media (max-width: 768px) {
+                .blog-magazine-content p {
+                  font-size: 1.05rem;
+                  line-height: 1.8;
+                }
+
+                .blog-magazine-content > p:first-child {
+                  font-size: 1.2rem;
+                }
+
+                .blog-magazine-content img,
+                .blog-magazine-content img:nth-of-type(n) {
+                  width: 100%;
+                  aspect-ratio: auto;
+                  margin: 3rem auto;
+                }
+
+                .blog-magazine-content h1,
+                .blog-magazine-content h2,
+                .blog-magazine-content h3 {
+                  margin-top: 3.5rem;
+                }
+              }
             `}</style>
+
             <div
               itemProp="articleBody"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </div>
 
-          {/* --- ENHANCED GALLERY --- */}
-          {Array.isArray((post as any).galleryImages) && (post as any).galleryImages.length > 0 && (
-            <div className="gallery-grid my-32 space-y-4">
-              <h3 className="text-xs font-bold tracking-[0.5em] uppercase text-zinc-600 mb-12 block text-center">Visual Narrative</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(post as any).galleryImages.map((imgSrc: string, idx: number) => (
-                  <div
-                    key={idx}
-                    className={`gallery-item relative overflow-hidden bg-zinc-900 group ${
-                      idx % 3 === 0 ? "md:col-span-2 aspect-video" : "aspect-4/5"
-                    }`}
-                  >
-                    <Image
-                      src={imgSrc || "/placeholder.svg"}
-                      alt={`${post.title} - Gallery Image ${idx + 1}`}
-                      fill
-                      loading="lazy"
-                      className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* --- AUTHOR CARD --- */}
-          <footer className="mt-32 p-12 bg-zinc-950 border border-zinc-900 rounded-sm">
+          <footer className="mt-32 p-8 md:p-12 bg-zinc-950 border border-zinc-900 rounded-sm">
             <div className="flex flex-col md:flex-row gap-8 items-center text-center md:text-left">
               <div className="w-20 h-20 bg-orange-500 rounded-full shrink-0 flex items-center justify-center font-bold text-black text-2xl">
                 KS
               </div>
+
               <div>
-                <h4 className="text-xl font-bold mb-2">About Kutti Story</h4>
+                <h4 className="text-xl font-bold mb-2">
+                  About Kutti Story
+                </h4>
+
                 <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                  Crafting cinematic visuals and timeless memories. Specializing in high-end photography
-                  that blends traditional storytelling with modern aesthetics.
+                  Crafting cinematic visuals and timeless memories. Specializing in
+                  high-end photography that blends traditional storytelling with
+                  modern aesthetics.
                 </p>
-                <button className="text-orange-500 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-orange-500/20 pb-2 hover:border-orange-500 transition-all">
+
+                <button
+                  onClick={() => router.push("/contact-us")}
+                  className="text-orange-500 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-orange-500/20 pb-2 hover:border-orange-500 transition-all"
+                >
                   Inquire for Shoots
                 </button>
               </div>
