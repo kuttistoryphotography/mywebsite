@@ -148,13 +148,14 @@ export default function BlogPost() {
 
   return (
     <main ref={containerRef} className="bg-black text-white min-h-screen selection:bg-orange-500 selection:text-black">
-      {/* --- MINIMALIST NAV --- */}
-      <nav className="fixed top-0 left-0 w-full z-50 p-6 mix-blend-difference">
+      {/* --- BACK BUTTON --- */}
+      <nav className="fixed top-20 left-0 w-full z-[100] px-6 md:px-12 pointer-events-none">
         <button
           onClick={() => router.back()}
-          className="group flex items-center gap-4 text-[10px] font-bold tracking-[0.3em] uppercase transition-all"
+          className="pointer-events-auto group flex items-center gap-4 text-[10px] font-bold tracking-[0.3em] uppercase text-white bg-black/70 backdrop-blur-md px-5 py-4 rounded-full border border-white/10 hover:border-orange-500/50 transition-all"
         >
-          <span className="w-8 h-px bg-white group-hover:w-12 transition-all" /> BACK
+          <span className="w-8 h-px bg-white group-hover:w-12 group-hover:bg-orange-500 transition-all" />
+          BACK
         </button>
       </nav>
 
