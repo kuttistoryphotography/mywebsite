@@ -150,9 +150,7 @@ export async function POST(request: NextRequest) {
       content,
       excerpt:        excerpt || '',
       coverImage:     cover_image || '',
-      galleryImages: Array.isArray(gallery_images)
-      ? gallery_images.slice(0, 10)
-      : [],
+      galleryImages:  Array.isArray(gallery_images) ? gallery_images : [],
       imageAlt:       image_alt || '',
       category:       category || 'General',
       tags:           Array.isArray(tags) ? tags : [],
@@ -229,7 +227,7 @@ export async function PUT(request: NextRequest) {
 
     if (gallery_images !== undefined) {
       update.galleryImages = Array.isArray(gallery_images)
-        ? gallery_images.slice(0, 10)
+        ? gallery_images
         : [];
     }
 

@@ -76,6 +76,7 @@ export interface BlogPost {
   content: string;
   author_name: string;
   cover_image: string;
+  gallery_images: string[];
   image_alt: string;
   category: string;
   tags: string[];
@@ -102,7 +103,7 @@ function mapBlog(b: any, includeContent = true): BlogPost {
     content:        includeContent ? (b.content || '') : '',
     author_name:    "Kutti Story Photography",
     cover_image:    b.coverImage || '',
-    
+    gallery_images: b.galleryImages || [],
     image_alt: b.imageAlt || '',
     category: b.category || 'General',
     
