@@ -280,29 +280,75 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
     }
   };
 
-  // Content media — file upload to Google Drive
-  const handleMediaFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    setUploadingMedia(true);
-    try {
-      const results: Array<{ url: string; type: string }> = [];
-      for (const file of files) {
-        const url = await uploadToGoogleDrive(file);
-        results.push({ url, type: file.type });
-        // Auto-set cover if not set and it's an image
-        if (file.type.startsWith("image/") && !formData.cover_image) {
-          setFormData((prev) => ({ ...prev, cover_image: url }));
+  // Content media — upload and automatically insert into blog content
+    const handleMediaFileChange = async (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      const files = Array.from(e.target.files || []);
+
+      if (!files.length) return;
+
+      setUploadingMedia(true);
+
+      try {
+        const results: Array<{ url: string; type: string }> = [];
+
+        for (const file of files) {
+          const url = await uploadToGoogleDrive(file);
+
+          results.push({
+            url,
+            type: file.type,
+          });
         }
+
+        // Keep uploaded media visible in this editor session
+        setUploadedUrls((prev) => [...results, ...prev]);
+
+        // Automatically add uploaded media to Content HTML
+        setFormData((prev) => {
+          let newContent = prev.content || "";
+          let newCoverImage = prev.cover_image;
+
+          for (const item of results) {
+            const snippet = item.type.startsWith("video/")
+              ? `
+
+    <video controls src="${item.url}"></video>
+
+    `
+              : `
+
+    <img src="${item.url}" alt="Blog image" />
+
+    `;
+
+            newContent += snippet;
+
+            // Automatically use the first uploaded image as cover
+            // only if no cover image exists already
+            if (
+              item.type.startsWith("image/") &&
+              !newCoverImage
+            ) {
+              newCoverImage = item.url;
+            }
+          }
+
+          return {
+            ...prev,
+            content: newContent,
+            cover_image: newCoverImage,
+          };
+        });
+
+      } catch (err: any) {
+        alert("Media upload failed: " + err.message);
+      } finally {
+        setUploadingMedia(false);
+        e.target.value = "";
       }
-      setUploadedUrls((prev) => [...results, ...prev]);
-    } catch (err: any) {
-      alert("Media upload failed: " + err.message);
-    } finally {
-      setUploadingMedia(false);
-      e.target.value = "";
-    }
-  };
+    };
 
   const appendToContent = (url: string, type: string) => {
     const snippet = type.startsWith("video/")
