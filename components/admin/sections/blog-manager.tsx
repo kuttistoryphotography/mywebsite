@@ -143,29 +143,51 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
 
   const openEditModal = (post: BlogItem) => {
     setEditing(post);
+
     setFormData({
       title: post.title || "",
       slug: post.slug || "",
       category: post.category || "General",
-      excerpt:             post.excerpt || "",
-      content:             post.content || "",
-      cover_image:         post.cover_image || "",
-      gallery_images: post.gallery_images || [],
-      image_alt:           post.image_alt || "",
+      excerpt: post.excerpt || "",
+      content: post.content || "",
+      cover_image: post.cover_image || "",
 
-      status:              post.status || "draft",
-      is_featured:         Boolean(post.is_featured),
-      tagsText:            Array.isArray(post.tags) ? post.tags.join(", ") : "",
-      meta_title:          post.meta_title || "",
-      meta_description:    post.meta_description || "",
-      og_image:            post.og_image || "",
-      canonical_url:       post.canonical_url || "",
-      focus_keywords_text: Array.isArray(post.focus_keywords) ? post.focus_keywords.join(", ") : "",
-      schema_type:         post.schema_type || "Article",
+      gallery_images: Array.isArray(post.gallery_images)
+        ? post.gallery_images
+        : [],
+
+      image_alt: post.image_alt || "",
+      status: post.status || "draft",
+      is_featured: Boolean(post.is_featured),
+
+      tagsText: Array.isArray(post.tags)
+        ? post.tags.join(", ")
+        : "",
+
+      meta_title: post.meta_title || "",
+      meta_description: post.meta_description || "",
+      og_image: post.og_image || "",
+      canonical_url: post.canonical_url || "",
+
+      focus_keywords_text: Array.isArray(post.focus_keywords)
+        ? post.focus_keywords.join(", ")
+        : "",
+
+      schema_type: post.schema_type || "Article",
     });
+
     setUploadedUrls([]);
     setCoverMode("url");
     setShowModal(true);
+  };
+
+  const removeGalleryImage = (imageUrl: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      gallery_images: prev.gallery_images.filter(
+        (url) => url !== imageUrl
+      ),
+    }));
   };
 
   const parseTags = (value: string) =>
@@ -184,6 +206,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
         excerpt:          formData.excerpt,
         content:          formData.content,
         cover_image:      formData.cover_image,
+        gallery_images:   formData.gallery_images,
         image_alt:        formData.image_alt,
         status:           formData.status,
         is_featured:      formData.is_featured,
@@ -764,6 +787,31 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                     ))}
                   </div>
                 )}
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {formData.gallery_images.map((imageUrl, index) => (
+                  <div
+                    key={`${imageUrl}-${index}`}
+                    className="relative group aspect-square overflow-hidden rounded-lg border border-zinc-700"
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Gallery ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* DELETE BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(imageUrl)}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
+                      title="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
 
               {/* ── Content Media Upload (Google Drive) ── */}
