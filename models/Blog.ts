@@ -6,6 +6,7 @@ export interface IBlog extends Document {
   content: string;
   excerpt?: string;
   coverImage?: string;
+  galleryImages: string[];
   imageAlt?: string;
   category: string;
   tags: string[];
@@ -25,8 +26,6 @@ export interface IBlog extends Document {
   updatedAt: Date;
 }
 
-
-
 const BlogSchema = new Schema<IBlog>(
   {
     title:           { type: String, required: true },
@@ -34,6 +33,7 @@ const BlogSchema = new Schema<IBlog>(
     content:         { type: String, required: true },
     excerpt:                 String,
     coverImage:              String,
+    galleryImages: { type: [String], default: [] },
     imageAlt:        { type: String,  default: "", },
     category:        { type: String, default: 'General' },
     tags:            [String],

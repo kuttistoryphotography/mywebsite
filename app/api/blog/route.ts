@@ -30,6 +30,7 @@ function serializeBlog(b: any, includeContent = true) {
     excerpt:          b.excerpt || '',
     content:          includeContent ? (b.content || '') : '',
     cover_image:      b.coverImage || '',
+    gallery_images:   b.galleryImages || [],
     image_alt:        b.imageAlt || '',
     author_name:      '',
     category:         b.category || 'General',
@@ -117,6 +118,7 @@ export async function POST(request: NextRequest) {
       content,
       excerpt,
       cover_image,
+      gallery_images,
       image_alt,
       category,
       tags,
@@ -148,6 +150,9 @@ export async function POST(request: NextRequest) {
       content,
       excerpt:        excerpt || '',
       coverImage:     cover_image || '',
+      galleryImages: Array.isArray(gallery_images)
+      ? gallery_images.slice(0, 10)
+      : [],
       imageAlt:       image_alt || '',
       category:       category || 'General',
       tags:           Array.isArray(tags) ? tags : [],
@@ -192,6 +197,7 @@ export async function PUT(request: NextRequest) {
       content,
       excerpt,
       cover_image,
+      gallery_images,
       image_alt,
       category,
       tags,
@@ -220,6 +226,12 @@ export async function PUT(request: NextRequest) {
     if (excerpt !== undefined) update.excerpt = excerpt;
 
     if (cover_image !== undefined) update.coverImage = cover_image;
+
+    if (gallery_images !== undefined) {
+      update.galleryImages = Array.isArray(gallery_images)
+        ? gallery_images.slice(0, 10)
+        : [];
+    }
 
     if (image_alt !== undefined)  update.imageAlt = image_alt;
 

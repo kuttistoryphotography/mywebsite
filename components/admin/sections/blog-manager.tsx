@@ -33,6 +33,7 @@ interface BlogItem {
   schema_type: string;
   created_at: string;
   published_at: string | null;
+  gallery_images?: string[];
 }
 
 interface BlogManagerProps {
@@ -48,6 +49,7 @@ const emptyForm = {
   content: "",
 
   cover_image: "",
+  gallery_images: [] as string[],
   image_alt: "",
 
   status: "draft" as BlogStatus,
@@ -148,6 +150,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
       excerpt:             post.excerpt || "",
       content:             post.content || "",
       cover_image:         post.cover_image || "",
+      gallery_images: post.gallery_images || [],
       image_alt:           post.image_alt || "",
 
       status:              post.status || "draft",
@@ -359,6 +362,53 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
 
   const copyUrl = async (url: string) => {
     try { await navigator.clipboard.writeText(url); } catch {}
+  };
+
+  const handleGalleryUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) return;
+
+    const remainingSlots = 10 - (formData.gallery_images?.length || 0);
+
+    if (remainingSlots <= 0) {
+      alert("Maximum 10 gallery images allowed.");
+      return;
+    }
+
+    const filesToUpload = files.slice(0, remainingSlots);
+
+    setUploadingMedia(true);
+
+    try {
+      const uploadedImages: string[] = [];
+
+      for (const file of filesToUpload) {
+        if (!file.type.startsWith("image/")) {
+          continue;
+        }
+
+        const url = await uploadToGoogleDrive(file);
+
+        uploadedImages.push(url);
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        gallery_images: [
+          ...(prev.gallery_images || []),
+          ...uploadedImages,
+        ].slice(0, 10),
+      }));
+    } catch (error: any) {
+      console.error("Gallery upload failed:", error);
+      alert(error?.message || "Gallery upload failed");
+    } finally {
+      setUploadingMedia(false);
+      e.target.value = "";
+    }
   };
 
   return (
@@ -642,6 +692,78 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                   </p>
                 </div>
 
+              </div>
+
+              {/* BLOG GALLERY */}
+              <div className="border border-zinc-800 rounded-2xl p-5 space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">
+                    Blog Gallery
+                  </h3>
+
+                  <p className="text-sm text-zinc-500 mt-1">
+                    Upload up to 10 images for this blog story.
+                  </p>
+                </div>
+
+                <label className="flex items-center justify-center border-2 border-dashed border-zinc-700 hover:border-orange-500 rounded-xl p-8 cursor-pointer transition">
+                  <div className="text-center">
+                    <div className="text-orange-500 text-2xl mb-2">+</div>
+                    <p className="text-sm font-medium">
+                      {uploadingMedia
+                        ? "Uploading..."
+                        : `Upload Gallery Images (${formData.gallery_images?.length || 0}/10)`}
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      JPG, PNG, WEBP
+                    </p>
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleGalleryUpload}
+                    className="hidden"
+                    disabled={uploadingMedia || (formData.gallery_images?.length || 0) >= 10}
+                  />
+                </label>
+
+                {formData.gallery_images?.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {formData.gallery_images.map((url, index) => (
+                      <div
+                        key={`${url}-${index}`}
+                        className="relative aspect-[4/3] rounded-xl overflow-hidden border border-zinc-800"
+                      >
+                        <img
+                          src={url}
+                          alt={`Gallery image ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              gallery_images: prev.gallery_images.filter(
+                                (_: string, i: number) => i !== index
+                              ),
+                            }))
+                          }
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 text-white transition"
+                        >
+                          ×
+                        </button>
+
+                        <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs">
+                          {index + 1}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* ── Content Media Upload (Google Drive) ── */}
