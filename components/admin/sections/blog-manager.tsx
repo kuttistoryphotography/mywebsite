@@ -8,6 +8,8 @@ import {
   Loader2, Video, ImageIcon, Link, CloudUpload, Check,
 } from "lucide-react";
 
+import GalleryStoryEditor from "./gallery-story-editor";
+
 type BlogStatus = "draft" | "published" | "archived";
 type MediaMode = "url" | "file";
 
@@ -960,195 +962,15 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                 ))}
               </div>
 
-              {/* Gallery Story Text */}
-              <div className="mt-8 border-t border-white/10 pt-8">
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">
-                      Gallery Story Text
-                    </h3>
-
-                    <p className="text-sm text-zinc-500 mt-1">
-                      Add custom text between your gallery images.
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        gallery_stories: [
-                          ...formData.gallery_stories,
-                          {
-                            label: "",
-                            title: "",
-                            text: "",
-                          },
-                        ],
-                      });
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Story
-                  </button>
-                </div>
-
-                <div className="space-y-6">
-                  {formData.gallery_stories.map((story, index) => (
-                    <div
-                      key={index}
-                      className="rounded-xl border border-white/10 bg-zinc-900/50 p-5"
-                    >
-                      <div className="flex items-center justify-between mb-5">
-                        <h4 className="font-medium text-white">
-                          Story {index + 1}
-                        </h4>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setFormData({
-                              ...formData,
-                              gallery_stories:
-                                formData.gallery_stories.filter(
-                                  (_, storyIndex) => storyIndex !== index
-                                ),
-                            });
-                          }}
-                          className="text-red-400 hover:text-red-300 transition"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm text-zinc-400 mb-2">
-                            Label
-                          </label>
-
-                          <input
-                            type="text"
-                            value={story.label}
-                            onChange={(e) => {
-                              const updatedStories = [...formData.gallery_stories];
-
-                              updatedStories[index] = {
-                                ...updatedStories[index],
-                                label: e.target.value,
-                              };
-
-                              setFormData({
-                                ...formData,
-                                gallery_stories: updatedStories,
-                              });
-                            }}
-                            placeholder="Example: A Moment to Remember"
-                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm text-zinc-400 mb-2">
-                            Story Title
-                          </label>
-
-                          <input
-                            type="text"
-                            value={story.title}
-                            onChange={(e) => {
-                              const updatedStories = [...formData.gallery_stories];
-
-                              updatedStories[index] = {
-                                ...updatedStories[index],
-                                title: e.target.value,
-                              };
-
-                              setFormData({
-                                ...formData,
-                                gallery_stories: updatedStories,
-                              });
-                            }}
-                            placeholder="Your gallery story heading"
-                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm text-zinc-400 mb-2">
-                            Story Description
-                          </label>
-
-                          <textarea
-                            value={story.text}
-                            onChange={(e) => {
-                              const updatedStories = [...formData.gallery_stories];
-
-                              updatedStories[index] = {
-                                ...updatedStories[index],
-                                text: e.target.value,
-                              };
-
-                              setFormData({
-                                ...formData,
-                                gallery_stories: updatedStories,
-                              });
-                            }}
-                            placeholder="Write the story description..."
-                            rows={4}
-                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500 resize-none"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* ── Content Media Upload (Google Drive) ── */}
-              <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-3">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div>
-                    <p className="text-sm font-medium text-zinc-300">Upload Media for Content</p>
-                    <p className="text-xs text-zinc-500 mt-0.5">Images and videos are uploaded to Google Drive — paste or insert into content below</p>
-                  </div>
-                  <div>
-                    <input ref={mediaFileRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleMediaFileChange} />
-                    <button type="button" onClick={() => mediaFileRef.current?.click()} disabled={uploadingMedia}
-                      className="flex items-center gap-2 px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm text-white disabled:opacity-50 transition-colors">
-                      {uploadingMedia ? <Loader2 className="w-4 h-4 animate-spin" /> : <CloudUpload className="w-4 h-4" />}
-                      {uploadingMedia ? "Uploading..." : "Upload Image / Video"}
-                    </button>
-                  </div>
-                </div>
-
-                {uploadedUrls.length > 0 && (
-                  <div className="space-y-2 max-h-44 overflow-y-auto">
-                    {uploadedUrls.map((item, idx) => (
-                      <div key={`${item.url}-${idx}`} className="flex items-center gap-2 p-2 bg-zinc-800 rounded-lg">
-                        <div className="shrink-0 text-zinc-400">
-                          {item.type.startsWith("video/") ? <Video className="w-4 h-4" /> : <ImageIcon className="w-4 h-4" />}
-                        </div>
-                        {item.type.startsWith("image/") && (
-                          <img src={item.url} alt="" className="w-10 h-10 rounded object-cover border border-zinc-700 shrink-0" />
-                        )}
-                        <span className="flex-1 text-xs text-zinc-300 truncate">{item.url}</span>
-                        <button type="button" onClick={() => setFormData((p) => ({ ...p, cover_image: item.url }))}
-                          className="px-2 py-1 text-xs bg-blue-500/20 text-blue-400 rounded hover:bg-blue-500/30 shrink-0"
-                          title="Set as cover image">Cover</button>
-                        <button type="button" onClick={() => appendToContent(item.url, item.type)}
-                          className="px-2 py-1 text-xs bg-amber-500/20 text-amber-400 rounded hover:bg-amber-500/30 shrink-0">Insert</button>
-                        <button type="button" onClick={() => copyUrl(item.url)}
-                          className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded shrink-0">
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <GalleryStoryEditor
+                stories={formData.gallery_stories}
+                onChange={(stories) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    gallery_stories: stories,
+                  }))
+                }
+              />
 
               {/* Tags */}
               <div>
