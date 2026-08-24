@@ -33,7 +33,14 @@ interface BlogItem {
   schema_type: string;
   created_at: string;
   published_at: string | null;
+
   gallery_images?: string[];
+
+  gallery_stories?: {
+    label: string;
+    title: string;
+    text: string;
+  }[];
 }
 
 interface BlogManagerProps {
@@ -50,6 +57,13 @@ const emptyForm = {
 
   cover_image: "",
   gallery_images: [] as string[],
+
+  gallery_stories: [] as {
+    label: string;
+    title: string;
+    text: string;
+  }[],
+
   image_alt: "",
 
   status: "draft" as BlogStatus,
@@ -155,6 +169,10 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
       gallery_images: Array.isArray(post.gallery_images)
         ? post.gallery_images
         : [],
+
+      gallery_stories: Array.isArray(post.gallery_stories)
+      ? post.gallery_stories
+      : [],
 
       image_alt: post.image_alt || "",
       status: post.status || "draft",
@@ -789,6 +807,134 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                 )}
               </div>
 
+              {/* ================= GALLERY STORIES ================= */}
+              <div className="mt-10 border-t border-white/10 pt-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">
+                      Gallery Story Text
+                    </h3>
+
+                    <p className="text-sm text-zinc-400 mt-1">
+                      Add custom text between your gallery images.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        gallery_stories: [
+                          ...(prev.gallery_stories || []),
+                          {
+                            label: "",
+                            title: "",
+                            text: "",
+                          },
+                        ],
+                      }));
+                    }}
+                    className="px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm transition"
+                  >
+                    + Add Story
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {(formData.gallery_stories || []).map((story, index) => (
+                    <div
+                      key={index}
+                      className="border border-white/10 rounded-xl p-5 bg-white/[0.02]"
+                    >
+                      <div className="flex items-center justify-between mb-5">
+                        <h4 className="font-semibold text-white">
+                          Story {index + 1}
+                        </h4>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              gallery_stories: (prev.gallery_stories || []).filter(
+                                (_, i) => i !== index
+                              ),
+                            }));
+                          }}
+                          className="text-red-400 hover:text-red-300 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+
+                      {/* LABEL */}
+                      <input
+                        type="text"
+                        value={story.label}
+                        onChange={(e) => {
+                          const newStories = [...(formData.gallery_stories || [])];
+
+                          newStories[index] = {
+                            ...newStories[index],
+                            label: e.target.value,
+                          };
+
+                          setFormData((prev) => ({
+                            ...prev,
+                            gallery_stories: newStories,
+                          }));
+                        }}
+                        placeholder="Story label (Example: A Moment to Remember)"
+                        className="w-full mb-4 px-4 py-3 rounded-lg bg-black border border-white/10 text-white"
+                      />
+
+                      {/* TITLE */}
+                      <input
+                        type="text"
+                        value={story.title}
+                        onChange={(e) => {
+                          const newStories = [...(formData.gallery_stories || [])];
+
+                          newStories[index] = {
+                            ...newStories[index],
+                            title: e.target.value,
+                          };
+
+                          setFormData((prev) => ({
+                            ...prev,
+                            gallery_stories: newStories,
+                          }));
+                        }}
+                        placeholder="Story title"
+                        className="w-full mb-4 px-4 py-3 rounded-lg bg-black border border-white/10 text-white"
+                      />
+
+                      {/* DESCRIPTION */}
+                      <textarea
+                        value={story.text}
+                        onChange={(e) => {
+                          const newStories = [...(formData.gallery_stories || [])];
+
+                          newStories[index] = {
+                            ...newStories[index],
+                            text: e.target.value,
+                          };
+
+                          setFormData((prev) => ({
+                            ...prev,
+                            gallery_stories: newStories,
+                          }));
+                        }}
+                        placeholder="Story description..."
+                        rows={4}
+                        className="w-full px-4 py-3 rounded-lg bg-black border border-white/10 text-white resize-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {formData.gallery_images.map((imageUrl, index) => (
                   <div
@@ -812,6 +958,153 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Gallery Story Text */}
+              <div className="mt-8 border-t border-white/10 pt-8">
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">
+                      Gallery Story Text
+                    </h3>
+
+                    <p className="text-sm text-zinc-500 mt-1">
+                      Add custom text between your gallery images.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        gallery_stories: [
+                          ...formData.gallery_stories,
+                          {
+                            label: "",
+                            title: "",
+                            text: "",
+                          },
+                        ],
+                      });
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium transition"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Story
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {formData.gallery_stories.map((story, index) => (
+                    <div
+                      key={index}
+                      className="rounded-xl border border-white/10 bg-zinc-900/50 p-5"
+                    >
+                      <div className="flex items-center justify-between mb-5">
+                        <h4 className="font-medium text-white">
+                          Story {index + 1}
+                        </h4>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              gallery_stories:
+                                formData.gallery_stories.filter(
+                                  (_, storyIndex) => storyIndex !== index
+                                ),
+                            });
+                          }}
+                          className="text-red-400 hover:text-red-300 transition"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm text-zinc-400 mb-2">
+                            Label
+                          </label>
+
+                          <input
+                            type="text"
+                            value={story.label}
+                            onChange={(e) => {
+                              const updatedStories = [...formData.gallery_stories];
+
+                              updatedStories[index] = {
+                                ...updatedStories[index],
+                                label: e.target.value,
+                              };
+
+                              setFormData({
+                                ...formData,
+                                gallery_stories: updatedStories,
+                              });
+                            }}
+                            placeholder="Example: A Moment to Remember"
+                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm text-zinc-400 mb-2">
+                            Story Title
+                          </label>
+
+                          <input
+                            type="text"
+                            value={story.title}
+                            onChange={(e) => {
+                              const updatedStories = [...formData.gallery_stories];
+
+                              updatedStories[index] = {
+                                ...updatedStories[index],
+                                title: e.target.value,
+                              };
+
+                              setFormData({
+                                ...formData,
+                                gallery_stories: updatedStories,
+                              });
+                            }}
+                            placeholder="Your gallery story heading"
+                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm text-zinc-400 mb-2">
+                            Story Description
+                          </label>
+
+                          <textarea
+                            value={story.text}
+                            onChange={(e) => {
+                              const updatedStories = [...formData.gallery_stories];
+
+                              updatedStories[index] = {
+                                ...updatedStories[index],
+                                text: e.target.value,
+                              };
+
+                              setFormData({
+                                ...formData,
+                                gallery_stories: updatedStories,
+                              });
+                            }}
+                            placeholder="Write the story description..."
+                            rows={4}
+                            className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500 resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* ── Content Media Upload (Google Drive) ── */}
