@@ -17,6 +17,11 @@ type BlogPostData = {
 
   cover_image: string;
   gallery_images: string[];
+    gallery_stories?: {
+    label: string;
+    title: string;
+    text: string;
+  }[];
   image_alt: string;
 
   category: string;
@@ -54,28 +59,13 @@ export default function BlogPost() {
   const imageRef = useRef(null);
   const [post, setPost] = useState<BlogPostData | null>(null);
   const [loading, setLoading] = useState(true);
-  const galleryCaptions = [
-    {
-      title: "A Beautiful Beginning",
-      text: "Every love story starts with a beautiful moment worth remembering."
-    },
-    {
-      title: "Love in Every Frame",
-      text: "Natural emotions, genuine smiles, and unforgettable memories."
-    },
-    {
-      title: "Together Forever",
-      text: "Capturing the connection between two hearts, one frame at a time."
-    },
-    {
-      title: "Moments That Feel Timeless",
-      text: "Because the most beautiful photographs are the ones filled with real emotions."
-    },
-    {
-      title: "Walking Through Life Together",
-      text: "From small moments to lifelong memories, every step tells a story."
-    },
-  ];
+  const getGalleryStory = (index: number) => {
+    return post?.gallery_stories?.[index] || {
+      label: "",
+      title: "",
+      text: "",
+    };
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -475,22 +465,31 @@ export default function BlogPost() {
                 </div>
 
                 {/* STORY TEXT 1 */}
-                {post.gallery_images.length >= 2 && (
-                  <div className="my-20 md:my-32 max-w-2xl ml-auto">
-                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                      A Moment to Remember
-                    </span>
+                {post.gallery_images.length >= 2 && (() => {
+                  const story = getGalleryStory(0);
 
-                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                      Every picture holds a beautiful part of the story.
-                    </h3>
+                  return (
+                    <div className="my-20 md:my-32 max-w-2xl ml-auto">
+                      {story.label && (
+                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                          {story.label}
+                        </span>
+                      )}
 
-                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                      {post.excerpt ||
-                        "From the smallest smile to the most emotional moment, every frame captures something unique. These photographs are not just images — they are memories that can be felt again and again."}
-                    </p>
-                  </div>
-                )}
+                      {story.title && (
+                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                          {story.title}
+                        </h3>
+                      )}
+
+                      {story.text && (
+                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                          {story.text}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* IMAGE 3 + IMAGE 4 */}
                 {post.gallery_images.length > 2 && (
@@ -516,22 +515,31 @@ export default function BlogPost() {
                 )}
 
                 {/* STORY TEXT 2 */}
-                {post.gallery_images.length >= 4 && (
-                  <div className="my-20 md:my-32 max-w-2xl">
-                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                      The Little Details
-                    </span>
+                {post.gallery_images.length >= 4 && (() => {
+                  const story = getGalleryStory(1);
 
-                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                      The most beautiful stories live in the smallest moments.
-                    </h3>
+                  return (
+                    <div className="my-20 md:my-32 max-w-2xl">
+                      {story.label && (
+                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                          {story.label}
+                        </span>
+                      )}
 
-                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                      A glance, a laugh, a gentle touch and all the moments in between.
-                      These are the details that make every story personal and unforgettable.
-                    </p>
-                  </div>
-                )}
+                      {story.title && (
+                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                          {story.title}
+                        </h3>
+                      )}
+
+                      {story.text && (
+                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                          {story.text}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* IMAGE 5 - FULL WIDTH */}
                 {post.gallery_images[4] && (
@@ -548,22 +556,31 @@ export default function BlogPost() {
                 )}
 
                 {/* STORY TEXT 3 */}
-                {post.gallery_images.length >= 5 && (
-                  <div className="my-20 md:my-32 max-w-3xl mx-auto text-center">
-                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                      Forever in a Frame
-                    </span>
+                {post.gallery_images.length >= 5 && (() => {
+                  const story = getGalleryStory(2);
 
-                    <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
-                      Some moments happen once. Their memories last forever.
-                    </h3>
+                  return (
+                    <div className="my-20 md:my-32 max-w-3xl mx-auto text-center">
+                      {story.label && (
+                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                          {story.label}
+                        </span>
+                      )}
 
-                    <p className="mt-8 text-zinc-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-                      Photography gives us the opportunity to pause time and keep the
-                      emotions of a beautiful day alive for years to come.
-                    </p>
-                  </div>
-                )}
+                      {story.title && (
+                        <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
+                          {story.title}
+                        </h3>
+                      )}
+
+                      {story.text && (
+                        <p className="mt-8 text-zinc-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+                          {story.text}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* IMAGE 6 + IMAGE 7 */}
                 {post.gallery_images.length > 5 && (
@@ -589,23 +606,31 @@ export default function BlogPost() {
                 )}
 
                 {/* STORY TEXT 4 */}
-                {post.gallery_images.length >= 7 && (
-                  <div className="my-20 md:my-32 max-w-2xl ml-auto">
-                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                      Written in Memories
-                    </span>
+                {post.gallery_images.length >= 7 && (() => {
+                  const story = getGalleryStory(3);
 
-                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                      A story told through emotions, light and beautiful memories.
-                    </h3>
+                  return (
+                    <div className="my-20 md:my-32 max-w-2xl ml-auto">
+                      {story.label && (
+                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                          {story.label}
+                        </span>
+                      )}
 
-                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                      Every couple has their own story. Our goal is to capture it naturally,
-                      beautifully and honestly — preserving the emotions that make it truly
-                      theirs.
-                    </p>
-                  </div>
-                )}
+                      {story.title && (
+                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                          {story.title}
+                        </h3>
+                      )}
+
+                      {story.text && (
+                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                          {story.text}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* IMAGE 8 + IMAGE 9 + IMAGE 10 */}
                 {post.gallery_images.length > 7 && (
