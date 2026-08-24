@@ -1051,7 +1051,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
           onClose={() => setShowPreview(false)}
         />
       )}
-    </>
+    </div>
   );
 }
 
