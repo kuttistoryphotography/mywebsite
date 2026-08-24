@@ -1,5 +1,11 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
+export interface IGalleryStory {
+  label: string;
+  title: string;
+  text: string;
+}
+
 export interface IBlog extends Document {
   title: string;
   slug: string;
@@ -7,6 +13,7 @@ export interface IBlog extends Document {
   excerpt?: string;
   coverImage?: string;
   galleryImages: string[];
+  galleryStories: IGalleryStory[];
   imageAlt?: string;
   category: string;
   tags: string[];
@@ -34,6 +41,16 @@ const BlogSchema = new Schema<IBlog>(
     excerpt:                 String,
     coverImage:              String,
     galleryImages:   { type: [String], default: [] },
+    galleryStories: {
+      type: [
+        {
+          label: { type: String, default: "" },
+          title: { type: String, default: "" },
+          text: { type: String, default: "" },
+        },
+      ],
+      default: [],
+    },
     imageAlt:        { type: String,  default: "", },
     category:        { type: String, default: 'General' },
     tags:            [String],

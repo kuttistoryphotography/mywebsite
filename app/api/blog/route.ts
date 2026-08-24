@@ -31,6 +31,9 @@ function serializeBlog(b: any, includeContent = true) {
     content:          includeContent ? (b.content || '') : '',
     cover_image:      b.coverImage || '',
     gallery_images:   b.galleryImages || [],
+      gallery_stories: Array.isArray(b.galleryStories)
+    ? b.galleryStories
+    : [],
     image_alt:        b.imageAlt || '',
     author_name:      '',
     category:         b.category || 'General',
@@ -119,6 +122,7 @@ export async function POST(request: NextRequest) {
       excerpt,
       cover_image,
       gallery_images,
+      gallery_stories,
       image_alt,
       category,
       tags,
@@ -151,6 +155,9 @@ export async function POST(request: NextRequest) {
       excerpt:        excerpt || '',
       coverImage:     cover_image || '',
       galleryImages:  Array.isArray(gallery_images) ? gallery_images : [],
+      galleryStories: Array.isArray(gallery_stories)
+      ? gallery_stories
+      : [],
       imageAlt:       image_alt || '',
       category:       category || 'General',
       tags:           Array.isArray(tags) ? tags : [],
@@ -196,6 +203,7 @@ export async function PUT(request: NextRequest) {
       excerpt,
       cover_image,
       gallery_images,
+      gallery_stories,
       image_alt,
       category,
       tags,
@@ -228,6 +236,12 @@ export async function PUT(request: NextRequest) {
     if (gallery_images !== undefined) {
       update.galleryImages = Array.isArray(gallery_images)
         ? gallery_images
+        : [];
+    }
+
+    if (gallery_stories !== undefined) {
+      update.galleryStories = Array.isArray(gallery_stories)
+        ? gallery_stories
         : [];
     }
 

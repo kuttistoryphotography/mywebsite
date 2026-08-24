@@ -77,6 +77,11 @@ export interface BlogPost {
   author_name: string;
   cover_image: string;
   gallery_images: string[];
+  gallery_stories: {
+    label: string;
+    title: string;
+    text: string;
+  }[];
   image_alt: string;
   category: string;
   tags: string[];
@@ -105,6 +110,9 @@ function mapBlog(b: any, includeContent = true): BlogPost {
     cover_image:    b.coverImage || '',
     gallery_images: Array.isArray(b.galleryImages)
     ? b.galleryImages
+    : [],
+    gallery_stories: Array.isArray(b.galleryStories)
+    ? b.galleryStories
     : [],
     image_alt: b.imageAlt || '',
     category: b.category || 'General',

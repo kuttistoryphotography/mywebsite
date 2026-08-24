@@ -54,6 +54,28 @@ export default function BlogPost() {
   const imageRef = useRef(null);
   const [post, setPost] = useState<BlogPostData | null>(null);
   const [loading, setLoading] = useState(true);
+  const galleryCaptions = [
+    {
+      title: "A Beautiful Beginning",
+      text: "Every love story starts with a beautiful moment worth remembering."
+    },
+    {
+      title: "Love in Every Frame",
+      text: "Natural emotions, genuine smiles, and unforgettable memories."
+    },
+    {
+      title: "Together Forever",
+      text: "Capturing the connection between two hearts, one frame at a time."
+    },
+    {
+      title: "Moments That Feel Timeless",
+      text: "Because the most beautiful photographs are the ones filled with real emotions."
+    },
+    {
+      title: "Walking Through Life Together",
+      text: "From small moments to lifelong memories, every step tells a story."
+    },
+  ];
 
   useEffect(() => {
     let mounted = true;
@@ -417,10 +439,13 @@ export default function BlogPost() {
               itemProp="articleBody"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
+
             {/* --- BLOG PHOTO GALLERY --- */}
             {post.gallery_images && post.gallery_images.length > 0 && (
               <section className="mt-20 md:mt-32">
-                <div className="mb-12 text-center">
+
+                {/* Gallery Title */}
+                <div className="mb-16 text-center">
                   <p className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase mb-3">
                     Photo Story
                   </p>
@@ -430,17 +455,12 @@ export default function BlogPost() {
                   </h2>
                 </div>
 
+                {/* IMAGE 1 + IMAGE 2 */}
                 <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                  {post.gallery_images.slice(0, 10).map((image, index) => (
+                  {post.gallery_images.slice(0, 2).map((image, index) => (
                     <div
                       key={`${image}-${index}`}
-                      className={`gallery-item relative overflow-hidden bg-zinc-900 ${
-                        index === 0 || index === 5
-                          ? "md:col-span-2 aspect-[16/9]"
-                          : index === 1 || index === 4 || index === 7
-                          ? "aspect-[4/5]"
-                          : "aspect-[3/2]"
-                      }`}
+                      className="gallery-item relative overflow-hidden bg-zinc-900 aspect-[4/5]"
                     >
                       <Image
                         src={toImageUrl(image, 1800)}
@@ -453,6 +473,178 @@ export default function BlogPost() {
                     </div>
                   ))}
                 </div>
+
+                {/* STORY TEXT 1 */}
+                {post.gallery_images.length >= 2 && (
+                  <div className="my-20 md:my-32 max-w-2xl ml-auto">
+                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                      A Moment to Remember
+                    </span>
+
+                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                      Every picture holds a beautiful part of the story.
+                    </h3>
+
+                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                      {post.excerpt ||
+                        "From the smallest smile to the most emotional moment, every frame captures something unique. These photographs are not just images — they are memories that can be felt again and again."}
+                    </p>
+                  </div>
+                )}
+
+                {/* IMAGE 3 + IMAGE 4 */}
+                {post.gallery_images.length > 2 && (
+                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    {post.gallery_images.slice(2, 4).map((image, index) => (
+                      <div
+                        key={`${image}-${index + 2}`}
+                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
+                          index === 0 ? "aspect-[3/2]" : "aspect-[4/5]"
+                        }`}
+                      >
+                        <Image
+                          src={toImageUrl(image, 1800)}
+                          alt={`${post.title} - Gallery Image ${index + 3}`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-700 hover:scale-105"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* STORY TEXT 2 */}
+                {post.gallery_images.length >= 4 && (
+                  <div className="my-20 md:my-32 max-w-2xl">
+                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                      The Little Details
+                    </span>
+
+                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                      The most beautiful stories live in the smallest moments.
+                    </h3>
+
+                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                      A glance, a laugh, a gentle touch and all the moments in between.
+                      These are the details that make every story personal and unforgettable.
+                    </p>
+                  </div>
+                )}
+
+                {/* IMAGE 5 - FULL WIDTH */}
+                {post.gallery_images[4] && (
+                  <div className="gallery-item relative overflow-hidden bg-zinc-900 aspect-[16/9]">
+                    <Image
+                      src={toImageUrl(post.gallery_images[4], 2000)}
+                      alt={`${post.title} - Gallery Image 5`}
+                      fill
+                      sizes="100vw"
+                      className="object-cover transition-transform duration-700 hover:scale-105"
+                      unoptimized
+                    />
+                  </div>
+                )}
+
+                {/* STORY TEXT 3 */}
+                {post.gallery_images.length >= 5 && (
+                  <div className="my-20 md:my-32 max-w-3xl mx-auto text-center">
+                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                      Forever in a Frame
+                    </span>
+
+                    <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
+                      Some moments happen once. Their memories last forever.
+                    </h3>
+
+                    <p className="mt-8 text-zinc-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+                      Photography gives us the opportunity to pause time and keep the
+                      emotions of a beautiful day alive for years to come.
+                    </p>
+                  </div>
+                )}
+
+                {/* IMAGE 6 + IMAGE 7 */}
+                {post.gallery_images.length > 5 && (
+                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    {post.gallery_images.slice(5, 7).map((image, index) => (
+                      <div
+                        key={`${image}-${index + 5}`}
+                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
+                          index === 0 ? "aspect-[4/5]" : "aspect-[3/2]"
+                        }`}
+                      >
+                        <Image
+                          src={toImageUrl(image, 1800)}
+                          alt={`${post.title} - Gallery Image ${index + 6}`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-700 hover:scale-105"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* STORY TEXT 4 */}
+                {post.gallery_images.length >= 7 && (
+                  <div className="my-20 md:my-32 max-w-2xl ml-auto">
+                    <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                      Written in Memories
+                    </span>
+
+                    <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
+                      A story told through emotions, light and beautiful memories.
+                    </h3>
+
+                    <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
+                      Every couple has their own story. Our goal is to capture it naturally,
+                      beautifully and honestly — preserving the emotions that make it truly
+                      theirs.
+                    </p>
+                  </div>
+                )}
+
+                {/* IMAGE 8 + IMAGE 9 + IMAGE 10 */}
+                {post.gallery_images.length > 7 && (
+                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                    {post.gallery_images.slice(7, 10).map((image, index) => (
+                      <div
+                        key={`${image}-${index + 7}`}
+                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
+                          index === 2
+                            ? "md:col-span-2 aspect-[16/9]"
+                            : index === 0
+                            ? "aspect-[3/2]"
+                            : "aspect-[4/5]"
+                        }`}
+                      >
+                        <Image
+                          src={toImageUrl(image, 1800)}
+                          alt={`${post.title} - Gallery Image ${index + 8}`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-700 hover:scale-105"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* FINAL STORY */}
+                <div className="mt-24 md:mt-40 text-center max-w-3xl mx-auto">
+                  <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
+                    The End of One Chapter
+                  </span>
+
+                  <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
+                    But the beginning of a lifetime of memories.
+                  </h3>
+                </div>
+
               </section>
             )}
           </div>
