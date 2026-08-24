@@ -227,6 +227,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
         content:          formData.content,
         cover_image:      formData.cover_image,
         gallery_images:   formData.gallery_images,
+        gallery_stories:  formData.gallery_stories,
         image_alt:        formData.image_alt,
         status:           formData.status,
         is_featured:      formData.is_featured,
