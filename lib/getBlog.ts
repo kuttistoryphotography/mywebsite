@@ -143,8 +143,14 @@ export async function getAllBlogs(limit = 0, publishedOnly = true): Promise<Blog
 
 export async function getBlogBySlug(slug: string): Promise<BlogPost | null> {
   await connectDB();
-  const b = await Blog.findOne({ slug });
+
+  const b = await Blog.findOne({ slug }).lean();
+
   if (!b) return null;
-  await Blog.findByIdAndUpdate(b._id, { $inc: { viewCount: 1 } });
+
+  await Blog.findByIdAndUpdate(b._id, {
+    $inc: { viewCount: 1 },
+  });
+
   return mapBlog(b, true);
 }
