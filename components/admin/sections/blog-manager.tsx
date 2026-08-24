@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { toImageUrl } from "@/lib/media";
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, Star, Upload, X, Copy,
-  Loader2, Video, ImageIcon, Link, CloudUpload, Check,
+  Loader2, Video, ImageIcon, Link, CloudUpload, Check, GripVertical,
 } from "lucide-react";
 
 import GalleryStoryEditor from "./gallery-story-editor";
@@ -115,6 +115,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState<BlogItem | null>(null);
   const [formData, setFormData] = useState(emptyForm);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Cover image upload state
   const [coverMode, setCoverMode] = useState<MediaMode>("url");
@@ -212,6 +213,26 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
 
   const parseTags = (value: string) =>
     value.split(",").map((t) => t.trim()).filter(Boolean);
+
+  const reorderGalleryImages = (
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    if (fromIndex === toIndex) return;
+
+    setFormData((prev) => {
+      const images = [...prev.gallery_images];
+
+      const [movedImage] = images.splice(fromIndex, 1);
+
+      images.splice(toIndex, 0, movedImage);
+
+      return {
+        ...prev,
+        gallery_images: images,
+      };
+    });
+  };
 
   const handleSave = async () => {
     if (!formData.title.trim()) { alert("Title is required"); return; }
@@ -778,14 +799,41 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                     {formData.gallery_images.map((url, index) => (
                       <div
                         key={`${url}-${index}`}
-                        className="relative aspect-[4/3] rounded-xl overflow-hidden border border-zinc-800"
+                        draggable
+                        onDragStart={() => {
+                          setDraggedIndex(index);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                        }}
+                        onDrop={() => {
+                          if (draggedIndex !== null) {
+                            reorderGalleryImages(draggedIndex, index);
+                          }
+
+                          setDraggedIndex(null);
+                        }}
+                        onDragEnd={() => {
+                          setDraggedIndex(null);
+                        }}
+                        className={`relative aspect-[4/3] rounded-xl overflow-hidden border cursor-move transition-all ${
+                          draggedIndex === index
+                            ? "opacity-40 border-orange-500"
+                            : "border-zinc-800 hover:border-orange-500"
+                        }`}
                       >
                         <img
                           src={url}
                           alt={`Gallery image ${index + 1}`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover pointer-events-none"
                         />
 
+                        {/* Drag Handle */}
+                        <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white cursor-grab">
+                          <GripVertical className="w-4 h-4" />
+                        </div>
+
+                        {/* Delete Button */}
                         <button
                           type="button"
                           onClick={() =>
@@ -801,6 +849,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                           ×
                         </button>
 
+                        {/* Image Number */}
                         <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs">
                           {index + 1}
                         </div>
