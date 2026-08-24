@@ -161,7 +161,7 @@ export default async function BlogPosts({ params }) {
         </>
       )}
 
-      <BlogPost />
+      <BlogPost blog={blog} />
     </>
   );
 }

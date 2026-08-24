@@ -16,6 +16,7 @@ type BlogPostData = {
   author_name: string;
 
   cover_image: string;
+  gallery_images: string[];
   image_alt: string;
 
   category: string;
@@ -416,6 +417,44 @@ export default function BlogPost() {
               itemProp="articleBody"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
+            {/* --- BLOG PHOTO GALLERY --- */}
+            {post.gallery_images && post.gallery_images.length > 0 && (
+              <section className="mt-20 md:mt-32">
+                <div className="mb-12 text-center">
+                  <p className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase mb-3">
+                    Photo Story
+                  </p>
+
+                  <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">
+                    The Gallery
+                  </h2>
+                </div>
+
+                <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                  {post.gallery_images.slice(0, 10).map((image, index) => (
+                    <div
+                      key={`${image}-${index}`}
+                      className={`gallery-item relative overflow-hidden bg-zinc-900 ${
+                        index === 0 || index === 5
+                          ? "md:col-span-2 aspect-[16/9]"
+                          : index === 1 || index === 4 || index === 7
+                          ? "aspect-[4/5]"
+                          : "aspect-[3/2]"
+                      }`}
+                    >
+                      <Image
+                        src={toImageUrl(image, 1800)}
+                        alt={`${post.title} - Gallery Image ${index + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-700 hover:scale-105"
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* --- AUTHOR CARD --- */}

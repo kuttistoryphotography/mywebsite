@@ -33,7 +33,7 @@ const BlogSchema = new Schema<IBlog>(
     content:         { type: String, required: true },
     excerpt:                 String,
     coverImage:              String,
-    galleryImages: { type: [String], default: [] },
+    galleryImages:   { type: [String], default: [] },
     imageAlt:        { type: String,  default: "", },
     category:        { type: String, default: 'General' },
     tags:            [String],

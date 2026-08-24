@@ -103,7 +103,9 @@ function mapBlog(b: any, includeContent = true): BlogPost {
     content:        includeContent ? (b.content || '') : '',
     author_name:    "Kutti Story Photography",
     cover_image:    b.coverImage || '',
-    gallery_images: b.galleryImages || [],
+    gallery_images: Array.isArray(b.galleryImages)
+    ? b.galleryImages
+    : [],
     image_alt: b.imageAlt || '',
     category: b.category || 'General',
     
