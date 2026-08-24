@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import GalleryStoryEditor from "./gallery-story-editor";
+import BlogLivePreview from "@/components/blog/preview/BlogLivePreview";
 
 type BlogStatus = "draft" | "published" | "archived";
 type MediaMode = "url" | "file";
@@ -113,6 +114,7 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [editing, setEditing] = useState<BlogItem | null>(null);
   const [formData, setFormData] = useState(emptyForm);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -1014,6 +1016,14 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
                   className="px-5 py-2.5 text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl">
                   Cancel
                 </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowPreview(true)}
+                  className="px-5 py-3 rounded-xl border border-orange-500/50 text-orange-400 hover:bg-orange-500 hover:text-black transition"
+                >
+                  Preview
+                </button>
                 <button type="button" onClick={handleSave} disabled={saving || !formData.title.trim()}
                   className="px-6 py-2.5 text-sm font-medium text-white bg-amber-500 hover:bg-amber-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                   {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -1024,7 +1034,24 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
           </div>
         </div>
       )}
-    </div>
+      
+      {/* BLOG LIVE PREVIEW */}
+      {showPreview && (
+        <BlogLivePreview
+          data={{
+            title: formData.title,
+            category: formData.category,
+            excerpt: formData.excerpt,
+            content: formData.content,
+            cover_image: formData.cover_image,
+            image_alt: formData.image_alt,
+            gallery_images: formData.gallery_images,
+            gallery_stories: formData.gallery_stories,
+          }}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
+    </>
   );
 }
 
