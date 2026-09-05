@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalLayout from "../components/ConditionalLayout";
 import BootstrapClient from "@/components/BootstrapClient";
-import LoadingScreen from "@/components/LoadingScreen";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -296,8 +296,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black overflow-x-hidden w-full min-h-screen`}
       >
-        {/* WEBSITE INTRO / LOADING SCREEN */}
-        <LoadingScreen />
 
         <BootstrapClient />
 
