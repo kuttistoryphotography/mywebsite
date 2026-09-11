@@ -461,6 +461,7 @@ export default function BlogPost({
       ========================================================= */}
       <header className="border-b border-white/10 bg-[#111] text-[#f5f2eb]">
         <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-5 md:px-10">
+          <div className="h-10 bg-white-500"></div>
           <button
             onClick={() => router.back()}
             className="group flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-white/70 transition hover:text-white"
