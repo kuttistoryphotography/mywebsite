@@ -666,13 +666,13 @@ export default function BlogPost({
             <div className="mb-16 grid gap-8 md:grid-cols-[1fr_1fr] md:items-end">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#b9975b]">
-                  02 / Photo essay
+                  02 / THE VISUAL STORY
                 </p>
 
                 <h2 className="magazine-serif mt-4 text-5xl leading-[0.9] tracking-[-0.04em] md:text-8xl">
-                  Frames
+                  Inside
                   <br />
-                  from the story.
+                  the story.
                 </h2>
               </div>
 
