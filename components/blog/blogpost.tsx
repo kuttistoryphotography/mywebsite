@@ -287,7 +287,7 @@ export default function BlogPost({
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] text-[#111]">
+      <main className="flex min-h-screen items-center justify-center bg-[#111] text-[#f5f2eb]">
         <div className="text-center">
           <div className="mx-auto mb-5 h-px w-24 animate-pulse bg-[#111]" />
           <p className="text-[10px] uppercase tracking-[0.45em]">
@@ -300,7 +300,7 @@ export default function BlogPost({
 
   if (!post) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] px-6 text-[#111]">
+      <main className="flex min-h-screen items-center justify-center bg-[#111] px-6 text-[#f5f2eb]">
         <div className="max-w-md text-center">
           <p className="mb-5 text-[10px] uppercase tracking-[0.45em]">
             404 / Story unavailable
@@ -333,15 +333,19 @@ export default function BlogPost({
   return (
     <main
       ref={containerRef}
-      className="min-h-screen bg-[#f5f2eb] text-[#111] selection:bg-[#b9975b] selection:text-white"
+      className="min-h-screen bg-[#111] text-[#f5f2eb] selection:bg-[#b9975b] selection:text-white"
     >
       <style jsx global>{`
         .magazine-serif {
           font-family: Georgia, "Times New Roman", serif;
         }
 
+        /* =========================================================
+          EDITORIAL ARTICLE
+        ========================================================= */
+
         .article-copy {
-          color: #292824;
+          color: rgba(245, 242, 235, 0.78);
         }
 
         .article-copy > p {
@@ -357,7 +361,7 @@ export default function BlogPost({
           font-size: 5.2rem;
           line-height: 0.78;
           padding: 0.1rem 0.65rem 0 0;
-          color: #111;
+          color: #f5f2eb;
         }
 
         .article-copy h1,
@@ -368,7 +372,7 @@ export default function BlogPost({
           font-family: Georgia, "Times New Roman", serif;
           line-height: 0.98;
           letter-spacing: -0.035em;
-          color: #111;
+          color: #f5f2eb;
         }
 
         .article-copy h1 {
@@ -381,6 +385,11 @@ export default function BlogPost({
 
         .article-copy h3 {
           font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .article-copy strong,
+        .article-copy b {
+          color: #f5f2eb;
         }
 
         .article-copy ul,
@@ -396,8 +405,10 @@ export default function BlogPost({
         }
 
         .article-copy a {
+          color: #f5f2eb;
           text-decoration: underline;
           text-underline-offset: 4px;
+          text-decoration-color: rgba(185, 151, 91, 0.8);
         }
 
         .article-copy blockquote {
@@ -408,6 +419,7 @@ export default function BlogPost({
           font-family: Georgia, "Times New Roman", serif;
           font-size: clamp(1.7rem, 3.5vw, 3rem);
           line-height: 1.18;
+          color: #f5f2eb;
         }
 
         .article-copy img {
@@ -419,6 +431,10 @@ export default function BlogPost({
           object-fit: cover;
           cursor: zoom-in;
         }
+
+        /* =========================================================
+          MOBILE
+        ========================================================= */
 
         @media (max-width: 768px) {
           .article-copy > p {
@@ -443,11 +459,11 @@ export default function BlogPost({
       {/* =========================================================
           01. EDITORIAL MASTHEAD
       ========================================================= */}
-      <header className="border-b border-black/10 bg-[#f5f2eb]">
+      <header className="border-b border-white/10 bg-[#111] text-[#f5f2eb]">
         <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-5 md:px-10">
           <button
             onClick={() => router.back()}
-            className="group flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em]"
+            className="group flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-white/70 transition hover:text-white"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             Back
@@ -473,12 +489,12 @@ export default function BlogPost({
       {/* =========================================================
           02. HERO / TITLE
       ========================================================= */}
-      <section className="overflow-hidden bg-[#f5f2eb] px-5 pb-16 pt-8 sm:px-8 lg:px-12 lg:pb-24 lg:pt-12">
+      <section className="overflow-hidden bg-[#111] px-5 pb-16 pt-8 text-[#f5f2eb] sm:px-8 lg:px-12 lg:pb-24 lg:pt-12">
         <div className="mx-auto max-w-[1500px]">
           <div className="magazine-kicker mb-8 flex items-center gap-4">
-            <span className="h-px w-10 bg-[#111]" />
+            <span className="h-px w-10 bg-[#b9975b]" />
 
-            <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-[#555]">
+            <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-white/50">
               {post.category || "Wedding Stories"}
             </span>
           </div>
@@ -492,13 +508,13 @@ export default function BlogPost({
 
             <div className="magazine-meta max-w-[360px] pb-2">
               {post.excerpt && (
-                <p className="text-[15px] leading-7 text-[#555]">
+                <p className="text-[15px] leading-7 text-white/50">
                   {post.excerpt}
                 </p>
               )}
 
-              <div className="mt-8 border-t border-black/15 pt-5">
-                <div className="flex flex-wrap gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.2em] text-[#666]">
+              <div className="mt-8 border-t text-white/50border-white/15 pt-5">
+                <div className="flex flex-wrap gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.2em] text-white/45">
                   <span>
                     By{" "}
                     {post.author_name ||
@@ -555,7 +571,7 @@ export default function BlogPost({
               </div>
             </button>
 
-            <div className="mt-3 flex justify-between gap-5 text-[9px] uppercase tracking-[0.2em] text-[#777]">
+            <div className="mt-3 flex justify-between gap-5 text-[9px] uppercase tracking-[0.2em] text-white/40">
               <span>{post.title}</span>
               <span>Kutti Story Photography</span>
             </div>
@@ -570,7 +586,7 @@ export default function BlogPost({
         <button
           onClick={copyLink}
           aria-label="Copy link"
-          className="grid h-10 w-10 place-items-center rounded-full border border-black/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
+          className="grid h-10 w-10 place-items-center rounded-full border text-white/50border-white/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
         >
           {copied ? (
             <span className="text-[8px] font-bold">
@@ -584,7 +600,7 @@ export default function BlogPost({
         <button
           onClick={shareInstagram}
           aria-label="Instagram"
-          className="grid h-10 w-10 place-items-center rounded-full border border-black/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
+          className="grid h-10 w-10 place-items-center rounded-full border text-white/50border-white/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
         >
           <Instagram className="h-4 w-4" />
         </button>
@@ -596,7 +612,7 @@ export default function BlogPost({
       <section className="mx-auto max-w-[1200px] px-5 py-20 md:px-10 md:py-32">
         <div className="grid grid-cols-1 gap-14 md:grid-cols-[160px_minmax(0,760px)] md:justify-center md:gap-20">
           <aside className="reveal-block hidden md:block">
-            <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-black/45">
+            <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-white/35">
               Story
             </p>
 
@@ -604,9 +620,9 @@ export default function BlogPost({
               01
             </p>
 
-            <div className="mt-6 h-24 w-px bg-black/15" />
+            <div className="mt-6 h-24 w-px bg-white/15" />
 
-            <p className="mt-6 text-[9px] uppercase leading-relaxed tracking-[0.2em] text-black/45">
+            <p className="mt-6 text-[9px] uppercase leading-relaxed tracking-[0.2em] text-white/35">
               A visual journal by Kutti Story Photography
             </p>
           </aside>
@@ -632,7 +648,7 @@ export default function BlogPost({
           06. PHOTO ESSAY
       ========================================================= */}
       {post.gallery_images?.length ? (
-        <section className="bg-[#111] px-5 py-20 text-[#f5f2eb] md:px-10 md:py-32">
+        <section className="bg-[#0d0d0d] px-5 py-20 text-[#f5f2eb] md:px-10 md:py-32">
           <div className="mx-auto max-w-[1500px]">
             <div className="mb-16 grid gap-8 md:grid-cols-[1fr_1fr] md:items-end">
               <div>
@@ -752,7 +768,7 @@ export default function BlogPost({
       {/* =========================================================
           07. CLOSING CTA
       ========================================================= */}
-      <section className="bg-[#b9975b] px-5 py-24 text-[#111] md:px-10 md:py-40">
+      <section className="bg-[#111] px-5 py-24 text-[#f5f2eb] md:px-10 md:py-40">
         <div className="mx-auto max-w-[1200px] text-center">
           <p className="text-[10px] font-bold uppercase tracking-[0.45em]">
             03 / The closing frame
@@ -764,7 +780,7 @@ export default function BlogPost({
             The memories don&apos;t.
           </h2>
 
-          <p className="mx-auto mt-8 max-w-xl text-sm leading-7 text-black/65">
+          <p className="mx-auto mt-8 max-w-xl text-sm leading-7 text-white/50">
             Your story deserves more than a collection of
             images. It deserves an editorial that feels as
             unforgettable as the day itself.
@@ -772,7 +788,7 @@ export default function BlogPost({
 
           <Link
             href="/contact-us"
-            className="mt-10 inline-flex items-center gap-4 border border-black px-7 py-4 text-[10px] font-bold uppercase tracking-[0.28em] transition hover:bg-black hover:text-white"
+            className="mt-10 inline-flex items-center gap-4 border border-white/30 px-7 py-4 text-[10px] font-bold uppercase tracking-[0.28em] text-white transition hover:border-[#b9975b] hover:bg-[#b9975b] hover:text-black"
           >
             Tell Your Story
             <ArrowRight className="h-4 w-4" />
@@ -783,11 +799,11 @@ export default function BlogPost({
       {/* =========================================================
           08. FOOTER
       ========================================================= */}
-      <footer className="bg-[#f5f2eb] px-5 py-16 md:px-10 md:py-24">
+      <footer className="bg-[#111] px-5 py-16 text-[#f5f2eb] md:px-10 md:py-24">
         <div className="mx-auto max-w-[1500px]">
-          <div className="flex flex-col gap-8 border-b border-black/15 pb-12 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-8 border-b text-white/50border-white/15 pb-12 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-[9px] uppercase tracking-[0.35em] text-black/45">
+              <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
                 Keep reading
               </p>
 
@@ -805,7 +821,7 @@ export default function BlogPost({
             </Link>
           </div>
 
-          <div className="flex items-center justify-between pt-8 text-[9px] uppercase tracking-[0.25em] text-black/45">
+          <div className="flex items-center justify-between pt-8 text-[9px] uppercase tracking-[0.25em] text-white/35">
             <span>
               © {new Date().getFullYear()} Kutti Story
               Photography
