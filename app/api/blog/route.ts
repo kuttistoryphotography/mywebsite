@@ -60,12 +60,28 @@ export async function GET(request: NextRequest) {
 
     const adminView = searchParams.get("admin") === "true";
     const statusFilter = searchParams.get("status");
-    const limitParam = searchParams.get("limit");
-    const page = parseInt(searchParams.get("page") || "1");
 
-    // ✅ Build filter
+    // Pagination
+    const rawLimit = searchParams.get("limit");
+    const rawPage = searchParams.get("page");
+
+    const limit = rawLimit
+      ? Math.max(1, parseInt(rawLimit, 10) || 20)
+      : null;
+
+    const page = Math.max(
+      1,
+      parseInt(rawPage || "1", 10) || 1
+    );
+
+    // -----------------------------------
+    // Build filter
+    // -----------------------------------
+
     const filter: Record<string, unknown> = {};
 
+    // Public API → published blogs only
+    // Admin API → all blogs
     if (!adminView) {
       if (statusFilter === "published") {
         filter.published = true;
@@ -74,38 +90,74 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // ✅ Base query
-    let query = Blog.find(filter).sort({ createdAt: -1 });
+    // -----------------------------------
+    // Count total blogs
+    // -----------------------------------
 
-    // ✅ Apply pagination only if limit exists
-    if (limitParam) {
-      const limit = parseInt(limitParam);
-      const skip = (page - 1) * limit;
+    const total = await Blog.countDocuments(filter);
 
-      query = query.skip(skip).limit(limit);
+    // -----------------------------------
+    // Calculate pagination
+    // -----------------------------------
+
+    const totalPages = limit
+      ? Math.max(1, Math.ceil(total / limit))
+      : 1;
+
+    // If requested page is greater than available pages,
+    // use the last available page.
+    const safePage = limit
+      ? Math.min(page, totalPages)
+      : 1;
+
+    // -----------------------------------
+    // Fetch blogs
+    // -----------------------------------
+
+    let query = Blog.find(filter)
+      .sort({ createdAt: -1 });
+
+    if (limit) {
+      const skip = (safePage - 1) * limit;
+
+      query = query
+        .skip(skip)
+        .limit(limit);
     }
 
     const blogs = await query;
-    const total = await Blog.countDocuments(filter);
+
+    // -----------------------------------
+    // Response
+    // -----------------------------------
 
     return NextResponse.json({
       blogs: blogs.map((b) => serializeBlog(b)),
+
+      // Total number of blogs in database
       total,
-      page,
-      totalPages: limitParam
-        ? Math.ceil(total / parseInt(limitParam))
-        : 1,
+
+      // Current page
+      page: safePage,
+
+      // Total number of pages
+      totalPages,
     });
 
   } catch (error) {
     console.error("[Blog GET]", error);
 
     return NextResponse.json(
-      { error: "Failed to fetch blogs" },
-      { status: 500 }
+      {
+        error: "Failed to fetch blogs",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getCurrentUser();

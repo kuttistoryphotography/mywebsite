@@ -109,15 +109,22 @@ function ModeToggle({ mode, setMode }: { mode: MediaMode; setMode: (m: MediaMode
 
 export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerProps) {
   console.log("BLOG VIEW MODE =", viewMode);
-  const [posts, setPosts] = useState<BlogItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [editing, setEditing] = useState<BlogItem | null>(null);
-  const [formData, setFormData] = useState(emptyForm);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+const [posts, setPosts] = useState<BlogItem[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState<string | null>(null);
+const [showModal, setShowModal] = useState(false);
+const [saving, setSaving] = useState(false);
+const [showPreview, setShowPreview] = useState(false);
+const [editing, setEditing] = useState<BlogItem | null>(null);
+const [formData, setFormData] = useState(emptyForm);
+const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+// Pagination
+const [currentPage, setCurrentPage] = useState(1);
+const [totalPosts, setTotalPosts] = useState(0);
+const [totalPages, setTotalPages] = useState(1);
+
+const PAGE_SIZE = 20;
 
   // Cover image upload state
   const [coverMode, setCoverMode] = useState<MediaMode>("url");
@@ -131,26 +138,78 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
 
   const visiblePosts = useMemo(() => posts, [posts]);
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = async (page = currentPage) => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("/api/blog?admin=true&limit=100");
+
+      const res = await fetch(
+        `/api/blog?admin=true&page=${page}&limit=${PAGE_SIZE}`,
+        {
+          cache: "no-store",
+        }
+      );
+
       const data = await res.json();
-      if (!res.ok) { setError(data.error || "Failed to fetch"); setPosts([]); return; }
-      const blogs = Array.isArray(data.blogs) ? data.blogs : [];
+
+      if (!res.ok) {
+        setError(data.error || "Failed to fetch");
+        setPosts([]);
+        return;
+      }
+
+      const blogs = Array.isArray(data.blogs)
+        ? data.blogs
+        : [];
+
+      // API should return the total number of blogs
+      const total =
+        typeof data.total === "number"
+          ? data.total
+          : blogs.length;
+
+      const pages =
+        typeof data.totalPages === "number"
+          ? Math.max(1, data.totalPages)
+          : Math.max(1, Math.ceil(total / PAGE_SIZE));
+
       setPosts(blogs);
-      onCountChange?.(blogs.length);
+      setTotalPosts(total);
+      setTotalPages(pages);
+      setCurrentPage(page);
+
+      // Show the REAL total in admin
+      onCountChange?.(total);
+
     } catch (err: any) {
-      setError(err?.message || "Failed to fetch blog posts");
+      console.error("Failed to fetch blog posts:", err);
+
+      setError(
+        err?.message || "Failed to fetch blog posts"
+      );
+
       setPosts([]);
+      setTotalPosts(0);
+      setTotalPages(1);
+
       onCountChange?.(0);
+
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchBlogs(); }, []);
+  useEffect(() => {
+    fetchBlogs(1);
+  }, []);
+
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) {
+      return;
+    }
+
+    fetchBlogs(page);
+  };
 
   const openCreateModal = () => {
     setEditing(null);
@@ -276,7 +335,10 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
       console.log("Response:", res.status, data);
       if (!res.ok) { alert(data.error || "Failed to save blog post"); return; }
       setShowModal(false);
-      await fetchBlogs();
+
+      // New blog → go to page 1
+      // Editing → stay on current page
+      await fetchBlogs(editing ? currentPage : 1);
     } catch (err) {
       console.error(err);
       alert("Failed to save blog post");
@@ -292,8 +354,19 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
         method: "DELETE",
       });
       const data = await res.json();
-      if (!res.ok) { alert(data.error || "Failed to delete"); return; }
-      await fetchBlogs();
+      if (!res.ok) {
+        alert(data.error || "Failed to delete");
+        return;
+      }
+
+      // If this was the only post on the page,
+      // move back to the previous page.
+      const nextPage =
+        currentPage > 1 && posts.length === 1
+          ? currentPage - 1
+          : currentPage;
+
+      await fetchBlogs(nextPage);
     } catch (err) { console.error(err); alert("Failed to delete"); }
   };
 
@@ -495,7 +568,12 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
         <div className="text-center py-16">
           <p className="text-red-400 mb-2">Failed to load blog posts</p>
           <p className="text-zinc-500 text-sm mb-4">{error}</p>
-          <button onClick={fetchBlogs} className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition">Retry</button>
+          <button
+            onClick={() => fetchBlogs(currentPage)}
+            className="px-4 py-2 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition"
+          >
+            Retry
+          </button>
         </div>
       ) : (
         <div
@@ -614,6 +692,91 @@ export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerP
               <p className="text-sm text-zinc-500 mt-1">Create your first post from admin.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ===== PAGINATION ===== */}
+      {!loading && !error && totalPosts > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 mt-5 border-t border-zinc-800">
+
+          {/* Results count */}
+          <p className="text-sm text-zinc-500">
+            Showing{" "}
+            {((currentPage - 1) * PAGE_SIZE) + 1}
+            {"–"}
+            {Math.min(currentPage * PAGE_SIZE, totalPosts)}
+            {" "}of{" "}
+            {totalPosts} blog posts
+          </p>
+
+          {/* Pagination buttons */}
+          <div className="flex items-center gap-1">
+
+            {/* Previous */}
+            <button
+              type="button"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-2 rounded-lg text-sm bg-zinc-900 border border-zinc-800 text-zinc-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-800 transition-colors"
+            >
+              Previous
+            </button>
+
+            {/* Page numbers */}
+            {Array.from(
+              { length: totalPages },
+              (_, i) => i + 1
+            )
+              .filter(
+                (page) =>
+                  page === 1 ||
+                  page === totalPages ||
+                  Math.abs(page - currentPage) <= 2
+              )
+              .map((page, index, pages) => {
+                const previousPage = pages[index - 1];
+
+                const showEllipsis =
+                  previousPage !== undefined &&
+                  page - previousPage > 1;
+
+                return (
+                  <React.Fragment key={page}>
+
+                    {showEllipsis && (
+                      <span className="px-2 text-zinc-600">
+                        …
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => goToPage(page)}
+                      className={cn(
+                        "min-w-9 px-3 py-2 rounded-lg text-sm transition-colors",
+                        currentPage === page
+                          ? "bg-amber-500 text-black font-semibold"
+                          : "bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+                      )}
+                    >
+                      {page}
+                    </button>
+
+                  </React.Fragment>
+                );
+              })}
+
+            {/* Next */}
+            <button
+              type="button"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 rounded-lg text-sm bg-zinc-900 border border-zinc-800 text-zinc-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-800 transition-colors"
+            >
+              Next
+            </button>
+
+          </div>
         </div>
       )}
 
