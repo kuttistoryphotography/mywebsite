@@ -289,7 +289,7 @@ export default function BlogPost({
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#111] text-[#f5f2eb]">
         <div className="text-center">
-          <div className="mx-auto mb-5 h-px w-24 animate-pulse bg-[#111]" />
+          <div className="mx-auto mb-5 h-px w-24 animate-pulse bg-[#b9975b]" />
           <p className="text-[10px] uppercase tracking-[0.45em]">
             Loading story
           </p>
@@ -312,7 +312,7 @@ export default function BlogPost({
 
           <button
             onClick={() => router.push("/blog")}
-            className="mt-8 inline-flex items-center gap-3 border border-[#111] px-6 py-3 text-[10px] font-bold uppercase tracking-[0.25em] transition hover:bg-[#111] hover:text-white"
+            className="mt-8 inline-flex items-center gap-3 border border-white/20 px-6 py-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:border-[#b9975b] hover:bg-[#b9975b] hover:text-black"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to journal
@@ -333,7 +333,7 @@ export default function BlogPost({
   return (
     <main
       ref={containerRef}
-      className="min-h-screen bg-[#111] text-[#f5f2eb] selection:bg-[#b9975b] selection:text-white"
+      className="min-h-screen bg-[#111] pt-[80px] text-[#f5f2eb] selection:bg-[#b9975b] selection:text-white md:pt-[88px]"
     >
       <style jsx global>{`
         .magazine-serif {
@@ -460,30 +460,36 @@ export default function BlogPost({
           01. EDITORIAL MASTHEAD
       ========================================================= */}
       <header className="border-b border-white/10 bg-[#111] text-[#f5f2eb]">
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-5 md:px-10">
-          <div className="h-10 bg-white-500"></div>
+        <div className="mx-auto flex min-h-[64px] max-w-[1500px] items-center justify-between px-5 md:min-h-[72px] md:px-10">
+
+          {/* BACK */}
           <button
+            type="button"
             onClick={() => router.back()}
-            className="group flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-white/70 transition hover:text-white"
+            className="group inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em] text-white/70 transition-colors duration-300 hover:text-white"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            Back
+            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+
+            <span>Back</span>
           </button>
 
+          {/* KUTTI STORY */}
           <Link
             href="/blog"
-            className="magazine-serif text-xl italic md:text-2xl"
+            className="magazine-serif text-xl italic text-[#f5f2eb] transition-opacity duration-300 hover:opacity-60 md:text-2xl"
           >
             Kutti Story
           </Link>
 
-          <span className="hidden text-[9px] uppercase tracking-[0.3em] md:block">
+          {/* RIGHT LABEL */}
+          <span className="hidden text-[9px] uppercase tracking-[0.3em] text-white/45 md:block">
             Photography Journal
           </span>
 
-          <span className="text-[9px] uppercase tracking-[0.25em] md:hidden">
+          <span className="text-[9px] uppercase tracking-[0.25em] text-white/45 md:hidden">
             Journal
           </span>
+
         </div>
       </header>
 
@@ -514,7 +520,7 @@ export default function BlogPost({
                 </p>
               )}
 
-              <div className="mt-8 border-t text-white/50border-white/15 pt-5">
+              <div className="mt-8 border-t border-white/15 pt-5">
                 <div className="flex flex-wrap gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.2em] text-white/45">
                   <span>
                     By{" "}
@@ -583,11 +589,14 @@ export default function BlogPost({
       {/* =========================================================
           04. SOCIAL RAIL
       ========================================================= */}
-      <div className="fixed left-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 lg:flex">
+      <div className="fixed left-4 top-1/2 z-[60] hidden -translate-y-1/2 flex-col gap-2 lg:flex">
+
+        {/* COPY LINK */}
         <button
+          type="button"
           onClick={copyLink}
           aria-label="Copy link"
-          className="grid h-10 w-10 place-items-center rounded-full border text-white/50border-white/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
+          className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-[#111]/90 text-white/60 backdrop-blur-md transition-all duration-300 hover:border-[#b9975b] hover:bg-[#b9975b] hover:text-black"
         >
           {copied ? (
             <span className="text-[8px] font-bold">
@@ -598,13 +607,16 @@ export default function BlogPost({
           )}
         </button>
 
+        {/* INSTAGRAM */}
         <button
+          type="button"
           onClick={shareInstagram}
           aria-label="Instagram"
-          className="grid h-10 w-10 place-items-center rounded-full border text-white/50border-white/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
+          className="grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-[#111]/90 text-white/60 backdrop-blur-md transition-all duration-300 hover:border-[#b9975b] hover:bg-[#b9975b] hover:text-black"
         >
           <Instagram className="h-4 w-4" />
         </button>
+
       </div>
 
       {/* =========================================================
@@ -802,7 +814,7 @@ export default function BlogPost({
       ========================================================= */}
       <footer className="bg-[#111] px-5 py-16 text-[#f5f2eb] md:px-10 md:py-24">
         <div className="mx-auto max-w-[1500px]">
-          <div className="flex flex-col gap-8 border-b text-white/50border-white/15 pb-12 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-8 border-b border-white/15 pb-12 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-[9px] uppercase tracking-[0.35em] text-white/35">
                 Keep reading
