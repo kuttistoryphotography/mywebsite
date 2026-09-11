@@ -1,49 +1,97 @@
+/* components/blog/blogpost.tsx */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Instagram,
+  X,
+} from "lucide-react";
 import { toImageUrl } from "@/lib/media";
 
+type GalleryStory = {
+  label?: string;
+  title?: string;
+  text?: string;
+};
+
 type BlogPostData = {
-  id: number;
+  id: number | string;
   slug: string;
   title: string;
   excerpt: string;
   content: string;
   author_name: string;
-
   cover_image: string;
-  gallery_images: string[];
-    gallery_stories?: {
-    label: string;
-    title: string;
-    text: string;
-  }[];
+  gallery_images?: string[];
+  gallery_stories?: GalleryStory[];
   image_alt: string;
-
   category: string;
   tags?: string[];
   is_featured?: boolean;
   meta_title?: string;
   meta_description?: string;
-  created_at: string;
-  published_at: string | null;
+  created_at?: string;
+  published_at?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+const normalizeBlog = (blog: any): BlogPostData | null => {
+  if (!blog) return null;
+
+  return {
+    ...blog,
+    id: blog.id ?? blog._id ?? "",
+    slug: blog.slug || "",
+    title: blog.title || "Untitled Story",
+    excerpt: blog.excerpt || "",
+    content: blog.content || "",
+    author_name: blog.author_name || "Kutti Story Photography",
+    cover_image: blog.cover_image || "",
+    gallery_images: Array.isArray(blog.gallery_images)
+      ? blog.gallery_images
+      : [],
+    gallery_stories: Array.isArray(blog.gallery_stories)
+      ? blog.gallery_stories
+      : [],
+    image_alt: blog.image_alt || blog.title || "Kutti Story Photography",
+    category: blog.category || "Wedding Stories",
+    tags: Array.isArray(blog.tags) ? blog.tags : [],
+    created_at: blog.created_at || blog.createdAt,
+    published_at: blog.published_at || blog.publishedAt || null,
+  };
 };
 
 const estimateReadTime = (html = "") => {
-  const words = html.replace(/<[^>]*>/g, " ").trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.ceil(words / 220));
-  return `${minutes} min read`;
+  const text = html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const words = text ? text.split(" ").length : 0;
+  return `${Math.max(1, Math.ceil(words / 220))} min read`;
 };
 
 const formatDate = (value?: string | null) => {
   if (!value) return "";
-  return new Date(value).toLocaleDateString("en-IN", {
-    month: "short",
-    day: "numeric",
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
     year: "numeric",
   });
 };
@@ -52,669 +100,796 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function BlogPost() {
+export default function BlogPost({
+  blog: initialBlog,
+}: {
+  blog?: BlogPostData | null;
+}) {
   const params = useParams<{ slug: string }>();
   const router = useRouter();
-  const containerRef = useRef(null);
-  const imageRef = useRef(null);
-  const [post, setPost] = useState<BlogPostData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const getGalleryStory = (index: number) => {
-    return post?.gallery_stories?.[index] || {
-      label: "",
-      title: "",
-      text: "",
-    };
-  };
+  const containerRef = useRef<HTMLElement | null>(null);
+
+  const [post, setPost] = useState<BlogPostData | null>(
+    () => normalizeBlog(initialBlog)
+  );
+  const [loading, setLoading] = useState(!initialBlog);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (initialBlog) {
+      setPost(normalizeBlog(initialBlog));
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
 
-    (async () => {
+    const loadPost = async () => {
       try {
         if (!params?.slug) {
           if (mounted) setPost(null);
           return;
         }
 
-        const res = await fetch(`/api/blog/slug/${params.slug}`);
-        if (!mounted) return;
+        const res = await fetch(`/api/blog/slug/${params.slug}`, {
+          cache: "no-store",
+        });
 
         if (!res.ok) {
-          setPost(null);
+          if (mounted) setPost(null);
           return;
         }
 
         const data = await res.json();
-        setPost(data.blog || null);
+
+        if (mounted) {
+          setPost(normalizeBlog(data.blog));
+        }
       } catch (error) {
         console.error("Failed to fetch blog post", error);
         if (mounted) setPost(null);
       } finally {
         if (mounted) setLoading(false);
       }
-    })();
+    };
+
+    loadPost();
 
     return () => {
       mounted = false;
     };
-  }, [params]);
+  }, [initialBlog, params?.slug]);
+
+  const gallery = useMemo(() => {
+    if (!post) return [];
+
+    const images = [
+      post.cover_image,
+      ...(post.gallery_images || []),
+    ].filter(
+      (image): image is string =>
+        Boolean(image && image.trim())
+    );
+
+    return Array.from(new Set(images));
+  }, [post]);
 
   useEffect(() => {
-    if (!post) return;
+    if (!post || !containerRef.current) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+      gsap.fromTo(
+        ".magazine-kicker, .magazine-title, .magazine-meta",
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.08,
+          ease: "power4.out",
+        }
+      );
 
-      // 1. Entrance Animation
-      tl.from(".animate-line", { width: 0, duration: 1.5, stagger: 0.2 })
-        .from(".blog-title", { y: 100, opacity: 0, duration: 1.2 }, "-=1")
-        .from(".meta-item", { opacity: 0, y: 20, stagger: 0.1, duration: 0.8 }, "-=0.8")
-        .from(".hero-image-wrap", { scale: 1.2, duration: 2, ease: "expo.out" }, "-=1.5");
+      gsap.fromTo(
+        ".magazine-hero-image",
+        { scale: 1.12 },
+        {
+          scale: 1,
+          duration: 1.8,
+          ease: "expo.out",
+        }
+      );
 
-      // 2. Parallax effect on Featured Image
-      gsap.to(imageRef.current, {
-        yPercent: 20,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero-image-wrap",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      // 3. Staggered reveal for gallery
-      gsap.from(".gallery-item", {
-        opacity: 0,
-        y: 50,
-        rotation: 2,
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: ".gallery-grid",
-          start: "top 80%",
-        },
-      });
+      gsap.utils
+        .toArray<HTMLElement>(".reveal-block")
+        .forEach((element) => {
+          gsap.fromTo(
+            element,
+            { y: 45, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: element,
+                start: "top 88%",
+                once: true,
+              },
+            }
+          );
+        });
     }, containerRef);
 
     return () => ctx.revert();
   }, [post]);
 
-  if (loading) return <div className="bg-black min-h-screen" />;
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLightboxIndex(null);
+      }
+
+      if (event.key === "ArrowRight" && gallery.length) {
+        setLightboxIndex(
+          (index) =>
+            index === null ? 0 : (index + 1) % gallery.length
+        );
+      }
+
+      if (event.key === "ArrowLeft" && gallery.length) {
+        setLightboxIndex(
+          (index) =>
+            index === null
+              ? 0
+              : (index - 1 + gallery.length) % gallery.length
+        );
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightboxIndex, gallery.length]);
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+
+      window.setTimeout(() => {
+        setCopied(false);
+      }, 1800);
+    } catch {
+      // Clipboard can be unavailable in some browsers.
+    }
+  };
+
+  const shareInstagram = () => {
+    window.open(
+      "https://www.instagram.com/",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const openLightbox = (index: number) => {
+    if (!gallery.length) return;
+    setLightboxIndex(index);
+  };
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] text-[#111]">
+        <div className="text-center">
+          <div className="mx-auto mb-5 h-px w-24 animate-pulse bg-[#111]" />
+          <p className="text-[10px] uppercase tracking-[0.45em]">
+            Loading story
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   if (!post) {
     return (
-      <main className="bg-black text-white min-h-screen flex items-center justify-center px-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Post not found</h1>
-          <p className="text-zinc-500 mt-2">This blog post is unavailable or unpublished.</p>
+      <main className="flex min-h-screen items-center justify-center bg-[#f5f2eb] px-6 text-[#111]">
+        <div className="max-w-md text-center">
+          <p className="mb-5 text-[10px] uppercase tracking-[0.45em]">
+            404 / Story unavailable
+          </p>
+
+          <h1 className="font-serif text-5xl tracking-tight">
+            This story could not be found.
+          </h1>
+
           <button
             onClick={() => router.push("/blog")}
-            className="mt-6 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-black rounded-xl font-semibold transition-colors"
+            className="mt-8 inline-flex items-center gap-3 border border-[#111] px-6 py-3 text-[10px] font-bold uppercase tracking-[0.25em] transition hover:bg-[#111] hover:text-white"
           >
-            Back to Blog
+            <ArrowLeft className="h-4 w-4" />
+            Back to journal
           </button>
         </div>
       </main>
     );
   }
 
-  return (
-    <main ref={containerRef} className="bg-black text-white min-h-screen selection:bg-orange-500 selection:text-black">
-      {/* --- BACK BUTTON --- */}
-      <nav className="fixed top-20 left-0 w-full z-[100] px-6 md:px-12 pointer-events-none">
-        <button
-          onClick={() => router.back()}
-          className="pointer-events-auto group flex items-center gap-4 text-[10px] font-bold tracking-[0.3em] uppercase text-white bg-black/70 backdrop-blur-md px-5 py-4 rounded-full border border-white/10 hover:border-orange-500/50 transition-all"
-        >
-          <span className="w-8 h-px bg-white group-hover:w-12 group-hover:bg-orange-500 transition-all" />
-          BACK
-        </button>
-      </nav>
+  const date = formatDate(
+    post.published_at ||
+      post.created_at ||
+      post.createdAt
+  );
 
-      {/* --- HERO SECTION --- */}
-      <section className="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="space-y-8">
-          <div className="flex items-center gap-4">
-            <span className="text-orange-500 text-xs font-bold tracking-[0.2em] uppercase">
-              {post.category}
+  const readTime = estimateReadTime(post.content);
+
+  return (
+    <main
+      ref={containerRef}
+      className="min-h-screen bg-[#f5f2eb] text-[#111] selection:bg-[#b9975b] selection:text-white"
+    >
+      <style jsx global>{`
+        .magazine-serif {
+          font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .article-copy {
+          color: #292824;
+        }
+
+        .article-copy > p {
+          max-width: 760px;
+          margin: 0 auto 1.8rem;
+          font-size: 1.13rem;
+          line-height: 1.95;
+        }
+
+        .article-copy > p:first-child::first-letter {
+          float: left;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: 5.2rem;
+          line-height: 0.78;
+          padding: 0.1rem 0.65rem 0 0;
+          color: #111;
+        }
+
+        .article-copy h1,
+        .article-copy h2,
+        .article-copy h3 {
+          max-width: 900px;
+          margin: 5.5rem auto 1.5rem;
+          font-family: Georgia, "Times New Roman", serif;
+          line-height: 0.98;
+          letter-spacing: -0.035em;
+          color: #111;
+        }
+
+        .article-copy h1 {
+          font-size: clamp(2.4rem, 6vw, 5.5rem);
+        }
+
+        .article-copy h2 {
+          font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        .article-copy h3 {
+          font-size: clamp(1.5rem, 3vw, 2.5rem);
+        }
+
+        .article-copy ul,
+        .article-copy ol {
+          max-width: 760px;
+          margin: 2rem auto;
+          padding-left: 1.5rem;
+          line-height: 1.9;
+        }
+
+        .article-copy li {
+          margin-bottom: 0.7rem;
+        }
+
+        .article-copy a {
+          text-decoration: underline;
+          text-underline-offset: 4px;
+        }
+
+        .article-copy blockquote {
+          max-width: 900px;
+          margin: 5rem auto;
+          padding: 2rem 0 2rem 2rem;
+          border-left: 1px solid #b9975b;
+          font-family: Georgia, "Times New Roman", serif;
+          font-size: clamp(1.7rem, 3.5vw, 3rem);
+          line-height: 1.18;
+        }
+
+        .article-copy img {
+          display: block;
+          width: 100%;
+          max-width: 1200px;
+          height: auto;
+          margin: 5rem auto;
+          object-fit: cover;
+          cursor: zoom-in;
+        }
+
+        @media (max-width: 768px) {
+          .article-copy > p {
+            font-size: 1.03rem;
+            line-height: 1.85;
+          }
+
+          .article-copy > p:first-child::first-letter {
+            font-size: 4.2rem;
+          }
+
+          .article-copy img {
+            margin: 3rem auto;
+          }
+
+          .article-copy blockquote {
+            margin: 3.5rem auto;
+          }
+        }
+      `}</style>
+
+      {/* =========================================================
+          01. EDITORIAL MASTHEAD
+      ========================================================= */}
+      <header className="border-b border-black/10 bg-[#f5f2eb]">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-5 md:px-10">
+          <button
+            onClick={() => router.back()}
+            className="group flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.3em]"
+          >
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            Back
+          </button>
+
+          <Link
+            href="/blog"
+            className="magazine-serif text-xl italic md:text-2xl"
+          >
+            Kutti Story
+          </Link>
+
+          <span className="hidden text-[9px] uppercase tracking-[0.3em] md:block">
+            Photography Journal
+          </span>
+
+          <span className="text-[9px] uppercase tracking-[0.25em] md:hidden">
+            Journal
+          </span>
+        </div>
+      </header>
+
+      {/* =========================================================
+          02. HERO / TITLE
+      ========================================================= */}
+      <section className="overflow-hidden bg-[#f5f2eb] px-5 pb-16 pt-8 sm:px-8 lg:px-12 lg:pb-24 lg:pt-12">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="magazine-kicker mb-8 flex items-center gap-4">
+            <span className="h-px w-10 bg-[#111]" />
+
+            <span className="text-[10px] font-medium uppercase tracking-[0.35em] text-[#555]">
+              {post.category || "Wedding Stories"}
             </span>
-            <div className="animate-line h-px flex-1 bg-zinc-800" />
           </div>
 
-          <h1
-            itemProp="headline"
-            className="blog-title text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-[0.85] text-balance"
-          >
-            {post.title}
-          </h1>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div>
+              <h1 className="magazine-title magazine-serif max-w-[1150px] text-[clamp(3.4rem,8vw,9rem)] font-normal leading-[0.82] tracking-[-0.055em]">
+                {post.title}
+              </h1>
+            </div>
 
-          <div className="flex flex-wrap gap-12 pt-12">
-            <div className="meta-item">
-              <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Author</p>
-              <div itemProp="author" itemScope itemType="https://schema.org/Organization">
-                <p itemProp="name" className="font-medium">
-                  {post.author_name || "Kutti Story Photography"}
+            <div className="magazine-meta max-w-[360px] pb-2">
+              {post.excerpt && (
+                <p className="text-[15px] leading-7 text-[#555]">
+                  {post.excerpt}
                 </p>
+              )}
+
+              <div className="mt-8 border-t border-black/15 pt-5">
+                <div className="flex flex-wrap gap-x-6 gap-y-3 text-[10px] uppercase tracking-[0.2em] text-[#666]">
+                  <span>
+                    By{" "}
+                    {post.author_name ||
+                      "Kutti Story Photography"}
+                  </span>
+
+                  {date && <span>{date}</span>}
+
+                  <span>{readTime}</span>
+                </div>
               </div>
-            </div>
-            <div className="meta-item">
-              <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Published</p>
-              <p
-                itemProp="datePublished"
-                className="font-mono text-sm"
-              >
-                {formatDate(post.published_at || post.created_at)}
-              </p>
-            </div>
-            <div className="meta-item">
-              <p className="text-zinc-500 text-[10px] uppercase tracking-widest mb-2">Reading Time</p>
-              <p className="font-mono text-sm">{estimateReadTime(post.content)}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- FEATURED IMAGE (PARALLAX) --- */}
-      {post.cover_image && post.cover_image.trim() !== "" ? (
-        <section className="hero-image-wrap relative w-full h-[70vh] md:h-[90vh] overflow-hidden">
-          <div ref={imageRef} className="absolute inset-0 w-full h-[120%]">
-            <Image
-              src={toImageUrl(post.cover_image, 2000)}
-              alt={post.image_alt || post.title}
-              itemProp="image"
-              fill
-              className="object-cover brightness-90"
-              priority
-              
-            />
+      {/* =========================================================
+          03. HERO PHOTOGRAPH
+      ========================================================= */}
+      {post.cover_image && (
+        <section className="px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px]">
+            <button
+              type="button"
+              onClick={() => openLightbox(0)}
+              className="group relative block w-full cursor-zoom-in overflow-hidden bg-black text-left"
+              aria-label="Open cover photograph"
+            >
+              <div className="relative aspect-[16/9] w-full">
+                <Image
+                  src={toImageUrl(post.cover_image, 2600)}
+                  alt={
+                    post.image_alt ||
+                    post.title ||
+                    "Wedding photograph by Kutti Story Photography"
+                  }
+                  fill
+                  priority
+                  unoptimized
+                  sizes="100vw"
+                  className="magazine-hero-image object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.025]"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+
+                <span className="absolute bottom-5 left-5 bg-white/90 px-3 py-2 text-[9px] font-bold uppercase tracking-[0.25em] text-[#111] backdrop-blur-sm">
+                  Cover Photograph
+                </span>
+
+                <span className="absolute bottom-5 right-5 text-[9px] uppercase tracking-[0.25em] text-white/80">
+                  01 /{" "}
+                  {String(gallery.length).padStart(2, "0")}
+                </span>
+              </div>
+            </button>
+
+            <div className="mt-3 flex justify-between gap-5 text-[9px] uppercase tracking-[0.2em] text-[#777]">
+              <span>{post.title}</span>
+              <span>Kutti Story Photography</span>
+            </div>
           </div>
-        </section>
-      ) : (
-        <section className="hero-image-wrap relative w-full h-[30vh] bg-zinc-900 flex items-center justify-center">
-          <svg className="w-16 h-16 text-zinc-700" fill="none" stroke="currentColor" strokeWidth="1.2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 19.5h18M3 4.5h18" />
-          </svg>
         </section>
       )}
 
-      {/* --- MAGAZINE CONTENT --- */}
-      <section className="py-20 md:py-32 px-6">
-        <article
-          className="max-w-5xl mx-auto"
-          itemScope
-          itemType="https://schema.org/BlogPosting"
+      {/* =========================================================
+          04. SOCIAL RAIL
+      ========================================================= */}
+      <div className="fixed left-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 lg:flex">
+        <button
+          onClick={copyLink}
+          aria-label="Copy link"
+          className="grid h-10 w-10 place-items-center rounded-full border border-black/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
         >
-          <div className="blog-magazine-content">
-            <style>{`
-              .blog-magazine-content {
-                max-width: 100%;
-              }
+          {copied ? (
+            <span className="text-[8px] font-bold">
+              OK
+            </span>
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+        </button>
 
-              /* Text */
-              .blog-magazine-content p {
-                max-width: 760px;
-                margin: 0 auto 2rem;
-                font-size: 1.15rem;
-                line-height: 1.9;
-                color: #a1a1aa;
-                font-weight: 300;
-              }
+        <button
+          onClick={shareInstagram}
+          aria-label="Instagram"
+          className="grid h-10 w-10 place-items-center rounded-full border border-black/15 bg-[#f5f2eb]/90 backdrop-blur transition hover:bg-black hover:text-white"
+        >
+          <Instagram className="h-4 w-4" />
+        </button>
+      </div>
 
-              /* First paragraph */
-              .blog-magazine-content > p:first-child,
-              .blog-magazine-content .lead {
-                font-size: 1.45rem;
-                line-height: 1.8;
-                color: #d4d4d8;
-              }
+      {/* =========================================================
+          05. ARTICLE
+      ========================================================= */}
+      <section className="mx-auto max-w-[1200px] px-5 py-20 md:px-10 md:py-32">
+        <div className="grid grid-cols-1 gap-14 md:grid-cols-[160px_minmax(0,760px)] md:justify-center md:gap-20">
+          <aside className="reveal-block hidden md:block">
+            <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-black/45">
+              Story
+            </p>
 
-              /* Headings */
-              .blog-magazine-content h1,
-              .blog-magazine-content h2,
-              .blog-magazine-content h3 {
-                max-width: 900px;
-                margin: 5rem auto 1.5rem;
-                color: white;
-                font-weight: 700;
-                letter-spacing: -0.04em;
-                line-height: 1.05;
-              }
+            <p className="magazine-serif mt-3 text-5xl">
+              01
+            </p>
 
-              .blog-magazine-content h2 {
-                font-size: clamp(2rem, 5vw, 4rem);
-              }
+            <div className="mt-6 h-24 w-px bg-black/15" />
 
-              .blog-magazine-content h3 {
-                font-size: clamp(1.5rem, 3vw, 2.5rem);
-              }
+            <p className="mt-6 text-[9px] uppercase leading-relaxed tracking-[0.2em] text-black/45">
+              A visual journal by Kutti Story Photography
+            </p>
+          </aside>
 
-              /* Lists */
-              .blog-magazine-content ul,
-              .blog-magazine-content ol {
-                max-width: 760px;
-                margin: 2.5rem auto;
-                padding-left: 1.5rem;
-                color: #d4d4d8;
-              }
-
-              .blog-magazine-content li {
-                margin-bottom: 1rem;
-                line-height: 1.8;
-              }
-
-              /* MAGAZINE IMAGES */
-              .blog-magazine-content img {
-                display: block;
-                width: 100%;
-                height: auto;
-                max-width: 100%;
-                object-fit: cover;
-                margin: 5rem auto;
-                border-radius: 2px;
-              }
-
-              /* Image 1 - Full cinematic width */
-              .blog-magazine-content img:nth-of-type(1) {
-                width: min(100%, 1200px);
-                aspect-ratio: 16 / 9;
-                object-fit: cover;
-              }
-
-              /* Image 2 - Portrait editorial */
-              .blog-magazine-content img:nth-of-type(2) {
-                width: min(65%, 700px);
-                aspect-ratio: 4 / 5;
-                object-fit: cover;
-                margin-left: 0;
-              }
-
-              /* Image 3 - Wide */
-              .blog-magazine-content img:nth-of-type(3) {
-                width: 100%;
-                aspect-ratio: 21 / 9;
-                object-fit: cover;
-              }
-
-              /* Image 4 - Right aligned portrait */
-              .blog-magazine-content img:nth-of-type(4) {
-                width: min(60%, 650px);
-                aspect-ratio: 4 / 5;
-                object-fit: cover;
-                margin-right: 0;
-              }
-
-              /* Image 5 - Large feature */
-              .blog-magazine-content img:nth-of-type(5) {
-                width: 100%;
-                aspect-ratio: 3 / 2;
-                object-fit: cover;
-              }
-
-              /* Image 6 - Medium centered */
-              .blog-magazine-content img:nth-of-type(6) {
-                width: min(75%, 850px);
-                aspect-ratio: 3 / 2;
-                object-fit: cover;
-              }
-
-              /* Image 7 - Portrait left */
-              .blog-magazine-content img:nth-of-type(7) {
-                width: min(55%, 600px);
-                aspect-ratio: 4 / 5;
-                object-fit: cover;
-                margin-left: 0;
-              }
-
-              /* Image 8 - Full wide */
-              .blog-magazine-content img:nth-of-type(8) {
-                width: 100%;
-                aspect-ratio: 16 / 9;
-                object-fit: cover;
-              }
-
-              /* Image 9 - Right editorial */
-              .blog-magazine-content img:nth-of-type(9) {
-                width: min(65%, 700px);
-                aspect-ratio: 4 / 5;
-                object-fit: cover;
-                margin-right: 0;
-              }
-
-              /* Image 10 - Final cinematic image */
-              .blog-magazine-content img:nth-of-type(10) {
-                width: 100%;
-                aspect-ratio: 21 / 9;
-                object-fit: cover;
-              }
-
-              .blog-magazine-content blockquote {
-                max-width: 850px;
-                margin: 5rem auto;
-                padding: 2rem 0 2rem 2rem;
-                border-left: 2px solid #f97316;
-                font-size: clamp(1.5rem, 3vw, 2.5rem);
-                line-height: 1.4;
-                color: white;
-              }
-
-              /* Mobile */
-              @media (max-width: 768px) {
-                .blog-magazine-content p {
-                  font-size: 1.05rem;
-                  line-height: 1.8;
-                }
-
-                .blog-magazine-content > p:first-child {
-                  font-size: 1.2rem;
-                }
-
-                .blog-magazine-content img,
-                .blog-magazine-content img:nth-of-type(n) {
-                  width: 100%;
-                  aspect-ratio: auto;
-                  margin: 3rem auto;
-                }
-
-                .blog-magazine-content h1,
-                .blog-magazine-content h2,
-                .blog-magazine-content h3 {
-                  margin-top: 3.5rem;
-                }
-              }
-            `}</style>
-
+          <article className="reveal-block min-w-0">
             <div
-              itemProp="articleBody"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+              className="article-copy"
+              itemScope
+              itemType="https://schema.org/BlogPosting"
+            >
+              <div
+                itemProp="articleBody"
+                dangerouslySetInnerHTML={{
+                  __html: post.content,
+                }}
+              />
+            </div>
+          </article>
+        </div>
+      </section>
 
-            {/* --- BLOG PHOTO GALLERY --- */}
-            {post.gallery_images && post.gallery_images.length > 0 && (
-              <section className="mt-20 md:mt-32">
-
-                {/* Gallery Title */}
-                <div className="mb-16 text-center">
-                  <p className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase mb-3">
-                    Photo Story
-                  </p>
-
-                  <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">
-                    The Gallery
-                  </h2>
-                </div>
-
-                {/* IMAGE 1 + IMAGE 2 */}
-                <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                  {post.gallery_images.slice(0, 2).map((image, index) => (
-                    <div
-                      key={`${image}-${index}`}
-                      className="gallery-item relative overflow-hidden bg-zinc-900 aspect-[4/5]"
-                    >
-                      <Image
-                        src={toImageUrl(image, 1800)}
-                        alt={`${post.title} - Gallery Image ${index + 1}`}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 hover:scale-105"
-                        unoptimized
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* STORY TEXT 1 */}
-                {post.gallery_images.length >= 2 && (() => {
-                  const story = getGalleryStory(0);
-
-                  return (
-                    <div className="my-20 md:my-32 max-w-2xl ml-auto">
-                      {story.label && (
-                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                          {story.label}
-                        </span>
-                      )}
-
-                      {story.title && (
-                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                          {story.title}
-                        </h3>
-                      )}
-
-                      {story.text && (
-                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                          {story.text}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* IMAGE 3 + IMAGE 4 */}
-                {post.gallery_images.length > 2 && (
-                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                    {post.gallery_images.slice(2, 4).map((image, index) => (
-                      <div
-                        key={`${image}-${index + 2}`}
-                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
-                          index === 0 ? "aspect-[3/2]" : "aspect-[4/5]"
-                        }`}
-                      >
-                        <Image
-                          src={toImageUrl(image, 1800)}
-                          alt={`${post.title} - Gallery Image ${index + 3}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-700 hover:scale-105"
-                          unoptimized
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* STORY TEXT 2 */}
-                {post.gallery_images.length >= 4 && (() => {
-                  const story = getGalleryStory(1);
-
-                  return (
-                    <div className="my-20 md:my-32 max-w-2xl">
-                      {story.label && (
-                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                          {story.label}
-                        </span>
-                      )}
-
-                      {story.title && (
-                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                          {story.title}
-                        </h3>
-                      )}
-
-                      {story.text && (
-                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                          {story.text}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* IMAGE 5 - FULL WIDTH */}
-                {post.gallery_images[4] && (
-                  <div className="gallery-item relative overflow-hidden bg-zinc-900 aspect-[16/9]">
-                    <Image
-                      src={toImageUrl(post.gallery_images[4], 2000)}
-                      alt={`${post.title} - Gallery Image 5`}
-                      fill
-                      sizes="100vw"
-                      className="object-cover transition-transform duration-700 hover:scale-105"
-                      unoptimized
-                    />
-                  </div>
-                )}
-
-                {/* STORY TEXT 3 */}
-                {post.gallery_images.length >= 5 && (() => {
-                  const story = getGalleryStory(2);
-
-                  return (
-                    <div className="my-20 md:my-32 max-w-3xl mx-auto text-center">
-                      {story.label && (
-                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                          {story.label}
-                        </span>
-                      )}
-
-                      {story.title && (
-                        <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
-                          {story.title}
-                        </h3>
-                      )}
-
-                      {story.text && (
-                        <p className="mt-8 text-zinc-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-                          {story.text}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* IMAGE 6 + IMAGE 7 */}
-                {post.gallery_images.length > 5 && (
-                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                    {post.gallery_images.slice(5, 7).map((image, index) => (
-                      <div
-                        key={`${image}-${index + 5}`}
-                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
-                          index === 0 ? "aspect-[4/5]" : "aspect-[3/2]"
-                        }`}
-                      >
-                        <Image
-                          src={toImageUrl(image, 1800)}
-                          alt={`${post.title} - Gallery Image ${index + 6}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-700 hover:scale-105"
-                          unoptimized
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* STORY TEXT 4 */}
-                {post.gallery_images.length >= 7 && (() => {
-                  const story = getGalleryStory(3);
-
-                  return (
-                    <div className="my-20 md:my-32 max-w-2xl ml-auto">
-                      {story.label && (
-                        <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                          {story.label}
-                        </span>
-                      )}
-
-                      {story.title && (
-                        <h3 className="mt-5 text-4xl md:text-6xl font-bold tracking-tighter leading-[0.95]">
-                          {story.title}
-                        </h3>
-                      )}
-
-                      {story.text && (
-                        <p className="mt-6 text-zinc-400 text-base md:text-lg leading-relaxed">
-                          {story.text}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* IMAGE 8 + IMAGE 9 + IMAGE 10 */}
-                {post.gallery_images.length > 7 && (
-                  <div className="gallery-grid grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                    {post.gallery_images.slice(7, 10).map((image, index) => (
-                      <div
-                        key={`${image}-${index + 7}`}
-                        className={`gallery-item relative overflow-hidden bg-zinc-900 ${
-                          index === 2
-                            ? "md:col-span-2 aspect-[16/9]"
-                            : index === 0
-                            ? "aspect-[3/2]"
-                            : "aspect-[4/5]"
-                        }`}
-                      >
-                        <Image
-                          src={toImageUrl(image, 1800)}
-                          alt={`${post.title} - Gallery Image ${index + 8}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-700 hover:scale-105"
-                          unoptimized
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* FINAL STORY */}
-                <div className="mt-24 md:mt-40 text-center max-w-3xl mx-auto">
-                  <span className="text-orange-500 text-xs font-bold tracking-[0.3em] uppercase">
-                    The End of One Chapter
-                  </span>
-
-                  <h3 className="mt-5 text-4xl md:text-7xl font-bold tracking-tighter leading-[0.95]">
-                    But the beginning of a lifetime of memories.
-                  </h3>
-                </div>
-
-              </section>
-            )}
-          </div>
-
-          {/* --- AUTHOR CARD --- */}
-          <footer className="mt-32 p-8 md:p-12 bg-zinc-950 border border-zinc-900 rounded-sm">
-            <div className="flex flex-col md:flex-row gap-8 items-center text-center md:text-left">
-              <div className="w-20 h-20 bg-orange-500 rounded-full shrink-0 flex items-center justify-center font-bold text-black text-2xl">
-                KS
-              </div>
-
+      {/* =========================================================
+          06. PHOTO ESSAY
+      ========================================================= */}
+      {post.gallery_images?.length ? (
+        <section className="bg-[#111] px-5 py-20 text-[#f5f2eb] md:px-10 md:py-32">
+          <div className="mx-auto max-w-[1500px]">
+            <div className="mb-16 grid gap-8 md:grid-cols-[1fr_1fr] md:items-end">
               <div>
-                <h4 className="text-xl font-bold mb-2">
-                  About Kutti Story
-                </h4>
-
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                  Crafting cinematic visuals and timeless memories. Specializing in
-                  high-end photography that blends traditional storytelling with
-                  modern aesthetics.
+                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#b9975b]">
+                  02 / Photo essay
                 </p>
 
-                <button
-                  onClick={() => router.push("/contact-us")}
-                  className="text-orange-500 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-orange-500/20 pb-2 hover:border-orange-500 transition-all"
-                >
-                  Inquire for Shoots
-                </button>
+                <h2 className="magazine-serif mt-4 text-5xl leading-[0.9] tracking-[-0.04em] md:text-8xl">
+                  Frames
+                  <br />
+                  from the story.
+                </h2>
               </div>
+
+              <p className="max-w-xl text-sm leading-7 text-white/55 md:justify-self-end">
+                Every photograph holds a small piece of
+                the day. Explore the moments, details and
+                in-between frames that shaped this story.
+              </p>
             </div>
-          </footer>
-        </article>
+
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:gap-8">
+              {post.gallery_images.map(
+                (image, index) => {
+                  const story =
+                    post.gallery_stories?.[index];
+
+                  const layout = index % 5;
+
+                  const imageClass =
+                    layout === 0
+                      ? "md:col-span-7 md:aspect-[4/5]"
+                      : layout === 1
+                      ? "md:col-span-5 md:mt-24 md:aspect-[3/2]"
+                      : layout === 2
+                      ? "md:col-span-12 md:aspect-[21/9]"
+                      : layout === 3
+                      ? "md:col-span-5 md:aspect-[4/5]"
+                      : "md:col-span-7 md:mt-24 md:aspect-[3/2]";
+
+                  return (
+                    <React.Fragment
+                      key={`${image}-${index}`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openLightbox(index + 1)
+                        }
+                        className={`reveal-block group relative block aspect-[4/5] overflow-hidden bg-white/5 text-left ${imageClass}`}
+                      >
+                        <Image
+                          src={toImageUrl(image, 2200)}
+                          alt={`${post.title} — image ${
+                            index + 1
+                          }`}
+                          fill
+                          unoptimized
+                          sizes="(max-width: 768px) 100vw, 70vw"
+                          className="object-cover transition duration-1000 group-hover:scale-[1.035]"
+                        />
+
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-80" />
+
+                        <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
+                          <span className="text-[9px] uppercase tracking-[0.3em]">
+                            Frame{" "}
+                            {String(index + 1).padStart(
+                              2,
+                              "0"
+                            )}
+                          </span>
+
+                          <span className="text-[9px] uppercase tracking-[0.25em] text-white/60">
+                            Expand
+                          </span>
+                        </div>
+                      </button>
+
+                      {story &&
+                      (story.title || story.text) ? (
+                        <div
+                          className={`reveal-block flex flex-col justify-center py-8 md:col-span-5 md:px-8 ${
+                            index % 2
+                              ? "md:col-start-1"
+                              : ""
+                          }`}
+                        >
+                          {story.label && (
+                            <p className="text-[9px] font-bold uppercase tracking-[0.35em] text-[#b9975b]">
+                              {story.label}
+                            </p>
+                          )}
+
+                          {story.title && (
+                            <h3 className="magazine-serif mt-4 text-4xl leading-[0.95] tracking-[-0.03em] md:text-6xl">
+                              {story.title}
+                            </h3>
+                          )}
+
+                          {story.text && (
+                            <p className="mt-5 text-sm leading-7 text-white/55">
+                              {story.text}
+                            </p>
+                          )}
+                        </div>
+                      ) : null}
+                    </React.Fragment>
+                  );
+                }
+              )}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* =========================================================
+          07. CLOSING CTA
+      ========================================================= */}
+      <section className="bg-[#b9975b] px-5 py-24 text-[#111] md:px-10 md:py-40">
+        <div className="mx-auto max-w-[1200px] text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.45em]">
+            03 / The closing frame
+          </p>
+
+          <h2 className="magazine-serif mx-auto mt-7 max-w-5xl text-5xl leading-[0.88] tracking-[-0.05em] md:text-8xl">
+            The photographs end.
+            <br />
+            The memories don&apos;t.
+          </h2>
+
+          <p className="mx-auto mt-8 max-w-xl text-sm leading-7 text-black/65">
+            Your story deserves more than a collection of
+            images. It deserves an editorial that feels as
+            unforgettable as the day itself.
+          </p>
+
+          <Link
+            href="/contact-us"
+            className="mt-10 inline-flex items-center gap-4 border border-black px-7 py-4 text-[10px] font-bold uppercase tracking-[0.28em] transition hover:bg-black hover:text-white"
+          >
+            Tell Your Story
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
-      {/* --- NEXT POST PREVIEW --- */}
-      <section className="bg-white text-black py-32 px-6 text-center">
-        <p className="text-[10px] font-black tracking-[0.5em] uppercase mb-8 opacity-40">Keep Reading</p>
-        <button
-          onClick={() => router.push("/blog")}
-          className="group relative inline-block text-5xl md:text-8xl font-bold tracking-tighter"
-        >
-          View All Stories
-          <span className="absolute bottom-0 left-0 w-full h-1 bg-black origin-right scale-x-0 group-hover:scale-x-100 group-hover:origin-left transition-transform duration-500" />
-        </button>
-      </section>
+      {/* =========================================================
+          08. FOOTER
+      ========================================================= */}
+      <footer className="bg-[#f5f2eb] px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="flex flex-col gap-8 border-b border-black/15 pb-12 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.35em] text-black/45">
+                Keep reading
+              </p>
+
+              <h3 className="magazine-serif mt-3 text-4xl tracking-[-0.03em] md:text-6xl">
+                More stories from Kutti Story.
+              </h3>
+            </div>
+
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em]"
+            >
+              View all stories
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="flex items-center justify-between pt-8 text-[9px] uppercase tracking-[0.25em] text-black/45">
+            <span>
+              © {new Date().getFullYear()} Kutti Story
+              Photography
+            </span>
+
+            <span className="hidden sm:block">
+              Made for stories worth remembering
+            </span>
+          </div>
+        </div>
+      </footer>
+
+      {/* =========================================================
+          09. LIGHTBOX
+      ========================================================= */}
+      {lightboxIndex !== null &&
+        gallery[lightboxIndex] && (
+          <div
+            className="fixed inset-0 z-[200] bg-black/95 p-4 md:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Photo viewer"
+          >
+            <button
+              onClick={() => setLightboxIndex(null)}
+              className="absolute right-5 top-5 z-20 grid h-11 w-11 place-items-center rounded-full border border-white/20 text-white transition hover:bg-white hover:text-black"
+              aria-label="Close photo viewer"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <button
+              onClick={() =>
+                setLightboxIndex(
+                  (index) =>
+                    index === null
+                      ? 0
+                      : (index - 1 + gallery.length) %
+                        gallery.length
+                )
+              }
+              className="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 text-white transition hover:bg-white hover:text-black md:left-8"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+
+            <button
+              onClick={() =>
+                setLightboxIndex(
+                  (index) =>
+                    index === null
+                      ? 0
+                      : (index + 1) % gallery.length
+                )
+              }
+              className="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 text-white transition hover:bg-white hover:text-black md:right-8"
+              aria-label="Next photo"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+
+            <div className="relative h-full w-full">
+              <Image
+                src={toImageUrl(
+                  gallery[lightboxIndex],
+                  3000
+                )}
+                alt={`${post.title} — photo ${
+                  lightboxIndex + 1
+                }`}
+                fill
+                unoptimized
+                sizes="100vw"
+                className="object-contain"
+              />
+            </div>
+
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-[0.3em] text-white/60">
+              {String(lightboxIndex + 1).padStart(2, "0")} /{" "}
+              {String(gallery.length).padStart(2, "0")}
+            </div>
+          </div>
+        )}
     </main>
   );
 }
