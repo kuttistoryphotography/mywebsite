@@ -458,6 +458,8 @@ export async function POST(
 
             category:
               blog.category,
+            
+            coverImage: blog.coverImage,
           });
 
         if (
@@ -855,6 +857,8 @@ export async function PUT(
 
             category:
               updated.category,
+
+            coverImage: updated.coverImage,
           });
 
         if (

@@ -3,6 +3,7 @@ export interface TelegramBlogInput {
   slug: string;
   excerpt?: string;
   category?: string;
+  coverImage?: string;
 }
 
 function escapeHtml(value: string): string {
@@ -27,89 +28,226 @@ export async function publishBlogToTelegram(
   blog: TelegramBlogInput
 ): Promise<number | null> {
 
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const channelId = process.env.TELEGRAM_CHANNEL_ID;
+  const botToken =
+    process.env.TELEGRAM_BOT_TOKEN;
+
+  const channelId =
+    process.env.TELEGRAM_CHANNEL_ID;
 
   const siteUrl = (
     process.env.NEXT_PUBLIC_SITE_URL ||
     "https://kuttistoryphotography.com"
   ).replace(/\/+$/, "");
 
+  /* =========================================
+     CHECK ENVIRONMENT VARIABLES
+  ========================================= */
+
   if (!botToken) {
-    console.error("TELEGRAM_BOT_TOKEN is missing");
+    console.error(
+      "[Telegram] TELEGRAM_BOT_TOKEN is missing"
+    );
+
     return null;
   }
 
   if (!channelId) {
-    console.error("TELEGRAM_CHANNEL_ID is missing");
+    console.error(
+      "[Telegram] TELEGRAM_CHANNEL_ID is missing"
+    );
+
     return null;
   }
 
+  /* =========================================
+     BLOG URL
+  ========================================= */
+
   const blogUrl =
     `${siteUrl}/blog/${encodeURIComponent(blog.slug)}` +
-    "?utm_source=telegram&utm_medium=social&utm_campaign=blog";
+    "?utm_source=telegram" +
+    "&utm_medium=social" +
+    "&utm_campaign=blog";
 
-  const title = trimText(blog.title, 180);
-  const excerpt = trimText(blog.excerpt || "", 500);
+  /* =========================================
+     BLOG CONTENT
+  ========================================= */
 
-  let message = `📸 <b>${escapeHtml(title)}</b>`;
+  const title =
+    trimText(blog.title, 180);
+
+  const excerpt =
+    trimText(
+      blog.excerpt || "",
+      500
+    );
+
+  let message =
+    `📸 <b>${escapeHtml(title)}</b>`;
 
   if (blog.category) {
-    message += `\n\n📂 ${escapeHtml(
-      trimText(blog.category, 80)
-    )}`;
+    message +=
+      `\n\n📂 ${escapeHtml(
+        trimText(
+          blog.category,
+          80
+        )
+      )}`;
   }
 
   if (excerpt) {
-    message += `\n\n${escapeHtml(excerpt)}`;
+    message +=
+      `\n\n${escapeHtml(excerpt)}`;
   }
 
-  message += `\n\n👇 Read the full story`;
+  message +=
+    `\n\n👇 Read the full story`;
 
-  const response = await fetch(
-    `https://api.telegram.org/bot${botToken}/sendMessage`,
-    {
-      method: "POST",
+  /* =========================================
+     IF COVER IMAGE EXISTS
+     SEND PHOTO
+  ========================================= */
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+  if (blog.coverImage) {
 
-      body: JSON.stringify({
-        chat_id: channelId,
-        text: message,
-        parse_mode: "HTML",
+    const response =
+      await fetch(
+        `https://api.telegram.org/bot${botToken}/sendPhoto`,
+        {
+          method: "POST",
 
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "📖 Read Full Blog",
-                url: blogUrl,
-              },
-            ],
-          ],
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            chat_id: channelId,
+
+            photo: blog.coverImage,
+
+            caption: message,
+
+            parse_mode: "HTML",
+
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text:
+                      "📖 Read Full Blog",
+
+                    url: blogUrl,
+                  },
+                ],
+              ],
+            },
+          }),
+
+          cache: "no-store",
+        }
+      );
+
+    const data =
+      await response.json();
+
+    /* =======================================
+       TELEGRAM PHOTO ERROR
+    ======================================= */
+
+    if (
+      !response.ok ||
+      !data?.ok
+    ) {
+      console.error(
+        "[Telegram Photo Error]",
+        data?.description ||
+          response.statusText
+      );
+
+      throw new Error(
+        data?.description ||
+          "Telegram sendPhoto failed"
+      );
+    }
+
+    return (
+      data.result?.message_id ||
+      null
+    );
+  }
+
+  /* =========================================
+     FALLBACK:
+     NO COVER IMAGE
+     
+     SEND NORMAL TEXT MESSAGE
+  ========================================= */
+
+  const response =
+    await fetch(
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
         },
 
-        disable_web_page_preview: false,
-      }),
+        body: JSON.stringify({
+          chat_id: channelId,
 
-      cache: "no-store",
-    }
-  );
+          text: message,
 
-  const data = await response.json();
+          parse_mode: "HTML",
 
-  if (!response.ok || !data.ok) {
+          disable_web_page_preview:
+            false,
+
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text:
+                    "📖 Read Full Blog",
+
+                  url: blogUrl,
+                },
+              ],
+            ],
+          },
+        }),
+
+        cache: "no-store",
+      }
+    );
+
+  const data =
+    await response.json();
+
+  /* =========================================
+     TELEGRAM TEXT ERROR
+  ========================================= */
+
+  if (
+    !response.ok ||
+    !data?.ok
+  ) {
     console.error(
-      "Telegram API error:",
-      data.description || response.statusText
+      "[Telegram API Error]",
+      data?.description ||
+        response.statusText
     );
 
     throw new Error(
-      data.description || "Telegram API request failed"
+      data?.description ||
+        "Telegram API request failed"
     );
   }
 
-  return data.result?.message_id || null;
+  return (
+    data.result?.message_id ||
+    null
+  );
 }
