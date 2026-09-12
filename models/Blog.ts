@@ -29,6 +29,10 @@ export interface IBlog extends Document {
   focusKeywords: string[];
   schemaType: string;
   viewCount: number;
+
+  telegramPostedAt?: Date;
+  telegramMessageId?: number;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -66,7 +70,14 @@ const BlogSchema = new Schema<IBlog>(
     focusKeywords:   [String],
     schemaType:      { type: String, default: 'Article' },
     viewCount:       { type: Number, default: 0 },
-  },
+    telegramPostedAt: {
+        type: Date,
+      },
+
+      telegramMessageId: {
+        type: Number,
+      },
+    },
   { timestamps: true }
 );
 
