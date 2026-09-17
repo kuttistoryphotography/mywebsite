@@ -117,7 +117,9 @@ const [saving, setSaving] = useState(false);
 const [showPreview, setShowPreview] = useState(false);
 const [editing, setEditing] = useState<BlogItem | null>(null);
 const [formData, setFormData] = useState(emptyForm);
-const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+// Gallery drag state
+// useRef prevents the entire BlogManager from re-rendering while dragging.
+const draggedIndexRef = useRef<number | null>(null);
 
 // Pagination
 const [currentPage, setCurrentPage] = useState(1);
@@ -279,12 +281,29 @@ const PAGE_SIZE = 20;
     fromIndex: number,
     toIndex: number
   ) => {
-    if (fromIndex === toIndex) return;
+    if (
+      fromIndex === toIndex ||
+      fromIndex < 0 ||
+      toIndex < 0
+    ) {
+      return;
+    }
 
     setFormData((prev) => {
-      const images = [...prev.gallery_images];
+      const images = [...(prev.gallery_images || [])];
+
+      if (
+        fromIndex >= images.length ||
+        toIndex >= images.length
+      ) {
+        return prev;
+      }
 
       const [movedImage] = images.splice(fromIndex, 1);
+
+      if (!movedImage) {
+        return prev;
+      }
 
       images.splice(toIndex, 0, movedImage);
 
@@ -965,57 +984,75 @@ const PAGE_SIZE = 20;
                       <div
                         key={`${url}-${index}`}
                         draggable
-                        onDragStart={() => {
-                          setDraggedIndex(index);
+                        onDragStart={(e) => {
+                          draggedIndexRef.current = index;
+
+                          // Prevent the browser from generating an expensive
+                          // default drag image from the full DOM element.
+                          e.dataTransfer.effectAllowed = "move";
                         }}
                         onDragOver={(e) => {
+                          // Required for drop to work.
                           e.preventDefault();
+                          e.dataTransfer.dropEffect = "move";
                         }}
-                        onDrop={() => {
-                          if (draggedIndex !== null) {
-                            reorderGalleryImages(draggedIndex, index);
+                        onDrop={(e) => {
+                          e.preventDefault();
+
+                          const fromIndex = draggedIndexRef.current;
+
+                          if (
+                            fromIndex !== null &&
+                            fromIndex !== index
+                          ) {
+                            reorderGalleryImages(fromIndex, index);
                           }
 
-                          setDraggedIndex(null);
+                          draggedIndexRef.current = null;
                         }}
                         onDragEnd={() => {
-                          setDraggedIndex(null);
+                          draggedIndexRef.current = null;
                         }}
-                        className={`relative aspect-[4/3] rounded-xl overflow-hidden border cursor-move transition-all ${
-                          draggedIndex === index
-                            ? "opacity-40 border-orange-500"
-                            : "border-zinc-800 hover:border-orange-500"
-                        }`}
+                        className="relative aspect-[4/3] rounded-xl overflow-hidden border border-zinc-800 hover:border-orange-500 cursor-move transition-colors"
                       >
                         <img
                           src={url}
                           alt={`Gallery image ${index + 1}`}
-                          className="w-full h-full object-cover pointer-events-none"
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
+                          className="w-full h-full object-cover pointer-events-none select-none"
                         />
 
                         {/* Drag Handle */}
-                        <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white cursor-grab">
+                        <div
+                          className="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/70 flex items-center justify-center text-white cursor-grab"
+                          title="Drag to reorder"
+                        >
                           <GripVertical className="w-4 h-4" />
                         </div>
 
                         {/* Delete Button */}
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
+
                             setFormData((prev) => ({
                               ...prev,
                               gallery_images: prev.gallery_images.filter(
-                                (_: string, i: number) => i !== index
+                                (_url, i) => i !== index
                               ),
-                            }))
-                          }
-                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 text-white transition"
+                            }));
+                          }}
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/70 hover:bg-red-600 text-white transition-colors flex items-center justify-center"
+                          title="Remove image"
                         >
                           ×
                         </button>
 
                         {/* Image Number */}
-                        <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs">
+                        <div className="absolute bottom-2 left-2 bg-black/70 px-2 py-1 rounded text-xs text-white">
                           {index + 1}
                         </div>
                       </div>
@@ -1024,30 +1061,7 @@ const PAGE_SIZE = 20;
                 )}
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {formData.gallery_images.map((imageUrl, index) => (
-                  <div
-                    key={`${imageUrl}-${index}`}
-                    className="relative group aspect-square overflow-hidden rounded-lg border border-zinc-700"
-                  >
-                    <img
-                      src={imageUrl}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-
-                    {/* DELETE BUTTON */}
-                    <button
-                      type="button"
-                      onClick={() => removeGalleryImage(imageUrl)}
-                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
-                      title="Remove image"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
+          
 
               <GalleryStoryEditor
                 stories={formData.gallery_stories}
