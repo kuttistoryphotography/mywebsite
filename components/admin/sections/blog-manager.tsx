@@ -265,15 +265,6 @@ const PAGE_SIZE = 20;
     setShowModal(true);
   };
 
-  const removeGalleryImage = (imageUrl: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      gallery_images: prev.gallery_images.filter(
-        (url) => url !== imageUrl
-      ),
-    }));
-  };
-
   const parseTags = (value: string) =>
     value.split(",").map((t) => t.trim()).filter(Boolean);
 
