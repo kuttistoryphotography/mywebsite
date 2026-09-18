@@ -697,30 +697,24 @@ export default function BlogPost({
                       : layout === 1
                       ? "md:col-span-5 md:mt-24 md:aspect-[3/2]"
                       : layout === 2
-                      ? "md:col-span-12 md:aspect-[21/9]"
+                      ? "md:col-span-12 md:aspect-[16/9]"
                       : layout === 3
                       ? "md:col-span-5 md:aspect-[4/5]"
                       : "md:col-span-7 md:mt-24 md:aspect-[3/2]";
 
                   return (
-                    <React.Fragment
-                      key={`${image}-${index}`}
-                    >
+                    <React.Fragment key={`${image}-${index}`}>
                       <button
                         type="button"
-                        onClick={() =>
-                          openLightbox(index + 1)
-                        }
-                        className={`reveal-block group relative block aspect-[4/5] overflow-hidden bg-white/5 text-left ${imageClass}`}
+                        onClick={() => openLightbox(index + 1)}
+                        className={`reveal-block group relative block overflow-hidden bg-white/5 text-left ${imageClass}`}
                       >
                         <Image
                           src={toImageUrl(image, 2200)}
-                          alt={`${post.title} — image ${
-                            index + 1
-                          }`}
+                          alt={`${post.title} — image ${index + 1}`}
                           fill
                           unoptimized
-                          sizes="(max-width: 768px) 100vw, 70vw"
+                          sizes="(max-width: 768px) 100vw, 100vw"
                           className="object-cover transition duration-1000 group-hover:scale-[1.035]"
                         />
 
@@ -728,11 +722,7 @@ export default function BlogPost({
 
                         <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
                           <span className="text-[9px] uppercase tracking-[0.3em]">
-                            Frame{" "}
-                            {String(index + 1).padStart(
-                              2,
-                              "0"
-                            )}
+                            Frame {String(index + 1).padStart(2, "0")}
                           </span>
 
                           <span className="text-[9px] uppercase tracking-[0.25em] text-white/60">
