@@ -1,28 +1,46 @@
 import BlogSection from "../../components/blog/BlogSection";
 import { getAllBlogs } from "@/lib/getBlog";
 
-export const revalidate = 3600;
+/*
+ * Always fetch the latest blog data.
+ *
+ * This temporarily disables static caching so that
+ * newly published MongoDB blogs appear immediately.
+ */
+export const dynamic = "force-dynamic";
 
 export default async function BlogPage() {
-  let blogs = [];
+  /*
+   * IMPORTANT:
+   * Do not silently convert database errors into [].
+   *
+   * If MongoDB/Vercel has a problem, we want the actual
+   * error to appear in the Vercel logs instead of showing:
+   *
+   * "No blog posts published yet"
+   */
+  const blogs = await getAllBlogs(0, true);
 
-  try {
-    blogs = await getAllBlogs(0, true);
-  } catch (error) {
-    console.error("Failed to load blogs:", error);
-    blogs = [];
-  }
+  console.log(
+    `[BlogPage] Loaded ${blogs.length} published blogs`
+  );
 
   return (
     <>
-      {/* Blog Articles */}
+      {/* =====================================================
+          BLOG ARTICLES
+      ====================================================== */}
+
       <BlogSection blogs={blogs} />
 
-      {/* SEO Section */}
+      {/* =====================================================
+          SEO SECTION
+      ====================================================== */}
+
       <section className="max-w-7xl mx-auto px-6 lg:px-10 py-24 border-t border-white/10">
         <div className="grid lg:grid-cols-2 gap-20 items-start">
 
-          {/* Left */}
+          {/* LEFT */}
           <div>
             <span className="text-orange-500 uppercase tracking-[0.35em] text-sm font-medium">
               Wedding Photography Blog
@@ -49,8 +67,9 @@ export default async function BlogPage() {
             </a>
           </div>
 
-          {/* Right */}
+          {/* RIGHT */}
           <div className="space-y-7 text-gray-400 leading-9 text-lg">
+
             <p>
               Welcome to the official Kutti Story Photography blog. Here we
               share expert wedding photography tips, candid photography ideas,
@@ -73,38 +92,56 @@ export default async function BlogPage() {
               behind-the-scenes stories from weddings captured by Kutti Story
               Photography.
             </p>
+
           </div>
         </div>
 
-        {/* Statistics */}
+        {/* =====================================================
+            STATISTICS
+        ====================================================== */}
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mt-24 pt-16 border-t border-white/10">
+
           <div>
-            <h3 className="text-5xl font-bold text-white">150+</h3>
+            <h3 className="text-5xl font-bold text-white">
+              150+
+            </h3>
+
             <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
               Weddings Covered
             </p>
           </div>
 
           <div>
-            <h3 className="text-5xl font-bold text-white">7+</h3>
+            <h3 className="text-5xl font-bold text-white">
+              7+
+            </h3>
+
             <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
               Years Experience
             </p>
           </div>
 
           <div>
-            <h3 className="text-5xl font-bold text-white">1000+</h3>
+            <h3 className="text-5xl font-bold text-white">
+              1000+
+            </h3>
+
             <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
               Happy Clients
             </p>
           </div>
 
           <div>
-            <h3 className="text-5xl font-bold text-white">4.9★</h3>
+            <h3 className="text-5xl font-bold text-white">
+              4.9★
+            </h3>
+
             <p className="text-gray-500 mt-3 uppercase tracking-widest text-sm">
               Client Rating
             </p>
           </div>
+
         </div>
       </section>
     </>
