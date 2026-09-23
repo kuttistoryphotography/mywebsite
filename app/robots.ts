@@ -1,4 +1,6 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+
+const BASE_URL = "https://www.kuttistoryphotography.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://kuttistoryphotography.com/sitemap.xml",
+
+    sitemap: `${BASE_URL}/sitemap.xml`,
   };
 }

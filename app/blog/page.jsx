@@ -1,12 +1,22 @@
-"use client";
-
 import BlogSection from "../../components/blog/BlogSection";
+import { getAllBlogs } from "@/lib/getBlog";
 
-export default function BlogPage() {
+export const revalidate = 3600;
+
+export default async function BlogPage() {
+  let blogs = [];
+
+  try {
+    blogs = await getAllBlogs(0, true);
+  } catch (error) {
+    console.error("Failed to load blogs:", error);
+    blogs = [];
+  }
+
   return (
     <>
       {/* Blog Articles */}
-      <BlogSection />
+      <BlogSection blogs={blogs} />
 
       {/* SEO Section */}
       <section className="max-w-7xl mx-auto px-6 lg:px-10 py-24 border-t border-white/10">

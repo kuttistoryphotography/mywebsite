@@ -19,8 +19,7 @@ export async function generateMetadata({ params }) {
         blog.og_image ||
         blog.cover_image ||
         "https://www.kuttistoryphotography.com/images/og-default.jpg";
-  const canonicalPath =
-        blog.canonical_url?.trim() ||
+  const canonicalUrl =
         `https://www.kuttistoryphotography.com/blog/${blog.slug}`;
 
   const publishedTime = blog.createdAt;
@@ -32,6 +31,10 @@ export async function generateMetadata({ params }) {
     title,
     description,
     
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
     authors: [
       {
         name: blog.author_name,

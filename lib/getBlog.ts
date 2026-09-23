@@ -96,6 +96,7 @@ export interface BlogPost {
   schema_type: string;
   status: string;
   createdAt: Date;
+  updatedAt: Date;
   published_at: Date | null;
 }
 
@@ -129,6 +130,7 @@ function mapBlog(b: any, includeContent = true): BlogPost {
     schema_type:    b.schemaType || 'Article',
     status:         b.published ? 'published' : (b.status || 'draft'),
     createdAt:      b.createdAt,
+    updatedAt:      b.updatedAt,
     published_at:   b.publishedAt || null,
   };
 }
