@@ -1,6 +1,7 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Clipboard, Check, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export interface GalleryStory {
   label: string;
@@ -11,6 +12,53 @@ export interface GalleryStory {
 interface GalleryStoryEditorProps {
   stories: GalleryStory[];
   onChange: (stories: GalleryStory[]) => void;
+}
+
+function PasteButton({ onPaste }: { onPaste: (text: string) => void }) {
+  const [pasting, setPasting] = useState(false);
+  const [pasted, setPasted] = useState(false);
+
+  const handlePaste = async () => {
+    try {
+      setPasting(true);
+
+      const text = await navigator.clipboard.readText();
+
+      if (!text) return;
+
+      onPaste(text);
+      setPasted(true);
+
+      window.setTimeout(() => {
+        setPasted(false);
+      }, 1200);
+    } catch (error) {
+      console.error("Clipboard paste failed:", error);
+      alert("Please allow clipboard access in your browser to use Paste.");
+    } finally {
+      setPasting(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handlePaste}
+      disabled={pasting}
+      title="Paste from clipboard"
+      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-orange-500 hover:text-black hover:border-orange-500 transition-colors text-xs disabled:opacity-50"
+    >
+      {pasting ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : pasted ? (
+        <Check className="w-3.5 h-3.5" />
+      ) : (
+        <Clipboard className="w-3.5 h-3.5" />
+      )}
+
+      {pasted ? "Pasted" : "Paste"}
+    </button>
+  );
 }
 
 export default function GalleryStoryEditor({
@@ -104,15 +152,23 @@ export default function GalleryStoryEditor({
                   Label
                 </label>
 
-                <input
-                  type="text"
-                  value={story.label}
-                  onChange={(e) =>
-                    updateStory(index, "label", e.target.value)
-                  }
-                  placeholder="Example: A Moment to Remember"
-                  className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={story.label}
+                    onChange={(e) =>
+                      updateStory(index, "label", e.target.value)
+                    }
+                    placeholder="Example: A Moment to Remember"
+                    className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 pr-24 py-3 text-white outline-none focus:border-orange-500"
+                  />
+
+                  <PasteButton
+                    onPaste={(text) =>
+                      updateStory(index, "label", text)
+                    }
+                  />
+                </div>
               </div>
 
               {/* Title */}
@@ -121,15 +177,23 @@ export default function GalleryStoryEditor({
                   Story Title
                 </label>
 
-                <input
-                  type="text"
-                  value={story.title}
-                  onChange={(e) =>
-                    updateStory(index, "title", e.target.value)
-                  }
-                  placeholder="Your gallery story heading"
-                  className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={story.title}
+                    onChange={(e) =>
+                      updateStory(index, "title", e.target.value)
+                    }
+                    placeholder="Your gallery story heading"
+                    className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 pr-24 py-3 text-white outline-none focus:border-orange-500"
+                  />
+
+                  <PasteButton
+                    onPaste={(text) =>
+                      updateStory(index, "title", text)
+                    }
+                  />
+                </div>
               </div>
 
               {/* Description */}
@@ -138,15 +202,23 @@ export default function GalleryStoryEditor({
                   Story Description
                 </label>
 
-                <textarea
-                  value={story.text}
-                  onChange={(e) =>
-                    updateStory(index, "text", e.target.value)
-                  }
-                  placeholder="Write the story description..."
-                  rows={4}
-                  className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 text-white outline-none focus:border-orange-500 resize-none"
-                />
+                <div className="relative">
+                  <textarea
+                    value={story.text}
+                    onChange={(e) =>
+                      updateStory(index, "text", e.target.value)
+                    }
+                    placeholder="Write the story description..."
+                    rows={4}
+                    className="w-full rounded-lg bg-zinc-950 border border-white/10 px-4 py-3 pr-24 text-white outline-none focus:border-orange-500 resize-none"
+                  />
+
+                  <PasteButton
+                    onPaste={(text) =>
+                      updateStory(index, "text", text)
+                    }
+                  />
+                </div>
               </div>
             </div>
           </div>
