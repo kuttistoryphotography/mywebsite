@@ -90,6 +90,51 @@ async function uploadToGoogleDrive(file: File): Promise<string> {
   return data.url;
 }
 
+function PasteButton({ onPaste }: { onPaste: (text: string) => void }) {
+  const [pasting, setPasting] = useState(false);
+  const [pasted, setPasted] = useState(false);
+
+  const handlePaste = async () => {
+    try {
+      setPasting(true);
+      const text = await navigator.clipboard.readText();
+
+      if (!text) return;
+
+      onPaste(text);
+      setPasted(true);
+
+      window.setTimeout(() => {
+        setPasted(false);
+      }, 1200);
+    } catch (error) {
+      console.error("Clipboard paste failed:", error);
+      alert("Please allow clipboard access in your browser to use Paste.");
+    } finally {
+      setPasting(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handlePaste}
+      disabled={pasting}
+      title="Paste from clipboard"
+      className="absolute right-2 top-1/2 -translate-y-1/2 z-10 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-colors text-xs disabled:opacity-50"
+    >
+      {pasting ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : pasted ? (
+        <Check className="w-3.5 h-3.5" />
+      ) : (
+        <Copy className="w-3.5 h-3.5" />
+      )}
+      {pasted ? "Pasted" : "Paste"}
+    </button>
+  );
+}
+
 function ModeToggle({ mode, setMode }: { mode: MediaMode; setMode: (m: MediaMode) => void }) {
   return (
     <div className="flex gap-1 mb-2">
@@ -807,88 +852,176 @@ const PAGE_SIZE = 20;
             <div className="flex-1 overflow-y-auto p-6 space-y-5">
               {/* Title + Category */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-zinc-400 mb-2">
                     Title *
                   </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => {
-                      const title = e.target.value;
-                      const slug = title
-                        .toLowerCase()
-                        .trim()
-                        .replace(/[^\w\s-]/g, "")
-                        .replace(/\s+/g, "-")
-                        .replace(/-+/g, "-");
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => {
+                        const title = e.target.value;
+                        const slug = title
+                          .toLowerCase()
+                          .trim()
+                          .replace(/[^\w\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-");
 
-                      setFormData((p) => ({
-                        ...p,
-                        title,
-                        slug,
-                        canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
-                        meta_title: p.meta_title || title,
-                      }));
-                    }}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Enter blog title"
-                  />
+                        setFormData((p) => ({
+                          ...p,
+                          title,
+                          slug,
+                          canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                          meta_title: p.meta_title || title,
+                        }));
+                      }}
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="Enter blog title"
+                    />
+                    <PasteButton
+                      onPaste={(title) => {
+                        const slug = title
+                          .toLowerCase()
+                          .trim()
+                          .replace(/[^\w\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-");
+
+                        setFormData((p) => ({
+                          ...p,
+                          title,
+                          slug,
+                          canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                          meta_title: p.meta_title || title,
+                        }));
+                      }}
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Category</label>
-                  <input type="text" value={formData.category}
-                    onChange={(e) => setFormData((p) => ({ ...p, category: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Wedding / Product / Corporate" />
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Category
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.category}
+                      onChange={(e) =>
+                        setFormData((p) => ({
+                          ...p,
+                          category: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="Wedding / Product / Corporate"
+                    />
+                    <PasteButton
+                      onPaste={(text) =>
+                        setFormData((p) => ({
+                          ...p,
+                          category: text,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Excerpt */}
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Excerpt</label>
-                <textarea
-                  value={formData.excerpt}
-                  onChange={(e) => {
-                    const excerpt = e.target.value;
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Excerpt
+                </label>
+                <div className="relative">
+                  <textarea
+                    value={formData.excerpt}
+                    onChange={(e) => {
+                      const excerpt = e.target.value;
 
-                    setFormData((p) => ({
-                      ...p,
-                      excerpt,
-
-                      // Auto-fill Meta Description only if it's empty
-                      meta_description: p.meta_description || excerpt,
-                    }));
-                  }}
-                />
+                      setFormData((p) => ({
+                        ...p,
+                        excerpt,
+                        meta_description: p.meta_description || excerpt,
+                      }));
+                    }}
+                    rows={3}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 pr-24 text-white focus:outline-none focus:border-amber-500 resize-none"
+                    placeholder="Short summary of the blog post"
+                  />
+                  <PasteButton
+                    onPaste={(excerpt) =>
+                      setFormData((p) => ({
+                        ...p,
+                        excerpt,
+                        meta_description: p.meta_description || excerpt,
+                      }))
+                    }
+                  />
+                </div>
               </div>
 
               {/* ── Cover Image ── */}
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Cover Image</label>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Cover Image
+                </label>
                 <ModeToggle mode={coverMode} setMode={setCoverMode} />
 
                 {coverMode === "url" ? (
-                  <input type="text" value={formData.cover_image}
-                    onChange={(e) => {
-                      const url = e.target.value;
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.cover_image}
+                      onChange={(e) => {
+                        const url = e.target.value;
 
-                      setFormData((p) => ({
-                        ...p,
-                        cover_image: url,
-                        og_image: p.og_image || url,
-                      }));
-                    }}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="https://example.com/image.jpg or paste any URL" />
+                        setFormData((p) => ({
+                          ...p,
+                          cover_image: url,
+                          og_image: p.og_image || url,
+                        }));
+                      }}
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="https://example.com/image.jpg or paste any URL"
+                    />
+                    <PasteButton
+                      onPaste={(url) =>
+                        setFormData((p) => ({
+                          ...p,
+                          cover_image: url,
+                          og_image: p.og_image || url,
+                        }))
+                      }
+                    />
+                  </div>
                 ) : (
                   <div className="flex items-center gap-3">
-                    <input ref={coverFileRef} type="file" accept="image/*" className="hidden" onChange={handleCoverFileChange} />
-                    <button type="button" onClick={() => coverFileRef.current?.click()} disabled={uploadingCover}
-                      className="flex items-center gap-2 px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-zinc-700 text-white text-sm disabled:opacity-50 transition-colors">
-                      {uploadingCover ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                      {uploadingCover ? "Uploading to Drive..." : "Choose Image File"}
+                    <input
+                      ref={coverFileRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleCoverFileChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => coverFileRef.current?.click()}
+                      disabled={uploadingCover}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-zinc-700 text-white text-sm disabled:opacity-50 transition-colors"
+                    >
+                      {uploadingCover ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4" />
+                      )}
+                      {uploadingCover
+                        ? "Uploading to Drive..."
+                        : "Choose Image File"}
                     </button>
+
                     {formData.cover_image && !uploadingCover && (
                       <span className="flex items-center gap-1 text-xs text-emerald-400">
                         <Check className="w-3 h-3" /> Uploaded
@@ -899,11 +1032,21 @@ const PAGE_SIZE = 20;
 
                 {formData.cover_image && (
                   <div className="mt-2 relative">
-                    <img src={formData.cover_image} alt="Cover preview"
+                    <img
+                      src={formData.cover_image}
+                      alt="Cover preview"
                       className="h-28 w-auto object-cover rounded-xl border border-zinc-700"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                    <button type="button" onClick={() => setFormData((p) => ({ ...p, cover_image: "" }))}
-                      className="absolute top-1 right-1 bg-black/70 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors text-xs">
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((p) => ({ ...p, cover_image: "" }))
+                      }
+                      className="absolute top-1 right-1 bg-black/70 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 transition-colors text-xs"
+                    >
                       ×
                     </button>
                   </div>
@@ -914,24 +1057,34 @@ const PAGE_SIZE = 20;
                     Image Alt Text
                   </label>
 
-                  <input
-                    type="text"
-                    value={formData.image_alt}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        image_alt: e.target.value,
-                      }))
-                    }
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Describe the cover image for SEO and accessibility"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.image_alt}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          image_alt: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="Describe the cover image for SEO and accessibility"
+                    />
+                    <PasteButton
+                      onPaste={(text) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          image_alt: text,
+                        }))
+                      }
+                    />
+                  </div>
 
                   <p className="text-xs text-zinc-500 mt-2">
-                    Example: Romantic outdoor couple photoshoot in Madurai captured by Kutti Story Photography during golden hour.
+                    Example: Romantic outdoor couple photoshoot in Madurai
+                    captured by Kutti Story Photography during golden hour.
                   </p>
                 </div>
-
               </div>
 
               {/* BLOG GALLERY */}
@@ -965,7 +1118,10 @@ const PAGE_SIZE = 20;
                     multiple
                     onChange={handleGalleryUpload}
                     className="hidden"
-                    disabled={uploadingMedia || (formData.gallery_images?.length || 0) >= 10}
+                    disabled={
+                      uploadingMedia ||
+                      (formData.gallery_images?.length || 0) >= 10
+                    }
                   />
                 </label>
 
@@ -977,13 +1133,9 @@ const PAGE_SIZE = 20;
                         draggable
                         onDragStart={(e) => {
                           draggedIndexRef.current = index;
-
-                          // Prevent the browser from generating an expensive
-                          // default drag image from the full DOM element.
                           e.dataTransfer.effectAllowed = "move";
                         }}
                         onDragOver={(e) => {
-                          // Required for drop to work.
                           e.preventDefault();
                           e.dataTransfer.dropEffect = "move";
                         }}
@@ -1052,8 +1204,6 @@ const PAGE_SIZE = 20;
                 )}
               </div>
 
-          
-
               <GalleryStoryEditor
                 stories={formData.gallery_stories}
                 onChange={(stories) =>
@@ -1066,48 +1216,153 @@ const PAGE_SIZE = 20;
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Tags (comma separated)</label>
-                <input type="text" value={formData.tagsText}
-                  onChange={(e) => setFormData((p) => ({ ...p, tagsText: e.target.value }))}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                  placeholder="wedding, photography, tips" />
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Tags (comma separated)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.tagsText}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        tagsText: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    placeholder="wedding, photography, tips"
+                  />
+                  <PasteButton
+                    onPaste={(text) =>
+                      setFormData((p) => ({
+                        ...p,
+                        tagsText: text,
+                      }))
+                    }
+                  />
+                </div>
               </div>
 
               {/* SEO */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Meta Title</label>
-                  <input type="text" value={formData.meta_title}
-                    onChange={(e) => setFormData((p) => ({ ...p, meta_title: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="SEO meta title" />
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Meta Title
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.meta_title}
+                      onChange={(e) =>
+                        setFormData((p) => ({
+                          ...p,
+                          meta_title: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="SEO meta title"
+                    />
+                    <PasteButton
+                      onPaste={(text) =>
+                        setFormData((p) => ({
+                          ...p,
+                          meta_title: text,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Schema Type</label>
-                  <input type="text" value={formData.schema_type}
-                    onChange={(e) => setFormData((p) => ({ ...p, schema_type: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Article" />
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Schema Type
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.schema_type}
+                      onChange={(e) =>
+                        setFormData((p) => ({
+                          ...p,
+                          schema_type: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="Article"
+                    />
+                    <PasteButton
+                      onPaste={(text) =>
+                        setFormData((p) => ({
+                          ...p,
+                          schema_type: text,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Meta Description</label>
-                <textarea value={formData.meta_description}
-                  onChange={(e) => setFormData((p) => ({ ...p, meta_description: e.target.value }))}
-                  rows={2}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 resize-none"
-                  placeholder="SEO meta description" />
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Meta Description
+                </label>
+                <div className="relative">
+                  <textarea
+                    value={formData.meta_description}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        meta_description: e.target.value,
+                      }))
+                    }
+                    rows={3}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 pr-24 text-white focus:outline-none focus:border-amber-500 resize-none"
+                    placeholder="SEO meta description"
+                  />
+                  <PasteButton
+                    onPaste={(text) =>
+                      setFormData((p) => ({
+                        ...p,
+                        meta_description: text,
+                      }))
+                    }
+                  />
+                </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">OG Image URL</label>
-                  <input type="text" value={formData.og_image}
-                    onChange={(e) => setFormData((p) => ({ ...p, og_image: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                    placeholder="Leave blank to use cover image" />
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    OG Image URL
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.og_image}
+                      onChange={(e) =>
+                        setFormData((p) => ({
+                          ...p,
+                          og_image: e.target.value,
+                        }))
+                      }
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      placeholder="Leave blank to use cover image"
+                    />
+                    <PasteButton
+                      onPaste={(text) =>
+                        setFormData((p) => ({
+                          ...p,
+                          og_image: text,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2">Canonical URL</label>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2">
+                    Canonical URL
+                  </label>
                   <input
                     type="text"
                     value={formData.canonical_url}
@@ -1117,48 +1372,107 @@ const PAGE_SIZE = 20;
                   />
                 </div>
               </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-400 mb-2">
-                Slug
-              </label>
 
-              <input
-                type="text"
-                value={formData.slug}
-                onChange={(e) => {
-                  const slug = e.target.value
-                    .toLowerCase()
-                    .trim()
-                    .replace(/[^\w\s-]/g, "")
-                    .replace(/\s+/g, "-")
-                    .replace(/-+/g, "-");
-
-                  setFormData((p) => ({
-                    ...p,
-                    slug,
-                    canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
-                  }));
-                }}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                placeholder="best-wedding-photography-packages-madurai-2026"
-              />
-            </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Focus Keywords (comma separated)</label>
-                <input type="text" value={formData.focus_keywords_text}
-                  onChange={(e) => setFormData((p) => ({ ...p, focus_keywords_text: e.target.value }))}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                  placeholder="wedding photography chennai, cinematic wedding" />
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Slug
+                </label>
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => {
+                      const slug = e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, "")
+                        .replace(/\s+/g, "-")
+                        .replace(/-+/g, "-");
+
+                      setFormData((p) => ({
+                        ...p,
+                        slug,
+                        canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                      }));
+                    }}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    placeholder="best-wedding-photography-packages-madurai-2026"
+                  />
+                  <PasteButton
+                    onPaste={(value) => {
+                      const slug = value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^\w\s-]/g, "")
+                        .replace(/\s+/g, "-")
+                        .replace(/-+/g, "-");
+
+                      setFormData((p) => ({
+                        ...p,
+                        slug,
+                        canonical_url: `https://www.kuttistoryphotography.com/blog/${slug}`,
+                      }));
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Focus Keywords (comma separated)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.focus_keywords_text}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        focus_keywords_text: e.target.value,
+                      }))
+                    }
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 pr-24 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    placeholder="wedding photography chennai, cinematic wedding"
+                  />
+                  <PasteButton
+                    onPaste={(text) =>
+                      setFormData((p) => ({
+                        ...p,
+                        focus_keywords_text: text,
+                      }))
+                    }
+                  />
+                </div>
               </div>
 
               {/* Content */}
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Content (HTML supported) *</label>
-                <textarea value={formData.content}
-                  onChange={(e) => setFormData((p) => ({ ...p, content: e.target.value }))}
-                  rows={14}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500 font-mono text-sm"
-                  placeholder="<p>Your blog content here...</p>" />
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Content (HTML supported) *
+                </label>
+                <div className="relative">
+                  <textarea
+                    value={formData.content}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        content: e.target.value,
+                      }))
+                    }
+                    rows={14}
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 pr-24 text-white focus:outline-none focus:border-amber-500 font-mono text-sm resize-none"
+                    placeholder="<p>Your blog content here...</p>"
+                  />
+                  <PasteButton
+                    onPaste={(text) =>
+                      setFormData((p) => ({
+                        ...p,
+                        content: text,
+                      }))
+                    }
+                  />
+                </div>
               </div>
             </div>
 
