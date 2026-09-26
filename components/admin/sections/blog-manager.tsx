@@ -566,10 +566,13 @@ const PAGE_SIZE = 20;
 
     if (!files.length) return;
 
-    const remainingSlots = 10 - (formData.gallery_images?.length || 0);
+    const MAX_GALLERY_IMAGES = 15;
+
+    const remainingSlots =
+      MAX_GALLERY_IMAGES - (formData.gallery_images?.length || 0);
 
     if (remainingSlots <= 0) {
-      alert("Maximum 10 gallery images allowed.");
+      alert(`Maximum ${MAX_GALLERY_IMAGES} gallery images allowed.`);
       return;
     }
 
@@ -595,7 +598,7 @@ const PAGE_SIZE = 20;
         gallery_images: [
           ...(prev.gallery_images || []),
           ...uploadedImages,
-        ].slice(0, 10),
+        ].slice(0, MAX_GALLERY_IMAGES),
       }));
     } catch (error: any) {
       console.error("Gallery upload failed:", error);
@@ -1095,7 +1098,7 @@ const PAGE_SIZE = 20;
                   </h3>
 
                   <p className="text-sm text-zinc-500 mt-1">
-                    Upload up to 10 images for this blog story.
+                    Upload up to 15 images for this blog story.
                   </p>
                 </div>
 
@@ -1105,7 +1108,7 @@ const PAGE_SIZE = 20;
                     <p className="text-sm font-medium">
                       {uploadingMedia
                         ? "Uploading..."
-                        : `Upload Gallery Images (${formData.gallery_images?.length || 0}/10)`}
+                        : `Upload Gallery Images (${formData.gallery_images?.length || 0}/15)`}
                     </p>
                     <p className="text-xs text-zinc-500 mt-1">
                       JPG, PNG, WEBP
@@ -1120,7 +1123,7 @@ const PAGE_SIZE = 20;
                     className="hidden"
                     disabled={
                       uploadingMedia ||
-                      (formData.gallery_images?.length || 0) >= 10
+                      (formData.gallery_images?.length || 0) >= 15
                     }
                   />
                 </label>
