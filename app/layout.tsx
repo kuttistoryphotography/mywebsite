@@ -48,6 +48,10 @@ keywords: [
   
   metadataBase: new URL("https://www.kuttistoryphotography.com"),
 
+  alternates: {
+    canonical: "/",
+  },
+
 icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
