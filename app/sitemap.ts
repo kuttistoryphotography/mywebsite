@@ -37,6 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/faq`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/contact-us`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -77,11 +83,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch (error) {
     console.error("Sitemap generation failed:", error);
 
-    /*
-     * Keep the sitemap valid even if MongoDB is temporarily unavailable.
-     * Static pages remain available, but the error is logged so it can
-     * be detected during deployment/runtime monitoring.
-     */
     return staticPages;
   }
 }
