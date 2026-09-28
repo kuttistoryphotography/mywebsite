@@ -1,22 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
-import Blog from '@/models/Blog';
-import { getCurrentUser } from '@/lib/auth';
-import { publishBlogToTelegram } from '@/lib/telegram';
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/db";
+import Blog from "@/models/Blog";
+import { getCurrentUser } from "@/lib/auth";
+import { publishBlogToTelegram } from "@/lib/telegram";
+import { revalidatePath } from "next/cache";
 
 function slugify(value: string): string {
   return value
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 async function buildUniqueSlug(
   baseTitle: string,
   excludeId?: string
 ): Promise<string> {
-  const base = slugify(baseTitle) || `blog-${Date.now()}`;
+  const base =
+    slugify(baseTitle) || `blog-${Date.now()}`;
 
   let candidate = base;
   let suffix = 1;
@@ -30,7 +32,8 @@ async function buildUniqueSlug(
       q._id = { $ne: excludeId };
     }
 
-    const exists = await Blog.findOne(q).select('_id');
+    const exists =
+      await Blog.findOne(q).select("_id");
 
     if (!exists) {
       return candidate;
@@ -41,10 +44,10 @@ async function buildUniqueSlug(
   }
 }
 
-/**
- * Normalize a raw Mongoose blog document
- * into a consistent API response shape.
- */
+/* =========================================================
+   SERIALIZE BLOG
+========================================================= */
+
 function serializeBlog(
   b: any,
   includeContent = true
@@ -56,57 +59,97 @@ function serializeBlog(
 
     slug: b.slug,
 
-    excerpt: b.excerpt || '',
+    excerpt: b.excerpt || "",
 
     content: includeContent
-      ? (b.content || '')
-      : '',
+      ? b.content || ""
+      : "",
 
-    cover_image: b.coverImage || '',
+    cover_image: b.coverImage || "",
 
-    gallery_images: b.galleryImages || [],
+    gallery_images:
+      Array.isArray(b.galleryImages)
+        ? b.galleryImages
+        : [],
 
-    gallery_stories: Array.isArray(b.galleryStories)
-      ? b.galleryStories
-      : [],
+    gallery_stories:
+      Array.isArray(b.galleryStories)
+        ? b.galleryStories
+        : [],
 
-    image_alt: b.imageAlt || '',
+    image_alt: b.imageAlt || "",
 
-    author_name: '',
+    author_name:
+      "Kutti Story Photography",
 
-    category: b.category || 'General',
+    category:
+      b.category || "General",
 
-    tags: b.tags || [],
+    tags:
+      Array.isArray(b.tags)
+        ? b.tags
+        : [],
 
-    status: b.published
-      ? 'published'
-      : (b.status || 'draft'),
+    /*
+     * Treat either:
+     *
+     * published: true
+     *
+     * OR
+     *
+     * status: "published"
+     *
+     * as published.
+     */
+    published:
+      b.published === true ||
+      b.status === "published",
 
-    is_featured: !!b.isFeatured,
+    status:
+      b.published === true ||
+      b.status === "published"
+        ? "published"
+        : b.status || "draft",
 
-    view_count: b.viewCount || 0,
+    is_featured:
+      !!b.isFeatured,
 
-    meta_title: b.metaTitle || '',
+    view_count:
+      b.viewCount || 0,
 
-    meta_description: b.metaDescription || '',
+    meta_title:
+      b.metaTitle || "",
 
-    og_image: b.ogImage || '',
+    meta_description:
+      b.metaDescription || "",
 
-    canonical_url: b.canonicalUrl || '',
+    og_image:
+      b.ogImage || "",
 
-    focus_keywords: b.focusKeywords || [],
+    canonical_url:
+      b.canonicalUrl || "",
 
-    schema_type: b.schemaType || 'Article',
+    focus_keywords:
+      Array.isArray(b.focusKeywords)
+        ? b.focusKeywords
+        : [],
 
-    created_at: b.createdAt,
+    schema_type:
+      b.schemaType || "Article",
 
-    published_at: b.publishedAt || null,
+    created_at:
+      b.createdAt,
+
+    updated_at:
+      b.updatedAt || b.createdAt,
+
+    published_at:
+      b.publishedAt || null,
 
     telegram_posted_at:
       b.telegramPostedAt || null,
   };
 }
-
 
 /* =========================================================
    GET BLOGS
@@ -122,20 +165,20 @@ export async function GET(
       new URL(request.url);
 
     const adminView =
-      searchParams.get('admin') === 'true';
+      searchParams.get("admin") === "true";
 
     const statusFilter =
-      searchParams.get('status');
+      searchParams.get("status");
 
     /* -------------------------------
        Pagination
     -------------------------------- */
 
     const rawLimit =
-      searchParams.get('limit');
+      searchParams.get("limit");
 
     const rawPage =
-      searchParams.get('page');
+      searchParams.get("page");
 
     const limit = rawLimit
       ? Math.max(
@@ -146,7 +189,7 @@ export async function GET(
 
     const page = Math.max(
       1,
-      parseInt(rawPage || '1', 10) || 1
+      parseInt(rawPage || "1", 10) || 1
     );
 
     /* -------------------------------
@@ -159,18 +202,40 @@ export async function GET(
     > = {};
 
     /*
-      Public API:
-      Only published blogs.
-
-      Admin API:
-      All blogs.
-    */
+     * Public API:
+     * Only published blogs.
+     *
+     * A blog is considered published if:
+     *
+     * published === true
+     *
+     * OR
+     *
+     * status === "published"
+     *
+     * Admin API:
+     * All blogs.
+     */
 
     if (!adminView) {
-      if (statusFilter === 'published') {
-        filter.published = true;
+      if (statusFilter === "published") {
+        filter.$or = [
+          {
+            published: true,
+          },
+          {
+            status: "published",
+          },
+        ];
       } else if (!statusFilter) {
-        filter.published = true;
+        filter.$or = [
+          {
+            published: true,
+          },
+          {
+            status: "published",
+          },
+        ];
       }
     }
 
@@ -200,10 +265,9 @@ export async function GET(
        Fetch
     -------------------------------- */
 
-    let query = Blog.find(filter)
-      .sort({
-        createdAt: -1,
-      });
+    let query = Blog.find(filter).sort({
+      createdAt: -1,
+    });
 
     if (limit) {
       const skip =
@@ -214,7 +278,8 @@ export async function GET(
         .limit(limit);
     }
 
-    const blogs = await query;
+    const blogs =
+      await query.lean();
 
     /* -------------------------------
        Response
@@ -231,16 +296,15 @@ export async function GET(
 
       totalPages,
     });
-
   } catch (error) {
     console.error(
-      '[Blog GET]',
+      "[Blog GET]",
       error
     );
 
     return NextResponse.json(
       {
-        error: 'Failed to fetch blogs',
+        error: "Failed to fetch blogs",
       },
       {
         status: 500,
@@ -248,7 +312,6 @@ export async function GET(
     );
   }
 }
-
 
 /* =========================================================
    CREATE BLOG
@@ -267,12 +330,12 @@ export async function POST(
 
     if (
       !session ||
-      session.role !== 'admin'
+      session.role !== "admin"
     ) {
       return NextResponse.json(
         {
           error:
-            'Admin access required',
+            "Admin access required",
         },
         {
           status: 401,
@@ -313,8 +376,7 @@ export async function POST(
     if (!title?.trim()) {
       return NextResponse.json(
         {
-          error:
-            'Title is required',
+          error: "Title is required",
         },
         {
           status: 400,
@@ -325,8 +387,7 @@ export async function POST(
     if (!content?.trim()) {
       return NextResponse.json(
         {
-          error:
-            'Content is required',
+          error: "Content is required",
         },
         {
           status: 400,
@@ -339,7 +400,7 @@ export async function POST(
     -------------------------------- */
 
     const isPublished =
-      status === 'published';
+      status === "published";
 
     /* -------------------------------
        Unique slug
@@ -347,12 +408,8 @@ export async function POST(
 
     const finalSlug =
       slug?.trim()
-        ? await buildUniqueSlug(
-            slug
-          )
-        : await buildUniqueSlug(
-            title
-          );
+        ? await buildUniqueSlug(slug)
+        : await buildUniqueSlug(title);
 
     /* -------------------------------
        Create blog
@@ -366,30 +423,26 @@ export async function POST(
 
         content,
 
-        excerpt: excerpt || '',
+        excerpt: excerpt || "",
 
         coverImage:
-          cover_image || '',
+          cover_image || "",
 
         galleryImages:
-          Array.isArray(
-            gallery_images
-          )
+          Array.isArray(gallery_images)
             ? gallery_images
             : [],
 
         galleryStories:
-          Array.isArray(
-            gallery_stories
-          )
+          Array.isArray(gallery_stories)
             ? gallery_stories
             : [],
 
         imageAlt:
-          image_alt || '',
+          image_alt || "",
 
         category:
-          category || 'General',
+          category || "General",
 
         tags:
           Array.isArray(tags)
@@ -400,7 +453,7 @@ export async function POST(
           isPublished,
 
         status:
-          status || 'draft',
+          status || "draft",
 
         isFeatured:
           !!is_featured,
@@ -414,31 +467,29 @@ export async function POST(
           session.userId,
 
         metaTitle:
-          meta_title || '',
+          meta_title || "",
 
         metaDescription:
-          meta_description || '',
+          meta_description || "",
 
         ogImage:
-          og_image || '',
+          og_image || "",
 
         canonicalUrl:
-          canonical_url || '',
+          canonical_url || "",
 
         focusKeywords:
-          Array.isArray(
-            focus_keywords
-          )
+          Array.isArray(focus_keywords)
             ? focus_keywords
             : [],
 
         schemaType:
-          schema_type || 'Article',
+          schema_type || "Article",
       });
 
     /* =====================================================
        TELEGRAM AUTO PUBLISH
-       
+
        Only send when the NEW blog is published.
     ===================================================== */
 
@@ -458,13 +509,12 @@ export async function POST(
 
             category:
               blog.category,
-            
-            coverImage: blog.coverImage,
+
+            coverImage:
+              blog.coverImage,
           });
 
-        if (
-          telegramMessageId
-        ) {
+        if (telegramMessageId) {
           blog.telegramPostedAt =
             new Date();
 
@@ -473,26 +523,28 @@ export async function POST(
 
           await blog.save();
         }
-
       } catch (telegramError) {
         /*
-          IMPORTANT:
-
-          If Telegram fails, the blog
-          should still be successfully
-          published on the website.
-        */
+         * Telegram failure must NOT
+         * break blog publishing.
+         */
 
         console.error(
-          '[Telegram Blog Publish]',
+          "[Telegram Blog Publish]",
           telegramError
         );
       }
     }
 
     /* -------------------------------
-       Response
+       CACHE REVALIDATION
     -------------------------------- */
+
+    revalidatePath("/blog");
+
+    revalidatePath(
+      `/blog/${blog.slug}`
+    );
 
     return NextResponse.json(
       {
@@ -506,17 +558,16 @@ export async function POST(
         status: 201,
       }
     );
-
   } catch (error) {
     console.error(
-      '[Blog POST]',
+      "[Blog POST]",
       error
     );
 
     return NextResponse.json(
       {
         error:
-          'Failed to create blog',
+          "Failed to create blog",
       },
       {
         status: 500,
@@ -524,7 +575,6 @@ export async function POST(
     );
   }
 }
-
 
 /* =========================================================
    UPDATE BLOG
@@ -543,12 +593,12 @@ export async function PUT(
 
     if (
       !session ||
-      session.role !== 'admin'
+      session.role !== "admin"
     ) {
       return NextResponse.json(
         {
           error:
-            'Admin access required',
+            "Admin access required",
         },
         {
           status: 401,
@@ -562,7 +612,7 @@ export async function PUT(
       await request.json();
 
     console.log(
-      '========= PUT BLOG ========='
+      "========= PUT BLOG ========="
     );
 
     console.log(body);
@@ -592,7 +642,7 @@ export async function PUT(
     if (!id) {
       return NextResponse.json(
         {
-          error: 'ID required',
+          error: "ID required",
         },
         {
           status: 400,
@@ -602,9 +652,6 @@ export async function PUT(
 
     /* -------------------------------
        Get existing blog FIRST
-       
-       We need this to know whether
-       the blog was draft before.
     -------------------------------- */
 
     const existing =
@@ -613,8 +660,7 @@ export async function PUT(
     if (!existing) {
       return NextResponse.json(
         {
-          error:
-            'Blog not found',
+          error: "Blog not found",
         },
         {
           status: 404,
@@ -622,25 +668,16 @@ export async function PUT(
       );
     }
 
-    /*
-      This is important.
-
-      If existing blog = draft
-      and new status = published
-
-      => send Telegram.
-
-      If existing blog was already published
-      and user edits it
-
-      => DON'T send another Telegram post.
-    */
+    /* -------------------------------
+       Publishing state
+    -------------------------------- */
 
     const wasAlreadyPublished =
-      existing.published === true;
+      existing.published === true ||
+      existing.status === "published";
 
     const willBePublished =
-      status === 'published';
+      status === "published";
 
     const isNewlyPublished =
       willBePublished &&
@@ -684,9 +721,7 @@ export async function PUT(
       gallery_images !== undefined
     ) {
       update.galleryImages =
-        Array.isArray(
-          gallery_images
-        )
+        Array.isArray(gallery_images)
           ? gallery_images
           : [];
     }
@@ -695,9 +730,7 @@ export async function PUT(
       gallery_stories !== undefined
     ) {
       update.galleryStories =
-        Array.isArray(
-          gallery_stories
-        )
+        Array.isArray(gallery_stories)
           ? gallery_stories
           : [];
     }
@@ -718,7 +751,9 @@ export async function PUT(
 
     if (tags !== undefined) {
       update.tags =
-        tags;
+        Array.isArray(tags)
+          ? tags
+          : [];
     }
 
     /* -------------------------------
@@ -730,10 +765,10 @@ export async function PUT(
         status;
 
       update.published =
-        status === 'published';
+        status === "published";
 
       if (
-        status === 'published'
+        status === "published"
       ) {
         update.publishedAt =
           existing.publishedAt ||
@@ -780,7 +815,11 @@ export async function PUT(
       focus_keywords !== undefined
     ) {
       update.focusKeywords =
-        focus_keywords;
+        Array.isArray(
+          focus_keywords
+        )
+          ? focus_keywords
+          : [];
     }
 
     if (
@@ -791,7 +830,7 @@ export async function PUT(
     }
 
     console.log(
-      'UPDATE OBJECT:'
+      "UPDATE OBJECT:"
     );
 
     console.log(update);
@@ -810,11 +849,17 @@ export async function PUT(
         }
       );
 
+    /* -------------------------------
+       IMPORTANT:
+       Check updated BEFORE using
+       updated.slug
+    -------------------------------- */
+
     if (!updated) {
       return NextResponse.json(
         {
           error:
-            'Failed to update blog',
+            "Failed to update blog",
         },
         {
           status: 500,
@@ -822,20 +867,23 @@ export async function PUT(
       );
     }
 
-    console.log(
-      'UPDATED imageAlt:',
-      updated.imageAlt
+    /* -------------------------------
+       CACHE REVALIDATION
+    -------------------------------- */
+
+    revalidatePath("/blog");
+
+    revalidatePath(
+      `/blog/${updated.slug}`
     );
 
     /* =====================================================
        TELEGRAM AUTO PUBLISH
-       
-       Only when:
-       
+
+       Only:
        DRAFT → PUBLISHED
-       
+
        NOT:
-       
        PUBLISHED → EDITED
     ===================================================== */
 
@@ -858,12 +906,11 @@ export async function PUT(
             category:
               updated.category,
 
-            coverImage: updated.coverImage,
+            coverImage:
+              updated.coverImage,
           });
 
-        if (
-          telegramMessageId
-        ) {
+        if (telegramMessageId) {
           await Blog.findByIdAndUpdate(
             id,
             {
@@ -875,19 +922,23 @@ export async function PUT(
             }
           );
         }
-
       } catch (telegramError) {
         /*
-          Telegram failure must NOT
-          break blog publishing.
-        */
+         * Telegram failure must NOT
+         * break blog publishing.
+         */
 
         console.error(
-          '[Telegram Blog Publish]',
+          "[Telegram Blog Publish]",
           telegramError
         );
       }
     }
+
+    console.log(
+      "UPDATED imageAlt:",
+      updated.imageAlt
+    );
 
     /* -------------------------------
        Response
@@ -896,17 +947,16 @@ export async function PUT(
     return NextResponse.json({
       success: true,
     });
-
   } catch (error) {
     console.error(
-      '[BLOG PUT ERROR]',
+      "[BLOG PUT ERROR]",
       error
     );
 
     return NextResponse.json(
       {
         error:
-          'Failed to update blog',
+          "Failed to update blog",
       },
       {
         status: 500,
@@ -914,7 +964,6 @@ export async function PUT(
     );
   }
 }
-
 
 /* =========================================================
    DELETE BLOG
@@ -929,12 +978,12 @@ export async function DELETE(
 
     if (
       !session ||
-      session.role !== 'admin'
+      session.role !== "admin"
     ) {
       return NextResponse.json(
         {
           error:
-            'Admin access required',
+            "Admin access required",
         },
         {
           status: 401,
@@ -951,13 +1000,12 @@ export async function DELETE(
     );
 
     const id =
-      searchParams.get('id');
+      searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
         {
-          error:
-            'ID required',
+          error: "ID required",
         },
         {
           status: 400,
@@ -965,24 +1013,54 @@ export async function DELETE(
       );
     }
 
-    await Blog.findByIdAndDelete(
-      id
-    );
+    /* -------------------------------
+       Delete blog
+    -------------------------------- */
+
+    const deleted =
+      await Blog.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return NextResponse.json(
+        {
+          error:
+            "Blog not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    /* -------------------------------
+       CACHE REVALIDATION
+    -------------------------------- */
+
+    revalidatePath("/blog");
+
+    if (deleted.slug) {
+      revalidatePath(
+        `/blog/${deleted.slug}`
+      );
+    }
+
+    /* -------------------------------
+       Response
+    -------------------------------- */
 
     return NextResponse.json({
       success: true,
     });
-
   } catch (error) {
     console.error(
-      '[Blog DELETE]',
+      "[Blog DELETE]",
       error
     );
 
     return NextResponse.json(
       {
         error:
-          'Failed to delete blog',
+          "Failed to delete blog",
       },
       {
         status: 500,

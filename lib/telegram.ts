@@ -36,7 +36,7 @@ export async function publishBlogToTelegram(
 
   const siteUrl = (
     process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://kuttistoryphotography.com"
+    "https://WWW.kuttistoryphotography.com"
   ).replace(/\/+$/, "");
 
   /* =========================================
