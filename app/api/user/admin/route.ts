@@ -22,18 +22,22 @@ export async function GET() {
       .sort({ createdAt: -1 });
 
     const mapped = users.map((u) => ({
-        id: String(u._id),
-        name: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
-        email: u.email,
-        phone: u.phone || '',
-        location: `${u.city || ''}${u.state ? `, ${u.state}` : ''}`,
-        totalBookings: 0,
-        totalSpent: 0,
-        lastBooking: null,
-        status: u.isActive ? 'active' : 'inactive',
-        joinedDate: u.createdAt,
-        role: u.role,
-      }));
+      id: String(u._id),
+      name: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+      email: u.email,
+      phone: u.phone || '',
+      location: `${u.city || ''}${u.state ? `, ${u.state}` : ''}`,
+      totalBookings: 0,
+      totalSpent: 0,
+      lastBooking: null,
+      status: u.isActive ? 'active' : 'inactive',
+      joinedDate: u.createdAt,
+      role: u.role,
+
+      // Google Drive folder for client's memories
+      memoriesDriveUrl: u.memoriesDriveUrl || '',
+    }));
+
     return NextResponse.json({
       clients: mapped,
       users: mapped,
@@ -148,6 +152,7 @@ export async function PUT(request: NextRequest) {
       state,
       isActive,
       role,
+      memoriesDriveUrl,
     } = body;
     console.log('body------', body);
     
@@ -168,6 +173,10 @@ export async function PUT(request: NextRequest) {
     if (state !== undefined) update.state = state;
     if (isActive !== undefined) update.isActive = isActive;
     if (role !== undefined) update.role = role;
+
+    if (memoriesDriveUrl !== undefined) {
+      update.memoriesDriveUrl = memoriesDriveUrl;
+    }
 
     const updatedUser = await User.findOneAndUpdate(
       { _id: id },

@@ -29,6 +29,7 @@ interface Client {
   lastBooking: string | null;
   status: "active" | "inactive";
   joinedDate: string;
+  memoriesDriveUrl?: string;
 }
 
 export default function ClientsSection() {
@@ -54,6 +55,7 @@ export default function ClientsSection() {
     phone: "",
     city: "",
     state: "",
+    memoriesDriveUrl: "",
   });
 
   // Fetch clients from API
@@ -168,6 +170,7 @@ export default function ClientsSection() {
           phone: "",
           city: "",
           state: "",
+          memoriesDriveUrl: "",
         });
       } else {
         alert(data.error || 'Failed to create client');
@@ -212,6 +215,7 @@ export default function ClientsSection() {
       phone: client.phone || '',
       city: locationParts[0] || '',
       state: locationParts[1] || '',
+      memoriesDriveUrl: client.memoriesDriveUrl || '',
     });
   
     setShowEditModal(true);
@@ -248,12 +252,13 @@ export default function ClientsSection() {
         setShowEditModal(false);
         setEditingClient(null);
         setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          city: '',
-          state: '',
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          city: "",
+          state: "",
+          memoriesDriveUrl: "",
         });
         alert('Client updated successfully!');
       } else {
@@ -714,6 +719,7 @@ export default function ClientsSection() {
                       phone: "",
                       city: "",
                       state: "",
+                      memoriesDriveUrl: "",
                     });
                   }}
                   disabled={isSubmitting}
@@ -751,6 +757,7 @@ export default function ClientsSection() {
                     phone: "",
                     city: "",
                     state: "",
+                    memoriesDriveUrl: "",
                   });
                 }}
                 className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
@@ -835,6 +842,30 @@ export default function ClientsSection() {
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="text-sm font-medium text-zinc-400 block mb-2">
+                  Your Memories — Google Drive Link
+                </label>
+
+                <input
+                  type="url"
+                  placeholder="https://drive.google.com/drive/folders/..."
+                  value={formData.memoriesDriveUrl}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      memoriesDriveUrl: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                />
+
+                <p className="text-xs text-zinc-500 mt-2">
+                  Paste the Google Drive folder link for this client's memories.
+                </p>
+              </div>
+
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => {
@@ -847,6 +878,7 @@ export default function ClientsSection() {
                       phone: "",
                       city: "",
                       state: "",
+                      memoriesDriveUrl: "",
                     });
                   }}
                   disabled={isSubmitting}

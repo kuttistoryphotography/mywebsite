@@ -22,13 +22,27 @@ import ReviewsSection         from "./reviews-section";
 
 interface UserProfile {
   id?: number;
-  fullName: string; firstName: string; lastName: string;
-  phone: string; email: string;
-  address: string; city: string; state: string; pincode: string;
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
   preferredContact: "phone" | "whatsapp" | "email";
-  profilePhoto: string | null; profileCompleted: boolean;
-  weddingDate: string; partnerName: string; eventType: string;
-  howDidYouHear: string; accountCreated: string; lastUpdated: string;
+  profilePhoto: string | null;
+  profileCompleted: boolean;
+  weddingDate: string;
+  partnerName: string;
+  eventType: string;
+  howDidYouHear: string;
+  accountCreated: string;
+  lastUpdated: string;
+
+  // Client's Google Drive memories folder
+  memoriesDriveUrl: string;
 }
 
 const sidebarTabs = [
@@ -38,6 +52,10 @@ const sidebarTabs = [
   { id: "favorites",     label: "My Favourites",    icon: Heart       },
   { id: "reviews",       label: "My Reviews",       icon: Star        },
   { id: "files",         label: "My Files",         icon: FileText    },
+
+  // NEW
+  { id: "memories",      label: "Your Memories",    icon: Heart       },
+
   { id: "payments",      label: "Payments",         icon: CreditCard  },
   { id: "notifications", label: "Notifications",    icon: Bell        },
   { id: "settings",      label: "Settings",         icon: Settings    },
@@ -67,12 +85,25 @@ export default function ClientDashboard() {
   const drawerRef = useRef<HTMLDivElement>(null);
 
   const [profile, setProfile] = useState<UserProfile>({
-    fullName: "", firstName: "", lastName: "",
-    phone: "", email: "",
-    address: "", city: "", state: "", pincode: "",
-    preferredContact: "whatsapp", profilePhoto: null, profileCompleted: false,
-    weddingDate: "", partnerName: "", eventType: "", howDidYouHear: "",
-    accountCreated: "", lastUpdated: "",
+    fullName: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    preferredContact: "whatsapp",
+    profilePhoto: null,
+    profileCompleted: false,
+    weddingDate: "",
+    partnerName: "",
+    eventType: "",
+    howDidYouHear: "",
+    accountCreated: "",
+    lastUpdated: "",
+    memoriesDriveUrl: "",
   });
   const [editedProfile, setEditedProfile] = useState<UserProfile>(profile);
 
@@ -111,8 +142,14 @@ export default function ClientDashboard() {
             phone: u.phone || "", email: u.email || "",
             address: u.address || "", city: u.city || "", state: u.state || "", pincode: u.pincode || "",
             preferredContact: u.preferredContact || "whatsapp",
-            profilePhoto: u.avatarUrl, profileCompleted: u.profileCompleted || false,
-            weddingDate: u.weddingDate || "", partnerName: u.partnerName || "",
+            profilePhoto: u.avatarUrl,
+            profileCompleted: u.profileCompleted || false,
+
+            // Google Drive folder for client's memories
+            memoriesDriveUrl: u.memoriesDriveUrl || "",
+
+            weddingDate: u.weddingDate || "",
+            partnerName: u.partnerName || "",
             eventType: u.eventType || "", howDidYouHear: u.howDidYouHear || "",
             accountCreated: u.createdAt ? new Date(u.createdAt).toISOString().split("T")[0] : "",
             lastUpdated: u.updatedAt   ? new Date(u.updatedAt).toISOString().split("T")[0]  : "",
@@ -669,14 +706,116 @@ export default function ClientDashboard() {
               </div>
             )}
 
-            {activeTab === "quotes"        && <RequestedQuote />}
-            {activeTab === "bookings"      && <div className="animate-in fade-in duration-300"><OrdersSection /></div>}
-            {activeTab === "files"         && <FilesSection />}
-            {activeTab === "favorites"     && <FavoritesSection />}
-            {activeTab === "reviews"       && <ReviewsSection />}
-            {activeTab === "payments"      && <div className="animate-in fade-in duration-300"><PaymentsSection /></div>}
+            {activeTab === "quotes" && <RequestedQuote />}
+
+            {/* YOUR MEMORIES */}
+            {activeTab === "memories" && (
+              <div className="animate-in fade-in duration-300">
+                <div className="space-y-6">
+
+                  {/* Header */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                        <Heart className="w-5 h-5 text-amber-400" />
+                      </div>
+
+                      <div>
+                        <h1 className="text-xl md:text-2xl font-bold">
+                          Your Memories
+                        </h1>
+
+                        <p className="text-xs text-zinc-500 mt-0.5">
+                          Your precious moments, all in one place
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Memories Card */}
+                  <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 to-zinc-900/60 rounded-3xl border border-zinc-800 p-6 md:p-10">
+
+                    <div className="absolute -top-20 -right-20 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl" />
+
+                    <div className="relative text-center max-w-xl mx-auto">
+
+                      {/* Icon */}
+                      <div className="w-20 h-20 mx-auto rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-6">
+                        <Heart className="w-9 h-9 text-amber-400" />
+                      </div>
+
+                      {/* Title */}
+                      <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                        Your Wedding Memories Are Ready ❤️
+                      </h2>
+
+                      {/* Description */}
+                      <p className="text-sm md:text-base text-zinc-400 leading-relaxed mb-8">
+                        Relive your beautiful moments captured by{" "}
+                        <span className="text-white font-medium">
+                          Kutti Story Photography
+                        </span>.
+                      </p>
+
+                      {/* Drive Link Available */}
+                      {profile.memoriesDriveUrl ? (
+                        <a
+                          href={profile.memoriesDriveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-black rounded-2xl font-bold text-sm transition-all hover:scale-[1.02]"
+                        >
+                          <FileText className="w-4 h-4" />
+
+                          View Your Memories
+
+                          <ChevronRight className="w-4 h-4" />
+                        </a>
+                      ) : (
+
+                        /* No Drive Link */
+                        <div className="bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4">
+                          <p className="text-sm text-zinc-400">
+                            Your memories are not available yet.
+                          </p>
+
+                          <p className="text-xs text-zinc-600 mt-1">
+                            We’ll update your gallery once your photos are ready.
+                          </p>
+                        </div>
+
+                      )}
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {/* OTHER TABS */}
+            {activeTab === "bookings" && (
+              <div className="animate-in fade-in duration-300">
+                <OrdersSection />
+              </div>
+            )}
+
+            {activeTab === "files" && <FilesSection />}
+
+            {activeTab === "favorites" && <FavoritesSection />}
+
+            {activeTab === "reviews" && <ReviewsSection />}
+
+            {activeTab === "payments" && (
+              <div className="animate-in fade-in duration-300">
+                <PaymentsSection />
+              </div>
+            )}
+
             {activeTab === "notifications" && <NotificationsSection />}
-            {activeTab === "help"          && <HelpSection />}
+
+            {activeTab === "help" && <HelpSection />}
+
 
             {activeTab === "settings" && (
               <div className="space-y-5 animate-in fade-in duration-300">

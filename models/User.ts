@@ -19,7 +19,8 @@ export interface IUser extends Document {
   address: string;
   pincode: string;
 
-  profileCompleted: boolean; // ADD THIS
+  profileCompleted: boolean;
+  memoriesDriveUrl?: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -44,7 +45,12 @@ const UserSchema = new Schema<IUser>(
     profileCompleted: {
       type: Boolean,
       default: false,
-    }, // ← IMPORTANT COMMA HERE
+    },
+
+    memoriesDriveUrl: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

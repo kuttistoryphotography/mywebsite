@@ -578,6 +578,12 @@ const PAGE_SIZE = 20;
 
     const filesToUpload = files.slice(0, remainingSlots);
 
+    if (files.length > remainingSlots) {
+      alert(
+        `Only ${remainingSlots} more image(s) can be uploaded. Maximum ${MAX_GALLERY_IMAGES} gallery images allowed.`
+      );
+    }
+
     setUploadingMedia(true);
 
     try {
