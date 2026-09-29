@@ -28,13 +28,14 @@ const navItems = [
 ];
 
 const accountMenuItems = [
-  { label: "My Account",  href: "/dashboard",                   icon: User },
-  { label: "My Bookings", href: "/dashboard?tab=bookings",      icon: Calendar },
-  { label: "My Gallery",  href: "/dashboard?tab=gallery",       icon: Images },
-  { label: "My Packages", href: "/dashboard?tab=packages",      icon: Package },
-  { label: "Favorites",   href: "/dashboard?tab=favorites",     icon: Heart },
-  { label: "Payments",    href: "/dashboard?tab=payments",      icon: CreditCard },
-  { label: "Settings",    href: "/dashboard?tab=settings",      icon: Settings },
+  { label: "My Account",    href: "/dashboard",                 icon: User },
+  { label: "My Bookings",   href: "/dashboard?tab=bookings",    icon: Calendar },
+  { label: "My Gallery",    href: "/dashboard?tab=gallery",     icon: Images },
+  { label: "Your Memories", href: "/dashboard?tab=memories",    icon: Heart },
+  { label: "My Packages",   href: "/dashboard?tab=packages",    icon: Package },
+  { label: "Favorites",     href: "/dashboard?tab=favorites",   icon: Heart },
+  { label: "Payments",      href: "/dashboard?tab=payments",    icon: CreditCard },
+  { label: "Settings",      href: "/dashboard?tab=settings",    icon: Settings },
 ];
 
 export default function Header() {
