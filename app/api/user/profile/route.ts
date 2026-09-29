@@ -37,6 +37,9 @@ export async function GET() {
         state:           user.state,
         pincode:         user.pincode,
         profileCompleted: user.profileCompleted,
+
+        // Google Drive folder for client's memories
+        memoriesDriveUrl: user.memoriesDriveUrl || "",
       },
     });
   } catch (error) {
@@ -53,16 +56,16 @@ export async function PUT(request: NextRequest) {
     await connectDB();
     const body = await request.json();
     const {
-     firstName,
-     lastName,
-     phone,
-     whatsappNumber,
-     avatarUrl,
-     address,
-     city,
-     state,
-     pincode,
-     profileCompleted,
+      firstName,
+      lastName,
+      phone,
+      whatsappNumber,
+      avatarUrl,
+      address,
+      city,
+      state,
+      pincode,
+      profileCompleted,
     } = body;
 
     const update: Record<string, unknown> = {};
