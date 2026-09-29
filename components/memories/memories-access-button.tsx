@@ -9,7 +9,7 @@ interface MemoriesAccessButtonProps {
 export default function MemoriesAccessButton({
   driveUrl,
 }: MemoriesAccessButtonProps) {
-  const [secondsLeft, setSecondsLeft] = useState(20);
+  const [secondsLeft, setSecondsLeft] = useState(35);
   const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
