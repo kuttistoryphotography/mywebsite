@@ -59,7 +59,49 @@ export default function MemoriesAccessButton({
 
       <p className="text-xs text-zinc-500 mt-2 text-center">
         Your memories will unlock in {secondsLeft} seconds.
-      </p>
+        </p>
+
+        <div className="mt-5 text-left rounded-xl bg-zinc-800/50 border border-zinc-700/70 p-4">
+        <p className="text-sm font-semibold text-white mb-3">
+            While You Wait
+        </p>
+
+        <div className="space-y-3 text-xs text-zinc-400 leading-5">
+            <p>
+            <strong className="text-zinc-200">
+                1. While You Wait —
+            </strong>{" "}
+            Please leave us a genuine Google review to unlock
+            your memories page.
+            </p>
+
+            <p>
+            <strong className="text-zinc-200">
+                2. Don&apos;t Refresh the Page —
+            </strong>{" "}
+            Refreshing may restart the countdown.
+            </p>
+
+            <p>
+            <strong className="text-zinc-200">
+                3. Check Your Review —
+            </strong>{" "}
+            If you haven&apos;t already, tap{" "}
+            <strong className="text-zinc-200">
+                “Leave a Google Review”
+            </strong>{" "}
+            and share your honest experience.
+            </p>
+
+            <p>
+            <strong className="text-zinc-200">
+                4. Get Ready for Your Memories ✨ —
+            </strong>{" "}
+            Your private memories will be available shortly.
+            Thank you for choosing Kutti Story Photography!
+            </p>
+        </div>
+        </div>
     </div>
   );
 }
