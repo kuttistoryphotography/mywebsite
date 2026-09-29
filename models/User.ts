@@ -27,6 +27,7 @@ export interface IUser extends Document {
   // Family & Friends Memories Link
   googleReviewUrl?: string;
   memoriesShareToken?: string;
+  familyFriendsDriveUrl?: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -128,6 +129,11 @@ const UserSchema = new Schema<IUser>(
       type: String,
       unique: true,
       sparse: true,
+    },
+
+    familyFriendsDriveUrl: {
+      type: String,
+      default: '',
     },
   },
   { timestamps: true }

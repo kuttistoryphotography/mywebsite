@@ -42,6 +42,8 @@ export async function GET() {
 
       // Family & Friends sharing token
       memoriesShareToken: u.memoriesShareToken || '',
+
+      familyFriendsDriveUrl: u.familyFriendsDriveUrl || '',
     }));
 
     return NextResponse.json({
@@ -160,6 +162,7 @@ export async function PUT(request: NextRequest) {
       role,
       memoriesDriveUrl,
       googleReviewUrl,
+      familyFriendsDriveUrl,
     } = body;
     console.log('body------', body);
     
@@ -187,6 +190,10 @@ export async function PUT(request: NextRequest) {
 
     if (googleReviewUrl !== undefined) {
       update.googleReviewUrl = googleReviewUrl;
+    }
+
+    if (familyFriendsDriveUrl !== undefined) {
+      update.familyFriendsDriveUrl = familyFriendsDriveUrl;
     }
 
     const updatedUser = await User.findOneAndUpdate(

@@ -32,6 +32,7 @@ interface Client {
   memoriesDriveUrl?: string;
   googleReviewUrl?: string;
   memoriesShareToken?: string;
+  familyFriendsDriveUrl?: string;
 }
 
 export default function ClientsSection() {
@@ -62,6 +63,7 @@ export default function ClientsSection() {
     state: "",
     memoriesDriveUrl: "",
     googleReviewUrl: "",
+    familyFriendsDriveUrl: "",
   });
 
   // Fetch clients from API
@@ -178,6 +180,7 @@ export default function ClientsSection() {
           state: "",
           memoriesDriveUrl: "",
           googleReviewUrl: "",
+          familyFriendsDriveUrl: "",
         });
       } else {
         alert(data.error || 'Failed to create client');
@@ -225,6 +228,7 @@ export default function ClientsSection() {
       state: locationParts[1] || '',
       memoriesDriveUrl: client.memoriesDriveUrl || '',
       googleReviewUrl: client.googleReviewUrl || "",
+      familyFriendsDriveUrl: client.familyFriendsDriveUrl || "",
     });
   
     setShowEditModal(true);
@@ -269,6 +273,7 @@ export default function ClientsSection() {
           state: "",
           memoriesDriveUrl: "",
           googleReviewUrl: "",
+          familyFriendsDriveUrl: "",
         });
         alert('Client updated successfully!');
       } else {
@@ -779,6 +784,7 @@ export default function ClientsSection() {
                       state: "",
                       memoriesDriveUrl: "",
                       googleReviewUrl: "",
+                      familyFriendsDriveUrl: "",
                     });
                   }}
                   disabled={isSubmitting}
@@ -818,6 +824,7 @@ export default function ClientsSection() {
                     state: "",
                     memoriesDriveUrl: "",
                     googleReviewUrl: "",
+                    familyFriendsDriveUrl: "",
                   });
                 }}
                 className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
@@ -949,6 +956,29 @@ export default function ClientsSection() {
                 </p>
               </div>
 
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Family & Friends — Google Drive Link
+                </label>
+
+                <input
+                  type="url"
+                  placeholder="https://drive.google.com/drive/folders/..."
+                  value={formData.familyFriendsDriveUrl}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      familyFriendsDriveUrl: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                />
+
+                <p className="text-xs text-zinc-500">
+                  This folder will be opened from the Family & Friends sharing link.
+                </p>
+              </div>
+
               <div className="space-y-3">
                 <label className="text-sm font-medium">
                   Family & Friends Memories Link
@@ -1006,6 +1036,7 @@ export default function ClientsSection() {
                       state: "",
                       memoriesDriveUrl: "",
                       googleReviewUrl: "",
+                      familyFriendsDriveUrl: "",
                     });
                   }}
                   disabled={isSubmitting}

@@ -20,7 +20,7 @@ export default async function MemoriesSharePage({
     role: "client",
     isActive: true,
   }).select(
-    "firstName lastName memoriesDriveUrl googleReviewUrl"
+    "firstName lastName familyFriendsDriveUrl googleReviewUrl"
   );
 
   if (!user) {
@@ -47,7 +47,7 @@ export default async function MemoriesSharePage({
             </p>
           </div>
 
-          {/* Welcome */}
+          {/* Client */}
           <div className="mb-8">
             <div className="text-5xl mb-4">
               ❤️
@@ -60,9 +60,9 @@ export default async function MemoriesSharePage({
             </h2>
 
             <p className="text-zinc-400 text-sm leading-6 mt-3">
-              Your special moments are waiting for you.
-              You can also share your experience with us
-              on Google.
+              Thank you for being part of this special
+              moment. We would love to hear about your
+              experience with us.
             </p>
           </div>
 
@@ -85,10 +85,10 @@ export default async function MemoriesSharePage({
             </div>
           )}
 
-          {/* Memories */}
-          {user.memoriesDriveUrl ? (
+          {/* Family & Friends Drive */}
+          {user.familyFriendsDriveUrl ? (
             <a
-              href={user.memoriesDriveUrl}
+              href={user.familyFriendsDriveUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full py-3.5 px-5 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition-colors"
