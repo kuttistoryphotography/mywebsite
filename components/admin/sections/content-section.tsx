@@ -19,13 +19,14 @@ import {
   CloudUpload,
   Check,
   Film,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import BlogManager from "./blog-manager";
 import { toImageUrl, toThumbnailUrl, MediaType } from "@/lib/media";
 import { DriveThumbnail } from "@/components/ui/DriveMedia";
 
-type ContentTab = "portfolio" | "blog";
+type ContentTab = "portfolio" | "blog" | "topics";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -153,7 +154,9 @@ export default function ContentSection() {
   const [saving,         setSaving]         = useState(false);
   const [showModal,      setShowModal]      = useState(false);
   const [editingItem,    setEditingItem]    = useState<PortfolioItem | null>(null);
-
+  const [blogTopics, setBlogTopics] = useState<any[]>([]);
+  const [topicsLoading, setTopicsLoading] = useState(false);
+  const [topicSearch, setTopicSearch] = useState("");
   // Form state — gallery uses GalleryItem[] so mediaType is always explicit
   const [formData, setFormData] = useState({
     title:            "",
@@ -194,7 +197,15 @@ export default function ContentSection() {
 
   // ── Fetch ─────────────────────────────────────────────────────────────────
 
-  useEffect(() => { fetchPortfolioItems(); }, []);
+  useEffect(() => {
+    fetchPortfolioItems();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "topics") {
+      fetchBlogTopics();
+    }
+  }, [activeTab]);
 
   const fetchPortfolioItems = async () => {
     try {
@@ -209,6 +220,33 @@ export default function ContentSection() {
       setPortfolioItems([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBlogTopics = async () => {
+    try {
+      setTopicsLoading(true);
+
+      const res = await fetch("/api/blog?admin=true", {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to fetch blog topics");
+      }
+
+      setBlogTopics(
+        Array.isArray(data.blogs)
+          ? data.blogs
+          : []
+      );
+    } catch (error) {
+      console.error("Failed to fetch blog topics:", error);
+      setBlogTopics([]);
+    } finally {
+      setTopicsLoading(false);
     }
   };
 
@@ -398,8 +436,24 @@ export default function ContentSection() {
   // ── Tab config ────────────────────────────────────────────────────────────
 
   const tabs = [
-    { id: "portfolio" as ContentTab, label: "Portfolio", icon: ImageIcon, count: portfolioItems.length },
-    { id: "blog"      as ContentTab, label: "Blog Posts", icon: FileText,  count: blogCount },
+    {
+      id: "portfolio" as ContentTab,
+      label: "Portfolio",
+      icon: ImageIcon,
+      count: portfolioItems.length,
+    },
+    {
+      id: "blog" as ContentTab,
+      label: "Blog Posts",
+      icon: FileText,
+      count: blogCount,
+    },
+    {
+      id: "topics" as ContentTab,
+      label: "Blog Topics",
+      icon: FileText,
+      count: blogTopics.length || blogCount,
+    },
   ];
 
   const typeColors: Record<MediaType, string> = {
@@ -443,6 +497,7 @@ export default function ContentSection() {
             </button>
           ))}
         </div>
+        {activeTab !== "topics" && (
         <div className="flex items-center gap-2">
           <button
             onClick={() => {
@@ -461,6 +516,7 @@ export default function ContentSection() {
             <List className="w-4 h-4" />
           </button>
         </div>
+        )}
       </div>
 
       {/* Portfolio tab */}
@@ -545,6 +601,175 @@ export default function ContentSection() {
             </div>
           )}
         </>
+      )}
+
+      {/* =========================================================
+          BLOG TOPICS TAB
+      ========================================================= */}
+      {activeTab === "topics" && (
+        <div className="space-y-5">
+
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-white">
+                Blog Topics
+              </h2>
+
+              <p className="text-sm text-zinc-500 mt-1">
+                All your existing blog topics in one place
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={fetchBlogTopics}
+              className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+            >
+              Refresh Topics
+            </button>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+
+            <input
+              type="text"
+              value={topicSearch}
+              onChange={(e) => setTopicSearch(e.target.value)}
+              placeholder="Search blog topics..."
+              className="w-full pl-11 pr-4 py-3 bg-zinc-900/70 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500"
+            />
+          </div>
+
+          {/* Stats */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-zinc-500">
+              {blogTopics.length} total topics
+            </p>
+
+            {topicSearch && (
+              <p className="text-sm text-amber-500">
+                Searching: "{topicSearch}"
+              </p>
+            )}
+          </div>
+
+          {/* Topics */}
+          {topicsLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-zinc-800 overflow-hidden">
+
+              {blogTopics
+                .filter((topic) => {
+                  const search = topicSearch.toLowerCase().trim();
+
+                  if (!search) return true;
+
+                  return (
+                    topic.title?.toLowerCase().includes(search) ||
+                    topic.category?.toLowerCase().includes(search) ||
+                    topic.slug?.toLowerCase().includes(search)
+                  );
+                })
+                .map((topic, index) => (
+                  <div
+                    key={topic.id || topic._id || index}
+                    className="flex flex-col md:flex-row md:items-center gap-4 p-4 border-b border-zinc-800 last:border-b-0 hover:bg-zinc-900/70 transition"
+                  >
+
+                    {/* Number */}
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-xs text-zinc-500 shrink-0">
+                      {index + 1}
+                    </div>
+
+                    {/* Topic */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-white truncate">
+                        {topic.title || "Untitled Blog"}
+                      </h3>
+
+                      <p className="text-xs text-zinc-500 mt-1 truncate">
+                        /{topic.slug || "no-slug"}
+                      </p>
+                    </div>
+
+                    {/* Category */}
+                    <div className="w-full md:w-40">
+                      <span className="inline-flex px-2.5 py-1 rounded-lg bg-zinc-800 text-xs text-zinc-400">
+                        {topic.category || "General"}
+                      </span>
+                    </div>
+
+                    {/* Status */}
+                    <div className="w-full md:w-28">
+                      <span
+                        className={cn(
+                          "inline-flex px-2.5 py-1 rounded-lg text-xs font-medium",
+                          topic.status === "published"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "bg-amber-500/10 text-amber-400"
+                        )}
+                      >
+                        {topic.status === "published"
+                          ? "Published"
+                          : "Draft"}
+                      </span>
+                    </div>
+
+                    {/* Views */}
+                    <div className="w-full md:w-20 text-sm text-zinc-500">
+                      {topic.view_count || 0} views
+                    </div>
+
+                    {/* Date */}
+                    <div className="w-full md:w-32 text-xs text-zinc-500">
+                      {topic.created_at
+                        ? new Date(topic.created_at).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            }
+                          )
+                        : "—"}
+                    </div>
+
+                  </div>
+                ))}
+
+              {blogTopics.filter((topic) => {
+                const search = topicSearch.toLowerCase().trim();
+
+                if (!search) return true;
+
+                return (
+                  topic.title?.toLowerCase().includes(search) ||
+                  topic.category?.toLowerCase().includes(search) ||
+                  topic.slug?.toLowerCase().includes(search)
+                );
+              }).length === 0 && (
+                <div className="py-16 text-center">
+                  <FileText className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
+
+                  <p className="text-zinc-400">
+                    No blog topics found
+                  </p>
+
+                  <p className="text-sm text-zinc-600 mt-1">
+                    Try another search term.
+                  </p>
+                </div>
+              )}
+
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === "blog" &&
