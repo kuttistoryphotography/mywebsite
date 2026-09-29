@@ -63,7 +63,7 @@ export default function MemoriesAccessButton({
 
         <div className="mt-5 text-left rounded-xl bg-zinc-800/50 border border-zinc-700/70 p-4">
         <p className="text-sm font-semibold text-white mb-3">
-            While You Wait
+            While Your Memories Prepare
         </p>
 
         <div className="space-y-3 text-xs text-zinc-400 leading-5">
