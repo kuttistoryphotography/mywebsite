@@ -156,6 +156,7 @@ export default function ContentSection() {
   const [editingItem,    setEditingItem]    = useState<PortfolioItem | null>(null);
   const [blogTopics, setBlogTopics] = useState<any[]>([]);
   const [topicsLoading, setTopicsLoading] = useState(false);
+  const [blogToEdit, setBlogToEdit] = useState<any | null>(null);
   const [topicSearch, setTopicSearch] = useState("");
   // Form state — gallery uses GalleryItem[] so mediaType is always explicit
   const [formData, setFormData] = useState({
@@ -740,6 +741,21 @@ export default function ContentSection() {
                         : "—"}
                     </div>
 
+                    {/* Edit */}
+                      <div className="shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBlogToEdit(topic);
+                            setActiveTab("blog");
+                          }}
+                          className="p-2 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
+                          title="Edit Blog"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
                   </div>
                 ))}
 
@@ -773,9 +789,11 @@ export default function ContentSection() {
       )}
 
       {activeTab === "blog" &&
-       <BlogManager
+      <BlogManager
         onCountChange={setBlogCount}
         viewMode={viewMode}
+        editPost={blogToEdit}
+        onEditHandled={() => setBlogToEdit(null)}
       />}
 
       {/* Create / Edit Modal */}

@@ -49,6 +49,8 @@ interface BlogItem {
 interface BlogManagerProps {
   onCountChange?: (count: number) => void;
   viewMode: "grid" | "list";
+  editPost?: BlogItem | null;
+  onEditHandled?: () => void;
 }
 
 const emptyForm = {
@@ -152,7 +154,13 @@ function ModeToggle({ mode, setMode }: { mode: MediaMode; setMode: (m: MediaMode
   );
 }
 
-export default function BlogManager({  onCountChange,  viewMode, }: BlogManagerProps) {
+export default function BlogManager({
+  onCountChange,
+  viewMode,
+  editPost,
+  onEditHandled,
+}: BlogManagerProps) {
+
   console.log("BLOG VIEW MODE =", viewMode);
 const [posts, setPosts] = useState<BlogItem[]>([]);
 const [loading, setLoading] = useState(true);
@@ -309,6 +317,13 @@ const PAGE_SIZE = 20;
     setCoverMode("url");
     setShowModal(true);
   };
+
+  useEffect(() => {
+    if (!editPost) return;
+
+    openEditModal(editPost);
+    onEditHandled?.();
+  }, [editPost]);
 
   const parseTags = (value: string) =>
     value.split(",").map((t) => t.trim()).filter(Boolean);
