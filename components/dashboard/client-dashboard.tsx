@@ -131,7 +131,9 @@ export default function ClientDashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/user/profile");
+        const res = await fetch("/api/user/profile", {
+          cache: "no-store",
+        });
         if (res.status === 401) { router.push("/login"); return; }
         if (res.ok) {
           const { user: u } = await res.json();
