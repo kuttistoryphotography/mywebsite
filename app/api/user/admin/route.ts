@@ -36,6 +36,12 @@ export async function GET() {
 
       // Google Drive folder for client's memories
       memoriesDriveUrl: u.memoriesDriveUrl || '',
+
+      // Google Review link
+      googleReviewUrl: u.googleReviewUrl || '',
+
+      // Family & Friends sharing token
+      memoriesShareToken: u.memoriesShareToken || '',
     }));
 
     return NextResponse.json({
@@ -153,6 +159,7 @@ export async function PUT(request: NextRequest) {
       isActive,
       role,
       memoriesDriveUrl,
+      googleReviewUrl,
     } = body;
     console.log('body------', body);
     
@@ -176,6 +183,10 @@ export async function PUT(request: NextRequest) {
 
     if (memoriesDriveUrl !== undefined) {
       update.memoriesDriveUrl = memoriesDriveUrl;
+    }
+
+    if (googleReviewUrl !== undefined) {
+      update.googleReviewUrl = googleReviewUrl;
     }
 
     const updatedUser = await User.findOneAndUpdate(

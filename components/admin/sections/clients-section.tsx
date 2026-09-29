@@ -30,6 +30,8 @@ interface Client {
   status: "active" | "inactive";
   joinedDate: string;
   memoriesDriveUrl?: string;
+  googleReviewUrl?: string;
+  memoriesShareToken?: string;
 }
 
 export default function ClientsSection() {
@@ -46,7 +48,10 @@ export default function ClientsSection() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [clientBookings, setClientBookings] = useState<any[]>([]);
+  const [memoriesShareUrl, setMemoriesShareUrl] = useState("");
+  const [generatingMemoriesLink, setGeneratingMemoriesLink] = useState(false);
 
+  
   // Form state
   const [formData, setFormData] = useState({
     firstName: "",
@@ -56,6 +61,7 @@ export default function ClientsSection() {
     city: "",
     state: "",
     memoriesDriveUrl: "",
+    googleReviewUrl: "",
   });
 
   // Fetch clients from API
@@ -171,6 +177,7 @@ export default function ClientsSection() {
           city: "",
           state: "",
           memoriesDriveUrl: "",
+          googleReviewUrl: "",
         });
       } else {
         alert(data.error || 'Failed to create client');
@@ -203,6 +210,7 @@ export default function ClientsSection() {
 
   const handleEditClient = (client: Client) => {
     setEditingClient(client);
+    setMemoriesShareUrl("");
   
     const nameParts = (client.name || '').split(' ');
   
@@ -216,6 +224,7 @@ export default function ClientsSection() {
       city: locationParts[0] || '',
       state: locationParts[1] || '',
       memoriesDriveUrl: client.memoriesDriveUrl || '',
+      googleReviewUrl: client.googleReviewUrl || "",
     });
   
     setShowEditModal(true);
@@ -259,6 +268,7 @@ export default function ClientsSection() {
           city: "",
           state: "",
           memoriesDriveUrl: "",
+          googleReviewUrl: "",
         });
         alert('Client updated successfully!');
       } else {
@@ -269,6 +279,54 @@ export default function ClientsSection() {
       alert('Error updating client');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const generateMemoriesShareLink = async () => {
+    if (!editingClient?.id) {
+      return;
+    }
+
+    try {
+      setGeneratingMemoriesLink(true);
+
+      const res = await fetch("/api/user/admin/memories-link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: editingClient.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to generate link");
+      }
+
+      setMemoriesShareUrl(data.shareUrl);
+
+      // Refresh clients list
+      const clientsRes = await fetch("/api/user/admin");
+
+      if (clientsRes.ok) {
+        const clientsData = await clientsRes.json();
+        setClients(clientsData.clients || []);
+      }
+
+      alert("Family & Friends link generated successfully!");
+    } catch (error) {
+      console.error("Error generating memories link:", error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate Family & Friends link"
+      );
+    } finally {
+      setGeneratingMemoriesLink(false);
     }
   };
 
@@ -720,6 +778,7 @@ export default function ClientsSection() {
                       city: "",
                       state: "",
                       memoriesDriveUrl: "",
+                      googleReviewUrl: "",
                     });
                   }}
                   disabled={isSubmitting}
@@ -758,6 +817,7 @@ export default function ClientsSection() {
                     city: "",
                     state: "",
                     memoriesDriveUrl: "",
+                    googleReviewUrl: "",
                   });
                 }}
                 className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
@@ -866,6 +926,72 @@ export default function ClientsSection() {
                 </p>
               </div>
 
+              <div className="space-y-2">
+                <label className="text-sm font-medium">
+                  Google Review Link
+                </label>
+
+                <input
+                  type="url"
+                  placeholder="https://g.page/r/..."
+                  value={formData.googleReviewUrl}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      googleReviewUrl: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-lg border px-3 py-2"
+                />
+
+                <p className="text-xs text-muted-foreground">
+                  Paste your Google Business Profile review link.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium">
+                  Family & Friends Memories Link
+                </label>
+
+                <button
+                  type="button"
+                  onClick={generateMemoriesShareLink}
+                  disabled={generatingMemoriesLink}
+                  className="w-full py-2.5 bg-zinc-800 rounded-xl font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50"
+                >
+                  {generatingMemoriesLink
+                    ? "Generating..."
+                    : "Generate Family & Friends Link"}
+                </button>
+
+                {memoriesShareUrl && (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={memoriesShareUrl}
+                      readOnly
+                      className="flex-1 min-w-0 px-3 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-xl text-sm"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(memoriesShareUrl);
+                        alert("Family & Friends link copied!");
+                      }}
+                      className="px-4 py-2.5 bg-amber-500 text-black rounded-xl font-medium hover:bg-amber-400 transition-colors"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                )}
+
+                <p className="text-xs text-zinc-500">
+                  Share this link with the client's family and friends.
+                </p>
+              </div>
+
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => {
@@ -879,6 +1005,7 @@ export default function ClientsSection() {
                       city: "",
                       state: "",
                       memoriesDriveUrl: "",
+                      googleReviewUrl: "",
                     });
                   }}
                   disabled={isSubmitting}
