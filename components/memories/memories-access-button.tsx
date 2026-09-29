@@ -100,6 +100,15 @@ export default function MemoriesAccessButton({
             Your private memories will be available shortly.
             Thank you for choosing Kutti Story Photography!
             </p>
+
+             <p>
+            <strong className="text-zinc-200">
+                5. Once your memories are unlocked ❤️—
+            </strong>{" "}
+            you can easily download the file or share it 
+            directly from the memories page.
+            </p>
+
         </div>
         </div>
     </div>
