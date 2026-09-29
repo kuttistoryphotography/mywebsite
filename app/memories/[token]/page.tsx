@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import User from "@/models/User";
 import connectDB from "@/lib/db";
+import MemoriesAccessButton from "@/components/memories/memories-access-button";
 
 interface PageProps {
   params: Promise<{
@@ -87,21 +88,16 @@ export default async function MemoriesSharePage({
 
           {/* Family & Friends Drive */}
           {user.familyFriendsDriveUrl ? (
-            <a
-              href={user.familyFriendsDriveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-3.5 px-5 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition-colors"
-            >
-              📸 View Your Memories
-            </a>
-          ) : (
+            <MemoriesAccessButton
+                driveUrl={user.familyFriendsDriveUrl}
+            />
+            ) : (
             <div className="rounded-xl bg-zinc-800/70 border border-zinc-700 p-4">
-              <p className="text-sm text-zinc-400">
+                <p className="text-sm text-zinc-400">
                 Your memories are not available yet.
-              </p>
+                </p>
             </div>
-          )}
+            )}
 
           {/* Footer */}
           <div className="mt-8 pt-6 border-t border-zinc-800">
