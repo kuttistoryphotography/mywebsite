@@ -28,6 +28,8 @@ export default function PhotoSelectionSection() {
   const [selectedEvent, setSelectedEvent] =
     useState<PhotoSelectionEvent | null>(null);
 
+  const [showManageModal, setShowManageModal] = useState(false);
+
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -135,6 +137,11 @@ export default function PhotoSelectionSection() {
     } finally {
       setCreating(false);
     }
+  }
+
+  function openManageEvent(event: PhotoSelectionEvent) {
+    setSelectedEvent(event);
+    setShowManageModal(true);
   }
 
   function openUpload(event: PhotoSelectionEvent) {
@@ -367,6 +374,7 @@ export default function PhotoSelectionSection() {
 
                   <button
                     type="button"
+                    onClick={() => openManageEvent(event)}
                     className="rounded-lg border px-4 py-2 text-sm font-medium"
                   >
                     Manage Event
@@ -562,6 +570,136 @@ export default function PhotoSelectionSection() {
 
         </div>
       )}
+
+    {/* MANAGE EVENT MODAL */}
+
+    {showManageModal && selectedEvent && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+
+        <div className="w-full max-w-2xl rounded-2xl border bg-background p-6 shadow-2xl">
+
+        <div className="flex items-start justify-between">
+
+            <div>
+            <h3 className="text-xl font-semibold">
+                Manage Event
+            </h3>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+                {selectedEvent.eventName}
+            </p>
+            </div>
+
+            <button
+            type="button"
+            onClick={() => setShowManageModal(false)}
+            className="rounded-md px-2 py-1 text-lg text-muted-foreground hover:bg-muted"
+            >
+            ×
+            </button>
+
+        </div>
+
+        {/* EVENT DETAILS */}
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Event Name
+            </p>
+
+            <p className="mt-1 font-medium">
+                {selectedEvent.eventName}
+            </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Client
+            </p>
+
+            <p className="mt-1 font-medium">
+                {selectedEvent.clientName}
+            </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Event Code
+            </p>
+
+            <p className="mt-1 font-medium">
+                {selectedEvent.eventCode}
+            </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Selection Limit
+            </p>
+
+            <p className="mt-1 font-medium">
+                {selectedEvent.selectionLimit}
+            </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Total Photos
+            </p>
+
+            <p className="mt-1 font-medium">
+                {selectedEvent.totalPhotos}
+            </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+            <p className="text-xs text-muted-foreground">
+                Status
+            </p>
+
+            <p className="mt-1 font-medium capitalize">
+                {selectedEvent.status}
+            </p>
+            </div>
+
+        </div>
+
+        {/* ACTIONS */}
+
+        <div className="mt-6 flex flex-wrap gap-3">
+
+            <button
+            type="button"
+            onClick={() => {
+                setShowManageModal(false);
+                openUpload(selectedEvent);
+            }}
+            disabled={
+                selectedEvent.status === "closed"
+            }
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            >
+            + Upload Photos
+            </button>
+
+            <button
+            type="button"
+            onClick={() => {
+                setShowManageModal(false);
+            }}
+            className="rounded-lg border px-4 py-2.5 text-sm font-medium"
+            >
+            Close
+            </button>
+
+        </div>
+
+        </div>
+
+    </div>
+    )}
 
     </div>
   );
