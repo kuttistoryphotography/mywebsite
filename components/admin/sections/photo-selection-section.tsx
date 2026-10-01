@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 type PhotoSelectionEvent = {
   id: string;
@@ -14,17 +13,26 @@ type PhotoSelectionEvent = {
 };
 
 export default function PhotoSelectionSection() {
-  const router = useRouter();
   const [events, setEvents] = useState<PhotoSelectionEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [eventName, setEventName] = useState("");
   const [eventCode, setEventCode] = useState("");
   const [clientName, setClientName] = useState("");
   const [selectionLimit, setSelectionLimit] = useState("250");
+
+  const [creating, setCreating] = useState(false);
+
+  const [selectedEvent, setSelectedEvent] =
+    useState<PhotoSelectionEvent | null>(null);
+
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadEvents();
@@ -55,56 +63,186 @@ export default function PhotoSelectionSection() {
       setLoading(false);
     }
   }
-  
-  async function handleCreateEvent() {
-    if (!eventName.trim() || !eventCode.trim() || !clientName.trim()) {
-        alert("Please fill all required fields.");
-        return;
+
+  async function createEvent() {
+    if (!eventName.trim()) {
+      alert("Enter event name");
+      return;
+    }
+
+    if (!eventCode.trim()) {
+      alert("Enter event code");
+      return;
+    }
+
+    if (!clientName.trim()) {
+      alert("Enter client name");
+      return;
+    }
+
+    const limit = Number(selectionLimit);
+
+    if (!limit || limit < 1) {
+      alert("Enter a valid selection limit");
+      return;
     }
 
     try {
-        setCreating(true);
+      setCreating(true);
 
-        const response = await fetch("/api/photo-selection/events", {
-        method: "POST",
-        headers: {
+      const response = await fetch(
+        "/api/photo-selection/events",
+        {
+          method: "POST",
+          headers: {
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            eventName: eventName.trim(),
-            eventCode: eventCode.trim().toUpperCase(),
-            clientName: clientName.trim(),
-            selectionLimit: Number(selectionLimit),
-        }),
-        });
+          },
+          body: JSON.stringify({
+            eventCode,
+            eventName,
+            clientName,
+            selectionLimit: limit,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || "Failed to create event"
+        );
+      }
+
+      setShowCreateModal(false);
+
+      setEventName("");
+      setEventCode("");
+      setClientName("");
+      setSelectionLimit("250");
+
+      await loadEvents();
+
+      alert("Photo Selection event created successfully");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to create event"
+      );
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  function openUpload(event: PhotoSelectionEvent) {
+    setSelectedEvent(event);
+    setUploadProgress(0);
+    setUploadStatus("");
+
+    setTimeout(() => {
+      fileInputRef.current?.click();
+    }, 100);
+  }
+
+  async function handleFiles(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const files = event.target.files;
+
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    if (!selectedEvent) {
+      alert("Select an event first");
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadProgress(0);
+
+      const total = files.length;
+
+      for (let index = 0; index < total; index++) {
+        const file = files[index];
+
+        setUploadStatus(
+          `Uploading ${index + 1} of ${total}: ${file.name}`
+        );
+
+        const formData = new FormData();
+
+        formData.append("file", file);
+
+        const response = await fetch(
+          `/api/photo-selection/events/${selectedEvent.id}/photos`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         const data = await response.json();
 
         if (!response.ok || !data.success) {
-        alert(data.error || "Failed to create event.");
-        return;
+          throw new Error(
+            data.error ||
+              `Failed to upload ${file.name}`
+          );
         }
 
-        alert("Photo Selection Event created successfully.");
+        const progress = Math.round(
+          ((index + 1) / total) * 100
+        );
 
-        setEventName("");
-        setEventCode("");
-        setClientName("");
-        setSelectionLimit("250");
-        setShowCreateForm(false);
+        setUploadProgress(progress);
+      }
 
-        await loadEvents();
+      setUploadStatus(
+        `${total} photo${
+          total > 1 ? "s" : ""
+        } uploaded successfully`
+      );
+
+      await loadEvents();
+
+      setSelectedEvent((current) =>
+        current
+          ? {
+              ...current,
+              totalPhotos:
+                current.totalPhotos + total,
+            }
+          : current
+      );
     } catch (error) {
-        console.error("Create photo selection event error:", error);
-        alert("Something went wrong while creating the event.");
+      console.error(error);
+
+      setUploadStatus(
+        error instanceof Error
+          ? error.message
+          : "Upload failed"
+      );
     } finally {
-        setCreating(false);
+      setUploading(false);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
-    }
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+
+      {/* HEADER */}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
         <div>
           <h2 className="text-2xl font-semibold">
             Photo Selection
@@ -116,118 +254,38 @@ export default function PhotoSelectionSection() {
         </div>
 
         <button
-            type="button"
-            onClick={() => setShowCreateForm(true)}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-            >
-            + Create Event
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          + Create Event
         </button>
       </div>
 
-      {/* Loading */}
-      {showCreateForm && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-            <div className="mb-6 flex items-center justify-between">
-            <div>
-                <h3 className="text-lg font-semibold">
-                Create Photo Selection Event
-                </h3>
+      {/* HIDDEN FILE INPUT */}
 
-                <p className="mt-1 text-sm text-zinc-400">
-                Create an event for your client to select photos.
-                </p>
-            </div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={handleFiles}
+      />
 
-            <button
-                type="button"
-                onClick={() => setShowCreateForm(false)}
-                className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800"
-            >
-                Cancel
-            </button>
-            </div>
+      {/* LOADING */}
 
-            <div className="grid gap-4 md:grid-cols-2">
-            <div>
-                <label className="mb-2 block text-sm text-zinc-300">
-                Event Name
-                </label>
-
-                <input
-                type="text"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                placeholder="Jeevana Wedding"
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white outline-none focus:border-amber-500"
-                />
-            </div>
-
-            <div>
-                <label className="mb-2 block text-sm text-zinc-300">
-                Event Code
-                </label>
-
-                <input
-                type="text"
-                value={eventCode}
-                onChange={(e) =>
-                    setEventCode(e.target.value.toUpperCase())
-                }
-                placeholder="JEEVANA2026"
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white uppercase outline-none focus:border-amber-500"
-                />
-            </div>
-
-            <div>
-                <label className="mb-2 block text-sm text-zinc-300">
-                Client Name
-                </label>
-
-                <input
-                type="text"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                placeholder="Jeevana"
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white outline-none focus:border-amber-500"
-                />
-            </div>
-
-            <div>
-                <label className="mb-2 block text-sm text-zinc-300">
-                Selection Limit
-                </label>
-
-                <input
-                type="number"
-                min="1"
-                value={selectionLimit}
-                onChange={(e) => setSelectionLimit(e.target.value)}
-                className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-white outline-none focus:border-amber-500"
-                />
-            </div>
-            </div>
-
-            <div className="mt-6 flex justify-end">
-            <button
-                type="button"
-                onClick={handleCreateEvent}
-                disabled={creating}
-                className="rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-                {creating ? "Creating..." : "Create Event"}
-            </button>
-            </div>
-        </div>
-        )}
       {loading && (
         <div className="rounded-xl border p-8 text-center text-sm text-muted-foreground">
           Loading events...
         </div>
       )}
 
-      {/* Empty */}
+      {/* EMPTY */}
+
       {!loading && events.length === 0 && (
         <div className="rounded-xl border p-10 text-center">
+
           <h3 className="text-lg font-medium">
             No Photo Selection Events
           </h3>
@@ -236,30 +294,45 @@ export default function PhotoSelectionSection() {
             Create your first event to start collecting
             client photo selections.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setShowCreateModal(true)}
+            className="mt-5 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+          >
+            Create First Event
+          </button>
+
         </div>
       )}
 
-      {/* Events */}
+      {/* EVENTS */}
+
       {!loading && events.length > 0 && (
         <div className="grid gap-4">
+
           {events.map((event) => (
             <div
               key={event.id}
               className="rounded-xl border p-5"
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+
                 <div>
+
                   <h3 className="text-lg font-semibold">
                     {event.eventName}
                   </h3>
 
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {event.clientName}
+                    Client: {event.clientName}
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-2 text-xs">
+
                     <span className="rounded-md border px-2 py-1">
-                      {event.eventCode}
+                      Code: {event.eventCode}
                     </span>
 
                     <span className="rounded-md border px-2 py-1">
@@ -270,26 +343,226 @@ export default function PhotoSelectionSection() {
                       Limit: {event.selectionLimit}
                     </span>
 
-                    <span className="rounded-md border px-2 py-1">
+                    <span className="rounded-md border px-2 py-1 capitalize">
                       {event.status}
                     </span>
+
                   </div>
+
                 </div>
 
-                <button
+                <div className="flex flex-wrap gap-2">
+
+                  <button
                     type="button"
-                    onClick={() =>
-                    router.push(`/admin/photo-selection/${event.id}`)
+                    onClick={() => openUpload(event)}
+                    disabled={
+                      uploading ||
+                      event.status === "closed"
                     }
+                    className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    + Upload Photos
+                  </button>
+
+                  <button
+                    type="button"
                     className="rounded-lg border px-4 py-2 text-sm font-medium"
-                >
+                  >
                     Manage Event
-                </button>
+                  </button>
+
+                </div>
+
               </div>
+
+              {/* UPLOAD STATUS */}
+
+              {selectedEvent?.id === event.id &&
+                (uploading || uploadStatus) && (
+                  <div className="mt-5 rounded-lg border p-4">
+
+                    <div className="flex items-center justify-between text-sm">
+
+                      <span>
+                        {uploadStatus}
+                      </span>
+
+                      <span className="font-medium">
+                        {uploadProgress}%
+                      </span>
+
+                    </div>
+
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+
+                      <div
+                        className="h-full bg-primary transition-all duration-300"
+                        style={{
+                          width: `${uploadProgress}%`,
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+                )}
+
             </div>
           ))}
+
         </div>
       )}
+
+      {/* CREATE EVENT MODAL */}
+
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+
+          <div className="w-full max-w-lg rounded-2xl border bg-background p-6 shadow-2xl">
+
+            <div className="flex items-start justify-between">
+
+              <div>
+                <h3 className="text-xl font-semibold">
+                  Create Photo Selection Event
+                </h3>
+
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Create an event before uploading client photos.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowCreateModal(false)
+                }
+                className="rounded-md px-2 py-1 text-lg text-muted-foreground hover:bg-muted"
+              >
+                ×
+              </button>
+
+            </div>
+
+            <div className="mt-6 space-y-4">
+
+              {/* EVENT NAME */}
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  Event Name
+                </label>
+
+                <input
+                  value={eventName}
+                  onChange={(e) =>
+                    setEventName(e.target.value)
+                  }
+                  placeholder="Jeevana Wedding"
+                  className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              {/* EVENT CODE */}
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  Event Code
+                </label>
+
+                <input
+                  value={eventCode}
+                  onChange={(e) =>
+                    setEventCode(
+                      e.target.value
+                        .toUpperCase()
+                        .replace(/\s/g, "")
+                    )
+                  }
+                  placeholder="JEEVANA2026"
+                  className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm uppercase outline-none focus:ring-2 focus:ring-primary"
+                />
+
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Client will use this code to access their photos.
+                </p>
+              </div>
+
+              {/* CLIENT */}
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  Client Name
+                </label>
+
+                <input
+                  value={clientName}
+                  onChange={(e) =>
+                    setClientName(e.target.value)
+                  }
+                  placeholder="Jeevana"
+                  className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              {/* LIMIT */}
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  Selection Limit
+                </label>
+
+                <input
+                  type="number"
+                  min="1"
+                  value={selectionLimit}
+                  onChange={(e) =>
+                    setSelectionLimit(e.target.value)
+                  }
+                  className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                />
+
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Example: Client can select up to 250 photos.
+                </p>
+              </div>
+
+            </div>
+
+            {/* ACTIONS */}
+
+            <div className="mt-6 flex justify-end gap-3">
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowCreateModal(false)
+                }
+                disabled={creating}
+                className="rounded-lg border px-4 py-2.5 text-sm font-medium"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={createEvent}
+                disabled={creating}
+                className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+              >
+                {creating
+                  ? "Creating..."
+                  : "Create Event"}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
