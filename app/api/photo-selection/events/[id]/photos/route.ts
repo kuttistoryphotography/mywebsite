@@ -346,3 +346,82 @@ export async function POST(
     );
   }
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getCurrentUser();
+
+    if (!session || session.role !== "admin") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Invalid event ID" },
+        { status: 400 }
+      );
+    }
+
+    await connectDB();
+
+    const event =
+      await PhotoSelectionEvent.findById(id).lean();
+
+    if (!event) {
+      return NextResponse.json(
+        { error: "Photo Selection event not found" },
+        { status: 404 }
+      );
+    }
+
+    const photos =
+      await PhotoSelectionPhoto.find({
+        eventId: event._id,
+      })
+        .sort({ sequence: 1 })
+        .lean();
+
+    return NextResponse.json({
+      success: true,
+      photos: photos.map((photo) => ({
+        id: String(photo._id),
+        photoId: photo.photoId,
+        fileId: String(photo.fileId),
+        originalFilename: photo.originalFilename,
+        cloudinaryPublicId:
+          photo.cloudinaryPublicId || null,
+        cloudinaryUrl:
+          photo.cloudinaryUrl || null,
+        thumbnailUrl:
+          photo.thumbnailUrl || photo.cloudinaryUrl || null,
+        previewUrl:
+          photo.previewUrl || photo.cloudinaryUrl || null,
+        sequence: photo.sequence,
+      })),
+      totalPhotos: photos.length,
+    });
+  } catch (error) {
+    console.error(
+      "[Photo Selection Photos GET]",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load photos",
+      },
+      { status: 500 }
+    );
+  }
+}

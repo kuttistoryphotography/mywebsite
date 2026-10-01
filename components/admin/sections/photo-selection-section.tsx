@@ -36,6 +36,24 @@ export default function PhotoSelectionSection() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  type PhotoSelectionPhoto = {
+    id: string;
+    photoId: string;
+    fileId: string;
+    originalFilename: string;
+    cloudinaryPublicId: string | null;
+    cloudinaryUrl: string | null;
+    thumbnailUrl: string | null;
+    previewUrl: string | null;
+    sequence: number;
+    };
+
+    const [eventPhotos, setEventPhotos] =
+    useState<PhotoSelectionPhoto[]>([]);
+
+    const [loadingPhotos, setLoadingPhotos] =
+    useState(false);
+
   useEffect(() => {
     loadEvents();
   }, []);
@@ -139,10 +157,44 @@ export default function PhotoSelectionSection() {
     }
   }
 
-  function openManageEvent(event: PhotoSelectionEvent) {
+  async function openManageEvent(
+    event: PhotoSelectionEvent
+    ) {
     setSelectedEvent(event);
     setShowManageModal(true);
-  }
+
+    try {
+        setLoadingPhotos(true);
+        setEventPhotos([]);
+
+        const response = await fetch(
+        `/api/photo-selection/events/${event.id}/photos`,
+        {
+            cache: "no-store",
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        throw new Error(
+            data.error || "Failed to load photos"
+        );
+        }
+
+        setEventPhotos(data.photos || []);
+    } catch (error) {
+        console.error(error);
+
+        alert(
+        error instanceof Error
+            ? error.message
+            : "Failed to load photos"
+        );
+    } finally {
+        setLoadingPhotos(false);
+    }
+    }
 
   function openUpload(event: PhotoSelectionEvent) {
     setSelectedEvent(event);
@@ -663,6 +715,84 @@ export default function PhotoSelectionSection() {
                 {selectedEvent.status}
             </p>
             </div>
+
+        </div>
+
+        {/* UPLOADED PHOTOS */}
+
+        <div className="mt-6">
+
+        <div className="mb-3 flex items-center justify-between">
+
+            <div>
+            <h4 className="text-sm font-semibold">
+                Uploaded Photos
+            </h4>
+
+            <p className="text-xs text-muted-foreground">
+                {eventPhotos.length} photos
+            </p>
+            </div>
+
+        </div>
+
+        {loadingPhotos && (
+            <div className="rounded-xl border p-8 text-center text-sm text-muted-foreground">
+            Loading photos...
+            </div>
+        )}
+
+        {!loadingPhotos && eventPhotos.length === 0 && (
+            <div className="rounded-xl border p-8 text-center text-sm text-muted-foreground">
+            No photos uploaded yet.
+            </div>
+        )}
+
+        {!loadingPhotos && eventPhotos.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+
+            {eventPhotos.map((photo) => (
+                <div
+                key={photo.id}
+                className="overflow-hidden rounded-xl border bg-muted"
+                >
+
+                <div className="aspect-square overflow-hidden">
+
+                    {photo.thumbnailUrl ? (
+                    <img
+                        src={photo.thumbnailUrl}
+                        alt={photo.originalFilename}
+                        className="h-full w-full object-cover"
+                    />
+                    ) : (
+                    <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                        No Preview
+                    </div>
+                    )}
+
+                </div>
+
+                <div className="p-2">
+
+                    <p
+                    className="truncate text-xs font-medium"
+                    title={photo.originalFilename}
+                    >
+                    {photo.originalFilename}
+                    </p>
+
+                    <p className="mt-1 text-[10px] text-muted-foreground">
+                    #{photo.sequence + 1}
+                    </p>
+
+                </div>
+
+                </div>
+            ))}
+
+            </div>
+        )}
 
         </div>
 
