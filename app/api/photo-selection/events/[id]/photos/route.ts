@@ -5,7 +5,11 @@ import mongoose from "mongoose";
 
 import connectDB from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { uploadToCloudinary, guessMimeType } from "@/lib/cloudinary";
+import {
+  uploadToCloudinary,
+  guessMimeType,
+  deleteFromCloudinary,
+} from "@/lib/cloudinary";
 
 import { FileDoc } from "@/models/FileManager";
 import { CloudinaryFile } from "@/models/CloudinaryFile";
@@ -420,6 +424,153 @@ export async function GET(
           error instanceof Error
             ? error.message
             : "Failed to load photos",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getCurrentUser();
+
+    if (!session || session.role !== "admin") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { error: "Invalid event ID" },
+        { status: 400 }
+      );
+    }
+
+    const { searchParams } =
+      new URL(request.url);
+
+    const photoId =
+      searchParams.get("photoId");
+
+    if (!photoId) {
+      return NextResponse.json(
+        { error: "Photo ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(photoId)) {
+      return NextResponse.json(
+        { error: "Invalid photo ID" },
+        { status: 400 }
+      );
+    }
+
+    await connectDB();
+
+    const event =
+      await PhotoSelectionEvent.findById(id);
+
+    if (!event) {
+      return NextResponse.json(
+        { error: "Photo Selection event not found" },
+        { status: 404 }
+      );
+    }
+
+    if (event.status === "closed") {
+      return NextResponse.json(
+        { error: "This event is closed" },
+        { status: 400 }
+      );
+    }
+
+    const photo =
+      await PhotoSelectionPhoto.findOne({
+        _id: photoId,
+        eventId: event._id,
+      });
+
+    if (!photo) {
+      return NextResponse.json(
+        { error: "Photo not found" },
+        { status: 404 }
+      );
+    }
+
+    /*
+     * Delete Cloudinary asset first.
+     * If this fails, database records are preserved.
+     */
+
+    if (photo.cloudinaryPublicId) {
+      await deleteFromCloudinary(
+        photo.cloudinaryPublicId,
+        "image"
+      );
+    }
+
+    /*
+     * Remove File Manager records.
+     */
+
+    const fileDoc =
+      await FileDoc.findById(photo.fileId);
+
+    if (fileDoc) {
+      await CloudinaryFile.deleteMany({
+        refModel: "FileDoc",
+        refId: fileDoc._id,
+      });
+
+      await FileDoc.deleteOne({
+        _id: fileDoc._id,
+      });
+    }
+
+    /*
+     * Remove Photo Selection record.
+     */
+
+    await PhotoSelectionPhoto.deleteOne({
+      _id: photo._id,
+    });
+
+    /*
+     * Recalculate total photos.
+     */
+
+    event.totalPhotos =
+      await PhotoSelectionPhoto.countDocuments({
+        eventId: event._id,
+      });
+
+    await event.save();
+
+    return NextResponse.json({
+      success: true,
+      deletedPhotoId: String(photo._id),
+      totalPhotos: event.totalPhotos,
+    });
+  } catch (error) {
+    console.error(
+      "[Photo Selection Photo Delete]",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete photo",
       },
       { status: 500 }
     );

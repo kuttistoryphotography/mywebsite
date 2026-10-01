@@ -206,6 +206,58 @@ export default function PhotoSelectionSection() {
     }, 100);
   }
 
+  async function deletePhoto(
+    photo: PhotoSelectionPhoto
+  ) {
+    const confirmed = window.confirm(
+        `Delete "${photo.originalFilename}"?\n\nThis will permanently remove the photo from this Photo Selection event and File Manager.`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+        `/api/photo-selection/events/${selectedEvent?.id}/photos?photoId=${photo.id}`,
+        {
+            method: "DELETE",
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        throw new Error(
+            data.error || "Failed to delete photo"
+        );
+        }
+
+        setEventPhotos((current) =>
+        current.filter(
+            (item) => item.id !== photo.id
+        )
+        );
+
+        setSelectedEvent((current) =>
+        current
+            ? {
+                ...current,
+                totalPhotos: data.totalPhotos,
+            }
+            : current
+        );
+    } catch (error) {
+        console.error(error);
+
+        alert(
+        error instanceof Error
+            ? error.message
+            : "Failed to delete photo"
+        );
+    }
+    }
+
   async function handleFiles(
     event: ChangeEvent<HTMLInputElement>
   ) {
@@ -782,9 +834,14 @@ export default function PhotoSelectionSection() {
                     {photo.originalFilename}
                     </p>
 
-                    <p className="mt-1 text-[10px] text-muted-foreground">
-                    #{photo.sequence + 1}
-                    </p>
+                    <button
+                        type="button"
+                        onClick={() => deletePhoto(photo)}
+                        disabled={uploading}
+                        className="mt-2 w-full rounded-md border border-red-500/30 px-2 py-1 text-[11px] font-medium text-red-500 hover:bg-red-500/10 disabled:opacity-50"
+                    >
+                        Delete
+                    </button>
 
                 </div>
 
