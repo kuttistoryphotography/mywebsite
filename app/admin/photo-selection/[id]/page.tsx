@@ -16,6 +16,17 @@ type PhotoSelectionEvent = {
   status: "active" | "submitted" | "closed";
 };
 
+type FileManagerFolder = {
+  id: string;
+  folderName: string;
+  description: string;
+  fileCount: number;
+  coverImage: string | null;
+  assignedClientName: string | null;
+  assignedBookingNumber: string | null;
+  assignedEventType: string | null;
+};
+
 export default function PhotoSelectionManagePage() {
   const params = useParams();
   const router = useRouter();
@@ -25,8 +36,12 @@ export default function PhotoSelectionManagePage() {
   const [event, setEvent] = useState<PhotoSelectionEvent | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [folders, setFolders] = useState<FileManagerFolder[]>([]);
+  const [loadingFolders, setLoadingFolders] = useState(false);
+
   useEffect(() => {
     loadEvent();
+    loadFolders();
   }, [eventId]);
 
   async function loadEvent() {
@@ -55,6 +70,34 @@ export default function PhotoSelectionManagePage() {
       setLoading(false);
     }
   }
+
+  async function loadFolders() {
+    try {
+        setLoadingFolders(true);
+
+        const response = await fetch(
+        "/api/file-manager/folders",
+        {
+            cache: "no-store",
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+        throw new Error(
+            data.error || "Failed to load folders."
+        );
+        }
+
+        setFolders(data.folders || []);
+    } catch (error) {
+        console.error("Failed to load File Manager folders:", error);
+        alert("Failed to load File Manager folders.");
+    } finally {
+        setLoadingFolders(false);
+    }
+    }
 
   if (loading) {
     return (
@@ -181,21 +224,91 @@ export default function PhotoSelectionManagePage() {
         </div>
 
         <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-          <h2 className="text-lg font-semibold">
-            Photos
-          </h2>
+            <div className="mb-6">
+                <h2 className="text-lg font-semibold">
+                Select Photo Folder
+                </h2>
 
-          <p className="mt-1 text-sm text-zinc-400">
-            Connect an existing File Manager folder to this event.
-          </p>
+                <p className="mt-1 text-sm text-zinc-400">
+                Choose an existing folder from File Manager.
+                Photos will not be uploaded again.
+                </p>
+            </div>
 
-          <button
-            type="button"
-            className="mt-5 rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-amber-400"
-          >
-            Select File Manager Folder
-          </button>
-        </div>
+            {loadingFolders && (
+                <div className="rounded-lg border border-zinc-800 p-6 text-center text-sm text-zinc-400">
+                Loading File Manager folders...
+                </div>
+            )}
+
+            {!loadingFolders && folders.length === 0 && (
+                <div className="rounded-lg border border-zinc-800 p-6 text-center">
+                <p className="text-sm text-zinc-400">
+                    No File Manager folders found.
+                </p>
+
+                <button
+                    type="button"
+                    onClick={loadFolders}
+                    className="mt-4 rounded-lg border border-zinc-700 px-4 py-2 text-sm hover:bg-zinc-800"
+                >
+                    Refresh Folders
+                </button>
+                </div>
+            )}
+
+            {!loadingFolders && folders.length > 0 && (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {folders.map((folder) => (
+                    <div
+                    key={folder.id}
+                    className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950"
+                    >
+                    {folder.coverImage ? (
+                        <img
+                        src={folder.coverImage}
+                        alt={folder.folderName}
+                        className="h-40 w-full object-cover"
+                        />
+                    ) : (
+                        <div className="flex h-40 items-center justify-center bg-zinc-900 text-sm text-zinc-600">
+                        No Preview
+                        </div>
+                    )}
+
+                    <div className="p-4">
+                        <h3 className="truncate font-semibold text-white">
+                        {folder.folderName}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-zinc-400">
+                        {folder.fileCount} photos
+                        </p>
+
+                        {folder.assignedClientName && (
+                        <p className="mt-2 text-xs text-zinc-500">
+                            Client: {folder.assignedClientName}
+                        </p>
+                        )}
+
+                        {folder.assignedBookingNumber && (
+                        <p className="mt-1 text-xs text-zinc-500">
+                            Booking: {folder.assignedBookingNumber}
+                        </p>
+                        )}
+
+                        <button
+                        type="button"
+                        className="mt-4 w-full rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-semibold text-black hover:bg-amber-400"
+                        >
+                        Connect This Folder
+                        </button>
+                    </div>
+                    </div>
+                ))}
+                </div>
+            )}
+            </div>
 
       </div>
     </div>
