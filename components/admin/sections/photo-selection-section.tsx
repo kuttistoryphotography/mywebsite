@@ -275,10 +275,11 @@ export default function PhotoSelectionSection() {
                 </div>
 
                 <button
-                  type="button"
-                  className="rounded-lg border px-4 py-2 text-sm font-medium"
+                    type="button"
+                    onClick={() => alert(`Managing event: ${event.eventName}`)}
+                    className="rounded-lg border px-4 py-2 text-sm font-medium"
                 >
-                  Manage Event
+                    Manage Event
                 </button>
               </div>
             </div>
