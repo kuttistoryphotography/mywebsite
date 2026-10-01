@@ -1,5 +1,5 @@
 "use client";
-
+import PhotoSelectionSection from "./sections/photo-selection-section";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -58,6 +58,12 @@ const sidebarTabs = [
     id: "booking_settings",
     label: "Booking Settings",
     icon: Image,
+  },
+  
+  {
+    id: "photo_selection",
+    label: "Photo Selection",
+    icon: Camera,
   },
 ];
 
@@ -155,6 +161,7 @@ export default function AdminDashboard() {
       case "contact": return <ContactSection />;
       case "support": return <SupportSection />;
       case "faq": return <FaqSection />;
+      case "photo_selection": return <PhotoSelectionSection />;
       default: return <QuotesSection />;
     }
   };
