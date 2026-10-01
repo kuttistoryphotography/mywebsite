@@ -53,7 +53,52 @@ export default function PhotoSelectionSection() {
       setLoading(false);
     }
   }
+  
+  async function handleCreateEvent() {
+    if (!eventName.trim() || !eventCode.trim() || !clientName.trim()) {
+        alert("Please fill all required fields.");
+        return;
+    }
 
+    try {
+        setCreating(true);
+
+        const response = await fetch("/api/photo-selection/events", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            eventName: eventName.trim(),
+            eventCode: eventCode.trim().toUpperCase(),
+            clientName: clientName.trim(),
+            selectionLimit: Number(selectionLimit),
+        }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        alert(data.error || "Failed to create event.");
+        return;
+        }
+
+        alert("Photo Selection Event created successfully.");
+
+        setEventName("");
+        setEventCode("");
+        setClientName("");
+        setSelectionLimit("250");
+        setShowCreateForm(false);
+
+        await loadEvents();
+    } catch (error) {
+        console.error("Create photo selection event error:", error);
+        alert("Something went wrong while creating the event.");
+    } finally {
+        setCreating(false);
+    }
+    }
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -163,9 +208,11 @@ export default function PhotoSelectionSection() {
             <div className="mt-6 flex justify-end">
             <button
                 type="button"
-                className="rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-amber-400"
+                onClick={handleCreateEvent}
+                disabled={creating}
+                className="rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
             >
-                Create Event
+                {creating ? "Creating..." : "Create Event"}
             </button>
             </div>
         </div>
