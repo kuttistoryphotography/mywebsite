@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type PhotoSelectionEvent = {
   id: string;
@@ -13,6 +14,7 @@ type PhotoSelectionEvent = {
 };
 
 export default function PhotoSelectionSection() {
+  const router = useRouter();
   const [events, setEvents] = useState<PhotoSelectionEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -276,7 +278,9 @@ export default function PhotoSelectionSection() {
 
                 <button
                     type="button"
-                    onClick={() => alert(`Managing event: ${event.eventName}`)}
+                    onClick={() =>
+                    router.push(`/admin/photo-selection/${event.id}`)
+                    }
                     className="rounded-lg border px-4 py-2 text-sm font-medium"
                 >
                     Manage Event
