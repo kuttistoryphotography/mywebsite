@@ -18,6 +18,8 @@ export async function GET() {
 export async function POST(
   request: NextRequest
 ) {
+    console.log("🔥🔥 SUBMIT API REACHED 🔥🔥");
+    
   try {
     await connectDB();
 
