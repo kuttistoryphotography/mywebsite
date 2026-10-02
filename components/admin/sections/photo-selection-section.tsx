@@ -54,6 +54,27 @@ export default function PhotoSelectionSection() {
     const [loadingPhotos, setLoadingPhotos] =
     useState(false);
 
+    const [showSelectionModal, setShowSelectionModal] =
+      useState(false);
+
+    type ClientSelectedPhoto = {
+      id: string;
+      originalFilename: string;
+      thumbnailUrl: string | null;
+      previewUrl: string | null;
+      sequence: number | null;
+      decidedAt?: string;
+    };
+
+    const [selectedPhotos, setSelectedPhotos] =
+      useState<ClientSelectedPhoto[]>([]);
+
+    const [rejectedPhotos, setRejectedPhotos] =
+      useState<ClientSelectedPhoto[]>([]);
+
+    const [loadingSelection, setLoadingSelection] =
+      useState(false);
+
   useEffect(() => {
     loadEvents();
   }, []);
@@ -194,7 +215,51 @@ export default function PhotoSelectionSection() {
     } finally {
         setLoadingPhotos(false);
     }
+  }
+
+  async function openSelection(
+    event: PhotoSelectionEvent
+  ) {
+    setSelectedEvent(event);
+    setShowSelectionModal(true);
+    setLoadingSelection(true);
+
+    try {
+      const response = await fetch(
+        `/api/photo-selection/events/${event.id}/selection`,
+        {
+          cache: "no-store",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error ||
+            "Failed to load client selection"
+        );
+      }
+
+      setSelectedPhotos(data.selected || []);
+      setRejectedPhotos(data.rejected || []);
+    } catch (error) {
+      console.error(
+        "[Photo Selection] Failed to load selection:",
+        error
+      );
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to load client selection"
+      );
+
+      setShowSelectionModal(false);
+    } finally {
+      setLoadingSelection(false);
     }
+  }
 
   function openUpload(event: PhotoSelectionEvent) {
     setSelectedEvent(event);
@@ -548,6 +613,16 @@ export default function PhotoSelectionSection() {
                     Manage Event
                   </button>
 
+                  {event.status === "submitted" && (
+                    <button
+                      type="button"
+                      onClick={() => openSelection(event)}
+                      className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-medium text-green-500 transition hover:bg-green-500/20"
+                    >
+                      View Selection
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => deleteEvent(event)}
@@ -745,6 +820,219 @@ export default function PhotoSelectionSection() {
 
         </div>
       )}
+
+    {/* CLIENT SELECTION MODAL */}
+
+    {showSelectionModal && selectedEvent && (
+      <div className="fixed inset-0 z-50 bg-black/60 p-4">
+        <div className="mx-auto my-4 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border bg-background p-6 shadow-2xl">
+
+          {/* HEADER */}
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-xl font-semibold">
+                Client Selection
+              </h3>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {selectedEvent.eventName} •{" "}
+                {selectedEvent.clientName}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowSelectionModal(false)}
+              className="rounded-md px-2 py-1 text-lg text-muted-foreground hover:bg-muted"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* SUMMARY */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">
+                Selected Photos
+              </p>
+
+              <p className="mt-1 text-2xl font-semibold text-green-500">
+                {selectedPhotos.length}
+              </p>
+            </div>
+
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">
+                Rejected Photos
+              </p>
+
+              <p className="mt-1 text-2xl font-semibold">
+                {rejectedPhotos.length}
+              </p>
+            </div>
+          </div>
+
+          {/* LOADING */}
+          {loadingSelection && (
+            <div className="mt-6 rounded-xl border p-8 text-center text-sm text-muted-foreground">
+              Loading client selection...
+            </div>
+          )}
+
+          {/* SELECTED PHOTOS */}
+          {!loadingSelection && (
+            <div className="mt-6">
+
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h4 className="text-sm font-semibold">
+                    Selected Photos
+                  </h4>
+
+                  <p className="text-xs text-muted-foreground">
+                    Exact original filenames selected by the client.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={selectedPhotos.length === 0}
+                  onClick={() => {
+                    const filenames =
+                      selectedPhotos
+                        .map(
+                          (photo, index) =>
+                            `${index + 1}. ${photo.originalFilename}`
+                        )
+                        .join("\n");
+
+                    navigator.clipboard.writeText(
+                      filenames
+                    );
+
+                    alert(
+                      "Selected filenames copied to clipboard."
+                    );
+                  }}
+                  className="rounded-lg border px-4 py-2 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  COPY ALL FILENAMES
+                </button>
+              </div>
+
+              {selectedPhotos.length === 0 ? (
+                <div className="rounded-xl border p-8 text-center text-sm text-muted-foreground">
+                  No selected photos found.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {selectedPhotos.map(
+                    (photo, index) => (
+                      <div
+                        key={photo.id}
+                        className="flex items-center gap-3 rounded-lg border p-3"
+                      >
+                        <span className="w-8 shrink-0 text-xs font-semibold text-muted-foreground">
+                          {String(index + 1).padStart(
+                            2,
+                            "0"
+                          )}
+                        </span>
+
+                        {photo.thumbnailUrl ? (
+                          <img
+                            src={photo.thumbnailUrl}
+                            alt={photo.originalFilename}
+                            className="h-12 w-12 shrink-0 rounded-md object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-muted text-[10px]">
+                            No Image
+                          </div>
+                        )}
+
+                        <p
+                          className="min-w-0 flex-1 break-all text-sm font-medium"
+                          title={photo.originalFilename}
+                        >
+                          {photo.originalFilename}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* REJECTED PHOTOS */}
+          {!loadingSelection &&
+            rejectedPhotos.length > 0 && (
+              <div className="mt-8">
+
+                <h4 className="text-sm font-semibold">
+                  Rejected Photos
+                </h4>
+
+                <p className="mb-3 text-xs text-muted-foreground">
+                  Photos the client rejected.
+                </p>
+
+                <div className="space-y-2">
+                  {rejectedPhotos.map(
+                    (photo, index) => (
+                      <div
+                        key={photo.id}
+                        className="flex items-center gap-3 rounded-lg border p-3 opacity-70"
+                      >
+                        <span className="w-8 shrink-0 text-xs font-semibold text-muted-foreground">
+                          {String(index + 1).padStart(
+                            2,
+                            "0"
+                          )}
+                        </span>
+
+                        {photo.thumbnailUrl ? (
+                          <img
+                            src={photo.thumbnailUrl}
+                            alt={photo.originalFilename}
+                            className="h-12 w-12 shrink-0 rounded-md object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-muted text-[10px]">
+                            No Image
+                          </div>
+                        )}
+
+                        <p
+                          className="min-w-0 flex-1 break-all text-sm"
+                          title={photo.originalFilename}
+                        >
+                          {photo.originalFilename}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
+          {/* CLOSE */}
+          <div className="mt-6 flex justify-end">
+            <button
+              type="button"
+              onClick={() =>
+                setShowSelectionModal(false)
+              }
+              className="rounded-lg border px-5 py-2.5 text-sm font-medium"
+            >
+              Close
+            </button>
+          </div>
+
+        </div>
+      </div>
+    )}
 
     {/* MANAGE EVENT MODAL */}
 
