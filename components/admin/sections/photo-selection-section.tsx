@@ -258,6 +258,71 @@ export default function PhotoSelectionSection() {
     }
     }
 
+  async function deleteEvent(
+    event: PhotoSelectionEvent
+  ) {
+    const confirmed = window.confirm(
+      `Delete "${event.eventName}"?\n\n` +
+        `Event Code: ${event.eventCode}\n` +
+        `Client: ${event.clientName}\n` +
+        `Photos: ${event.totalPhotos}\n\n` +
+        `This will permanently delete the event, ` +
+        `all selection photos, File Manager records, ` +
+        `Cloudinary images, selections and submissions.\n\n` +
+        `This action cannot be undone.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/photo-selection/events/${event.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || "Failed to delete event"
+        );
+      }
+
+      // Remove event from the current list
+      setEvents((current) =>
+        current.filter(
+          (item) => item.id !== event.id
+        )
+      );
+
+      // Close manage modal if this event is open
+      if (selectedEvent?.id === event.id) {
+        setShowManageModal(false);
+        setSelectedEvent(null);
+        setEventPhotos([]);
+      }
+
+      alert(
+        `Event "${event.eventName}" deleted successfully.`
+      );
+    } catch (error) {
+      console.error(
+        "[Photo Selection] Delete event failed:",
+        error
+      );
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete event"
+      );
+    }
+  }
+
   async function handleFiles(
     event: ChangeEvent<HTMLInputElement>
   ) {
@@ -463,7 +528,6 @@ export default function PhotoSelectionSection() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-
                   <button
                     type="button"
                     onClick={() => openUpload(event)}
@@ -484,6 +548,13 @@ export default function PhotoSelectionSection() {
                     Manage Event
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => deleteEvent(event)}
+                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-500/20"
+                  >
+                    Delete Event
+                  </button>
                 </div>
 
               </div>
