@@ -8,6 +8,13 @@ import PhotoSelectionSubmission from "@/models/PhotoSelectionSubmission";
 
 export const runtime = "nodejs";
 
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    message: "Photo selection submit API is reachable",
+  });
+}
+
 export async function POST(
   request: NextRequest
 ) {
