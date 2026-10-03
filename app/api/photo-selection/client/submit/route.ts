@@ -11,7 +11,8 @@ export const runtime = "nodejs";
 export async function GET() {
   return NextResponse.json({
     success: true,
-    message: "Photo selection submit API is reachable",
+    message:
+      "Photo selection updated successfully.",
   });
 }
 
@@ -68,6 +69,14 @@ export async function POST(
       );
     }
 
+    const existingSubmission =
+      await PhotoSelectionSubmission.findOne({
+        eventId: event._id,
+      });
+
+    const isResubmission =
+      !!existingSubmission;
+
     if (event.status === "closed") {
       return NextResponse.json(
         {
@@ -99,25 +108,6 @@ export async function POST(
           error: "No photo decisions were submitted",
         },
         { status: 400 }
-      );
-    }
-
-    /*
-     * Prevent duplicate final submissions
-     */
-    const existingSubmission =
-      await PhotoSelectionSubmission.findOne({
-        eventId: event._id,
-      });
-
-    if (existingSubmission) {
-      return NextResponse.json(
-        {
-          success: false,
-          error:
-            "This photo selection has already been submitted.",
-        },
-        { status: 409 }
       );
     }
 
@@ -188,8 +178,13 @@ export async function POST(
     }
 
     /*
-     * Create decision records
-     */
+    * Replace previous decision records
+    * with the client's latest final selection.
+    */
+    await PhotoSelectionDecision.deleteMany({
+      eventId: event._id,
+    });
+
     const decisions = [
       ...selectedPhotos.map((photo: any) => ({
         eventId: event._id,
@@ -217,15 +212,25 @@ export async function POST(
     }
 
     /*
-     * Create final submission record
-     */
-    await PhotoSelectionSubmission.create({
-      eventId: event._id,
-      selectedCount: selectedPhotos.length,
-      rejectedCount: rejectedPhotos.length,
-      status: "submitted",
-      submittedAt: new Date(),
-    });
+    * Create or update final submission record
+    */
+    await PhotoSelectionSubmission.findOneAndUpdate(
+      {
+        eventId: event._id,
+      },
+      {
+        $set: {
+          selectedCount: selectedPhotos.length,
+          rejectedCount: rejectedPhotos.length,
+          status: "submitted",
+          submittedAt: new Date(),
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
 
     /*
      * Mark event as submitted
@@ -234,14 +239,14 @@ export async function POST(
     await event.save();
 
     return NextResponse.json({
-      success: true,
-      message:
-        "Photo selection submitted successfully.",
-      selectedCount:
-        selectedPhotos.length,
-      rejectedCount:
-        rejectedPhotos.length,
-    });
+        success: true,
+        message:
+          "Photo selection updated successfully.",
+        selectedCount:
+          selectedPhotos.length,
+        rejectedCount:
+          rejectedPhotos.length,
+      });
   } catch (error) {
     console.error(
       "[Photo Selection Client Submit]",
