@@ -239,14 +239,16 @@ export async function POST(
     await event.save();
 
     return NextResponse.json({
-        success: true,
-        message:
-          "Photo selection updated successfully.",
-        selectedCount:
-          selectedPhotos.length,
-        rejectedCount:
-          rejectedPhotos.length,
-      });
+      success: true,
+      message: isResubmission
+        ? "Photo selection updated successfully."
+        : "Photo selection submitted successfully.",
+      selectedCount:
+        selectedPhotos.length,
+      rejectedCount:
+        rejectedPhotos.length,
+    });
+    
   } catch (error) {
     console.error(
       "[Photo Selection Client Submit]",

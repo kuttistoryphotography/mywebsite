@@ -690,7 +690,7 @@ export default function PhotoSelectionSection() {
       {/* CREATE EVENT MODAL */}
 
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
 
           <div className="w-full max-w-lg rounded-2xl border bg-background p-6 shadow-2xl">
 
@@ -839,7 +839,7 @@ export default function PhotoSelectionSection() {
     {/* CLIENT SELECTION MODAL */}
 
     {showSelectionModal && selectedEvent && (
-      <div className="fixed inset-0 z-50 bg-black/60 p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
         <div className="mx-auto my-4 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border bg-background p-6 shadow-2xl">
 
           {/* HEADER */}
@@ -1052,7 +1052,7 @@ export default function PhotoSelectionSection() {
     {/* MANAGE EVENT MODAL */}
 
     {showManageModal && selectedEvent && (
-    <div className="fixed inset-0 z-50 bg-black/60 p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
 
         <div className="mx-auto my-4 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border bg-background p-6 shadow-2xl">
 
