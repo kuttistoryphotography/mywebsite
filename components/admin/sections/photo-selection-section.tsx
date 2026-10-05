@@ -12,6 +12,21 @@ type PhotoSelectionEvent = {
   status: "active" | "submitted" | "closed";
 };
 
+function sortPhotosByFilename<T extends { originalFilename: string }>(
+  photos: T[]
+): T[] {
+  return [...photos].sort((a, b) =>
+    a.originalFilename.localeCompare(
+      b.originalFilename,
+      undefined,
+      {
+        numeric: true,
+        sensitivity: "base",
+      }
+    )
+  );
+}
+
 export default function PhotoSelectionSection() {
   const [events, setEvents] = useState<PhotoSelectionEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -899,7 +914,7 @@ export default function PhotoSelectionSection() {
                   disabled={selectedPhotos.length === 0}
                   onClick={() => {
                     const filenames =
-                      selectedPhotos
+                      sortPhotosByFilename(selectedPhotos)
                         .map(
                           (photo, index) =>
                             `${index + 1}. ${photo.originalFilename}`
@@ -926,7 +941,7 @@ export default function PhotoSelectionSection() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {selectedPhotos.map(
+                  {sortPhotosByFilename(selectedPhotos).map(
                     (photo, index) => (
                       <div
                         key={photo.id}
@@ -979,7 +994,7 @@ export default function PhotoSelectionSection() {
                 </p>
 
                 <div className="space-y-2">
-                  {rejectedPhotos.map(
+                  {sortPhotosByFilename(rejectedPhotos).map(
                     (photo, index) => (
                       <div
                         key={photo.id}
