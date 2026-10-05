@@ -732,7 +732,7 @@ export default function PhotoSelectionSection() {
                   onChange={(e) =>
                     setEventName(e.target.value)
                   }
-                  placeholder="Jeevana Wedding"
+                  placeholder="Arun & Priya Wedding"
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -753,7 +753,7 @@ export default function PhotoSelectionSection() {
                         .replace(/\s/g, "")
                     )
                   }
-                  placeholder="JEEVANA2026"
+                  placeholder="ARUNPRIYA2026"
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm uppercase outline-none focus:ring-2 focus:ring-primary"
                 />
 
@@ -774,7 +774,7 @@ export default function PhotoSelectionSection() {
                   onChange={(e) =>
                     setClientName(e.target.value)
                   }
-                  placeholder="Jeevana"
+                  placeholder="Arun & Priya"
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
