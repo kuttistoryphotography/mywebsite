@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-
+import Notification from "@/models/Notification";
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
 import PhotoSelectionDecision from "@/models/PhotoSelectionDecision";
@@ -237,6 +237,23 @@ export async function POST(
      */
     event.status = "submitted";
     await event.save();
+
+    const adminUserId = event.createdBy;
+
+    if (adminUserId) {
+      await Notification.create({
+        userId: adminUserId,
+        type: "photo_selection_submitted",
+        title: "Photo Selection Submitted",
+        description:
+          `${event.clientName} submitted a photo selection for ${event.eventName}. ` +
+          `Selected: ${selectedPhotos.length}, Rejected: ${rejectedPhotos.length}.`,
+        isRead: false,
+        relatedEntityType: "photo_selection_event",
+        relatedEntityId: String(event._id),
+        actionUrl: "/admin?tab=photo-selection",
+      });
+    }
 
     return NextResponse.json({
       success: true,

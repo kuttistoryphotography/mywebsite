@@ -1,9 +1,19 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export type NotificationType =
-  | 'quote_requested' | 'quote_responded' | 'quote_accepted' | 'quote_rejected'
-  | 'booking_confirmed' | 'booking_cancelled' | 'booking_updated'
-  | 'payment_received' | 'message' | 'system' | 'payment_rejected' | 'payment_verified';
+  | 'quote_requested'
+  | 'quote_responded'
+  | 'quote_accepted'
+  | 'quote_rejected'
+  | 'booking_confirmed'
+  | 'booking_cancelled'
+  | 'booking_updated'
+  | 'payment_received'
+  | 'message'
+  | 'system'
+  | 'payment_rejected'
+  | 'payment_verified'
+  | 'photo_selection_submitted';
 
 export interface INotification extends Document {
   userId: mongoose.Types.ObjectId;
@@ -24,9 +34,21 @@ const NotificationSchema = new Schema<INotification>(
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     type: {
       type: String,
-      enum: ['quote_requested','quote_responded','quote_accepted','quote_rejected',
-             'booking_confirmed','booking_cancelled','booking_updated',
-             'payment_received','message','system', 'payment_rejected', 'payment_verified'],
+      enum: [
+              'quote_requested',
+              'quote_responded',
+              'quote_accepted',
+              'quote_rejected',
+              'booking_confirmed',
+              'booking_cancelled',
+              'booking_updated',
+              'payment_received',
+              'message',
+              'system',
+              'payment_rejected',
+              'payment_verified',
+              'photo_selection_submitted',
+            ],
       required: true,
     },
     title: { type: String, required: true },
