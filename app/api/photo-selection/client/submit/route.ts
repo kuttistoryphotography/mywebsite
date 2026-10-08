@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
+import resend from "@/lib/resend";
 import Notification from "@/models/Notification";
+import PhotoSelectionDecision from "@/models/PhotoSelectionDecision";
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
-import PhotoSelectionDecision from "@/models/PhotoSelectionDecision";
 import PhotoSelectionSubmission from "@/models/PhotoSelectionSubmission";
+import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
@@ -253,6 +254,62 @@ export async function POST(
         relatedEntityId: String(event._id),
         actionUrl: "/admin?tab=photo-selection",
       });
+    }
+
+    try {
+      await resend.emails.send({
+        from: "KuttiStory Photography <noreply@kuttistoryphotography.com>",
+        to: process.env.ADMIN_EMAIL!,
+        subject: isResubmission
+          ? `🔄 Photo Selection Updated – ${event.eventName}`
+          : `📸 New Photo Selection – ${event.eventName}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+            <h2>
+              ${isResubmission ? "🔄 Photo Selection Updated" : "📸 New Photo Selection Submitted"}
+            </h2>
+
+            <p>A photo selection has been ${isResubmission ? "updated" : "submitted"}.</p>
+
+            <table style="border-collapse: collapse; width: 100%;">
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Event</td>
+                <td style="padding: 8px;">${event.eventName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Client</td>
+                <td style="padding: 8px;">${event.clientName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Event Code</td>
+                <td style="padding: 8px;">${event.eventCode}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Selected</td>
+                <td style="padding: 8px;">${selectedPhotos.length}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Rejected</td>
+                <td style="padding: 8px;">${rejectedPhotos.length}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; font-weight: bold;">Status</td>
+                <td style="padding: 8px;">
+                  ${isResubmission ? "Updated Selection" : "New Submission"}
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin-top: 24px;">
+              Please review the selection in the KuttiStory Admin Panel.
+            </p>
+          </div>
+        `,
+      });
+
+      console.log("📧 PHOTO SELECTION EMAIL SENT");
+    } catch (emailError) {
+      console.error("❌ PHOTO SELECTION EMAIL ERROR:", emailError);
     }
 
     return NextResponse.json({
