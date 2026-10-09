@@ -325,8 +325,8 @@ export default function ClientPhotoGallery({
 
   return (
     <main className="min-h-screen bg-[#090909] text-white">
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#090909]/95 px-4 py-4 backdrop-blur sm:px-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#090909]/95 px-4 py-2.5 backdrop-blur sm:px-6 sm:py-3">
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold tracking-[0.2em]">
               KUTTISTORY
@@ -390,11 +390,11 @@ export default function ClientPhotoGallery({
         ) : (
           <>
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
-              <div className="relative flex min-h-[320px] items-center justify-center sm:min-h-[520px]">
+              <div className="relative flex h-[45vh] min-h-[260px] max-h-[560px] items-center justify-center sm:h-[58vh] sm:min-h-[360px] lg:h-[65vh]">
                 <img
                   src={current.uri}
                   alt={current.filename}
-                  className="max-h-[65vh] w-full object-contain"
+                  className="h-full w-full object-contain"
                 />
 
                 <button
