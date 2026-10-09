@@ -2,14 +2,16 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { ArrowRight, Images, LockKeyhole } from "lucide-react";
+import ClientPhotoGallery from "./ClientPhotoGallery";
 
 export default function EventsPage() {
-  const router = useRouter();
   const [eventCode, setEventCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loadedEvent, setLoadedEvent] = useState<any>(null);
+  const [loadedPhotos, setLoadedPhotos] = useState<any[]>([]);
 
   const handleContinue = async (
     e: React.FormEvent<HTMLFormElement>
@@ -40,16 +42,40 @@ export default function EventsPage() {
         return;
       }
 
-      // Pass the validated code to the photo-selection page.
-      router.push(
-        `/photo-selection?code=${encodeURIComponent(code)}`
-      );
+      setLoadedEvent(data.event);
+
+        setLoadedPhotos(
+        (data.photos || []).map((photo: any) => ({
+            id: String(photo.id),
+            filename: photo.originalFilename,
+            uri:
+            photo.previewUrl ||
+            photo.thumbnailUrl ||
+            photo.cloudinaryUrl ||
+            "",
+        }))
+        );
     } catch {
       setError("Unable to connect. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  if (loadedEvent) {
+    return (
+        <ClientPhotoGallery
+        event={loadedEvent}
+        photos={loadedPhotos}
+        onBack={() => {
+            setLoadedEvent(null);
+            setLoadedPhotos([]);
+            setEventCode("");
+            setError("");
+        }}
+        />
+    );
+    }
 
   return (
     <main className="min-h-screen bg-[#090909] text-white flex items-center justify-center px-5 py-28">
