@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       eventCode,
       eventName,
       clientName,
+      clientEmail,
       clientId,
       bookingId,
       folderId,
@@ -45,6 +46,9 @@ export async function POST(request: NextRequest) {
     const cleanEventCode = String(eventCode).trim().toUpperCase();
     const cleanEventName = String(eventName).trim();
     const cleanClientName = String(clientName).trim();
+    const cleanClientEmail = clientEmail
+      ? String(clientEmail).trim().toLowerCase()
+      : "";
 
     // Check duplicate event code
     const existingEvent = await PhotoSelectionEvent.findOne({
@@ -86,6 +90,7 @@ export async function POST(request: NextRequest) {
       eventCode: cleanEventCode,
       eventName: cleanEventName,
       clientName: cleanClientName,
+      clientEmail: cleanClientEmail || undefined,
 
       clientId: clientId || undefined,
       bookingId: bookingId || undefined,
@@ -110,6 +115,7 @@ export async function POST(request: NextRequest) {
           eventCode: event.eventCode,
           eventName: event.eventName,
           clientName: event.clientName,
+          clientEmail: event.clientEmail || null,
           clientId: event.clientId
             ? String(event.clientId)
             : null,
@@ -163,6 +169,7 @@ export async function GET() {
         eventCode: event.eventCode,
         eventName: event.eventName,
         clientName: event.clientName,
+        clientEmail: event.clientEmail || null,
         clientId: event.clientId
           ? String(event.clientId)
           : null,

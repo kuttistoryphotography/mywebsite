@@ -36,6 +36,7 @@ export default function PhotoSelectionSection() {
   const [eventName, setEventName] = useState("");
   const [eventCode, setEventCode] = useState("");
   const [clientName, setClientName] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
   const [selectionLimit, setSelectionLimit] = useState("250");
 
   const [creating, setCreating] = useState(false);
@@ -157,6 +158,7 @@ export default function PhotoSelectionSection() {
             eventCode,
             eventName,
             clientName,
+            clientEmail,
             selectionLimit: limit,
           }),
         }
@@ -175,6 +177,7 @@ export default function PhotoSelectionSection() {
       setEventName("");
       setEventCode("");
       setClientName("");
+      setClientEmail("");
       setSelectionLimit("250");
 
       await loadEvents();
@@ -777,6 +780,25 @@ export default function PhotoSelectionSection() {
                   placeholder="Arun & Priya"
                   className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
                 />
+              </div>
+
+              {/* CLIENT EMAIL */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium">
+                  Client Email
+                </label>
+
+                <input
+                  type="email"
+                  value={clientEmail}
+                  onChange={(e) => setClientEmail(e.target.value)}
+                  placeholder="client@example.com"
+                  className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary"
+                />
+
+                <p className="mt-1 text-xs text-muted-foreground">
+                  The client will receive a confirmation email after submitting their photo selection.
+                </p>
               </div>
 
               {/* LIMIT */}

@@ -9,6 +9,7 @@ export interface IPhotoSelectionEvent extends Document {
   eventCode: string;
   eventName: string;
   clientName: string;
+  clientEmail?: string;
 
   // Optional links to your existing system
   clientId?: mongoose.Types.ObjectId;
@@ -48,6 +49,12 @@ const PhotoSelectionEventSchema =
         type: String,
         required: true,
         trim: true,
+      },
+
+      clientEmail: {
+        type: String,
+        trim: true,
+        lowercase: true,
       },
 
       clientId: {

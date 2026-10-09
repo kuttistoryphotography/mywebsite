@@ -307,9 +307,76 @@ export async function POST(
         `,
       });
 
-      console.log("📧 PHOTO SELECTION EMAIL SENT");
+    console.log("📧 PHOTO SELECTION EMAIL SENT");
     } catch (emailError) {
       console.error("❌ PHOTO SELECTION EMAIL ERROR:", emailError);
+    }
+    
+    // Send confirmation email to the client
+    if (event.clientEmail) {
+      try {
+        await resend.emails.send({
+          from: "KuttiStory Photography <noreply@kuttistoryphotography.com>",
+          to: event.clientEmail,
+          subject: isResubmission
+            ? `Your Photo Selection Has Been Updated – ${event.eventName}`
+            : `Your Photo Selection Is Confirmed – ${event.eventName}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #222;">
+              <h2>
+                ${isResubmission ? "Your Photo Selection Has Been Updated" : "Your Photo Selection Has Been Submitted Successfully"}
+              </h2>
+
+              <p>Dear ${event.clientName},</p>
+
+              <p>
+                ${
+                  isResubmission
+                    ? "Your updated photo selection has been received successfully."
+                    : "Thank you for choosing KuttiStory Photography. We have received your photo selection successfully."
+                }
+              </p>
+
+              <table style="border-collapse: collapse; width: 100%;">
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Event</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee;">${event.eventName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Event Code</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee;">${event.eventCode}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Selected Photos</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee;">${selectedPhotos.length}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Rejected Photos</td>
+                  <td style="padding: 10px; border-bottom: 1px solid #eee;">${rejectedPhotos.length}</td>
+                </tr>
+              </table>
+
+              <p style="margin-top: 24px;">
+                ${
+                  isResubmission
+                    ? "Your latest selection will be used for the next stage of processing."
+                    : "Our team will review your selection and proceed with the next stage."
+                }
+              </p>
+
+              <p>Thank you,<br/><strong>KuttiStory Photography</strong></p>
+              <p style="font-size: 12px; color: #777;">Capturing Your Best Moments with KuttiStory Photography</p>
+            </div>
+          `,
+        });
+
+        console.log("📧 CLIENT CONFIRMATION EMAIL SENT");
+      } catch (clientEmailError) {
+        console.error(
+          "❌ CLIENT CONFIRMATION EMAIL ERROR:",
+          clientEmailError
+        );
+      }
     }
 
     return NextResponse.json({
