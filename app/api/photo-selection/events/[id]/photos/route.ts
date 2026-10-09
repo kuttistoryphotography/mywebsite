@@ -16,6 +16,7 @@ import { CloudinaryFile } from "@/models/CloudinaryFile";
 
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
+import PhotoSelectionActivity from "@/models/PhotoSelectionActivity";
 
 export async function POST(
   request: NextRequest,
@@ -292,6 +293,27 @@ export async function POST(
 
     await event.save();
 
+    // Record photo upload activity
+    try {
+      await PhotoSelectionActivity.create({
+        eventId: event._id,
+        eventCode: event.eventCode,
+        eventName: event.eventName,
+        clientName: event.clientName,
+        activityType: "photos_uploaded",
+        description: `Photo "${originalName}" was uploaded to the event.`,
+        photoCount: 1,
+        createdBy: session.userId,
+      });
+
+      console.log("PHOTO UPLOAD ACTIVITY RECORDED");
+    } catch (activityError) {
+      console.error(
+        "PHOTO UPLOAD ACTIVITY ERROR:",
+        activityError
+      );
+    }
+
     // --------------------------------------------------
     // RESPONSE
     // --------------------------------------------------
@@ -551,6 +573,27 @@ export async function DELETE(
       await PhotoSelectionPhoto.countDocuments({
         eventId: event._id,
       });
+
+    // Record photo deletion activity
+    try {
+      await PhotoSelectionActivity.create({
+        eventId: event._id,
+        eventCode: event.eventCode,
+        eventName: event.eventName,
+        clientName: event.clientName,
+        activityType: "photo_deleted",
+        description: `Photo "${photo.originalFilename}" was deleted from the event.`,
+        photoCount: 1,
+        createdBy: session.userId,
+      });
+
+      console.log("PHOTO DELETION ACTIVITY RECORDED");
+    } catch (activityError) {
+      console.error(
+        "PHOTO DELETION ACTIVITY ERROR:",
+        activityError
+      );
+    }
 
     await event.save();
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-
+import PhotoSelectionActivity from "@/models/PhotoSelectionActivity";
 import connectDB from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
@@ -106,6 +106,26 @@ export async function POST(request: NextRequest) {
 
       createdBy: session.userId,
     });
+
+    // Record event creation activity
+    try {
+      await PhotoSelectionActivity.create({
+        eventId: event._id,
+        eventCode: event.eventCode,
+        eventName: event.eventName,
+        clientName: event.clientName,
+        activityType: "event_created",
+        description: `Photo selection event "${event.eventName}" was created.`,
+        createdBy: session.userId,
+      });
+
+      console.log("📝 PHOTO SELECTION EVENT CREATION RECORDED");
+    } catch (activityError) {
+      console.error(
+        "❌ PHOTO SELECTION ACTIVITY ERROR:",
+        activityError
+      );
+    }
 
     return NextResponse.json(
       {

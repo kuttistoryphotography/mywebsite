@@ -6,6 +6,7 @@ import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
 import PhotoSelectionSubmission from "@/models/PhotoSelectionSubmission";
 import { NextRequest, NextResponse } from "next/server";
+import PhotoSelectionActivity from "@/models/PhotoSelectionActivity";
 
 export const runtime = "nodejs";
 
@@ -238,6 +239,31 @@ export async function POST(
      */
     event.status = "submitted";
     await event.save();
+
+    // Record photo selection activity
+    try {
+      await PhotoSelectionActivity.create({
+        eventId: event._id,
+        eventCode: event.eventCode,
+        eventName: event.eventName,
+        clientName: event.clientName,
+        activityType: isResubmission
+          ? "selection_updated"
+          : "selection_submitted",
+        description: isResubmission
+          ? `${event.clientName} updated their photo selection.`
+          : `${event.clientName} submitted their photo selection.`,
+        selectedCount: selectedPhotos.length,
+        rejectedCount: rejectedPhotos.length,
+      });
+
+      console.log("📝 PHOTO SELECTION ACTIVITY RECORDED");
+    } catch (activityError) {
+      console.error(
+        "❌ PHOTO SELECTION ACTIVITY ERROR:",
+        activityError
+      );
+    }
 
     const adminUserId = event.createdBy;
 

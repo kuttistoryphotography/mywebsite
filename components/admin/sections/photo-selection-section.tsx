@@ -46,6 +46,20 @@ export default function PhotoSelectionSection() {
 
   const [showManageModal, setShowManageModal] = useState(false);
 
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [activities, setActivities] = useState<
+    {
+      _id: string;
+      activityType: string;
+      description: string;
+      selectedCount?: number;
+      rejectedCount?: number;
+      photoCount?: number;
+      createdAt: string;
+    }[]
+  >([]);
+  const [loadingActivities, setLoadingActivities] = useState(false);
+
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -238,6 +252,7 @@ export default function PhotoSelectionSection() {
   async function openSelection(
     event: PhotoSelectionEvent
   ) {
+
     setSelectedEvent(event);
     setShowSelectionModal(true);
     setLoadingSelection(true);
@@ -276,6 +291,44 @@ export default function PhotoSelectionSection() {
       setShowSelectionModal(false);
     } finally {
       setLoadingSelection(false);
+    }
+  }
+  
+  async function openActivityHistory(event: PhotoSelectionEvent) {
+    setSelectedEvent(event);
+    setActivities([]);
+    setShowActivityModal(true);
+    setLoadingActivities(true);
+
+    try {
+      const response = await fetch(
+        `/api/photo-selection/events/${event.id}/activity`,
+        { cache: "no-store" }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message ||
+            data.error ||
+            "Failed to load activity history"
+        );
+      }
+
+      setActivities(data.activities || []);
+    } catch (error) {
+      console.error("Failed to load activity history:", error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to load activity history"
+      );
+
+      setShowActivityModal(false);
+    } finally {
+      setLoadingActivities(false);
     }
   }
 
@@ -629,6 +682,14 @@ export default function PhotoSelectionSection() {
                     className="rounded-lg border px-4 py-2 text-sm font-medium"
                   >
                     Manage Event
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => openActivityHistory(event)}
+                    className="rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-500 transition hover:bg-blue-500/20"
+                  >
+                    Activity History
                   </button>
 
                   {event.status === "submitted" && (
@@ -1283,6 +1344,105 @@ export default function PhotoSelectionSection() {
 
     </div>
     )}
+
+
+      {/* ACTIVITY HISTORY MODAL */}
+      {showActivityModal && selectedEvent && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
+          <div className="mx-auto max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border bg-background p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-semibold">
+                  Activity History
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {selectedEvent.eventName} · {selectedEvent.clientName}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Event Code: {selectedEvent.eventCode}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowActivityModal(false)}
+                className="rounded-md px-2 py-1 text-lg text-muted-foreground hover:bg-muted"
+                aria-label="Close activity history"
+              >
+                ×
+              </button>
+            </div>
+
+            {loadingActivities ? (
+              <div className="mt-6 rounded-xl border p-8 text-center text-sm text-muted-foreground">
+                Loading activity history...
+              </div>
+            ) : activities.length === 0 ? (
+              <div className="mt-6 rounded-xl border p-8 text-center text-sm text-muted-foreground">
+                No activity history recorded yet.
+              </div>
+            ) : (
+              <div className="mt-6 space-y-3">
+                {activities.map((activity) => (
+                  <div
+                    key={activity._id}
+                    className="rounded-xl border p-4"
+                  >
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="font-medium">
+                          {activity.description}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {activity.activityType.replace(/_/g, " ")}
+                        </p>
+                      </div>
+
+                      <time className="shrink-0 text-xs text-muted-foreground">
+                        {new Date(activity.createdAt).toLocaleString()}
+                      </time>
+                    </div>
+
+                    {(activity.selectedCount !== undefined ||
+                      activity.rejectedCount !== undefined ||
+                      activity.photoCount !== undefined) && (
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                        {activity.selectedCount !== undefined && (
+                          <span className="rounded-md border px-2 py-1">
+                            Selected: {activity.selectedCount}
+                          </span>
+                        )}
+
+                        {activity.rejectedCount !== undefined && (
+                          <span className="rounded-md border px-2 py-1">
+                            Rejected: {activity.rejectedCount}
+                          </span>
+                        )}
+
+                        {activity.photoCount !== undefined && (
+                          <span className="rounded-md border px-2 py-1">
+                            Photos: {activity.photoCount}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowActivityModal(false)}
+                className="rounded-lg border px-5 py-2.5 text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
