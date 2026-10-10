@@ -892,9 +892,14 @@ export default function ClientPhotoGallery({
                 .filter((card) => card.enabled)
                 .map((card, index) => (
                   <article key={`${card.title}-${index}`} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
-                    {card.image && (
-                      <div className="aspect-[16/9] overflow-hidden bg-white/5">
-                        <img src={card.image} alt={card.title} className="h-full w-full object-cover" loading="lazy" />
+                    {card.image && (                  
+                      <div className="overflow-hidden bg-white/5">
+                        <img
+                          src={card.image}
+                          alt={card.title}
+                          className="block h-auto w-full object-contain"
+                          loading="lazy"
+                        />
                       </div>
                     )}
                     <div className="p-5 sm:p-6">
