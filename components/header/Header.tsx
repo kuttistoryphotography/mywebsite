@@ -35,6 +35,7 @@ const accountMenuItems = [
   { label: "My Packages",   href: "/dashboard?tab=packages",    icon: Package },
   { label: "Favorites",     href: "/dashboard?tab=favorites",   icon: Heart },
   { label: "Payments",      href: "/dashboard?tab=payments",    icon: CreditCard },
+  { label: "Events",        href: "/events",                    icon: Calendar },
   { label: "Settings",      href: "/dashboard?tab=settings",    icon: Settings },
 ];
 
