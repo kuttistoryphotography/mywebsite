@@ -57,6 +57,51 @@ export default function ClientPhotoGallery({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  
+  const [selectionRestoredFor, setSelectionRestoredFor] = useState("");
+
+  useEffect(() => {
+    const eventCode = event.eventCode;
+    if (!eventCode || photos.length === 0) return;
+
+    try {
+      const storageKey = `photo-selection-${eventCode}`;
+      const saved = localStorage.getItem(storageKey);
+
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const currentPhotos = new Map(photos.map((photo) => [photo.id, photo]));
+
+        const restorePhotos = (items: Photo[]) =>
+          (Array.isArray(items) ? items : [])
+            .map((photo) => currentPhotos.get(String(photo.id)))
+            .filter((photo): photo is Photo => Boolean(photo));
+
+        setSelected(restorePhotos(parsed.selectedPhotos));
+        setRejected(restorePhotos(parsed.rejectedPhotos));
+      }
+    } catch (error) {
+      console.error("Failed to restore photo selection:", error);
+    }
+
+    setSelectionRestoredFor(eventCode);
+  }, [event.eventCode, photos]);
+
+  useEffect(() => {
+    if (!event.eventCode || selectionRestoredFor !== event.eventCode) return;
+
+    try {
+      localStorage.setItem(
+        `photo-selection-${event.eventCode}`,
+        JSON.stringify({
+          selectedPhotos: selected,
+          rejectedPhotos: rejected,
+        })
+      );
+    } catch (error) {
+      console.error("Failed to save photo selection:", error);
+    }
+  }, [event.eventCode, selected, rejected, selectionRestoredFor]);
 
   const [appInstructionCards, setAppInstructionCards] =
     useState<AppInstructionCard[]>([]);
