@@ -5,30 +5,50 @@ import { getCurrentUser } from '@/lib/auth';
 
 // Default initial settings
 const DEFAULT_HERO = {
-  backgroundImage: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp',
+  backgroundImage:
+    '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp',
   heading: 'Capturing Moments Into Eternity',
   backgroundMediaType: 'image',
-
   backgroundOpacity: 100,
   backgroundBlur: 0,
   backgroundBrightness: 100,
   overlayOpacity: 20,
   subheading: 'Kutti Story Photography',
-  paragraph: "We don't just take pictures; we craft visual legacies. Specializing in high-end storytelling and cinematic night shoots.",
+  paragraph:
+    "We don't just take pictures; we craft visual legacies. Specializing in high-end storytelling and cinematic night shoots.",
   badgeText: 'Kutti Story Photography',
   primaryButtonText: 'Book a Session',
   secondaryButtonText: 'View Portfolio',
   statsYears: '7+',
   statsStories: '213+',
   statsPassion: '100%',
-  heroCardImage: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp',
+  heroCardImage:
+    '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp',
   awardText: 'Award Winning Studio 2024',
 };
 
 const DEFAULT_SHOWCASE_SLIDES = [
-  { image1: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/13.webp', image2: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/11.webp', year: '2K23' },
-  { image1: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/19.webp', image2: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/05.webp', year: '2K24' },
-  { image1: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/02.webp', image2: '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/14.webp', year: '2K25' },
+  {
+    image1:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/13.webp',
+    image2:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/11.webp',
+    year: '2K23',
+  },
+  {
+    image1:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/19.webp',
+    image2:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/05.webp',
+    year: '2K24',
+  },
+  {
+    image1:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/02.webp',
+    image2:
+      '/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/14.webp',
+    year: '2K25',
+  },
 ];
 
 const DEFAULT_STORY_IMAGES = [
@@ -44,14 +64,30 @@ const DEFAULT_STORY_IMAGES = [
 
 const DEFAULT_HOME_IMAGES = [
   { key: 'about_main', label: 'About Section Main Image', url: '/01.webp' },
-  { key: 'about_secondary', label: 'About Section Secondary Image', url: '/01.webp' },
-  { key: 'featured_big', label: 'Featured Work Large Image', url: '/02.webp' },
-  { key: 'featured_small', label: 'Featured Work Small Image', url: '/03.webp' },
-  { key: 'philosophy_bg', label: 'Philosophy Section Background', url: '/04.webp' },
+  {
+    key: 'about_secondary',
+    label: 'About Section Secondary Image',
+    url: '/01.webp',
+  },
+  {
+    key: 'featured_big',
+    label: 'Featured Work Large Image',
+    url: '/02.webp',
+  },
+  {
+    key: 'featured_small',
+    label: 'Featured Work Small Image',
+    url: '/03.webp',
+  },
+  {
+    key: 'philosophy_bg',
+    label: 'Philosophy Section Background',
+    url: '/04.webp',
+  },
 ];
 
 const DEFAULT_SITE_SETTINGS = {
-  logo: "/placeholder-logo.png",
+  logo: '/placeholder-logo.png',
 };
 
 const DEFAULT_ABOUT_CONTENT = {
@@ -61,65 +97,101 @@ const DEFAULT_ABOUT_CONTENT = {
     'Every frame we create is driven by emotion, story, and authenticity.',
 };
 
-
 const DEFAULT_PHILOSOPHY = {
-  leftLines: [
-    "Organizers",
-    "Of Emotional",
-    "Super Events",
-  ],
-  label: "Our Philosophy",
+  leftLines: ['Organizers', 'Of Emotional', 'Super Events'],
+  label: 'Our Philosophy',
   heading:
-    "We are visual storytellers capturing real emotions through light, timing, and human connection.",
-  description:
-    "Every wedding is a story waiting to be told.",
+    'We are visual storytellers capturing real emotions through light, timing, and human connection.',
+  description: 'Every wedding is a story waiting to be told.',
 };
+
+const DEFAULT_APP_INSTRUCTION_CARDS = [
+  {
+    enabled: true,
+    title: 'App Instructions',
+    description:
+      'Learn how to view and select your favourite photos.',
+    image: '',
+    buttonText: 'View Instructions',
+    buttonUrl: '',
+  },
+  {
+    enabled: true,
+    title: 'Download Our App',
+    description:
+      'Download our app for a smoother photo selection experience.',
+    image: '',
+    buttonText: 'Download App',
+    buttonUrl: '',
+  },
+];
 
 export async function GET() {
   try {
     await connectDB();
+
     let settings = await HomepageSettings.findOne();
 
-if (!settings) {
+    if (!settings) {
       settings = await HomepageSettings.create({
-      hero: DEFAULT_HERO,
-      siteSettings: DEFAULT_SITE_SETTINGS,
-      homeImages: DEFAULT_HOME_IMAGES,
-      showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
-      storyImages: DEFAULT_STORY_IMAGES,
-      philosophy: DEFAULT_PHILOSOPHY,
-      aboutContent: DEFAULT_ABOUT_CONTENT,
-    });
+        hero: DEFAULT_HERO,
+        siteSettings: DEFAULT_SITE_SETTINGS,
+        homeImages: DEFAULT_HOME_IMAGES,
+        showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
+        storyImages: DEFAULT_STORY_IMAGES,
+        philosophy: DEFAULT_PHILOSOPHY,
+        aboutContent: DEFAULT_ABOUT_CONTENT,
+        appInstructionCards: DEFAULT_APP_INSTRUCTION_CARDS,
+      });
     }
 
     return NextResponse.json({ settings });
   } catch (error) {
     console.error('Homepage GET error:', error);
-    return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
+
+    return NextResponse.json(
+      { error: 'Failed to fetch settings' },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
     const session = await getCurrentUser();
+
     if (!session || session.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 401 }
+      );
     }
 
     await connectDB();
+
     const body = await request.json();
     const { section, data } = body;
 
+    if (!section || data === undefined) {
+      return NextResponse.json(
+        { error: 'Section and data are required' },
+        { status: 400 }
+      );
+    }
+
     let settings = await HomepageSettings.findOne();
+
     if (!settings) {
       settings = await HomepageSettings.create({
-      hero: DEFAULT_HERO,
-      homeImages: DEFAULT_HOME_IMAGES,
-      showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
-      storyImages: DEFAULT_STORY_IMAGES,
-      philosophy: DEFAULT_PHILOSOPHY,
-      aboutContent: DEFAULT_ABOUT_CONTENT,
-    });
+        hero: DEFAULT_HERO,
+        siteSettings: DEFAULT_SITE_SETTINGS,
+        homeImages: DEFAULT_HOME_IMAGES,
+        showcaseSlides: DEFAULT_SHOWCASE_SLIDES,
+        storyImages: DEFAULT_STORY_IMAGES,
+        philosophy: DEFAULT_PHILOSOPHY,
+        aboutContent: DEFAULT_ABOUT_CONTENT,
+        appInstructionCards: DEFAULT_APP_INSTRUCTION_CARDS,
+      });
     }
 
     if (section === 'hero') {
@@ -133,9 +205,7 @@ export async function PUT(request: NextRequest) {
       settings.storyImages = data;
     } else if (section === 'aboutContent') {
       settings.aboutContent = data;
-    } else if (section === "philosophy") {
-      console.log("Incoming philosophy:", data);
-
+    } else if (section === 'philosophy') {
       settings.philosophy = {
         leftLines: data.leftLines,
         label: data.label,
@@ -143,21 +213,36 @@ export async function PUT(request: NextRequest) {
         description: data.description,
       };
 
-      console.log("Before save:", settings.philosophy);
-
-      settings.markModified("philosophy");
+      settings.markModified('philosophy');
     } else if (section === 'siteSettings') {
       settings.siteSettings = data;
+    } else if (section === 'appInstructionCards') {
+      if (!Array.isArray(data) || data.length !== 2) {
+        return NextResponse.json(
+          { error: 'Exactly two app instruction cards are required' },
+          { status: 400 }
+        );
+      }
+
+      settings.appInstructionCards = data;
+      settings.markModified('appInstructionCards');
+    } else {
+      return NextResponse.json(
+        { error: `Unknown settings section: ${section}` },
+        { status: 400 }
+      );
     }
 
     settings.markModified(section);
     await settings.save();
 
-    console.log("After save:", settings.philosophy);
-
     return NextResponse.json({ success: true, settings });
   } catch (error) {
     console.error('Homepage PUT error:', error);
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
+
+    return NextResponse.json(
+      { error: 'Failed to update settings' },
+      { status: 500 }
+    );
   }
 }

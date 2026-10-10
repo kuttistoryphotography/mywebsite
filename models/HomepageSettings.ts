@@ -50,6 +50,15 @@ export interface ISiteSettings {
   logo: string;
 }
 
+export interface IAppInstructionCard {
+  enabled: boolean;
+  title: string;
+  description: string;
+  image: string;
+  buttonText: string;
+  buttonUrl: string;
+}
+
 export interface IHomepageSettings extends Document {
   hero: IHeroSection;
   
@@ -57,6 +66,7 @@ export interface IHomepageSettings extends Document {
   showcaseSlides: IShowcaseSlide[];
   storyImages: IStoryImage[];
   siteSettings: ISiteSettings;
+  appInstructionCards: IAppInstructionCard[];
    philosophy: {
     leftLines: string[];
     label: string;
@@ -138,6 +148,56 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
         default: "/placeholder-logo.png",
       },
     },
+
+    appInstructionCards: {
+      type: [
+        {
+          enabled: {
+            type: Boolean,
+            default: true,
+          },
+          title: {
+            type: String,
+            default: "",
+          },
+          description: {
+            type: String,
+            default: "",
+          },
+          image: {
+            type: String,
+            default: "",
+          },
+          buttonText: {
+            type: String,
+            default: "",
+          },
+          buttonUrl: {
+            type: String,
+            default: "",
+          },
+        },
+      ],
+      default: [
+        {
+          enabled: true,
+          title: "App Instructions",
+          description: "Learn how to view and select your favourite photos.",
+          image: "",
+          buttonText: "View Instructions",
+          buttonUrl: "",
+        },
+        {
+          enabled: true,
+          title: "Download Our App",
+          description: "Download our app for a smoother photo selection experience.",
+          image: "",
+          buttonText: "Download App",
+          buttonUrl: "",
+        },
+      ],
+    },
+
     homeImages: [
       {
         key: String,
@@ -145,6 +205,7 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
         url: String,
       },
     ],
+    
     showcaseSlides: [
       {
         image1: String,

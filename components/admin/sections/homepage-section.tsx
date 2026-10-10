@@ -64,6 +64,7 @@ export default function HomepageSection() {
   | "about"
   | "philosophy"
   | "logo"
+  | "appCards"
 >("hero");
 
   const [hero, setHero] = useState<HeroData>({
@@ -98,6 +99,24 @@ export default function HomepageSection() {
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
   const [siteSettings, setSiteSettings] = useState({ logo: "", });
+  const [appInstructionCards, setAppInstructionCards] = useState([
+    {
+      enabled: true,
+      title: "App Instructions",
+      description: "Learn how to view and select your favourite photos.",
+      image: "",
+      buttonText: "View Instructions",
+      buttonUrl: "",
+    },
+    {
+      enabled: true,
+      title: "Download Our App",
+      description: "Download our app for a smoother photo selection experience.",
+      image: "",
+      buttonText: "Download App",
+      buttonUrl: "",
+    },
+  ]);
   const [aboutContent, setAboutContent] = useState({
     title: "About Kutti Story",
     heading: "We Make Only Authentic Visual Experiences",
@@ -185,6 +204,19 @@ export default function HomepageSection() {
             setSiteSettings(data.settings.siteSettings);
           }
 
+          if (Array.isArray(data.settings.appInstructionCards)) {
+            setAppInstructionCards(
+              data.settings.appInstructionCards.map((card: any) => ({
+                enabled: card.enabled ?? true,
+                title: card.title ?? "",
+                description: card.description ?? "",
+                image: card.image ?? "",
+                buttonText: card.buttonText ?? "",
+                buttonUrl: card.buttonUrl ?? "",
+              }))
+            );
+          }
+
           if (data.settings.homeImages) {
             setHomeImages(
               data.settings.homeImages.map((img: any) => ({
@@ -258,6 +290,7 @@ export default function HomepageSection() {
   { id: "about", label: "About Section" },
   { id: "philosophy", label: "Philosophy Section" },
   { id: "logo", label: "Website Logo" },
+  { id: "appCards", label: "App Cards" },
 ];
 
   return (
@@ -1014,6 +1047,163 @@ export default function HomepageSection() {
           </button>
         </div>
       )}
+
+      
+      {activeTab === "appCards" && (
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+            <h3 className="text-lg font-semibold text-white">
+              Client App Cards
+            </h3>
+            <p className="mt-2 text-sm text-zinc-400">
+              Customize the two cards displayed below the photo selection
+              submission section.
+            </p>
+          </div>
+
+          {appInstructionCards.map((card, index) => (
+            <div
+              key={index}
+              className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-900 p-6"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <h4 className="font-semibold text-white">
+                  {index === 0 ? "Card 1 — App Instructions" : "Card 2 — Download App"}
+                </h4>
+
+                <label className="flex items-center gap-2 text-sm text-zinc-300">
+                  <input
+                    type="checkbox"
+                    checked={card.enabled}
+                    onChange={(e) => {
+                      setAppInstructionCards((previous) =>
+                        previous.map((item, i) =>
+                          i === index
+                            ? { ...item, enabled: e.target.checked }
+                            : item
+                        )
+                      );
+                    }}
+                    className="h-4 w-4 accent-amber-500"
+                  />
+                  Enabled
+                </label>
+              </div>
+
+              <MediaField
+                label="Card Image"
+                url={card.image}
+                mediaType="image"
+                onChange={(url) => {
+                  setAppInstructionCards((previous) =>
+                    previous.map((item, i) =>
+                      i === index ? { ...item, image: url } : item
+                    )
+                  );
+                }}
+                allowedTypes={["image"]}
+                context="homepage"
+                previewHeight="h-40"
+              />
+
+              <div>
+                <label className="mb-2 block text-sm text-zinc-400">
+                  Card Title
+                </label>
+                <input
+                  value={card.title}
+                  onChange={(e) =>
+                    setAppInstructionCards((previous) =>
+                      previous.map((item, i) =>
+                        i === index ? { ...item, title: e.target.value } : item
+                      )
+                    )
+                  }
+                  className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm text-zinc-400">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={card.description}
+                  onChange={(e) =>
+                    setAppInstructionCards((previous) =>
+                      previous.map((item, i) =>
+                        i === index
+                          ? { ...item, description: e.target.value }
+                          : item
+                      )
+                    )
+                  }
+                  className="w-full resize-y rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm text-zinc-400">
+                    Button Text
+                  </label>
+                  <input
+                    value={card.buttonText}
+                    onChange={(e) =>
+                      setAppInstructionCards((previous) =>
+                        previous.map((item, i) =>
+                          i === index
+                            ? { ...item, buttonText: e.target.value }
+                            : item
+                        )
+                      )
+                    }
+                    className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm text-zinc-400">
+                    Button URL
+                  </label>
+                  <input
+                    type="url"
+                    value={card.buttonUrl}
+                    placeholder="https://..."
+                    onChange={(e) =>
+                      setAppInstructionCards((previous) =>
+                        previous.map((item, i) =>
+                          i === index
+                            ? { ...item, buttonUrl: e.target.value }
+                            : item
+                        )
+                      )
+                    }
+                    className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => save("appInstructionCards", appInstructionCards)}
+            disabled={saving}
+            className="flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-amber-600 disabled:opacity-50"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            Save App Cards
+          </button>
+        </div>
+      )}
+
+
     </div>
       
   );
