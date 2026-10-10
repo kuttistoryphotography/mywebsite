@@ -247,18 +247,27 @@ export default function HomepageSection() {
     setSaving(true);
 
     try {
-      await fetch("/api/homepage", {
+      const response = await fetch("/api/homepage", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ section, data }),
       });
 
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error || "Failed to save homepage settings.");
+        return;
+      }
+
       setSaved(true);
-
       setTimeout(() => setSaved(false), 2500);
-    } catch {}
-
-    setSaving(false);
+    } catch (error) {
+      console.error("Failed to save homepage settings:", error);
+      alert("Unable to save. Please check your connection and try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
