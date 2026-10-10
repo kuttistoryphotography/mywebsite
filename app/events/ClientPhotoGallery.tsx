@@ -720,7 +720,7 @@ export default function ClientPhotoGallery({
             aria-live="polite"
           >
             {reviewCountdown > 0
-              ? `Review your photos to unlock submission. Submit unlocks in ${reviewCountdown} seconds.`
+              ? `📸 Almost There! ⭐ Click below to leave your honest review and unlock the Submit button!. Submit unlocks in ${reviewCountdown} seconds.`
               : "Review complete. You can now submit your final selection."}
           </div>
 
