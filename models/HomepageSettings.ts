@@ -142,22 +142,22 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
     default: "image",
   },
 
-  googleReviewUrl: {
-    type: String,
-    default: "",
-  },
-
   awardText: {
     type: String,
     default: "Award Winning Studio 2024",
   },
-},
-    siteSettings: {
-      logo: {
+
+  },
+      googleReviewUrl: {
         type: String,
-        default: "/placeholder-logo.png",
+        default: "",
       },
-    },
+      siteSettings: {
+        logo: {
+          type: String,
+          default: "/placeholder-logo.png",
+        },
+      },
 
     appInstructionCards: {
       type: [
