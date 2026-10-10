@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -50,6 +50,40 @@ export default function ClientPhotoGallery({
   const [error, setError] = useState("");
 
   const current = photos[index];
+
+  useEffect(() => {
+    if (review || success || photos.length === 0) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLElement &&
+        (event.target.isContentEditable ||
+          ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName))
+      ) {
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setIndex((previous) =>
+          previous === 0 ? photos.length - 1 : previous - 1
+        );
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setIndex((previous) =>
+          previous === photos.length - 1 ? 0 : previous + 1
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [photos.length, review, success]);
 
   const selectedIds = useMemo(
     () => new Set(selected.map((photo) => photo.id)),
@@ -357,7 +391,7 @@ export default function ClientPhotoGallery({
         </div>
       </header>
 
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <section className="mx-auto w-full max-w-[1500px] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-amber-400">
@@ -450,7 +484,7 @@ export default function ClientPhotoGallery({
                   </p>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
                   <button
                     onClick={() => toggleReject(current)}
                     className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm sm:flex-none ${
@@ -478,13 +512,13 @@ export default function ClientPhotoGallery({
               </div>
             </div>
 
-            <div className="mt-5 flex gap-2 overflow-x-auto pb-3">
+            <div className="mt-4 flex gap-2 overflow-x-auto overscroll-x-contain pb-3 sm:mt-5">
               {photos.map((photo, photoIndex) => (
                 <button
                   key={photo.id}
                   onClick={() => setIndex(photoIndex)}
                   aria-label={`Open photo ${photoIndex + 1}`}
-                  className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 sm:h-20 sm:w-20 ${
+                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 sm:h-16 sm:w-16 lg:h-[72px] lg:w-[72px] ${
                     index === photoIndex
                       ? "border-amber-400"
                       : "border-white/10"
