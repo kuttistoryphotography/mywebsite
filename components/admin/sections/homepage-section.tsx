@@ -65,6 +65,7 @@ export default function HomepageSection() {
   | "philosophy"
   | "logo"
   | "appCards"
+  | "googleReview"
 >("hero");
 
   const [hero, setHero] = useState<HeroData>({
@@ -99,6 +100,7 @@ export default function HomepageSection() {
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
   const [siteSettings, setSiteSettings] = useState({ logo: "", });
+  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   const [appInstructionCards, setAppInstructionCards] = useState([
     {
       enabled: true,
@@ -204,6 +206,8 @@ export default function HomepageSection() {
             setSiteSettings(data.settings.siteSettings);
           }
 
+          setGoogleReviewUrl(data.settings.googleReviewUrl || "");
+
           if (Array.isArray(data.settings.appInstructionCards)) {
             setAppInstructionCards(
               data.settings.appInstructionCards.map((card: any) => ({
@@ -283,15 +287,16 @@ export default function HomepageSection() {
   ];
 
   const tabs = [
-  { id: "hero", label: "Hero Section" },
-  { id: "slides", label: "Showcase Slides" },
-  { id: "stories", label: "Stories Strip" },
-  { id: "images", label: "Page Images" },
-  { id: "about", label: "About Section" },
-  { id: "philosophy", label: "Philosophy Section" },
-  { id: "logo", label: "Website Logo" },
-  { id: "appCards", label: "App Cards" },
-];
+    { id: "hero", label: "Hero Section" },
+    { id: "slides", label: "Showcase Slides" },
+    { id: "stories", label: "Stories Strip" },
+    { id: "images", label: "Page Images" },
+    { id: "about", label: "About Section" },
+    { id: "philosophy", label: "Philosophy Section" },
+    { id: "logo", label: "Website Logo" },
+    { id: "appCards", label: "App Cards" },
+    { id: "googleReview", label: "Google Review" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -1202,9 +1207,49 @@ export default function HomepageSection() {
           </button>
         </div>
       )}
+      
+      {activeTab === "googleReview" && (
+        <div className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+          <div>
+            <h3 className="text-lg font-semibold text-white">
+              Google Review Settings
+            </h3>
+            <p className="mt-2 text-sm text-zinc-400">
+              Add your Google Business Profile review link. Clients will see
+              the review button after successfully submitting their photo selection.
+            </p>
+          </div>
 
+          <div>
+            <label className="mb-2 block text-sm text-zinc-400">
+              Google Review URL
+            </label>
+            <input
+              type="url"
+              value={googleReviewUrl}
+              onChange={(e) => setGoogleReviewUrl(e.target.value)}
+              placeholder="https://g.page/r/your-review-link/review"
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-white focus:border-amber-500 focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => save("googleReviewUrl", googleReviewUrl)}
+            disabled={saving}
+            className="flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-amber-600 disabled:opacity-50"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            Save Google Review Link
+          </button>
+        </div>
+      )}
 
     </div>
-      
+  
   );
 }

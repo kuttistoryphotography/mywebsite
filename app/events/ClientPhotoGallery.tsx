@@ -110,6 +110,8 @@ export default function ClientPhotoGallery({
 
   const [review, setReview] = useState(false);
 
+  const [reviewCountdown, setReviewCountdown] = useState(45);
+
   const [submitting, setSubmitting] = useState(false);
 
   const [success, setSuccess] = useState(false);
@@ -211,14 +213,12 @@ export default function ClientPhotoGallery({
   const [appInstructionCards, setAppInstructionCards] =
 
     useState<AppInstructionCard[]>([]);
-
-
+  
+  const [googleReviewUrl, setGoogleReviewUrl] = useState("");
 
   useEffect(() => {
 
     let cancelled = false;
-
-
 
     async function loadAppCards() {
 
@@ -227,18 +227,17 @@ export default function ClientPhotoGallery({
         const response = await fetch("/api/homepage");
 
         if (!response.ok) return;
-
-
-
+        
         const data = await response.json();
 
+        if (!cancelled) {
+          setGoogleReviewUrl(data.settings?.googleReviewUrl || "");
 
-
-        if (!cancelled && Array.isArray(data.settings?.appInstructionCards)) {
-
-          setAppInstructionCards(data.settings.appInstructionCards);
-
+          if (Array.isArray(data.settings?.appInstructionCards)) {
+            setAppInstructionCards(data.settings.appInstructionCards);
+          }
         }
+
 
       } catch (error) {
 
@@ -248,11 +247,7 @@ export default function ClientPhotoGallery({
 
     }
 
-
-
     loadAppCards();
-
-
 
     return () => {
 
@@ -262,17 +257,23 @@ export default function ClientPhotoGallery({
 
   }, []);
 
-
-
   const current = photos[index];
 
+  // Require a 45-second review period each time the client opens Final Review.
+  useEffect(() => {
+    if (!review || success) return;
 
+    setReviewCountdown(45);
+    const countdownInterval = window.setInterval(() => {
+      setReviewCountdown((previous) => Math.max(0, previous - 1));
+    }, 1000);
+
+    return () => window.clearInterval(countdownInterval);
+  }, [review, success]);
 
   useEffect(() => {
 
     if (review || success || photos.length === 0) return;
-
-
 
     const handleKeyDown = (event: KeyboardEvent) => {
 
@@ -290,8 +291,6 @@ export default function ClientPhotoGallery({
 
       }
 
-
-
       if (event.key === "ArrowLeft") {
 
         event.preventDefault();
@@ -303,8 +302,6 @@ export default function ClientPhotoGallery({
         );
 
       }
-
-
 
       if (event.key === "ArrowRight") {
 
@@ -455,6 +452,11 @@ export default function ClientPhotoGallery({
 
 
   async function submitSelection() {
+
+    if (reviewCountdown > 0) {
+      setError(`Please review your photos. Submission unlocks in ${reviewCountdown} seconds.`);
+      return;
+    }
 
     if (selected.length === 0) {
 
@@ -635,8 +637,18 @@ export default function ClientPhotoGallery({
             </div>
 
           </div>
-
-
+          
+          {googleReviewUrl && (
+            <a
+              href={googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-xl bg-amber-500 px-6 py-4 font-semibold text-black transition-colors hover:bg-amber-400"
+            >
+              <span>⭐</span>
+              Leave Us a Google Review
+            </a>
+          )}
 
           <button
 
@@ -657,8 +669,6 @@ export default function ClientPhotoGallery({
     );
 
   }
-
-
 
   if (review) {
 
@@ -682,14 +692,11 @@ export default function ClientPhotoGallery({
 
           </button>
 
-
-
           <p className="text-xs uppercase tracking-[0.3em] text-amber-400">
 
             Final Review
 
           </p>
-
 
 
           <h1 className="mt-3 text-3xl font-semibold">
@@ -698,15 +705,24 @@ export default function ClientPhotoGallery({
 
           </h1>
 
-
-
           <p className="mt-3 text-sm text-white/60">
 
             Review your selected photos before submitting.
 
           </p>
 
-
+          <div
+            className={`mt-5 rounded-xl border px-4 py-3 text-sm ${
+              reviewCountdown > 0
+                ? "border-amber-400/30 bg-amber-400/10 text-amber-200"
+                : "border-green-400/30 bg-green-400/10 text-green-300"
+            }`}
+            aria-live="polite"
+          >
+            {reviewCountdown > 0
+              ? `Review your photos to unlock submission. Submit unlocks in ${reviewCountdown} seconds.`
+              : "Review complete. You can now submit your final selection."}
+          </div>
 
           <div className="mt-6 flex flex-wrap gap-3 text-sm">
 
@@ -723,8 +739,6 @@ export default function ClientPhotoGallery({
             </span>
 
           </div>
-
-
 
           {selected.length === 0 ? (
 
@@ -780,8 +794,6 @@ export default function ClientPhotoGallery({
 
                     </p>
 
-
-
                     <button
 
                       onClick={() =>
@@ -812,8 +824,6 @@ export default function ClientPhotoGallery({
 
           )}
 
-
-
           {error && (
 
             <p role="alert" className="mt-5 text-sm text-red-400">
@@ -823,8 +833,6 @@ export default function ClientPhotoGallery({
             </p>
 
           )}
-
-
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
 
@@ -842,15 +850,13 @@ export default function ClientPhotoGallery({
 
             </button>
 
-
-
             <button
 
               onClick={submitSelection}
 
-              disabled={submitting || selected.length === 0}
+              disabled={submitting || selected.length === 0 || reviewCountdown > 0}
 
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-black hover:bg-amber-300 disabled:opacity-50"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-black hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
 
             >
 
@@ -864,7 +870,11 @@ export default function ClientPhotoGallery({
 
               )}
 
-              {submitting ? "Submitting..." : "Submit Final Selection"}
+              {submitting
+                  ? "Submitting..."
+                  : reviewCountdown > 0
+                    ? `Review to Unlock (${reviewCountdown}s)`
+                    : "Submit Final Selection"}
 
             </button>
 
@@ -901,8 +911,6 @@ export default function ClientPhotoGallery({
     );
   }
 
-
-
   return (
 
     <main className="min-h-screen bg-[#090909] text-white">
@@ -927,8 +935,6 @@ export default function ClientPhotoGallery({
 
           </div>
 
-
-
           <div className="text-right">
 
             <p className="text-sm font-medium">
@@ -942,8 +948,6 @@ export default function ClientPhotoGallery({
           </div>
 
         </div>
-
-
 
         <div className="mx-auto mt-4 max-w-7xl">
 
@@ -968,8 +972,6 @@ export default function ClientPhotoGallery({
         </div>
 
       </header>
-
-
 
       <section className="mx-auto w-full max-w-[1500px] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
 

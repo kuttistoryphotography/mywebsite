@@ -50,6 +50,10 @@ export interface ISiteSettings {
   logo: string;
 }
 
+export interface IGoogleReviewSettings {
+  googleReviewUrl: string;
+}
+
 export interface IAppInstructionCard {
   enabled: boolean;
   title: string;
@@ -67,6 +71,7 @@ export interface IHomepageSettings extends Document {
   storyImages: IStoryImage[];
   siteSettings: ISiteSettings;
   appInstructionCards: IAppInstructionCard[];
+  googleReviewUrl: string;
    philosophy: {
     leftLines: string[];
     label: string;
@@ -137,6 +142,11 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
     default: "image",
   },
 
+  googleReviewUrl: {
+    type: String,
+    default: "",
+  },
+
   awardText: {
     type: String,
     default: "Award Winning Studio 2024",
@@ -205,7 +215,7 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
         url: String,
       },
     ],
-    
+
     showcaseSlides: [
       {
         image1: String,

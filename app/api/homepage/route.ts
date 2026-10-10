@@ -226,7 +226,18 @@ export async function PUT(request: NextRequest) {
 
       settings.appInstructionCards = data;
       settings.markModified('appInstructionCards');
+    } else if (section === 'googleReviewUrl') {
+      if (typeof data !== 'string') {
+        return NextResponse.json(
+          { error: 'Google review URL must be a string' },
+          { status: 400 }
+        );
+      }
+
+      settings.googleReviewUrl = data.trim();
+      settings.markModified('googleReviewUrl');
     } else {
+
       return NextResponse.json(
         { error: `Unknown settings section: ${section}` },
         { status: 400 }
