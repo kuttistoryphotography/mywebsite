@@ -868,7 +868,20 @@ export default function ClientPhotoGallery({
                   ? `Please Wait (${reviewCountdown}s)`
                   : "Submit Photo Selection"}
             </button>
-
+            
+            {googleReviewUrl && (
+              <div className="mt-4">
+                <a
+                  href={googleReviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-400/50 bg-white/[0.04] px-5 py-3 font-semibold text-amber-300 transition-colors hover:bg-amber-400/10"
+                >
+                  ⭐ Leave Us a Google Review
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            )}
 
           </div>
 
