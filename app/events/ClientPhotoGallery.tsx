@@ -850,33 +850,25 @@ export default function ClientPhotoGallery({
 
             </button>
 
-            <button
-
+              <button
+              type="button"
               onClick={submitSelection}
-
               disabled={submitting || selected.length === 0 || reviewCountdown > 0}
-
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-black hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
-
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 font-semibold text-black transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
             >
-
               {submitting ? (
-
                 <Loader2 className="h-5 w-5 animate-spin" />
-
               ) : (
-
                 <Send className="h-4 w-4" />
-
               )}
 
               {submitting
-                  ? "Submitting..."
-                  : reviewCountdown > 0
-                    ? `Review to Unlock (${reviewCountdown}s)`
-                    : "Submit Final Selection"}
-
+                ? "Submitting..."
+                : reviewCountdown > 0
+                  ? `Please Wait (${reviewCountdown}s)`
+                  : "Submit Photo Selection"}
             </button>
+
 
           </div>
 
