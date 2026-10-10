@@ -114,8 +114,8 @@ export default function ClientPhotoGallery({
     }
 
     if (selected.length >= event.selectionLimit) {
-      setError(
-        `You can select up to ${event.selectionLimit} photos.`
+      window.alert(
+        `Selection Limit Reached!\n\nYou can select up to ${event.selectionLimit} photos only. Please remove a selected photo before choosing another.`
       );
       return;
     }
