@@ -36,6 +36,15 @@ type Props = {
   onBack: () => void;
 };
 
+type AppInstructionCard = {
+  enabled: boolean;
+  title: string;
+  description: string;
+  image: string;
+  buttonText: string;
+  buttonUrl: string;
+};
+
 export default function ClientPhotoGallery({
   event,
   photos,
@@ -48,6 +57,34 @@ export default function ClientPhotoGallery({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  const [appInstructionCards, setAppInstructionCards] =
+    useState<AppInstructionCard[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadAppCards() {
+      try {
+        const response = await fetch("/api/homepage");
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (!cancelled && Array.isArray(data.settings?.appInstructionCards)) {
+          setAppInstructionCards(data.settings.appInstructionCards);
+        }
+      } catch (error) {
+        console.error("Failed to load app instruction cards:", error);
+      }
+    }
+
+    loadAppCards();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const current = photos[index];
 
@@ -356,6 +393,55 @@ export default function ClientPhotoGallery({
       </main>
     );
   }
+  
+  {/* Client App Instruction Cards */}
+  {appInstructionCards.some((card) => card.enabled) && (
+    <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {appInstructionCards
+        .filter((card) => card.enabled)
+        .map((card, index) => (
+          <article
+            key={`${card.title}-${index}`}
+            className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]"
+          >
+            {card.image && (
+              <div className="aspect-[16/9] overflow-hidden bg-white/5">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            )}
+
+            <div className="p-5 sm:p-6">
+              <h2 className="text-lg font-semibold text-white">
+                {card.title}
+              </h2>
+
+              {card.description && (
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  {card.description}
+                </p>
+              )}
+
+              {card.buttonText && card.buttonUrl && (
+                <a
+                  href={card.buttonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-black transition hover:bg-amber-300"
+                >
+                  {card.buttonText}
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+    </div>
+  )}
 
   return (
     <main className="min-h-screen bg-[#090909] text-white">
