@@ -627,7 +627,9 @@ export default function ContentSection() {
         <div className="space-y-5">
 
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
             <div>
               <h2 className="text-xl font-semibold text-white">
                 Blog Topics
