@@ -17,15 +17,18 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+
 const navItems = [
-  { label: "Home",       href: "/" },
-  { label: "About",      href: "/about-us" },
-  { label: "Works",      href: "/works" },
-  { label: "Blog",       href: "/blog" },
-  { label: "FAQ",        href: "/faq" },
-  { label: "Services",   href: "/services" },
-  { label: "Contact",    href: "/contact-us" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about-us" },
+  { label: "Works", href: "/works" },
+  { label: "Events", href: "/events" },
+  { label: "Blog", href: "/blog" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact-us" },
 ];
+
 
 const accountMenuItems = [
   { label: "My Account",    href: "/dashboard",                 icon: User },
