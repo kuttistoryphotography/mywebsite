@@ -885,6 +885,39 @@ export default function ClientPhotoGallery({
 
           </div>
 
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-sm leading-6 text-white/70">
+            <h3 className="mb-4 text-base font-semibold text-white">
+              While Your Memories Prepare
+            </h3>
+
+            <ol className="space-y-3">
+              <li>
+                <strong className="text-white">1. While You Wait — </strong>
+                Please leave us a genuine Google review to unlock your memories page.
+              </li>
+
+              <li>
+                <strong className="text-white">2. Don’t Refresh the Page — </strong>
+                Refreshing may restart the countdown.
+              </li>
+
+              <li>
+                <strong className="text-white">3. Check Your Review — </strong>
+                If you haven’t already, tap “Leave a Google Review” and share your honest experience.
+              </li>
+
+              <li>
+                <strong className="text-white">4. Get Ready for Your Memories ✨ — </strong>
+                Your private memories will be available shortly. Thank you for choosing Kutti Story Photography!
+              </li>
+
+              <li>
+                <strong className="text-white">5. Once Your Memories Are Unlocked ❤️ — </strong>
+                You can easily download the file or share it directly from the memories page.
+              </li>
+            </ol>
+          </div>
+
           {/* Client App Instruction Cards */}
           {appInstructionCards.some((card) => card.enabled) && (
             <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
