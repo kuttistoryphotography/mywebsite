@@ -913,7 +913,7 @@ export default function ClientPhotoGallery({
 
               <li>
                 <strong className="text-white">5. Once Your Memories Are Unlocked ❤️ — </strong>
-                You can easily download the file or share it directly from the memories page.
+                You can easily select the photos you love or reject the ones you don’t need directly from the Photo Selection Page. 📸✨
               </li>
             </ol>
           </div>
