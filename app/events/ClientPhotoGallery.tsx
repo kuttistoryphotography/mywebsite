@@ -4,32 +4,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+
 import {
-
   ArrowLeft,
-
   ArrowRight,
-
   Check,
-
   CheckCircle2,
-
   ChevronLeft,
-
   ChevronRight,
-
   Image as ImageIcon,
-
   Loader2,
-
   RotateCcw,
-
+  ZoomIn,
+  ZoomOut,
   Send,
-
   X,
-
 } from "lucide-react";
-
 
 
 type Photo = {
@@ -41,8 +31,6 @@ type Photo = {
   uri: string;
 
 };
-
-
 
 type EventData = {
 
@@ -60,8 +48,6 @@ type EventData = {
 
 };
 
-
-
 type Props = {
 
   event: EventData;
@@ -71,8 +57,6 @@ type Props = {
   onBack: () => void;
 
 };
-
-
 
 type AppInstructionCard = {
 
@@ -89,8 +73,6 @@ type AppInstructionCard = {
   buttonUrl: string;
 
 };
-
-
 
 export default function ClientPhotoGallery({
 
@@ -1065,16 +1047,28 @@ export default function ClientPhotoGallery({
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
              
               <div className="relative flex h-[45vh] min-h-[260px] max-h-[560px] items-center justify-center overflow-hidden sm:h-[58vh] sm:min-h-[360px] lg:h-[65vh]">
-
+              
                 <img
-
                   src={current.uri}
-
                   alt={current.filename}
-
-                  className="h-full w-full object-contain"
-
+                  onClick={() => setIsZoomed((previous) => !previous)}
+                  className={`h-full w-full object-contain transition-transform duration-200 ${
+                    isZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
+                  }`}
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setIsZoomed((previous) => !previous)}
+                  aria-label={isZoomed ? "Zoom out" : "Zoom in"}
+                  className="absolute bottom-3 right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/75 text-white shadow-lg hover:bg-black"
+                >
+                  {isZoomed ? (
+                    <ZoomOut className="h-5 w-5" />
+                  ) : (
+                    <ZoomIn className="h-5 w-5" />
+                  )}
+                </button>
 
                 <button
 
@@ -1098,8 +1092,6 @@ export default function ClientPhotoGallery({
 
                 </button>
 
-
-
                 <button
 
                   aria-label="Next photo"
@@ -1122,15 +1114,11 @@ export default function ClientPhotoGallery({
 
                 </button>
 
-
-
                 <div className="absolute bottom-3 left-3 rounded-lg bg-black/75 px-3 py-2 text-xs">
 
                   {index + 1} / {photos.length}
 
                 </div>
-
-
 
                 {selectedIds.has(current.id) && (
 
@@ -1143,8 +1131,6 @@ export default function ClientPhotoGallery({
                   </div>
 
                 )}
-
-
 
                 {rejectedIds.has(current.id) && (
 
