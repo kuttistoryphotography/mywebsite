@@ -107,6 +107,8 @@ export default function ClientPhotoGallery({
   const [rejected, setRejected] = useState<Photo[]>([]);
 
   const [index, setIndex] = useState(0);
+  
+  const [isZoomed, setIsZoomed] = useState(false);
 
   const [review, setReview] = useState(false);
 
@@ -118,11 +120,7 @@ export default function ClientPhotoGallery({
 
   const [error, setError] = useState("");
 
-
-
   const [selectionRestoredFor, setSelectionRestoredFor] = useState("");
-
-
 
   useEffect(() => {
 
@@ -130,23 +128,17 @@ export default function ClientPhotoGallery({
 
     if (!eventCode || photos.length === 0) return;
 
-
-
     try {
 
       const storageKey = `photo-selection-${eventCode}`;
 
       const saved = localStorage.getItem(storageKey);
 
-
-
       if (saved) {
 
         const parsed = JSON.parse(saved);
 
         const currentPhotos = new Map(photos.map((photo) => [photo.id, photo]));
-
-
 
         const restorePhotos = (items: Photo[]) =>
 
@@ -155,8 +147,6 @@ export default function ClientPhotoGallery({
             .map((photo) => currentPhotos.get(String(photo.id)))
 
             .filter((photo): photo is Photo => Boolean(photo));
-
-
 
         setSelected(restorePhotos(parsed.selectedPhotos));
 
@@ -170,19 +160,13 @@ export default function ClientPhotoGallery({
 
     }
 
-
-
     setSelectionRestoredFor(eventCode);
 
   }, [event.eventCode, photos]);
 
-
-
   useEffect(() => {
 
     if (!event.eventCode || selectionRestoredFor !== event.eventCode) return;
-
-
 
     try {
 
@@ -207,8 +191,6 @@ export default function ClientPhotoGallery({
     }
 
   }, [event.eventCode, selected, rejected, selectionRestoredFor]);
-
-
 
   const [appInstructionCards, setAppInstructionCards] =
 
@@ -1081,8 +1063,8 @@ export default function ClientPhotoGallery({
           <>
 
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
-
-              <div className="relative flex h-[45vh] min-h-[260px] max-h-[560px] items-center justify-center sm:h-[58vh] sm:min-h-[360px] lg:h-[65vh]">
+             
+              <div className="relative flex h-[45vh] min-h-[260px] max-h-[560px] items-center justify-center overflow-hidden sm:h-[58vh] sm:min-h-[360px] lg:h-[65vh]">
 
                 <img
 
@@ -1093,8 +1075,6 @@ export default function ClientPhotoGallery({
                   className="h-full w-full object-contain"
 
                 />
-
-
 
                 <button
 
