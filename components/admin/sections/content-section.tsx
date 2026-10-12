@@ -250,6 +250,22 @@ export default function ContentSection() {
       setTopicsLoading(false);
     }
   };
+  
+  const copyAllTopics = async () => {
+    const topicsText = blogTopics
+      .map(
+        (topic, index) =>
+          `${index + 1}. ${topic.title || "Untitled Blog"}\n   Slug: ${topic.slug || "no-slug"}`
+      )
+      .join("\n\n");
+
+    try {
+      await navigator.clipboard.writeText(topicsText);
+      alert(`Copied ${blogTopics.length} blog topics!`);
+    } catch {
+      alert("Unable to copy topics. Please try again.");
+    }
+  };
 
   // ── Modal helpers ─────────────────────────────────────────────────────────
 
@@ -621,14 +637,26 @@ export default function ContentSection() {
                 All your existing blog topics in one place
               </p>
             </div>
+  
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={copyAllTopics}
+                disabled={blogTopics.length === 0 || topicsLoading}
+                className="px-4 py-2.5 rounded-xl bg-amber-500 text-black text-sm font-medium hover:bg-amber-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Copy All Topics
+              </button>
 
-            <button
-              type="button"
-              onClick={fetchBlogTopics}
-              className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-zinc-300 hover:bg-zinc-800 transition"
-            >
-              Refresh Topics
-            </button>
+              <button
+                type="button"
+                onClick={fetchBlogTopics}
+                className="px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+              >
+                Refresh Topics
+              </button>
+            </div>
+
           </div>
 
           {/* Search */}
