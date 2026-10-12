@@ -1,9 +1,11 @@
 "use client";
 
-
-
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  TransformWrapper,
+  TransformComponent,
+} from "react-zoom-pan-pinch";
 
 import {
   ArrowLeft,
@@ -1048,14 +1050,69 @@ export default function ClientPhotoGallery({
              
               <div className="relative flex h-[45vh] min-h-[260px] max-h-[560px] items-center justify-center overflow-hidden sm:h-[58vh] sm:min-h-[360px] lg:h-[65vh]">
               
-                <img
-                  src={current.uri}
-                  alt={current.filename}
-                  onClick={() => setIsZoomed((previous) => !previous)}
-                  className={`h-full w-full object-contain transition-transform duration-200 ${
-                    isZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
-                  }`}
-                />
+              <TransformWrapper
+                key={current.id}
+                initialScale={1}
+                minScale={1}
+                maxScale={10}
+                centerOnInit
+                doubleClick={{ mode: "toggle", step: 2 }}
+                wheel={{ step: 0.5 }}
+                pinch={{ step: 5 }}
+                panning={{ velocityDisabled: true }}
+              >
+                {({ zoomIn, zoomOut, resetTransform }) => (
+                  <>
+                    <TransformComponent
+                      wrapperStyle={{
+                        width: "100%",
+                        height: "100%",
+                        overflow: "hidden",
+                      }}
+                      contentStyle={{
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    >
+                      <img
+                        src={current.uri}
+                        alt={current.filename}
+                        draggable={false}
+                        className="h-full w-full object-contain"
+                      />
+                    </TransformComponent>
+
+                    <div className="absolute bottom-3 right-3 z-10 flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => zoomOut()}
+                        aria-label="Zoom out"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white"
+                      >
+                        <ZoomOut className="h-5 w-5" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => zoomIn()}
+                        aria-label="Zoom in"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white"
+                      >
+                        <ZoomIn className="h-5 w-5" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => resetTransform()}
+                        aria-label="Reset zoom"
+                        className="rounded-full border border-white/20 bg-black/80 px-3 text-xs text-white"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </>
+                )}
+              </TransformWrapper>
 
                 <button
                   type="button"
