@@ -17,6 +17,7 @@ export interface IPhotoSelectionEvent extends Document {
   folderId?: mongoose.Types.ObjectId;
 
   totalPhotos: number;
+  nextPhotoSequence: number;
   selectionLimit: number;
 
   status: PhotoSelectionEventStatus;
@@ -72,7 +73,7 @@ const PhotoSelectionEventSchema =
         ref: "Folder",
       },
 
-      totalPhotos: {
+      nextPhotoSequence: {
         type: Number,
         default: 0,
         min: 0,
