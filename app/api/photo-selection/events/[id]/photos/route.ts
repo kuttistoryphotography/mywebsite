@@ -29,6 +29,8 @@ export async function POST(
   let uploadedPublicId: string | null = null;
   let createdFileDocId: mongoose.Types.ObjectId | null = null;
 
+  let photoRecordCreated = false;
+
   try {
     // --------------------------------------------------
     // ADMIN AUTH
@@ -314,6 +316,8 @@ export async function POST(
         sequence,
       });
 
+    photoRecordCreated = true;
+
     // --------------------------------------------------
     // UPDATE EVENT PHOTO COUNT
     // --------------------------------------------------
@@ -399,6 +403,38 @@ export async function POST(
         "[Photo Selection Upload]",
         error
       );
+
+    if (!photoRecordCreated) {
+      try {
+        if (createdFileDocId) {
+          await CloudinaryFile.deleteMany({
+            refModel: "FileDoc",
+            refId: createdFileDocId,
+          });
+
+          await FileDoc.deleteOne({
+            _id: createdFileDocId,
+          });
+        }
+
+        if (uploadedPublicId) {
+          const photoReference = await PhotoSelectionPhoto.findOne({
+            cloudinaryPublicId: uploadedPublicId,
+          })
+            .select({ _id: 1 })
+            .lean();
+
+          if (!photoReference) {
+            await deleteFromCloudinary(uploadedPublicId, "image");
+          }
+        }
+      } catch (cleanupError) {
+        console.error(
+          "[Photo Selection Upload Cleanup]",
+          cleanupError
+        );
+      }
+    }
 
       const message =
         error instanceof Error
@@ -646,6 +682,7 @@ export async function DELETE(
 
     event.totalPhotos = updatedEvent.totalPhotos;
 
+
     // Record photo deletion activity
     try {
       await PhotoSelectionActivity.create({
@@ -666,8 +703,6 @@ export async function DELETE(
         activityError
       );
     }
-
-    await event.save();
 
     return NextResponse.json({
       success: true,

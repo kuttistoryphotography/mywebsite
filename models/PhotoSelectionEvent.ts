@@ -75,6 +75,12 @@ const PhotoSelectionEventSchema =
         ref: "Folder",
       },
 
+      totalPhotos: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+
       nextPhotoSequence: {
         type: Number,
         default: 0,
