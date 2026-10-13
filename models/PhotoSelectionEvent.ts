@@ -18,6 +18,8 @@ export interface IPhotoSelectionEvent extends Document {
 
   totalPhotos: number;
   nextPhotoSequence: number;
+  sequenceInitialized: boolean;
+  sequenceInitLockUntil?: Date;
   selectionLimit: number;
 
   status: PhotoSelectionEventStatus;
@@ -77,6 +79,16 @@ const PhotoSelectionEventSchema =
         type: Number,
         default: 0,
         min: 0,
+      },
+
+      sequenceInitialized: {
+        type: Boolean,
+        default: false,
+      },
+
+      sequenceInitLockUntil: {
+        type: Date,
+        default: undefined,
       },
 
       selectionLimit: {

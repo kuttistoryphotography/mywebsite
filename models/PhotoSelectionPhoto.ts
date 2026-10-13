@@ -7,6 +7,8 @@ export interface IPhotoSelectionPhoto extends Document {
 
   originalFilename: string;
 
+  contentHash?: string;
+
   cloudinaryPublicId?: string;
   cloudinaryUrl?: string;
 
@@ -50,6 +52,11 @@ const PhotoSelectionPhotoSchema =
         trim: true,
       },
 
+      contentHash: {
+        type: String,
+        trim: true,
+      },
+
       cloudinaryPublicId: {
         type: String,
         trim: true,
@@ -81,10 +88,20 @@ const PhotoSelectionPhotoSchema =
     }
   );
 
-PhotoSelectionPhotoSchema.index({
-  eventId: 1,
-  sequence: 1,
-});
+  PhotoSelectionPhotoSchema.index({
+    eventId: 1,
+    sequence: 1,
+  });
+
+  PhotoSelectionPhotoSchema.index(
+    { eventId: 1, contentHash: 1 },
+    {
+      unique: true,
+      partialFilterExpression: {
+        contentHash: { $type: "string" },
+      },
+    }
+  );
 
 const PhotoSelectionPhoto: Model<IPhotoSelectionPhoto> =
   mongoose.models.PhotoSelectionPhoto ||

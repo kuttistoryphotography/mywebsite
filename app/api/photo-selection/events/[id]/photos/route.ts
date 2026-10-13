@@ -3,7 +3,9 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 
+import { ensurePhotoSequenceInitialized } from "@/lib/photo-selection-sequence";
 import connectDB from "@/lib/db";
+
 import { getCurrentUser } from "@/lib/auth";
 import {
   uploadToCloudinary,
@@ -18,10 +20,15 @@ import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
 import PhotoSelectionActivity from "@/models/PhotoSelectionActivity";
 
+import { createHash } from "crypto";
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let uploadedPublicId: string | null = null;
+  let createdFileDocId: mongoose.Types.ObjectId | null = null;
+
   try {
     // --------------------------------------------------
     // ADMIN AUTH
@@ -131,6 +138,31 @@ export async function POST(
     const buffer = Buffer.from(
       await file.arrayBuffer()
     );
+    
+    const contentHash = createHash("sha256")
+      .update(buffer)
+      .digest("hex");
+    
+    const existingPhoto = await PhotoSelectionPhoto.findOne({
+      eventId: event._id,
+      contentHash,
+    })
+      .select({ _id: 1, originalFilename: 1 })
+      .lean();
+
+    if (existingPhoto) {
+      return NextResponse.json(
+        {
+          success: false,
+          duplicate: true,
+          error: "This image has already been uploaded to this event.",
+          existingFilename: existingPhoto.originalFilename,
+        },
+        { status: 409 }
+      );
+    }
+
+    await ensurePhotoSequenceInitialized(event._id);
 
     // --------------------------------------------------
     // UPLOAD TO CLOUDINARY
@@ -142,6 +174,8 @@ export async function POST(
         mimeType,
         context: "fm",
       });
+
+    uploadedPublicId = cloudinaryResult.publicId;
 
     // --------------------------------------------------
     // CREATE FILE MANAGER RECORD
@@ -186,6 +220,8 @@ export async function POST(
         session.userId,
     });
 
+    createdFileDocId = fileDoc._id;
+    
     // --------------------------------------------------
     // CLOUDINARY REGISTRY
     // --------------------------------------------------
@@ -228,52 +264,33 @@ export async function POST(
         session.userId,
     });
 
-    // --------------------------------------------------
-    // AUTOMATIC INITIALIZATION + ATOMIC SEQUENCE
-    // --------------------------------------------------
+  // --------------------------------------------------
+  // ATOMIC SEQUENCE ALLOCATION
+  // --------------------------------------------------
 
-    // Find the highest sequence among existing photos.
-    const lastPhoto = await PhotoSelectionPhoto.findOne({
-      eventId: event._id,
-    })
-      .sort({ sequence: -1 })
-      .select({ sequence: 1 })
-      .lean();
-
-    const minimumNextSequence =
-      typeof lastPhoto?.sequence === "number"
-        ? lastPhoto.sequence + 1
-        : 0;
-
-    // Initialize older events without lowering an existing counter.
-    await PhotoSelectionEvent.updateOne(
-      { _id: event._id },
+  const counterEvent =
+    await PhotoSelectionEvent.findOneAndUpdate(
       {
-        $max: {
-          nextPhotoSequence: minimumNextSequence,
-        },
+        _id: event._id,
+        sequenceInitialized: true,
+      },
+      { $inc: { nextPhotoSequence: 1 } },
+      {
+        new: false,
+        projection: { nextPhotoSequence: 1 },
       }
+    ).lean();
+
+  if (
+    !counterEvent ||
+    typeof counterEvent.nextPhotoSequence !== "number"
+  ) {
+    throw new Error(
+      "Photo sequence is not initialized. Please retry the upload."
     );
+  }
 
-    // Allocate the sequence atomically.
-    const counterEvent =
-      await PhotoSelectionEvent.findOneAndUpdate(
-        { _id: event._id },
-        { $inc: { nextPhotoSequence: 1 } },
-        {
-          new: false,
-          projection: { nextPhotoSequence: 1 },
-        }
-      ).lean();
-
-    if (
-      !counterEvent ||
-      typeof counterEvent.nextPhotoSequence !== "number"
-    ) {
-      throw new Error("Failed to allocate photo sequence");
-    }
-
-    const sequence = counterEvent.nextPhotoSequence;
+  const sequence = counterEvent.nextPhotoSequence;
 
     // --------------------------------------------------
     // CREATE PHOTO SELECTION RECORD
@@ -285,31 +302,15 @@ export async function POST(
     const photo =
       await PhotoSelectionPhoto.create({
         photoId,
+        eventId: event._id,
+        fileId: fileDoc._id,
+        originalFilename: originalName,
+        contentHash,
 
-        eventId:
-          event._id,
-
-        // IMPORTANT:
-        // This is now a REAL FileDoc ID.
-        fileId:
-          fileDoc._id,
-
-        // Preserve editor's original filename.
-        originalFilename:
-          originalName,
-
-        cloudinaryPublicId:
-          cloudinaryResult.publicId,
-
-        cloudinaryUrl:
-          cloudinaryResult.url,
-
-        thumbnailUrl:
-          cloudinaryResult.url,
-
-        previewUrl:
-          cloudinaryResult.url,
-
+        cloudinaryPublicId: cloudinaryResult.publicId,
+        cloudinaryUrl: cloudinaryResult.url,
+        thumbnailUrl: cloudinaryResult.url,
+        previewUrl: cloudinaryResult.url,
         sequence,
       });
 
@@ -392,23 +393,44 @@ export async function POST(
       },
       { status: 201 }
     );
-  } catch (error) {
-    console.error(
-      "[Photo Selection Upload]",
-      error
-    );
+  
+    } catch (error) {
+      console.error(
+        "[Photo Selection Upload]",
+        error
+      );
 
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to upload photo",
-      },
-      { status: 500 }
-    );
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to upload photo";
+
+      const mongoError = error as {
+        code?: number;
+      };
+
+      if (mongoError.code === 11000) {
+        return NextResponse.json(
+          {
+            success: false,
+            duplicate: true,
+            error: "This image may already exist in this event. Refresh the photo list and check before retrying.",
+          },
+          { status: 409 }
+        );
+      }
+
+      const isRetryable =
+        message.includes("initialization is in progress") ||
+        message.includes("Please retry the upload") ||
+        message.includes("Please retry.");
+
+      return NextResponse.json(
+        { error: message },
+        { status: isRetryable ? 409 : 500 }
+      );
+    }
   }
-}
 
 export async function GET(
   request: NextRequest,
