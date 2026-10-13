@@ -229,20 +229,51 @@ export async function POST(
     });
 
     // --------------------------------------------------
-    // NEXT PHOTO SEQUENCE
+    // AUTOMATIC INITIALIZATION + ATOMIC SEQUENCE
     // --------------------------------------------------
 
-    const lastPhoto =
-      await PhotoSelectionPhoto.findOne({
-        eventId: event._id,
-      })
-        .sort({ sequence: -1 })
-        .lean();
+    // Find the highest sequence among existing photos.
+    const lastPhoto = await PhotoSelectionPhoto.findOne({
+      eventId: event._id,
+    })
+      .sort({ sequence: -1 })
+      .select({ sequence: 1 })
+      .lean();
 
-    const sequence =
+    const minimumNextSequence =
       typeof lastPhoto?.sequence === "number"
         ? lastPhoto.sequence + 1
         : 0;
+
+    // Initialize older events without lowering an existing counter.
+    await PhotoSelectionEvent.updateOne(
+      { _id: event._id },
+      {
+        $max: {
+          nextPhotoSequence: minimumNextSequence,
+        },
+      }
+    );
+
+    // Allocate the sequence atomically.
+    const counterEvent =
+      await PhotoSelectionEvent.findOneAndUpdate(
+        { _id: event._id },
+        { $inc: { nextPhotoSequence: 1 } },
+        {
+          new: false,
+          projection: { nextPhotoSequence: 1 },
+        }
+      ).lean();
+
+    if (
+      !counterEvent ||
+      typeof counterEvent.nextPhotoSequence !== "number"
+    ) {
+      throw new Error("Failed to allocate photo sequence");
+    }
+
+    const sequence = counterEvent.nextPhotoSequence;
 
     // --------------------------------------------------
     // CREATE PHOTO SELECTION RECORD
@@ -286,12 +317,18 @@ export async function POST(
     // UPDATE EVENT PHOTO COUNT
     // --------------------------------------------------
 
-    event.totalPhotos =
-      await PhotoSelectionPhoto.countDocuments({
-        eventId: event._id,
-      });
+    const updatedEvent =
+      await PhotoSelectionEvent.findOneAndUpdate(
+        { _id: event._id },
+        { $inc: { totalPhotos: 1 } },
+        { new: true }
+      ).select({ totalPhotos: 1 }).lean();
 
-    await event.save();
+    if (!updatedEvent) {
+      throw new Error("Failed to update event photo count");
+    }
+
+    event.totalPhotos = updatedEvent.totalPhotos;
 
     // Record photo upload activity
     try {
@@ -569,10 +606,23 @@ export async function DELETE(
      * Recalculate total photos.
      */
 
-    event.totalPhotos =
-      await PhotoSelectionPhoto.countDocuments({
-        eventId: event._id,
-      });
+    const updatedEvent =
+      await PhotoSelectionEvent.findOneAndUpdate(
+        {
+          _id: event._id,
+          totalPhotos: { $gt: 0 },
+        },
+        { $inc: { totalPhotos: -1 } },
+        { new: true }
+      )
+        .select({ totalPhotos: 1 })
+        .lean();
+
+    if (!updatedEvent) {
+      throw new Error("Failed to update event photo count after deletion");
+    }
+
+    event.totalPhotos = updatedEvent.totalPhotos;
 
     // Record photo deletion activity
     try {
