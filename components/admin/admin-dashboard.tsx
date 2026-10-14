@@ -39,11 +39,6 @@ const sidebarTabs = [
   { id: "quotes",         label: "Quotes",           icon: FileText   },
   { id: "bookings",       label: "Bookings",          icon: Calendar   },
   { id: "clients",        label: "Clients",           icon: Users      },
-  {
-    id: "family_friends_links",
-    label: "Family & Friends Memories Link",
-    icon: Link2,
-  },
   { id: "payments",       label: "Payments",          icon: CreditCard },
   { id: "invoices",       label: "Invoices",          icon: Receipt    },
   { id: "photography_categories", label: "Photography Categories", icon: Camera     },
@@ -72,6 +67,12 @@ const sidebarTabs = [
     label: "Photo Selection",
     icon: Camera,
   },
+  {
+    id: "family_friends_links",
+    label: "Family & Friends Memories Link",
+    icon: Link2,
+  },
+
 ];
 
 const UNREAD_THROTTLE_MS = 60_000;
