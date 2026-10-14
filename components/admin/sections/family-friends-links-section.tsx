@@ -57,12 +57,18 @@ export default function FamilyFriendsLinksSection() {
       if (!clientResponse.ok || !linkResponse.ok) {
         throw new Error("Could not load clients or links. Check admin login and API errors.");
       }
-
+      
       const clientData = await clientResponse.json();
       const linkData = await linkResponse.json();
 
-      setClients(clientData.clients || []);
+      const activeClients = (clientData.clients || []).filter(
+        (client: Client & { role?: string; status?: string }) =>
+          client.role === "client" && client.status === "active"
+      );
+
+      setClients(activeClients);
       setLinks(linkData.links || []);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load data.");
     } finally {

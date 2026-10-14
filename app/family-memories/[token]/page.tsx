@@ -9,15 +9,19 @@ interface PageProps {
   params: Promise<{ token: string }>;
 }
 
-export default async function FamilyMemoriesPage({ params }: PageProps) {
+export default async function FamilyMemoriesPage({
+  params,
+}: PageProps) {
   const { token } = await params;
 
+  // Validate the unique sharing token.
   if (!/^[a-f0-9]{64}$/.test(token)) {
     notFound();
   }
 
   await connectDB();
 
+  // Only active sharing links can be opened.
   const link = await FamilyFriendsLink.findOne({
     token,
     status: "active",
@@ -27,11 +31,14 @@ export default async function FamilyMemoriesPage({ params }: PageProps) {
     notFound();
   }
 
+  // The link must belong to an active client.
   const user = await User.findOne({
     _id: link.clientId,
     role: "client",
     isActive: true,
-  }).select("firstName lastName googleReviewUrl").lean();
+  })
+    .select("firstName lastName googleReviewUrl")
+    .lean();
 
   if (!user) {
     notFound();
@@ -48,23 +55,28 @@ export default async function FamilyMemoriesPage({ params }: PageProps) {
             <h1 className="text-2xl font-bold tracking-tight">
               Kutti Story Photography
             </h1>
+
             <p className="text-sm text-zinc-500 mt-2">
               Capturing Life, One Story at a Time
             </p>
           </header>
 
           <section className="mb-8">
-            <div className="text-5xl mb-4">❤️</div>
+            <div className="text-5xl mb-4" aria-hidden="true">
+              ❤️
+            </div>
+
             <h2 className="text-2xl font-semibold">
               {link.recipientName
                 ? `${link.recipientName}'s Memories`
                 : "Your Memories"}
             </h2>
+
             <p className="text-zinc-400 text-sm leading-6 mt-3">
               {clientName
                 ? `Memories shared from ${clientName}'s special occasion.`
                 : "Memories shared with you by Kutti Story Photography."}
-              {" "}We would love to hear about your experience with us.
+              {" "}Enjoy these special moments and memories.
             </p>
           </section>
 
@@ -78,17 +90,18 @@ export default async function FamilyMemoriesPage({ params }: PageProps) {
               >
                 ⭐ Leave a Google Review
               </a>
+
               <p className="text-xs text-zinc-500 mt-2">
-                Please share your genuine experience with Kutti Story Photography.
+                Your honest feedback helps our photography team grow.
               </p>
             </div>
           )}
 
           <MemoriesAccessButton driveUrl={link.driveUrl} />
 
-          <footer className="mt-8 pt-6 border-t border-zinc-800">
-            <p className="text-xs text-zinc-600">
-              © {new Date().getFullYear()} Kutti Story Photography
+          <footer className="mt-8 pt-5 border-t border-zinc-800">
+            <p className="text-xs text-zinc-500">
+              Made with love by Kutti Story Photography
             </p>
           </footer>
         </div>

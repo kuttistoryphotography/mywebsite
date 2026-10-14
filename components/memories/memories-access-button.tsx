@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -25,9 +26,7 @@ export default function MemoriesAccessButton({
       });
     }, 1000);
 
-    return () => {
-      window.clearInterval(timer);
-    };
+    return () => window.clearInterval(timer);
   }, []);
 
   if (unlocked) {
@@ -51,66 +50,45 @@ export default function MemoriesAccessButton({
         className="w-full py-3.5 px-5 rounded-xl bg-zinc-800 text-zinc-500 font-semibold cursor-not-allowed flex items-center justify-center gap-2"
       >
         <span>🔒</span>
-
         <span>View Your Memories</span>
-
         <span>({secondsLeft}s)</span>
       </button>
 
       <p className="text-xs text-zinc-500 mt-2 text-center">
         Your memories will unlock in {secondsLeft} seconds.
-        </p>
+      </p>
 
-        <div className="mt-5 text-left rounded-xl bg-zinc-800/50 border border-zinc-700/70 p-4">
+      <div className="mt-5 text-left rounded-xl bg-zinc-800/50 border border-zinc-700/70 p-4">
         <p className="text-sm font-semibold text-white mb-3">
-            While Your Memories Prepare
+          While Your Memories Prepare
         </p>
 
         <div className="space-y-3 text-xs text-zinc-400 leading-5">
-            <p>
+          <p>
             <strong className="text-zinc-200">
-                1. While You Wait —
+              1. Leave a Review ❤️
             </strong>{" "}
-            Please leave us a genuine Google review to unlock
-            your memories page.
-            </p>
+            If you enjoyed our photography, please consider
+            leaving an honest Google review.
+          </p>
 
-            <p>
+          <p>
             <strong className="text-zinc-200">
-                2. Don&apos;t Refresh the Page —
+              2. Keep This Page Open ⏳
             </strong>{" "}
-            Refreshing may restart the countdown.
-            </p>
+            Wait for the countdown to finish. Refreshing the
+            page may restart the timer.
+          </p>
 
-            <p>
+          <p>
             <strong className="text-zinc-200">
-                3. Check Your Review —
+              3. View Your Memories 📸
             </strong>{" "}
-            If you haven&apos;t already, tap{" "}
-            <strong className="text-zinc-200">
-                “Leave a Google Review”
-            </strong>{" "}
-            and share your honest experience.
-            </p>
-
-            <p>
-            <strong className="text-zinc-200">
-                4. Get Ready for Your Memories ✨ —
-            </strong>{" "}
-            Your private memories will be available shortly.
-            Thank you for choosing Kutti Story Photography!
-            </p>
-
-             <p>
-            <strong className="text-zinc-200">
-                5. Once your memories are unlocked ❤️—
-            </strong>{" "}
-            you can easily download the file or share it 
-            directly from the memories page.
-            </p>
-
+            When the countdown finishes, tap the button to
+            open your shared Google Drive folder.
+          </p>
         </div>
-        </div>
+      </div>
     </div>
   );
 }
