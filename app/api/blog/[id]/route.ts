@@ -158,16 +158,41 @@ export async function PUT(
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 401 });
+
+    if (!session || session.role !== "admin") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 401 }
+      );
     }
+
+    const { id } = await params;
+
     await connectDB();
-    await Blog.findByIdAndDelete(params.id);
+
+    const blog = await Blog.findByIdAndDelete(id);
+
+    if (!blog) {
+      return NextResponse.json(
+        { error: "Blog not found" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to delete blog' }, { status: 500 });
+  } catch (error) {
+    console.error("Delete blog error:", error);
+
+    return NextResponse.json(
+      { error: "Failed to delete blog" },
+      { status: 500 }
+    );
   }
 }

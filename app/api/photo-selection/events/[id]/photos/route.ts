@@ -682,7 +682,6 @@ export async function DELETE(
 
     event.totalPhotos = updatedEvent.totalPhotos;
 
-
     // Record photo deletion activity
     try {
       await PhotoSelectionActivity.create({

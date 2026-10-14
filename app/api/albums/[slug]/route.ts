@@ -74,17 +74,41 @@ export async function PUT(
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
   try {
     const session = await getCurrentUser();
-    if (!session || session.role !== 'admin') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 401 });
+
+    if (!session || session.role !== "admin") {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 401 }
+      );
     }
 
+    const { slug } = await params;
+
     await connectDB();
-    await Album.findOneAndDelete({ slug: params.slug });
+
+    const album = await Album.findOneAndDelete({ slug });
+
+    if (!album) {
+      return NextResponse.json(
+        { error: "Album not found" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete album' }, { status: 500 });
+    console.error("Delete album error:", error);
+
+    return NextResponse.json(
+      { error: "Failed to delete album" },
+      { status: 500 }
+    );
   }
 }

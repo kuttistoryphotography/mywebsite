@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Users, Calendar, CreditCard, FileText, Bell, Settings,
   FolderOpen, ChevronRight, Search, LogOut, Camera, Menu, X,
+  Link2,
   Receipt, Globe, Image, BookOpen, Quote, Layers, Phone, Star,
   HelpCircle,
 } from "lucide-react";
@@ -32,11 +33,17 @@ import ReviewsSection from "./sections/reviews-section";
 import PhotographyCategoriesSection from "./sections/photography-categories-section";
 import FaqSection from "./sections/faq-section";
 import BookingSettingsSection from "./sections/booking-settings-section";
+import FamilyFriendsLinksSection from "./sections/family-friends-links-section";
 
 const sidebarTabs = [
   { id: "quotes",         label: "Quotes",           icon: FileText   },
   { id: "bookings",       label: "Bookings",          icon: Calendar   },
   { id: "clients",        label: "Clients",           icon: Users      },
+  {
+    id: "family_friends_links",
+    label: "Family & Friends Memories Link",
+    icon: Link2,
+  },
   { id: "payments",       label: "Payments",          icon: CreditCard },
   { id: "invoices",       label: "Invoices",          icon: Receipt    },
   { id: "photography_categories", label: "Photography Categories", icon: Camera     },
@@ -142,6 +149,7 @@ export default function AdminDashboard() {
       case "quotes": return <QuotesSection />;
       case "bookings": return <BookingsSection />;
       case "clients": return <ClientsSection />;
+      case "family_friends_links":  return <FamilyFriendsLinksSection />;
       case "payments": return <PaymentsSection />;
       case "invoices": return <InvoicesPanel openModalSignal={0} />;
       case "photography_categories": return <PhotographyCategoriesSection />;

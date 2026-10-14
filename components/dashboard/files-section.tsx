@@ -20,7 +20,6 @@ interface FileItem {
   previewUrl:   string;   // Cloudinary URL or Drive /preview (iframe-safe)
   driveFileId?:  string;
   publicId?:     string;
-  downloadUrl?:  string;
   viewLink?:     string;
   cloudinaryUrl?: string;
   createdAt:    string;
@@ -63,12 +62,18 @@ const getFileType = (mimeType: string): "image" | "video" | "pdf" | "file" => {
 /**
  * Build proper Google Drive URLs from a fileId or existing Drive URL.
  */
+
 const buildDriveUrls = (raw: string, fileId?: string) => {
-  // Extract file ID from whatever URL format we have
+  const rawUrl = raw || "";
+
   let id = fileId || "";
+
   if (!id) {
-    const m = raw.match(/\/d\/([^/?#]+)/) || raw.match(/[?&]id=([^&]+)/);
-    if (m) id = m[1];
+    const match =
+      rawUrl.match(/\/d\/([^/?#]+)/) ||
+      rawUrl.match(/[?&]id=([^&]+)/);
+
+    if (match) id = match[1];
   }
 
   if (id) {
@@ -78,11 +83,13 @@ const buildDriveUrls = (raw: string, fileId?: string) => {
           ? `/api/pdf-proxy?url=${encodeURIComponent(rawUrl)}&download=1`
           : rawUrl.replace("/upload/", "/upload/fl_attachment/")
         : `https://drive.google.com/uc?export=download&id=${id}`,
+
       viewUrl: rawUrl.includes("res.cloudinary.com")
         ? rawUrl.includes("/raw/upload/")
           ? `/api/pdf-proxy?url=${encodeURIComponent(rawUrl)}`
           : rawUrl
         : `https://drive.google.com/file/d/${id}/view`,
+
       previewUrl: rawUrl.includes("res.cloudinary.com")
         ? rawUrl.includes("/raw/upload/")
           ? `/api/pdf-proxy?url=${encodeURIComponent(rawUrl)}`
@@ -91,9 +98,13 @@ const buildDriveUrls = (raw: string, fileId?: string) => {
     };
   }
 
-  // Fallback — just use the raw URL
-  return { downloadUrl: raw, viewUrl: raw, previewUrl: raw };
+  return {
+    downloadUrl: rawUrl,
+    viewUrl: rawUrl,
+    previewUrl: rawUrl,
+  };
 };
+
 
 const statusLabel = (s: string | null) => {
   if (!s) return "Ready";
