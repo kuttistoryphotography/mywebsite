@@ -61,7 +61,6 @@ const sidebarTabs = [
     label: "Booking Settings",
     icon: Image,
   },
-  
   {
     id: "photo_selection",
     label: "Photo Selection",
@@ -150,7 +149,7 @@ export default function AdminDashboard() {
       case "quotes": return <QuotesSection />;
       case "bookings": return <BookingsSection />;
       case "clients": return <ClientsSection />;
-      case "family_friends_links":  return <FamilyFriendsLinksSection />;
+      case "family_friends_links": return <FamilyFriendsLinksSection />;
       case "payments": return <PaymentsSection />;
       case "invoices": return <InvoicesPanel openModalSignal={0} />;
       case "photography_categories": return <PhotographyCategoriesSection />;
