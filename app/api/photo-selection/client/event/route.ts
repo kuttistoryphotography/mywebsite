@@ -1,46 +1,33 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
 
 export const runtime = "nodejs";
 
-export async function GET(
-  request: NextRequest
-) {
+const DEFAULT_LIMIT = 100;
+const MAX_LIMIT = 100;
+
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const { searchParams } =
-      new URL(request.url);
-
-    const eventCode = searchParams
-      .get("code")
-      ?.trim()
-      .toUpperCase();
+    const { searchParams } = new URL(request.url);
+    const eventCode = searchParams.get("code")?.trim().toUpperCase();
 
     if (!eventCode) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Event code is required",
-        },
+        { success: false, error: "Event code is required" },
         { status: 400 }
       );
     }
 
-    const event =
-      await PhotoSelectionEvent.findOne({
-        eventCode,
-      }).lean();
+    const event = await PhotoSelectionEvent.findOne({ eventCode }).lean();
 
     if (!event) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid event code",
-        },
+        { success: false, error: "Invalid event code" },
         { status: 404 }
       );
     }
@@ -55,57 +42,68 @@ export async function GET(
       );
     }
 
-    const photos =
-      await PhotoSelectionPhoto.find({
-        eventId: event._id,
-      })
-        .sort({ sequence: 1 })
-        .lean();
+    const requestedPage = Number(searchParams.get("page") || 1);
+    const requestedLimit = Number(
+      searchParams.get("limit") || DEFAULT_LIMIT
+    );
+
+    const page =
+      Number.isSafeInteger(requestedPage) && requestedPage > 0
+        ? requestedPage
+        : 1;
+
+    const limit =
+      Number.isSafeInteger(requestedLimit) && requestedLimit > 0
+        ? Math.min(requestedLimit, MAX_LIMIT)
+        : DEFAULT_LIMIT;
+
+    const [totalPhotos, photos] = await Promise.all([
+      PhotoSelectionPhoto.countDocuments({ eventId: event._id }),
+      PhotoSelectionPhoto.find({ eventId: event._id })
+        .sort({ sequence: 1, _id: 1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .select(
+          "_id photoId originalFilename thumbnailUrl previewUrl cloudinaryUrl sequence"
+        )
+        .lean(),
+    ]);
 
     return NextResponse.json({
       success: true,
-
       event: {
         id: String(event._id),
         eventCode: event.eventCode,
         eventName: event.eventName,
         clientName: event.clientName,
-        totalPhotos: photos.length,
+        totalPhotos,
         selectionLimit: event.selectionLimit,
         status: event.status,
       },
-
+      pagination: {
+        page,
+        limit,
+        totalPhotos,
+        totalPages: Math.ceil(totalPhotos / limit),
+        hasMore: page * limit < totalPhotos,
+      },
       photos: photos.map((photo) => ({
         id: String(photo._id),
         photoId: photo.photoId,
         originalFilename: photo.originalFilename,
-
-        thumbnailUrl:
-          photo.thumbnailUrl ||
-          photo.cloudinaryUrl ||
-          null,
-
-        previewUrl:
-          photo.previewUrl ||
-          photo.cloudinaryUrl ||
-          null,
-
+        thumbnailUrl: photo.thumbnailUrl || photo.cloudinaryUrl || null,
+        previewUrl: photo.previewUrl || photo.cloudinaryUrl || null,
         sequence: photo.sequence,
       })),
     });
   } catch (error) {
-    console.error(
-      "[Photo Selection Client Event]",
-      error
-    );
+    console.error("[Photo Selection Client Event]", error);
 
     return NextResponse.json(
       {
         success: false,
         error:
-          error instanceof Error
-            ? error.message
-            : "Failed to load event",
+          error instanceof Error ? error.message : "Failed to load event",
       },
       { status: 500 }
     );

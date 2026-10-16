@@ -51,13 +51,12 @@ type EventData = {
 };
 
 type Props = {
-
   event: EventData;
-
   photos: Photo[];
-
   onBack: () => void;
-
+  hasMorePhotos: boolean;
+  loadingMorePhotos: boolean;
+  loadMorePhotos: () => Promise<void>;
 };
 
 type AppInstructionCard = {
@@ -77,13 +76,12 @@ type AppInstructionCard = {
 };
 
 export default function ClientPhotoGallery({
-
   event,
-
   photos,
-
   onBack,
-
+  hasMorePhotos,
+  loadingMorePhotos,
+  loadMorePhotos,
 }: Props) {
 
   const [selected, setSelected] = useState<Photo[]>([]);
@@ -107,46 +105,38 @@ export default function ClientPhotoGallery({
   const [selectionRestoredFor, setSelectionRestoredFor] = useState("");
 
   useEffect(() => {
-
     const eventCode = event.eventCode;
 
-    if (!eventCode || photos.length === 0) return;
+    if (!eventCode) return;
 
     try {
-
       const storageKey = `photo-selection-${eventCode}`;
-
       const saved = localStorage.getItem(storageKey);
 
       if (saved) {
-
         const parsed = JSON.parse(saved);
 
-        const currentPhotos = new Map(photos.map((photo) => [photo.id, photo]));
+        setSelected(
+          Array.isArray(parsed.selectedPhotos)
+            ? parsed.selectedPhotos
+            : []
+        );
 
-        const restorePhotos = (items: Photo[]) =>
-
-          (Array.isArray(items) ? items : [])
-
-            .map((photo) => currentPhotos.get(String(photo.id)))
-
-            .filter((photo): photo is Photo => Boolean(photo));
-
-        setSelected(restorePhotos(parsed.selectedPhotos));
-
-        setRejected(restorePhotos(parsed.rejectedPhotos));
-
+        setRejected(
+          Array.isArray(parsed.rejectedPhotos)
+            ? parsed.rejectedPhotos
+            : []
+        );
+      } else {
+        setSelected([]);
+        setRejected([]);
       }
-
     } catch (error) {
-
       console.error("Failed to restore photo selection:", error);
-
     }
 
     setSelectionRestoredFor(eventCode);
-
-  }, [event.eventCode, photos]);
+  }, [event.eventCode]);
 
   useEffect(() => {
 
@@ -1283,61 +1273,47 @@ export default function ClientPhotoGallery({
 
             <div className="mt-4 flex gap-2 overflow-x-auto overscroll-x-contain pb-3 sm:mt-5">
 
-              {photos.map((photo, photoIndex) => (
+              {photos
+                .slice(
+                  Math.max(0, index - 15),
+                  Math.min(photos.length, index + 16)
+                )
+                .map((photo, offset) => {
+                  const photoIndex = Math.max(0, index - 15) + offset;
 
-                <button
+                  return (
+                    <button
+                      key={photo.id}
+                      onClick={() => setIndex(photoIndex)}
+                      aria-label={`Open photo ${photoIndex + 1}`}
+                      className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 sm:h-16 sm:w-16 lg:h-[72px] lg:w-[72px] ${
+                        index === photoIndex
+                          ? "border-amber-400"
+                          : "border-white/10"
+                      }`}
+                    >
+                      <img
+                        src={photo.uri}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
 
-                  key={photo.id}
+                      {selectedIds.has(photo.id) && (
+                        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white">
+                          <Check className="h-3 w-3" />
+                        </span>
+                      )}
 
-                  onClick={() => setIndex(photoIndex)}
-
-                  aria-label={`Open photo ${photoIndex + 1}`}
-
-                  className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 sm:h-16 sm:w-16 lg:h-[72px] lg:w-[72px] ${
-
-                    index === photoIndex
-
-                      ? "border-amber-400"
-
-                      : "border-white/10"
-
-                  }`}
-
-                >
-
-                  <img
-
-                    src={photo.uri}
-
-                    alt=""
-
-                    className="h-full w-full object-cover"
-
-                  />
-
-                  {selectedIds.has(photo.id) && (
-
-                    <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-white">
-
-                      <Check className="h-3 w-3" />
-
-                    </span>
-
-                  )}
-
-                  {rejectedIds.has(photo.id) && (
-
-                    <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white">
-
-                      <X className="h-3 w-3" />
-
-                    </span>
-
-                  )}
-
-                </button>
-
-              ))}
+                      {rejectedIds.has(photo.id) && (
+                        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white">
+                          <X className="h-3 w-3" />
+                        </span>
+                      )}
+                    </button>
+                  );
+              })}
 
             </div>
 

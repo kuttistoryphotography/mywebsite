@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { ArrowRight, Images, LockKeyhole } from "lucide-react";
 import ClientPhotoGallery from "./ClientPhotoGallery";
@@ -12,6 +12,8 @@ export default function EventsPage() {
   const [error, setError] = useState("");
   const [loadedEvent, setLoadedEvent] = useState<any>(null);
   const [loadedPhotos, setLoadedPhotos] = useState<any[]>([]);
+  const [hasMorePhotos, setHasMorePhotos] = useState(false);
+  const [loadingMorePhotos, setLoadingMorePhotos] = useState(false);
 
   const handleContinue = async (
     e: React.FormEvent<HTMLFormElement>
@@ -30,7 +32,7 @@ export default function EventsPage() {
 
     try {
       const response = await fetch(
-        `/api/photo-selection/client/event?code=${encodeURIComponent(code)}`
+        `/api/photo-selection/client/event?code=${encodeURIComponent(code)}&page=1&limit=100`
       );
 
       const data = await response.json();
@@ -45,16 +47,19 @@ export default function EventsPage() {
       setLoadedEvent(data.event);
 
         setLoadedPhotos(
-        (data.photos || []).map((photo: any) => ({
+          (data.photos || []).map((photo: any) => ({
             id: String(photo.id),
             filename: photo.originalFilename,
             uri:
-            photo.previewUrl ||
-            photo.thumbnailUrl ||
-            photo.cloudinaryUrl ||
-            "",
-        }))
+              photo.previewUrl ||
+              photo.thumbnailUrl ||
+              photo.cloudinaryUrl ||
+              "",
+          }))
         );
+
+        setHasMorePhotos(Boolean(data.pagination?.hasMore));
+
     } catch {
       setError("Unable to connect. Please try again.");
     } finally {
@@ -62,17 +67,78 @@ export default function EventsPage() {
     }
   };
 
+  const loadMorePhotos = useCallback(async () => {
+    if (!loadedEvent || loadingMorePhotos || !hasMorePhotos) {
+      return;
+    }
+
+    setLoadingMorePhotos(true);
+
+    try {
+      const nextPage = Math.floor(loadedPhotos.length / 100) + 1;
+
+      const response = await fetch(
+        `/api/photo-selection/client/event?code=${encodeURIComponent(
+          loadedEvent.eventCode
+        )}&page=${nextPage}&limit=100`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Unable to load more photos.");
+      }
+
+      setLoadedPhotos((previous) => {
+        const existingIds = new Set(previous.map((photo) => photo.id));
+
+        const newPhotos = (data.photos || [])
+          .map((photo: any) => ({
+            id: String(photo.id),
+            filename: photo.originalFilename,
+            uri:
+              photo.previewUrl ||
+              photo.thumbnailUrl ||
+              photo.cloudinaryUrl ||
+              "",
+          }))
+          .filter((photo: any) => !existingIds.has(photo.id));
+
+        return [...previous, ...newPhotos];
+      });
+
+      setHasMorePhotos(Boolean(data.pagination?.hasMore));
+    } catch (error) {
+      console.error("Failed to load more photos:", error);
+      setError(
+        error instanceof Error ? error.message : "Unable to load more photos."
+      );
+    } finally {
+      setLoadingMorePhotos(false);
+    }
+  }, [
+    loadedEvent,
+    loadingMorePhotos,
+    hasMorePhotos,
+    loadedPhotos.length,
+  ]);
+
   if (loadedEvent) {
     return (
         <ClientPhotoGallery
-        event={loadedEvent}
-        photos={loadedPhotos}
-        onBack={() => {
+          event={loadedEvent}
+          photos={loadedPhotos}
+          hasMorePhotos={hasMorePhotos}
+          loadingMorePhotos={loadingMorePhotos}
+          loadMorePhotos={loadMorePhotos}
+          onBack={() => {
             setLoadedEvent(null);
             setLoadedPhotos([]);
+            setHasMorePhotos(false);
+            setLoadingMorePhotos(false);
             setEventCode("");
             setError("");
-        }}
+          }}
         />
     );
     }
