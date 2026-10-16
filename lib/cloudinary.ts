@@ -1,3 +1,4 @@
+
 import { v2 as cloudinary } from "cloudinary";
 
 const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
@@ -101,7 +102,7 @@ export async function uploadToCloudinary(
     size: buffer.length,
   });
 
-  const uploadOptions: any = {
+  const uploadOptions: Record<string, unknown> = {
     folder,
     public_id: publicIdBase,
     resource_type: resourceType,
@@ -237,6 +238,72 @@ export function guessMimeType(
   };
 
   return map[ext] || "application/octet-stream";
+}
+
+/**
+ * Creates optimized Cloudinary delivery URLs for photo selection.
+ *
+ * Example:
+ * Original: https://res.cloudinary.com/demo/image/upload/photo.jpg
+ * Optimized: https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_180,c_limit/photo.jpg
+ *
+ * Non-Cloudinary URLs are returned unchanged.
+ */
+export function getCloudinaryImageUrl(
+  url: string | null | undefined,
+  options: {
+    width: number;
+    quality?: string;
+  }
+): string | null {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+
+    if (
+      parsed.hostname !== "res.cloudinary.com" ||
+      !parsed.pathname.includes("/image/upload/")
+    ) {
+      return url;
+    }
+
+    const width = Math.max(
+      1,
+      Math.min(4000, Math.round(options.width))
+    );
+
+    const quality = options.quality || "auto";
+    const transformation = `f_auto,q_${quality},w_${width},c_limit`;
+
+    const marker = "/image/upload/";
+    const markerIndex = parsed.pathname.indexOf(marker);
+
+    if (markerIndex === -1) return url;
+
+    const prefix = parsed.pathname.slice(
+      0,
+      markerIndex + marker.length
+    );
+
+    const remainder = parsed.pathname.slice(
+      markerIndex + marker.length
+    );
+
+    // Avoid adding the same transformation twice.
+    if (
+      remainder.startsWith("f_auto,") ||
+      remainder.startsWith("w_")
+    ) {
+      return url;
+    }
+
+    parsed.pathname = `${prefix}${transformation}/${remainder}`;
+
+    return parsed.toString();
+  } catch {
+    return url;
+  }
 }
 
 export { cloudinary };
