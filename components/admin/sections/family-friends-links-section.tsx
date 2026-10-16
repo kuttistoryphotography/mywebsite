@@ -406,37 +406,38 @@ export default function FamilyFriendsLinksSection() {
                       Copy link
                     </button>
 
-                    {link.status === "active" && (
-                      <>
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm hover:bg-zinc-800"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          Preview
-                        </a>
+                  {link.status === "active" && (
+                    <>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm hover:bg-zinc-800"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Preview
+                      </a>
 
-                        <button
-                          type="button"
-                          onClick={() => void revokeLink(link.id)}
-                          className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm text-red-300 hover:bg-red-950/40"
-                        >
-                          <ShieldOff className="h-4 w-4" />
-                          Revoke
-                        </button>
+                      <button
+                        type="button"
+                        onClick={() => void revokeLink(link.id)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm text-red-300 hover:bg-red-950/40"
+                      >
+                        <ShieldOff className="h-4 w-4" />
+                        Revoke
+                      </button>
+                    </>
+                  )}
 
-                        <button
-                          type="button"
-                          onClick={() => void deleteLink(link.id, link.recipientName)}
-                          className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm text-red-400 hover:bg-red-950/50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </button>
-                      </>
-                    )}
+                  <button
+                    type="button"
+                    onClick={() => void deleteLink(link.id, link.recipientName)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm text-red-400 hover:bg-red-950/50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </button>
+
                   </div>
                 </article>
               );
