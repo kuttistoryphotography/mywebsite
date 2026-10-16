@@ -503,12 +503,34 @@ export async function GET(
       );
     }
 
-    const photos =
-      await PhotoSelectionPhoto.find({
+    const { searchParams } = new URL(request.url);
+
+    const parsedPage = Number(searchParams.get("page") || "1");
+    const parsedLimit = Number(searchParams.get("limit") || "100");
+
+    const page =
+      Number.isInteger(parsedPage) && parsedPage > 0
+        ? parsedPage
+        : 1;
+
+    const limit =
+      Number.isInteger(parsedLimit) && parsedLimit > 0
+        ? Math.min(parsedLimit, 200)
+        : 100;
+
+    const [photos, totalPhotos] = await Promise.all([
+      PhotoSelectionPhoto.find({
         eventId: event._id,
       })
         .sort({ sequence: 1 })
-        .lean();
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+
+      PhotoSelectionPhoto.countDocuments({
+        eventId: event._id,
+      }),
+    ]);
 
     return NextResponse.json({
       success: true,
@@ -527,7 +549,10 @@ export async function GET(
           photo.previewUrl || photo.cloudinaryUrl || null,
         sequence: photo.sequence,
       })),
-      totalPhotos: photos.length,
+      totalPhotos,
+      page,
+      limit,
+      totalPages: Math.ceil(totalPhotos / limit),
     });
   } catch (error) {
     console.error(

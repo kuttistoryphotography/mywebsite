@@ -81,6 +81,13 @@ export default function PhotoSelectionSection() {
     const [eventPhotos, setEventPhotos] =
     useState<PhotoSelectionPhoto[]>([]);
 
+    const [photoPage, setPhotoPage] = useState(1);
+    const [totalPhotoPages, setTotalPhotoPages] = useState(1);
+    const [totalPhotoCount, setTotalPhotoCount] = useState(0);
+    const [loadingMorePhotos, setLoadingMorePhotos] = useState(false);
+
+    const PHOTOS_PER_PAGE = 100;
+
     const [loadingPhotos, setLoadingPhotos] =
     useState(false);
 
@@ -210,42 +217,92 @@ export default function PhotoSelectionSection() {
     }
   }
 
-  async function openManageEvent(
-    event: PhotoSelectionEvent
-    ) {
+  async function openManageEvent(event: PhotoSelectionEvent) {
     setSelectedEvent(event);
     setShowManageModal(true);
+    setLoadingPhotos(true);
+    setEventPhotos([]);
+    setPhotoPage(1);
+    setTotalPhotoPages(1);
+    setTotalPhotoCount(0);
 
     try {
-        setLoadingPhotos(true);
-        setEventPhotos([]);
+      const response = await fetch(
+        `/api/photo-selection/events/${event.id}/photos?page=1&limit=${PHOTOS_PER_PAGE}`,
+        { cache: "no-store" }
+      );
 
-        const response = await fetch(
-        `/api/photo-selection/events/${event.id}/photos`,
-        {
-            cache: "no-store",
-        }
-        );
+      const data = await response.json();
 
-        const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to load photos");
+      }
 
-        if (!response.ok || !data.success) {
-        throw new Error(
-            data.error || "Failed to load photos"
-        );
-        }
-
-        setEventPhotos(data.photos || []);
+      setEventPhotos(data.photos || []);
+      setTotalPhotoCount(data.totalPhotos ?? 0);
+      setPhotoPage(data.page ?? 1);
+      setTotalPhotoPages(data.totalPages ?? 1);
     } catch (error) {
-        console.error(error);
+      console.error(error);
 
-        alert(
+      alert(
         error instanceof Error
-            ? error.message
-            : "Failed to load photos"
-        );
+          ? error.message
+          : "Failed to load photos"
+      );
     } finally {
-        setLoadingPhotos(false);
+      setLoadingPhotos(false);
+    }
+  }
+
+  async function loadMorePhotos() {
+    if (
+      !selectedEvent ||
+      loadingMorePhotos ||
+      eventPhotos.length >= totalPhotoCount
+    ) {
+      return;
+    }
+
+    const nextPage = photoPage + 1;
+
+    try {
+      setLoadingMorePhotos(true);
+
+      const response = await fetch(
+        `/api/photo-selection/events/${selectedEvent.id}/photos?page=${nextPage}&limit=${PHOTOS_PER_PAGE}`,
+        { cache: "no-store" }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to load more photos");
+      }
+
+      setEventPhotos((current) => {
+        const existingIds = new Set(current.map((photo) => photo.id));
+
+        const newPhotos = (data.photos || []).filter(
+          (photo: PhotoSelectionPhoto) => !existingIds.has(photo.id)
+        );
+
+        return [...current, ...newPhotos];
+      });
+
+      setTotalPhotoCount(data.totalPhotos ?? totalPhotoCount);
+      setPhotoPage(data.page ?? nextPage);
+      setTotalPhotoPages(data.totalPages ?? totalPhotoPages);
+    } catch (error) {
+      console.error("Load more photos error:", error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to load more photos"
+      );
+    } finally {
+      setLoadingMorePhotos(false);
     }
   }
 
@@ -1443,6 +1500,24 @@ export default function PhotoSelectionSection() {
           </div>
         </div>
       )}
+ 
+    {!loadingPhotos && eventPhotos.length < totalPhotoCount && (
+      <div className="flex justify-center py-6">
+        <button
+          type="button"
+          onClick={loadMorePhotos}
+          disabled={loadingMorePhotos}
+          className="rounded-lg bg-white px-6 py-3 font-medium text-black transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loadingMorePhotos
+            ? "Loading..."
+            : `Load More Photos (${Math.min(
+                PHOTOS_PER_PAGE,
+                totalPhotoCount - eventPhotos.length
+              )} more)`}
+        </button>
+      </div>
+    )}
 
     </div>
   );

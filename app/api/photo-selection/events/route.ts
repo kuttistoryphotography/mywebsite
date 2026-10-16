@@ -4,6 +4,7 @@ import PhotoSelectionActivity from "@/models/PhotoSelectionActivity";
 import connectDB from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
+import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -182,6 +183,22 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .lean();
 
+    const photoCounts = await PhotoSelectionPhoto.aggregate([
+      {
+        $group: {
+          _id: "$eventId",
+          totalPhotos: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const photoCountMap = new Map(
+      photoCounts.map((item) => [
+        String(item._id),
+        item.totalPhotos,
+      ])
+    );
+
     return NextResponse.json({
       success: true,
       events: events.map((event) => ({
@@ -199,7 +216,7 @@ export async function GET() {
         folderId: event.folderId
           ? String(event.folderId)
           : null,
-        totalPhotos: event.totalPhotos,
+        totalPhotos: photoCountMap.get(String(event._id)) ?? 0,
         selectionLimit: event.selectionLimit,
         status: event.status,
         createdAt: event.createdAt,
