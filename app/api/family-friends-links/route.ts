@@ -191,3 +191,51 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Failed to revoke link" }, { status: 500 });
   }
 }
+
+ // DELETE: Permanently delete one family/friends link.
+  export async function DELETE(request: NextRequest) {
+    try {
+      const session = await requireAdmin();
+
+      if (!session) {
+        return NextResponse.json(
+          { error: "Admin access required" },
+          { status: 401 }
+        );
+      }
+
+      await connectDB();
+
+      const body = await request.json();
+      const id = String(body.id || "");
+
+      if (!mongoose.isValidObjectId(id)) {
+        return NextResponse.json(
+          { error: "Invalid link ID" },
+          { status: 400 }
+        );
+      }
+
+      const link = await FamilyFriendsLink.findByIdAndDelete(id);
+
+      if (!link) {
+        return NextResponse.json(
+          { error: "Link not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Memories link deleted permanently",
+        id: String(link._id),
+      });
+    } catch (error) {
+      console.error("Family friends links DELETE error:", error);
+
+      return NextResponse.json(
+        { error: "Failed to delete link" },
+        { status: 500 }
+      );
+    }
+  }

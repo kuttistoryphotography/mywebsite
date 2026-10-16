@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import {
   Users,
   ExternalLink,
   ShieldOff,
+  Trash2,
 } from "lucide-react";
 
 interface Client {
@@ -147,6 +147,40 @@ export default function FamilyFriendsLinksSection() {
       await loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not revoke link.");
+    }
+  }
+
+  async function deleteLink(id: string, recipientName: string) {
+    const confirmed = window.confirm(
+      `Permanently delete the memories link for "${recipientName}"? This cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setError("");
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/family-friends-links", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not delete link.");
+      }
+
+      setMessage("Memories link deleted successfully.");
+      await loadData();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not delete link."
+      );
     }
   }
 
@@ -391,6 +425,15 @@ export default function FamilyFriendsLinksSection() {
                         >
                           <ShieldOff className="h-4 w-4" />
                           Revoke
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => void deleteLink(link.id, link.recipientName)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm text-red-400 hover:bg-red-950/50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Delete
                         </button>
                       </>
                     )}
