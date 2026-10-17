@@ -73,7 +73,7 @@ export function DriveMedia({
   className = "",
   imgClassName = "",
   alt = "",
-  imageWidth = 1600,
+  imageWidth = 800,
 
   loading = "lazy",
   fetchPriority = "auto",
