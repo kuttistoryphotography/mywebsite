@@ -172,6 +172,10 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { section, data } = body;
 
+    console.log("[HOMEPAGE PUT VERSION] loginPage-handler-check-v1", {
+      section,
+    });
+
     if (!section || data === undefined) {
       return NextResponse.json(
         { error: 'Section and data are required' },
@@ -214,9 +218,20 @@ export async function PUT(request: NextRequest) {
       };
 
       settings.markModified('philosophy');
-    } else if (section === 'siteSettings') {
-      settings.siteSettings = data;
-    } else if (section === 'appInstructionCards') {
+    
+      } else if (section === 'siteSettings') {
+        settings.siteSettings = data;
+      } else if (section === 'loginPage') {
+        settings.loginPage = {
+          featuredImage: String(data.featuredImage ?? ''),
+          featuredLabel: String(data.featuredLabel ?? ''),
+          quote: String(data.quote ?? ''),
+          credit: String(data.credit ?? ''),
+        };
+
+        settings.markModified('loginPage');
+      } else if (section === 'appInstructionCards') {
+
       if (!Array.isArray(data) || data.length !== 2) {
         return NextResponse.json(
           { error: 'Exactly two app instruction cards are required' },
