@@ -56,7 +56,7 @@ interface HomeImageSlot {
 }
 
 export default function HomepageSection() {
-  const [activeTab, setActiveTab] = useState<
+const [activeTab, setActiveTab] = useState<
   | "hero"
   | "slides"
   | "stories"
@@ -66,6 +66,7 @@ export default function HomepageSection() {
   | "logo"
   | "appCards"
   | "googleReview"
+  | "loginPage"
 >("hero");
 
   const [hero, setHero] = useState<HeroData>({
@@ -100,6 +101,14 @@ export default function HomepageSection() {
   const [storyImages, setStoryImages] = useState<StoryImage[]>([]);
   const [homeImages, setHomeImages] = useState<HomeImageSlot[]>([]);
   const [siteSettings, setSiteSettings] = useState({ logo: "", });
+  
+  const [loginPage, setLoginPage] = useState({
+    featuredImage: "",
+    featuredLabel: "FEATURED WORK",
+    quote: "Every story begins with a frame",
+    credit: "Kutti Story Photography",
+  });
+
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   const [appInstructionCards, setAppInstructionCards] = useState([
     {
@@ -205,6 +214,19 @@ export default function HomepageSection() {
           if (data.settings.siteSettings) {
             setSiteSettings(data.settings.siteSettings);
           }
+                    
+          if (data.settings.loginPage) {
+            setLoginPage({
+              featuredImage: data.settings.loginPage.featuredImage ?? "",
+              featuredLabel:
+                data.settings.loginPage.featuredLabel ?? "FEATURED WORK",
+              quote:
+                data.settings.loginPage.quote ??
+                "Every story begins with a frame",
+              credit:
+                data.settings.loginPage.credit ?? "Kutti Story Photography",
+            });
+          }
 
           setGoogleReviewUrl(data.settings.googleReviewUrl || "");
 
@@ -305,6 +327,7 @@ export default function HomepageSection() {
     { id: "logo", label: "Website Logo" },
     { id: "appCards", label: "App Cards" },
     { id: "googleReview", label: "Google Review" },
+    { id: "loginPage", label: "Login Page" },
   ];
 
   return (
@@ -1257,6 +1280,98 @@ export default function HomepageSection() {
           </button>
         </div>
       )}
+
+      
+      {activeTab === "loginPage" && (
+        <div className="bg-zinc-900 rounded-2xl p-6 space-y-6">
+          <div>
+            <h3 className="text-white font-semibold text-lg">
+              Login Page Settings
+            </h3>
+            <p className="text-sm text-zinc-400 mt-1">
+              Manage the featured image and text displayed on the login page.
+            </p>
+          </div>
+
+          <MediaField
+            label="Login Page Featured Image"
+            url={loginPage.featuredImage}
+            mediaType="image"
+            onChange={(url) =>
+              setLoginPage((current) => ({
+                ...current,
+                featuredImage: url,
+              }))
+            }
+          />
+
+          <div className="space-y-2">
+            <label className="block text-sm text-zinc-300">
+              Featured Label
+            </label>
+            <input
+              type="text"
+              value={loginPage.featuredLabel}
+              onChange={(event) =>
+                setLoginPage((current) => ({
+                  ...current,
+                  featuredLabel: event.target.value,
+                }))
+              }
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm text-zinc-300">
+              Quote
+            </label>
+            <textarea
+              value={loginPage.quote}
+              onChange={(event) =>
+                setLoginPage((current) => ({
+                  ...current,
+                  quote: event.target.value,
+                }))
+              }
+              rows={3}
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm text-zinc-300">
+              Photographer Credit
+            </label>
+            <input
+              type="text"
+              value={loginPage.credit}
+              onChange={(event) =>
+                setLoginPage((current) => ({
+                  ...current,
+                  credit: event.target.value,
+                }))
+              }
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => save("loginPage", loginPage)}
+            disabled={saving}
+            className="flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 font-semibold text-black transition hover:bg-amber-400 disabled:opacity-50"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {saving ? "Saving..." : "Save Login Page Settings"}
+          </button>
+        </div>
+      )}
+
 
     </div>
   

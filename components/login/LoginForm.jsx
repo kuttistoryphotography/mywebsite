@@ -21,6 +21,41 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const [loginPageSettings, setLoginPageSettings] = useState({
+    featuredImage:
+      "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/12.webp",
+    featuredLabel: "FEATURED WORK",
+    quote: "Every story begins with a frame",
+    credit: "Kutti Story Photography",
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/homepage")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load login page settings");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (cancelled || !data.settings?.loginPage) return;
+
+        setLoginPageSettings((current) => ({
+          ...current,
+          ...data.settings.loginPage,
+        }));
+      })
+      .catch((error) => {
+        console.error("Unable to load login page settings:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Handle Google Sign-In response
   const handleGoogleResponse = useCallback(async (response) => {
     if (!response.credential) {

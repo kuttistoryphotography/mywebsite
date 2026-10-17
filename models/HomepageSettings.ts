@@ -1,15 +1,14 @@
+
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
 // Hero section
 export interface IHeroSection {
   backgroundImage: string;
   backgroundMediaType: string;
-
   backgroundOpacity: number;
   backgroundBlur: number;
   backgroundBrightness: number;
   overlayOpacity: number;
-
   heading: string;
   subheading: string;
   paragraph: string;
@@ -19,21 +18,19 @@ export interface IHeroSection {
   statsYears: string;
   statsStories: string;
   statsPassion: string;
-
   heroCardImage: string;
   heroCardMediaType: string;
-
   awardText: string;
 }
 
 // Individual image slot
 export interface IHomeImageSlot {
-  key: string;          // e.g. "about_main", "featured_big", etc.
+  key: string;
   label: string;
   url: string;
 }
 
-// Carousel/Showcase slide (WeddingShowcase)
+// Carousel / Showcase slide
 export interface IShowcaseSlide {
   image1: string;
   image2: string;
@@ -48,6 +45,14 @@ export interface IStoryImage {
 
 export interface ISiteSettings {
   logo: string;
+}
+
+// Login page settings
+export interface ILoginPageSettings {
+  featuredImage: string;
+  featuredLabel: string;
+  quote: string;
+  credit: string;
 }
 
 export interface IGoogleReviewSettings {
@@ -65,14 +70,15 @@ export interface IAppInstructionCard {
 
 export interface IHomepageSettings extends Document {
   hero: IHeroSection;
-  
+  loginPage: ILoginPageSettings;
   homeImages: IHomeImageSlot[];
   showcaseSlides: IShowcaseSlide[];
   storyImages: IStoryImage[];
   siteSettings: ISiteSettings;
   appInstructionCards: IAppInstructionCard[];
   googleReviewUrl: string;
-   philosophy: {
+
+  philosophy: {
     leftLines: string[];
     label: string;
     heading: string;
@@ -84,7 +90,6 @@ export interface IHomepageSettings extends Document {
     heading: string;
     description: string;
     experienceBadge: string;
-
   };
 
   updatedAt: Date;
@@ -92,118 +97,107 @@ export interface IHomepageSettings extends Document {
 
 const HomepageSettingsSchema = new Schema<IHomepageSettings>(
   {
-  hero: {
-  backgroundImage: { type: String, default: "" },
+    hero: {
+      backgroundImage: { type: String, default: '' },
+      backgroundMediaType: { type: String, default: 'image' },
+      backgroundOpacity: { type: Number, default: 100 },
+      backgroundBlur: { type: Number, default: 0 },
+      backgroundBrightness: { type: Number, default: 100 },
+      overlayOpacity: { type: Number, default: 20 },
 
-  backgroundMediaType: {
-    type: String,
-    default: "image",
-  },
-
-  backgroundOpacity: {
-    type: Number,
-    default: 100,
-  },
-
-  backgroundBlur: {
-    type: Number,
-    default: 0,
-  },
-
-  backgroundBrightness: {
-    type: Number,
-    default: 100,
-  },
-
-  overlayOpacity: {
-    type: Number,
-    default: 20,
-  },
-
-  heading: { type: String, default: "Capturing Moments Into Eternity" },
-  subheading: { type: String, default: "Kutti Story Photography" },
-  paragraph: {
-    type: String,
-    default: "We don't just take pictures; we craft visual legacies.",
-  },
-
-  badgeText: { type: String, default: "Kutti Story Photography" },
-  primaryButtonText: { type: String, default: "Book a Session" },
-  secondaryButtonText: { type: String, default: "View Portfolio" },
-
-  statsYears: { type: String, default: "7+" },
-  statsStories: { type: String, default: "213+" },
-  statsPassion: { type: String, default: "100%" },
-
-  heroCardImage: { type: String, default: "" },
-
-  heroCardMediaType: {
-    type: String,
-    default: "image",
-  },
-
-  awardText: {
-    type: String,
-    default: "Award Winning Studio 2024",
-  },
-
-  },
-      googleReviewUrl: {
+      heading: {
         type: String,
-        default: "",
+        default: 'Capturing Moments Into Eternity',
       },
-      siteSettings: {
-        logo: {
-          type: String,
-          default: "/placeholder-logo.png",
-        },
+      subheading: {
+        type: String,
+        default: 'Kutti Story Photography',
       },
+      paragraph: {
+        type: String,
+        default: "We don't just take pictures; we craft visual legacies.",
+      },
+
+      badgeText: {
+        type: String,
+        default: 'Kutti Story Photography',
+      },
+      primaryButtonText: {
+        type: String,
+        default: 'Book a Session',
+      },
+      secondaryButtonText: {
+        type: String,
+        default: 'View Portfolio',
+      },
+
+      statsYears: { type: String, default: '7+' },
+      statsStories: { type: String, default: '213+' },
+      statsPassion: { type: String, default: '100%' },
+
+      heroCardImage: { type: String, default: '' },
+      heroCardMediaType: { type: String, default: 'image' },
+
+      awardText: {
+        type: String,
+        default: 'Award Winning Studio 2024',
+      },
+    },
+
+    loginPage: {
+      featuredImage: { type: String, default: '' },
+      featuredLabel: { type: String, default: 'FEATURED WORK' },
+      quote: {
+        type: String,
+        default: 'Every story begins with a frame',
+      },
+      credit: {
+        type: String,
+        default: 'Kutti Story Photography',
+      },
+    },
+
+    googleReviewUrl: {
+      type: String,
+      default: '',
+    },
+
+    siteSettings: {
+      logo: {
+        type: String,
+        default: '/placeholder-logo.png',
+      },
+    },
 
     appInstructionCards: {
       type: [
         {
-          enabled: {
-            type: Boolean,
-            default: true,
-          },
-          title: {
-            type: String,
-            default: "",
-          },
-          description: {
-            type: String,
-            default: "",
-          },
-          image: {
-            type: String,
-            default: "",
-          },
-          buttonText: {
-            type: String,
-            default: "",
-          },
-          buttonUrl: {
-            type: String,
-            default: "",
-          },
+          enabled: { type: Boolean, default: true },
+          title: { type: String, default: '' },
+          description: { type: String, default: '' },
+          image: { type: String, default: '' },
+          buttonText: { type: String, default: '' },
+          buttonUrl: { type: String, default: '' },
         },
       ],
       default: [
         {
           enabled: true,
-          title: "App Instructions",
-          description: "Learn how to view and select your favourite photos.",
-          image: "",
-          buttonText: "View Instructions",
-          buttonUrl: "",
+          title: 'App Instructions',
+          description:
+            'Learn how to view and select your favourite photos.',
+          image: '',
+          buttonText: 'View Instructions',
+          buttonUrl: '',
         },
         {
           enabled: true,
-          title: "Download Our App",
-          description: "Download our app for a smoother photo selection experience.",
-          image: "",
-          buttonText: "Download App",
-          buttonUrl: "",
+          title: 'Download Our App',
+          description:
+            'Download our app for a smoother photo selection experience.',
+          image: '',
+          buttonText: 'Download App',
+          buttonUrl: '',
         },
       ],
     },
@@ -223,65 +217,53 @@ const HomepageSettingsSchema = new Schema<IHomepageSettings>(
         year: String,
       },
     ],
-   storyImages: [
-    {
-      src: String,
-      alt: String,
+
+    storyImages: [
+      {
+        src: String,
+        alt: String,
+      },
+    ],
+
+    philosophy: {
+      leftLines: {
+        type: [String],
+        default: [],
+      },
+      label: { type: String, default: '' },
+      heading: { type: String, default: '' },
+      description: { type: String, default: '' },
     },
-  ],
 
-  philosophy: {
-  leftLines: {
-    type: [String],
-    default: [],
+    aboutContent: {
+      title: {
+        type: String,
+        default: 'About Kutti Story',
+      },
+      heading: {
+        type: String,
+        default: 'We Make Only Authentic Visual Experiences',
+      },
+      description: {
+        type: String,
+        default:
+          'Every frame we create is driven by emotion, story, and authenticity.',
+      },
+      experienceBadge: {
+        type: String,
+        default: '10+ Years Experience',
+      },
+    },
   },
-
-  label: {
-    type: String,
-    default: "",
-  },
-
-  heading: {
-    type: String,
-    default: "",
-  },
-
-  description: {
-    type: String,
-    default: "",
-  },
-},
-
-  aboutContent: {
-  title: {
-    type: String,
-    default: 'About Kutti Story',
-  },
-  heading: {
-    type: String,
-    default: 'We Make Only Authentic Visual Experiences',
-  },
-  description: {
-    type: String,
-    default: 'Every frame we create is driven by emotion, story, and authenticity.',
-  },
-  experienceBadge: {
-    type: String,
-    default: '10+ Years Experience',
-  },
-},
-  },
-  
   { timestamps: true }
 );
 
-
-
+// Preserve the existing model-reload behavior.
 delete (mongoose.models as any).HomepageSettings;
 
 const HomepageSettings: Model<IHomepageSettings> =
   mongoose.model<IHomepageSettings>(
-    "HomepageSettings",
+    'HomepageSettings',
     HomepageSettingsSchema
   );
 
