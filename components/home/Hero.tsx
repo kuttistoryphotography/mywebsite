@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -9,27 +8,32 @@ import { MediaType } from "@/lib/media";
 interface HeroData {
   backgroundImage: string;
   backgroundMediaType: MediaType;
+
   backgroundOpacity: number;
   backgroundBlur: number;
   backgroundBrightness: number;
   overlayOpacity: number;
+
   heading: string;
   subheading: string;
   paragraph: string;
+
   badgeText: string;
   primaryButtonText: string;
   secondaryButtonText: string;
+
   statsYears: string;
   statsStories: string;
   statsPassion: string;
+
   heroCardImage: string;
   heroCardMediaType: MediaType;
+
   awardText: string;
 }
 
 const DEFAULT_HERO: HeroData = {
-  backgroundImage:
-    "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
+  backgroundImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
   backgroundMediaType: "image",
   backgroundOpacity: 100,
   backgroundBlur: 0,
@@ -38,15 +42,14 @@ const DEFAULT_HERO: HeroData = {
   heading: "Capturing Moments Into Eternity",
   subheading: "Kutti Story Photography - Madurai",
   paragraph:
-    "Professional wedding photographer in Madurai specializing in candid wedding photography, cinematic wedding photography, traditional Tamil wedding photography, pre-wedding shoots and post-wedding photography across Tamil Nadu. We don't just capture moments—we preserve emotions through storytelling and timeless imagery.",
+  "Professional wedding photographer in Madurai specializing in candid wedding photography, cinematic wedding photography, traditional Tamil wedding photography, pre-wedding shoots and post-wedding photography across Tamil Nadu. We don't just capture moments—we preserve emotions through storytelling and timeless imagery.",
   badgeText: "Kutti Story Photography",
   primaryButtonText: "Book a Session",
   secondaryButtonText: "View Portfolio",
   statsYears: "7+",
   statsStories: "213+",
   statsPassion: "100%",
-  heroCardImage:
-    "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
+  heroCardImage: "/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/06.webp",
   heroCardMediaType: "image",
   awardText: "Award Winning Studio 2024",
 };
@@ -55,339 +58,384 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Render default content immediately instead of waiting for the API.
-  const [hero, setHero] = useState<HeroData>(DEFAULT_HERO);
 
-  // Load dynamic homepage settings in the background.
+  const [hero, setHero] = useState<HeroData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch dynamic content
   useEffect(() => {
-    let cancelled = false;
+    fetch("/api/homepage")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.settings?.hero) {
+          setHero({
+            ...DEFAULT_HERO,
+            ...data.settings.hero,
 
-    async function loadHomepageSettings() {
-      try {
-        const response = await fetch("/api/homepage");
+            backgroundMediaType:
+              data.settings.hero.backgroundMediaType || "image",
 
-        if (!response.ok) {
-          throw new Error("Failed to load homepage settings");
+            heroCardMediaType:
+              data.settings.hero.heroCardMediaType || "image",
+          });
+        } else {
+          setHero(DEFAULT_HERO);
         }
 
-        const data = await response.json();
-
-        if (cancelled || !data.settings?.hero) return;
-
-        const settings = data.settings.hero;
-
-        setHero({
-          ...DEFAULT_HERO,
-          ...settings,
-          backgroundMediaType:
-            settings.backgroundMediaType || "image",
-          heroCardMediaType:
-            settings.heroCardMediaType || "image",
-        });
-      } catch (error) {
-        // Keep the default hero visible if the request fails.
-        console.error("Homepage settings could not be loaded:", error);
-      }
-    }
-
-    void loadHomepageSettings();
-
-    return () => {
-      cancelled = true;
-    };
+        setLoading(false);
+      })
+      .catch(() => {
+        setHero(DEFAULT_HERO);
+        setLoading(false);
+      });
   }, []);
 
-  // Animate the heading and decorative desktop image.
   useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) return;
-
     const ctx = gsap.context(() => {
-      gsap.from(".char", {
-        opacity: 0,
-        y: 40,
-        rotateX: -90,
-        stagger: 0.02,
-        duration: 1,
-        ease: "expo.out",
-        delay: 0.3,
-      });
-
-      // Keep animations on secondary content, but do not animate
-      // the main paragraph that PageSpeed identifies as the LCP element.
-      gsap.from(".animate-fade", {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.2,
-      });
-
+      gsap.from(".char", { opacity: 0, y: 40, rotateX: -90, stagger: 0.02, duration: 1, ease: "expo.out", delay: 0.3 });
+      gsap.from(".animate-fade", { opacity: 0, y: 20, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1 });
       if (imageWrapperRef.current) {
-        gsap.from(imageWrapperRef.current, {
-          scale: 0.8,
-          opacity: 0,
-          duration: 1.2,
-          ease: "expo.out",
-          delay: 0.3,
-        });
+      gsap.from(imageWrapperRef.current, {
+        scale: 0.8,
+        opacity: 0,
+        duration: 1.5,
+        ease: "expo.out",
+        delay: 0.5,
+      });
 
-        gsap.to(imageWrapperRef.current, {
-          y: 8,
-          duration: 4,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      }
-    }, container);
+      gsap.to(imageWrapperRef.current, {
+        y: 8,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }
 
+
+      }, containerRef);
     return () => ctx.revert();
   }, []);
 
-  // Interactive heading text.
-  function MagicText({ text }: { text: string }) {
-    const refs = useRef<HTMLSpanElement[]>([]);
-    let counter = 0;
+  const MagicText = ({ text }: { text: string }) => {
+  const refs = useRef<HTMLSpanElement[]>([]);
 
-    const enter = (el: HTMLSpanElement) => {
-      gsap.to(el, {
-        y: -8,
-        scale: 1.15,
-        color: "#a855f7",
-        duration: 0.35,
-        ease: "power3.out",
-      });
-    };
+  const enter = (el: HTMLSpanElement) =>
+    gsap.to(el, {
+      y: -8,
+      scale: 1.15,
+      color: "#a855f7",
+      duration: 0.35,
+      ease: "power3.out",
+    });
 
-    const leave = (el: HTMLSpanElement) => {
-      gsap.to(el, {
-        y: 0,
-        scale: 1,
-        color: "#ffffff",
-        duration: 0.35,
-        ease: "power3.out",
-      });
-    };
+  const leave = (el: HTMLSpanElement) =>
+    gsap.to(el, {
+      y: 0,
+      scale: 1,
+      color: "#ffffff",
+      duration: 0.35,
+      ease: "power3.out",
+    });
 
-    return (
-      <>
-        {text.split(" ").map((word, wordIndex) => (
-          <span
-            key={`${wordIndex}-${word}`}
-            className="mr-[0.25em] inline-block"
-          >
-            {word.split("").map((char) => {
-              const index = counter++;
+  let counter = 0;
 
-              return (
-                <span
-                  key={`${wordIndex}-${index}`}
-                  ref={(el) => {
-                    if (el) refs.current[index] = el;
-                  }}
-                  onMouseEnter={(event) => enter(event.currentTarget)}
-                  onMouseLeave={(event) => leave(event.currentTarget)}
-                  className="char inline-block cursor-default"
-                >
-                  {char}
-                </span>
-              );
-            })}
-          </span>
-        ))}
-      </>
-    );
-  }
-
-  return (
-    <section
-      ref={containerRef}
-      className="
-        relative flex min-h-[100svh] items-center
-        overflow-hidden bg-[#0a0a0a] text-white
-        pt-24 pb-12 lg:pt-28 lg:pb-16
-      "
-    >
-      {/* Decorative background glows */}
-      <div className="absolute left-[-10%] top-[-10%] h-[40%] w-[40%] rounded-full bg-blue-500/5 blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-purple-500/5 blur-[120px]" />
-
-      {/* Full-screen hero background */}
-      {hero.backgroundImage && (
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            opacity: (hero.backgroundOpacity ?? 100) / 100,
-            filter: `blur(${hero.backgroundBlur ?? 0}px) brightness(${hero.backgroundBrightness ?? 100}%)`,
-          }}
+   return (
+    <>
+      {text.split(" ").map((word, wordIndex) => (
+        <span
+          key={wordIndex}
+          className="inline-block mr-[0.25em]"
         >
-          <DriveMedia
-            url={hero.backgroundImage}
-            mediaType={hero.backgroundMediaType || "image"}
-            className="h-full w-full object-cover"
-            alt="Best Wedding Photography in Madurai by Kutti Story Photography"
-            loading="eager"
-            fetchPriority="high"
-          />
+          {word.split("").map((char) => {
+            const index = counter++;
 
-          <div
-            className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"
-            style={{
-              opacity: (hero.overlayOpacity ?? 20) / 100,
-            }}
-          />
-        </div>
-      )}
+            return (
+              <span
+                key={index}
+                ref={(el) => {
+                  if (el) refs.current[index] = el;
+                }}
+                onMouseEnter={() => enter(refs.current[index])}
+                onMouseLeave={() => leave(refs.current[index])}
+                className="char inline-block cursor-default"
+              >
+                {char}
+              </span>
+            );
+          })}
+        </span>
+      ))}
+    </>
+  );
+};
 
-      {/* Main hero layout */}
-      <div
+    if (loading || !hero) {
+      return (
+        <section className="min-h-screen bg-[#0a0a0a]" />
+      );
+    }
+
+     return (
+      <section
+        ref={containerRef}
         className="
-          relative z-10 mx-auto grid w-full max-w-screen-2xl
-          grid-cols-1 items-center gap-8 px-6
-          sm:px-8 lg:grid-cols-[48%_52%] lg:gap-12
-          lg:px-10 xl:px-12
+          relative
+          min-h-[100svh]
+          overflow-hidden
+          bg-[#0a0a0a]
+          text-white
+
+          pt-24
+          lg:pt-28
+
+          pb-12
+          lg:pb-16
+
+          flex
+          items-center
         "
       >
-        {/* Text and information */}
-        <div className="w-full max-w-[720px] space-y-6 pt-2 lg:space-y-8 lg:pt-0">
-          <div className="space-y-2 sm:space-y-3">
-            <h3
-              className="
-                group relative inline-block cursor-pointer
-                overflow-hidden text-[clamp(0.75rem,0.8vw,0.9rem)]
-                font-medium uppercase tracking-[0.15em] text-gray-200
-              "
-            >
-              <span
-                className="
-                  relative z-10 transition-all duration-500
-                  group-hover:scale-[1.03] group-hover:text-white
-                  group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]
-                "
-              >
-                {hero.subheading}
-              </span>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full" />
 
-              <span
-                className="
-                  absolute inset-0 -translate-x-full skew-x-12
-                  bg-gradient-to-r from-transparent via-white/90 to-transparent
-                  transition-transform duration-1000
-                  group-hover:translate-x-full
-                "
-              />
-            </h3>
+      {hero.backgroundImage && (
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          opacity: (hero.backgroundOpacity ?? 100) / 100,
+          filter: `blur(${hero.backgroundBlur ?? 0}px) brightness(${hero.backgroundBrightness ?? 100}%)`,
+        }}
+      >
+        <DriveMedia
+          url={hero.backgroundImage}
+          mediaType="image"
+          className="w-full h-full object-cover"
+          alt="Best Wedding Photography in Madurai by Kutti Story Photography"
+          loading="eager"
+          fetchPriority="high"
+        />
 
-            <h1
-              className="
-                max-w-[700px] text-[clamp(2.8rem,5vw,5.8rem)]
-                font-light leading-[1.05] tracking-tight
-              "
-            >
-              <MagicText text={hero.heading} />
-            </h1>
-          </div>
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"
+          style={{
+            opacity: (hero.overlayOpacity ?? 20) / 100,
+          }}
+        />
+      </div>
+    )}
 
-          {/* Main paragraph: visible immediately, without a fade delay */}
-          <p
-            className="
-              max-w-[650px] text-[clamp(1rem,1.2vw,1.2rem)]
-              leading-8 text-gray-300
-            "
-          >
-            {hero.paragraph}
-          </p>
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-screen-2xl
+          mx-auto
 
-          <div className="animate-fade space-y-6">
-            <div className="flex flex-wrap items-center gap-4">
-              <a
-                href="/booking"
-                className="
-                  rounded-full bg-white px-[clamp(1.5rem,2vw,2.5rem)]
-                  py-[clamp(.9rem,1vw,1rem)] font-semibold text-black
-                  transition-colors duration-300 hover:bg-gray-200
-                "
-              >
-                {hero.primaryButtonText}
-              </a>
+          px-6
+          sm:px-8
+          lg:px-10
+          xl:px-12
 
-              <a
-                href="/works"
-                className="
-                  group flex items-center gap-2
-                  font-medium text-white
-                "
-              >
-                {hero.secondaryButtonText}
-                <span className="transition-transform duration-300 group-hover:translate-x-2">
-                  →
-                </span>
-              </a>
-            </div>
+          grid
+          grid-cols-1
+          lg:grid-cols-[48%_52%]
 
-            <p className="max-w-[680px] text-sm leading-7 text-gray-400">
-              Trusted Wedding Photography Studio in Madurai • Candid
-              Photography • Cinematic Wedding Films • Traditional Tamil
-              Wedding Photography • Pre-Wedding &amp; Post-Wedding Shoots
-              Across Tamil Nadu
-            </p>
-          </div>
+          gap-8
+          lg:gap-12
 
-          {/* Statistics */}
-          <div
-            className="
-              animate-fade grid w-full max-w-[650px] grid-cols-3
-              gap-6 rounded-3xl border border-white/10 bg-white/5
-              p-[clamp(1.25rem,2vw,2rem)] backdrop-blur-xl
-            "
-          >
+          items-center
+        "
+      >
+
+          {/* <div className="animate-fade">
+            <span className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-xs uppercase tracking-[0.3em] backdrop-blur-md">
+              {hero.badgeText}
+            </span>
+          </div> */}
+<div
+  className="
+    w-full
+    max-w-[720px]
+    space-y-6
+    lg:space-y-8
+    pt-2
+    lg:pt-0
+  "
+>
+<div className="space-y-2 sm:space-y-3">
+  
+<h3
+  className="
+    group
+    relative
+    inline-block
+    text-[clamp(0.75rem,0.8vw,0.9rem)]
+    text-gray-200
+    font-medium
+    tracking-[0.15em]
+    uppercase
+    cursor-pointer
+    overflow-hidden
+  "
+>  <span
+    className="
+      relative z-10
+      transition-all duration-500
+      group-hover:text-white
+      group-hover:scale-[1.03]
+      group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,1)]
+    "
+  >
+    {hero.subheading}
+  </span>
+
+  <span
+    className="
+      absolute inset-0
+      -translate-x-full
+      group-hover:translate-x-full
+      transition-transform duration-1000
+      bg-gradient-to-r
+      from-transparent
+      via-white/90
+      to-transparent
+      skew-x-12
+    "
+  />
+</h3>
+
+<h1
+  className="
+    font-light
+    tracking-tight
+    leading-[1.05]
+    text-[clamp(2.8rem,5vw,5.8rem)]
+
+    max-w-[700px]
+  "
+>
+  <MagicText text={hero.heading} />
+</h1>
+
+</div>
+
+<p
+  className="
+    animate-fade
+    text-gray-300
+    text-[clamp(1rem,1.2vw,1.2rem)]
+    leading-8
+    max-w-[650px]
+  "
+>
+  {hero.paragraph}</p>
+
+                      <div className="animate-fade space-y-6">
+
+                        <div className="flex flex-wrap items-center gap-4">
+
+                          <a href="/booking">
+                            <button className="bg-white text-black px-[clamp(1.5rem,2vw,2.5rem)] py-[clamp(.9rem,1vw,1rem)] rounded-full font-semibold transition-all duration-300 hover:bg-gray-200 hover:scale-105">
+                              {hero.primaryButtonText}
+                            </button>
+                          </a>
+
+                          <a href="/works">
+                            <button className="group flex items-center gap-2 text-white font-medium">
+                              {hero.secondaryButtonText}
+                              <span className="transition-transform duration-300 group-hover:translate-x-2">
+                                →
+                              </span>
+                            </button>
+                          </a>
+
+                        </div>
+
+                        <p className="text-sm text-gray-400 max-w-[680px] leading-7">
+                          Trusted Wedding Photography Studio in Madurai • Candid Photography •
+                          Cinematic Wedding Films • Traditional Tamil Wedding Photography •
+                          Pre-Wedding & Post-Wedding Shoots Across Tamil Nadu
+                        </p>
+
+                      </div>
+
+          <div className="
+            animate-fade
+            grid
+            grid-cols-3
+            gap-6
+
+            w-full
+            max-w-[650px]
+
+            rounded-3xl
+
+            bg-white/5
+            border
+            border-white/10
+
+            backdrop-blur-xl
+
+            p-[clamp(1.25rem,2vw,2rem)]
+          ">
             {[
               { value: hero.statsYears, label: "Years" },
               { value: hero.statsStories, label: "Stories" },
               { value: hero.statsPassion, label: "Passion" },
             ].map(({ value, label }) => (
               <div key={label}>
-                <h3 className="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-[clamp(2rem,2vw,2.75rem)] font-bold text-transparent">
-                  {value}
-                </h3>
-                <p className="mt-1 text-[clamp(.75rem,.8vw,.9rem)] uppercase tracking-widest text-gray-500">
-                  {label}
-                </p>
+                <h3 className="text-[clamp(2rem,2vw,2.75rem)] font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">{value}</h3>
+                <p className="text-[clamp(.75rem,.8vw,.9rem)] uppercase tracking-widest text-gray-500 mt-1">{label}</p>
               </div>
             ))}
           </div>
+        
 
-          {/* Mobile hero image */}
-          {hero.heroCardImage && (
-            <div className="mt-8 flex justify-end md:hidden">
-              <div className="h-[300px] w-[220px] overflow-hidden rounded-[30px] border-[8px] border-white/5 shadow-2xl">
-                <DriveMedia
-                  url={hero.heroCardImage}
-                  mediaType={hero.heroCardMediaType || "image"}
-                  className="h-full w-full object-cover object-left"
-                  alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          )}
+        {/* Mobile Hero Image */}
+        <div className="md:hidden flex justify-end mt-8">
+          <div className="w-[220px] h-[300px] rounded-[30px] overflow-hidden border-[8px] border-white/5 shadow-2xl">
+            
+            <DriveMedia
+              url={hero.heroCardImage}
+              mediaType="image"
+              className="w-full h-full object-cover object-left"
+              alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
+            />
+
+          </div>
         </div>
+        
+        </div> {/* LEFT COLUMN END */}
 
-        {/* Desktop hero image */}
-        <div
-          className="
-            relative hidden h-full w-full items-center
-            justify-end lg:flex
-          "
-        >
           <div
             className="
-              absolute h-[420px] w-[420px] rounded-full
-              bg-white/5 opacity-70 blur-[120px]
-              lg:h-[500px] lg:w-[500px]
+              relative
+              hidden
+              lg:flex
+              items-center
+              justify-end
+
+              w-full
+              h-full
+            "
+          >
+          
+          <div
+            className="
+              absolute
+              w-[420px]
+              h-[420px]
+
+              lg:w-[500px]
+              lg:h-[500px]
+
+              rounded-full
+              bg-white/5
+              blur-[120px]
+              opacity-70
+              animate-pulse
             "
           />
 
@@ -395,23 +443,44 @@ export default function Hero() {
             <div
               ref={imageWrapperRef}
               className="
-                relative z-20 mx-auto aspect-[3/4] w-[90%]
-                min-w-[320px] max-w-[620px] overflow-hidden
-                rounded-[40px] border-[10px] border-white/5 shadow-2xl
+              relative
+              z-20
+              mx-auto
+
+              w-[90%]
+              max-w-[620px]
+              min-w-[320px]
+
+              aspect-[3/4]
+
+              rounded-[40px]
+              overflow-hidden
+
+              border-[10px]
+              border-white/5
+
+              shadow-2xl
               "
             >
               <DriveMedia
-                url={hero.heroCardImage}
-                mediaType={hero.heroCardMediaType || "image"}
-                className="
-                  h-full w-full object-cover
-                  transition-transform duration-700 hover:scale-105
-                "
-                alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
-                loading="lazy"
+                  url={hero.heroCardImage}
+                  mediaType="image"
+                  className="
+                      w-full
+                      h-full
+                      object-cover
+                      transition-transform
+                      duration-700
+                      hover:scale-105
+                  "
+                  alt="Bride and groom wedding photography by Kutti Story Photography in Madurai"
               />
             </div>
           )}
+          
+          {/* <div className="absolute bottom-10 -left-10 bg-white p-4 rounded-2xl shadow-2xl rotate-[-5deg] hidden md:block animate-bounce">
+            <p className="text-black text-xs font-bold uppercase tracking-tighter">{hero.awardText}</p>
+          </div> */}
         </div>
       </div>
     </section>
