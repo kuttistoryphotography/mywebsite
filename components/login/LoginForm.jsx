@@ -395,10 +395,11 @@ export default function LoginForm() {
           >
             <div ref={imageRef} className="relative w-full h-full">
               <Image
-                src="/images/Webp Photo/Outdoor/Aravindh & Dhanushya/Night shoot/New folder/12.webp"
+                src={loginPageSettings.featuredImage}
                 alt="Login visual"
                 fill
                 priority
+                unoptimized
                 className="object-cover scale-105"
               />
             </div>
@@ -409,12 +410,12 @@ export default function LoginForm() {
             {/* Floating Caption inside 3D space */}
             <div className="absolute bottom-10 left-10" style={{ transform: "translateZ(50px)" }}>
               <span className="inline-block px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-[10px] uppercase tracking-[0.2em] mb-3">
-                Featured Work
+                {loginPageSettings.featuredLabel}
               </span>
               <h2 className="text-2xl font-light italic">
-                "Every story begins with a frame"
+                {loginPageSettings.quote}
               </h2>
-              <p className="text-zinc-400 text-sm mt-1">Kutti Story Photography</p>
+              <p className="text-zinc-400 text-sm mt-1">{loginPageSettings.credit}</p>
             </div>
           </div>
         </div>
