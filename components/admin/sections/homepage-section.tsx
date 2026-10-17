@@ -266,6 +266,10 @@ const [activeTab, setActiveTab] = useState<
   }, []);
 
   const save = async (section: string, data: unknown) => {
+    if (section === "loginPage") {
+      console.log("LOGIN PAGE DATA BEFORE SAVE:", data);
+    }
+
     setSaving(true);
 
     try {
@@ -278,8 +282,13 @@ const [activeTab, setActiveTab] = useState<
       const result = await response.json();
 
       if (!response.ok) {
+        console.error("Homepage save failed:", result);
         alert(result.error || "Failed to save homepage settings.");
         return;
+      }
+
+      if (section === "loginPage") {
+        console.log("LOGIN PAGE DATA AFTER SAVE:", result.settings?.loginPage);
       }
 
       setSaved(true);
