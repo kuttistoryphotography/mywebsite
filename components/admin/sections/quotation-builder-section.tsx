@@ -3,6 +3,27 @@
 
 import { useState } from "react";
 
+
+type QuotationDesign = {
+  brandName: string;
+  tagline: string;
+  logoUrl: string;
+  backgroundColor: string;
+  accentColor: string;
+  textColor: string;
+  fontFamily: string;
+};
+
+const defaultQuotationDesign: QuotationDesign = {
+  brandName: "Kutti Story Photography",
+  tagline: "Capturing Life, One Story at a Time.",
+  logoUrl: "",
+  backgroundColor: "#f5f1e9",
+  accentColor: "#c6a66b",
+  textColor: "#242424",
+  fontFamily: "serif",
+};
+
 type Service = {
   name: string;
   description: string;
@@ -42,6 +63,8 @@ export default function QuotationBuilderSection() {
   const [clientPhone, setClientPhone] = useState("");
   const [title, setTitle] = useState("Wedding Photography Package");
   const [introduction, setIntroduction] = useState("");
+  const [pageDesign, setPageDesign] =
+  useState<QuotationDesign>(defaultQuotationDesign);
   const [events, setEvents] = useState<EventItem[]>([emptyEvent()]);
   const [deliverablesText, setDeliverablesText] = useState(
     "Edited photographs\nCinematic wedding video\nPremium wedding album"
@@ -191,6 +214,133 @@ export default function QuotationBuilderSection() {
       clientPhone: clientPhone.trim(),
       title: title.trim(),
       introduction: introduction.trim(),
+      
+        pageDesign: {
+        ...pageDesign,
+        sections: [
+            {
+            id: "hero",
+            type: "hero",
+            visible: true,
+            title: title.trim() || "Your Wedding Story",
+            subtitle: pageDesign.tagline,
+            body: introduction.trim(),
+            layout: "cover",
+            backgroundColor: pageDesign.backgroundColor,
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "story",
+            type: "story",
+            visible: true,
+            title: "Your Story, Beautifully Told",
+            subtitle: "A celebration of your journey",
+            body: introduction.trim(),
+            layout: "centered",
+            backgroundColor: pageDesign.backgroundColor,
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "gallery",
+            type: "gallery",
+            visible: true,
+            title: "Stories Through Our Lens",
+            subtitle: "A glimpse into our visual storytelling",
+            body: "",
+            layout: "masonry",
+            backgroundColor: "#ffffff",
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "events",
+            type: "event",
+            visible: true,
+            title: "Your Wedding Celebrations",
+            subtitle: "Every moment, thoughtfully captured",
+            body: "",
+            layout: "cards",
+            backgroundColor: pageDesign.backgroundColor,
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "services",
+            type: "services",
+            visible: true,
+            title: "Photography & Cinematic Films",
+            subtitle: "Coverage tailored to your celebration",
+            body: "",
+            layout: "cards",
+            backgroundColor: "#ffffff",
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "deliverables",
+            type: "deliverables",
+            visible: true,
+            title: "Your Memories, Preserved",
+            subtitle: "The final collection you'll receive",
+            body: "",
+            layout: "grid",
+            backgroundColor: pageDesign.backgroundColor,
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "pricing",
+            type: "pricing",
+            visible: true,
+            title: "Your Investment",
+            subtitle: "A clear overview of your collection",
+            body: "",
+            layout: "premium-card",
+            backgroundColor: "#242424",
+            textColor: "#ffffff",
+            images: [],
+            },
+            {
+            id: "payment",
+            type: "payment_terms",
+            visible: true,
+            title: "Payment Schedule",
+            subtitle: "A simple plan for your booking",
+            body: "",
+            layout: "timeline",
+            backgroundColor: "#ffffff",
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "terms",
+            type: "terms",
+            visible: true,
+            title: "Booking Details",
+            subtitle: "Important information about your proposal",
+            body: "",
+            layout: "default",
+            backgroundColor: pageDesign.backgroundColor,
+            textColor: pageDesign.textColor,
+            images: [],
+            },
+            {
+            id: "closing",
+            type: "closing",
+            visible: true,
+            title: "Let's Tell Your Story",
+            subtitle: "We would love to be part of your celebration",
+            body: "Thank you for considering Kutti Story Photography. We look forward to preserving your most meaningful moments.",
+            layout: "centered",
+            backgroundColor: "#242424",
+            textColor: "#ffffff",
+            images: [],
+            },
+        ],
+        },
+
       events: events.map((event) => ({
         eventName: event.eventName.trim(),
         eventDate: event.eventDate || undefined,
@@ -357,6 +507,157 @@ export default function QuotationBuilderSection() {
           </label>
         </div>
       </section>
+
+        <section className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
+        <h2 className="text-lg font-semibold">Design & Branding</h2>
+        <p className="mt-1 text-sm text-zinc-400">
+            Customize the appearance of your client quotation page.
+        </p>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <label className={labelClass}>
+            Brand name
+            <input
+                className={inputClass}
+                value={pageDesign.brandName}
+                onChange={(e) =>
+                setPageDesign((current) => ({
+                    ...current,
+                    brandName: e.target.value,
+                }))
+                }
+                maxLength={150}
+                placeholder="Kutti Story Photography"
+            />
+            </label>
+
+            <label className={labelClass}>
+            Tagline
+            <input
+                className={inputClass}
+                value={pageDesign.tagline}
+                onChange={(e) =>
+                setPageDesign((current) => ({
+                    ...current,
+                    tagline: e.target.value,
+                }))
+                }
+                maxLength={250}
+                placeholder="Your brand tagline"
+            />
+            </label>
+
+            <label className={labelClass}>
+            Logo image URL
+            <input
+                type="url"
+                className={inputClass}
+                value={pageDesign.logoUrl}
+                onChange={(e) =>
+                setPageDesign((current) => ({
+                    ...current,
+                    logoUrl: e.target.value,
+                }))
+                }
+                placeholder="https://..."
+            />
+            </label>
+
+            <label className={labelClass}>
+            Font style
+            <select
+                className={inputClass}
+                value={pageDesign.fontFamily}
+                onChange={(e) =>
+                setPageDesign((current) => ({
+                    ...current,
+                    fontFamily: e.target.value,
+                }))
+                }
+            >
+                <option value="serif">Elegant serif</option>
+                <option value="sans-serif">Modern sans-serif</option>
+                <option value="Georgia, serif">Classic Georgia</option>
+            </select>
+            </label>
+
+            <label className={labelClass}>
+            Background color
+            <div className="mt-1 flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900 p-2">
+                <input
+                type="color"
+                className="h-10 w-12 cursor-pointer rounded"
+                value={pageDesign.backgroundColor}
+                onChange={(e) =>
+                    setPageDesign((current) => ({
+                    ...current,
+                    backgroundColor: e.target.value,
+                    }))
+                }
+                />
+                <span className="text-sm">{pageDesign.backgroundColor}</span>
+            </div>
+            </label>
+
+            <label className={labelClass}>
+            Accent color
+            <div className="mt-1 flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900 p-2">
+                <input
+                type="color"
+                className="h-10 w-12 cursor-pointer rounded"
+                value={pageDesign.accentColor}
+                onChange={(e) =>
+                    setPageDesign((current) => ({
+                    ...current,
+                    accentColor: e.target.value,
+                    }))
+                }
+                />
+                <span className="text-sm">{pageDesign.accentColor}</span>
+            </div>
+            </label>
+
+            <label className={labelClass}>
+            Text color
+            <div className="mt-1 flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900 p-2">
+                <input
+                type="color"
+                className="h-10 w-12 cursor-pointer rounded"
+                value={pageDesign.textColor}
+                onChange={(e) =>
+                    setPageDesign((current) => ({
+                    ...current,
+                    textColor: e.target.value,
+                    }))
+                }
+                />
+                <span className="text-sm">{pageDesign.textColor}</span>
+            </div>
+            </label>
+        </div>
+
+        <div
+            className="mt-6 rounded-xl border p-5"
+            style={{
+            backgroundColor: pageDesign.backgroundColor,
+            color: pageDesign.textColor,
+            fontFamily: pageDesign.fontFamily,
+            borderColor: pageDesign.accentColor,
+            }}
+        >
+            <p className="text-xs uppercase tracking-[0.25em]">
+            Quotation preview
+            </p>
+            <h3 className="mt-3 text-2xl font-semibold">
+            {pageDesign.brandName || "Your Brand Name"}
+            </h3>
+            <p className="mt-2 text-sm">{pageDesign.tagline}</p>
+            <div
+            className="mt-4 h-1 w-20 rounded"
+            style={{ backgroundColor: pageDesign.accentColor }}
+            />
+        </div>
+        </section>
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
