@@ -6,6 +6,7 @@ import { useState } from "react";
 type Service = {
   name: string;
   description: string;
+  quantity: string;
   price: string;
 };
 
@@ -19,6 +20,7 @@ type EventItem = {
 const emptyService = (): Service => ({
   name: "",
   description: "",
+  quantity: "1",
   price: "",
 });
 
@@ -60,14 +62,16 @@ export default function QuotationBuilderSection() {
 
   const subtotal = events.reduce(
     (eventTotal, event) =>
-      eventTotal +
-      event.services.reduce(
+        eventTotal +
+        event.services.reduce(
         (serviceTotal, service) =>
-          serviceTotal + Math.max(0, Number(service.price) || 0),
+            serviceTotal +
+            Math.max(0, Number(service.quantity) || 0) *
+            Math.max(0, Number(service.price) || 0),
         0
-      ),
+        ),
     0
-  );
+    );
 
   const discountAmount = Math.min(
     subtotal,
@@ -150,8 +154,13 @@ export default function QuotationBuilderSection() {
     setClientUrl("");
     setQuoteNumber("");
 
-    if (!clientName.trim() || !title.trim()) {
-      setError("Please enter the client name and quotation title.");
+    if (
+       !clientName.trim() ||
+       !clientEmail.trim() ||
+       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail.trim()) ||
+       !title.trim()
+    ) {
+      setError("Please enter a valid client email, client name, and quotation title.");
       return;
     }
 
@@ -183,14 +192,16 @@ export default function QuotationBuilderSection() {
       title: title.trim(),
       introduction: introduction.trim(),
       events: events.map((event) => ({
-        ...event,
+        eventName: event.eventName.trim(),
         eventDate: event.eventDate || undefined,
+        venue: event.venue.trim(),
         services: event.services.map((service) => ({
-          name: service.name.trim(),
-          description: service.description.trim(),
-          price: Number(service.price),
+            name: service.name.trim(),
+            description: service.description.trim(),
+            quantity: Number(service.quantity),
+            unitPrice: Number(service.price),
         })),
-      })),
+        })),
       deliverables: deliverablesText
         .split("\n")
         .map((item) => item.trim())
@@ -222,16 +233,18 @@ export default function QuotationBuilderSection() {
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to save quotation.");
+        throw new Error(
+            result.error || result.message || "Unable to save quotation."
+        );
       }
 
-      setQuoteNumber(result.quotation?.quoteNumber || "");
+      setQuoteNumber(result.proposal?.quoteNumber || "");
 
-      if (result.clientUrl) {
-        setClientUrl(result.clientUrl);
-      }
+        if (result.proposal?.clientUrl) {
+        setClientUrl(result.proposal.clientUrl);
+        }
 
-      if (status === "published" && !result.clientUrl) {
+      if (status === "published" && !result.proposal?.clientUrl) {
         setError(
           "Quotation saved, but no public link was returned. Check the API response."
         );
@@ -416,7 +429,7 @@ export default function QuotationBuilderSection() {
               {event.services.map((service, serviceIndex) => (
                 <div
                   key={serviceIndex}
-                  className="grid gap-3 rounded-lg border border-zinc-800 p-4 sm:grid-cols-3"
+                  className="grid gap-3 rounded-lg border border-zinc-800 p-4 sm:grid-cols-4"
                 >
                   <label className={labelClass}>
                     Service name *
@@ -450,6 +463,28 @@ export default function QuotationBuilderSection() {
                       placeholder="Coverage details"
                     />
                   </label>
+                  
+                <label className={labelClass}>
+                Quantity *
+                <input
+                    type="number"
+                    min="1"
+                    max="10000"
+                    step="1"
+                    className={inputClass}
+                    value={service.quantity}
+                    onChange={(e) =>
+                    updateService(
+                        eventIndex,
+                        serviceIndex,
+                        "quantity",
+                        e.target.value
+                    )
+                    }
+                    placeholder="1"
+                />
+                </label>
+
                   <label className={labelClass}>
                     Price (₹) *
                     <input
