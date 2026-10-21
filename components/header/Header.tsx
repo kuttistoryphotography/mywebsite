@@ -24,6 +24,7 @@ const navItems = [
   { label: "Works", href: "/works" },
   { label: "Events", href: "/events" },
   { label: "Blog", href: "/blog" },
+  { label: "Quotations", href: "/dashboard?tab=quotations" },
   { label: "FAQ", href: "/faq" },
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact-us" },

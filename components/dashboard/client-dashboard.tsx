@@ -48,6 +48,7 @@ interface UserProfile {
 const sidebarTabs = [
   { id: "general",       label: "General",          icon: User        },
   { id: "quotes",        label: "Requested Quotes", icon: FileText    },
+  { id: "quotations",    label: "Quotations",        icon: FileText    },
   { id: "bookings",      label: "My Bookings",      icon: Calendar    },
   { id: "favorites",     label: "My Favourites",    icon: Heart       },
   { id: "reviews",       label: "My Reviews",       icon: Star        },
@@ -710,6 +711,8 @@ export default function ClientDashboard() {
 
             {activeTab === "quotes" && <RequestedQuote />}
 
+            {activeTab === "quotations" && <ClientQuotations />}
+
             {/* YOUR MEMORIES */}
             {activeTab === "memories" && (
               <div className="animate-in fade-in duration-300">
@@ -876,5 +879,191 @@ export default function ClientDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+interface PublishedQuotation {
+  id: string;
+  quoteNumber: string;
+  title: string;
+  totalAmount: number;
+  createdAt: string;
+  validityDate: string | null;
+}
+
+function ClientQuotations() {
+  const [quotations, setQuotations] = useState<PublishedQuotation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [openingId, setOpeningId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadQuotations() {
+      try {
+        const response = await fetch("/api/quotation-proposals/client", {
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Unable to load quotations.");
+        }
+
+        if (!cancelled) {
+          setQuotations(data.quotations || []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Unable to load quotations."
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadQuotations();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const currency = (amount: number) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+
+  const date = (value: string) =>
+    new Date(value).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  
+  const openQuotation = async (id: string) => {
+  try {
+    setOpeningId(id);
+
+    const response = await fetch(
+      `/api/quotation-proposals/client/${encodeURIComponent(id)}`,
+      { cache: "no-store" }
+    );
+
+    const data = await response.json();
+
+      if (!response.ok || !data.success || !data.token) {
+        throw new Error(data.message || "Unable to open quotation.");
+      }
+
+      window.location.href = `/quotation/${data.token}`;
+    } catch (err) {
+      alert(
+        err instanceof Error ? err.message : "Unable to open quotation."
+      );
+      setOpeningId(null);
+    }
+  };
+
+  return (
+    <section className="space-y-6 animate-in fade-in duration-300">
+      <div>
+        <h1 className="text-xl md:text-2xl font-bold">My Quotations</h1>
+        <p className="mt-1 text-sm text-zinc-400">
+          View photography and cinematography proposals prepared for you.
+        </p>
+      </div>
+
+      {loading && (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 text-center text-sm text-zinc-400">
+          Loading your quotations...
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-300">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && quotations.length === 0 && (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 text-center">
+          <FileText className="mx-auto mb-3 h-10 w-10 text-amber-400" />
+          <h2 className="font-semibold">No published quotations yet</h2>
+          <p className="mt-2 text-sm text-zinc-400">
+            Your quotation will appear here when Kutti Story Photography
+            publishes a proposal using your account email address.
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && quotations.length > 0 && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {quotations.map((quotation) => (
+            <article
+              key={quotation.quoteNumber}
+              className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10">
+                  <FileText className="h-5 w-5 text-amber-400" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="break-words font-semibold">
+                    {quotation.title}
+                  </p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {quotation.quoteNumber}
+                  </p>
+                </div>
+
+                <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-emerald-400">
+                  Published
+                </span>
+              </div>
+
+              <div className="mt-5 border-t border-zinc-800 pt-4">
+                <p className="text-xs text-zinc-500">Quotation amount</p>
+                <p className="mt-1 text-2xl font-bold text-amber-400">
+                  {currency(quotation.totalAmount)}
+                </p>
+
+                <p className="mt-3 text-xs text-zinc-500">
+                  Created: {date(quotation.createdAt)}
+                </p>
+
+                {quotation.validityDate && (
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Valid until: {date(quotation.validityDate)}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => openQuotation(quotation.id)}
+                  disabled={openingId !== null}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-bold text-black transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {openingId === quotation.id
+                    ? "Opening quotation..."
+                    : "View Full Quotation"}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

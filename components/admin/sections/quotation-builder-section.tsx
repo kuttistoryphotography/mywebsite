@@ -80,7 +80,7 @@ export default function QuotationBuilderSection() {
   const [status, setStatus] = useState<"draft" | "published">("draft");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [clientUrl, setClientUrl] = useState("");
+
   const [quoteNumber, setQuoteNumber] = useState("");
 
   const subtotal = events.reduce(
@@ -174,7 +174,7 @@ export default function QuotationBuilderSection() {
 
   async function saveQuotation() {
     setError("");
-    setClientUrl("");
+    
     setQuoteNumber("");
 
     if (
@@ -391,15 +391,6 @@ export default function QuotationBuilderSection() {
 
       setQuoteNumber(result.proposal?.quoteNumber || "");
 
-        if (result.proposal?.clientUrl) {
-        setClientUrl(result.proposal.clientUrl);
-        }
-
-      if (status === "published" && !result.proposal?.clientUrl) {
-        setError(
-          "Quotation saved, but no public link was returned. Check the API response."
-        );
-      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Something went wrong."
@@ -435,22 +426,7 @@ export default function QuotationBuilderSection() {
           <p className="font-medium text-emerald-300">
             Quotation saved: {quoteNumber}
           </p>
-          {clientUrl && (
-            <div className="mt-3 space-y-2">
-              <p className="break-all text-sm text-zinc-300">{clientUrl}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  void navigator.clipboard.writeText(
-                    new URL(clientUrl, window.location.origin).toString()
-                  );
-                }}
-                className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-black"
-              >
-                Copy client link
-              </button>
-            </div>
-          )}
+
         </div>
       )}
 
