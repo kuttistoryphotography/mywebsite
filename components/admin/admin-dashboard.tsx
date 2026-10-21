@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import QuotationBuilderSection from "./sections/quotation-builder-section";
 
 import BookingsSection from "./sections/bookings-section";
 import SettingsSection from "./sections/settings-section";
@@ -71,6 +72,8 @@ const sidebarTabs = [
     label: "Family & Friends Memories Link",
     icon: Link2,
   },
+  
+  { id: "quotation_builder", label: "Quotation Builder", icon: FileText },
 
 ];
 
@@ -147,6 +150,7 @@ export default function AdminDashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case "quotes": return <QuotesSection />;
+      case "quotation_builder": return <QuotationBuilderSection />;
       case "bookings": return <BookingsSection />;
       case "clients": return <ClientsSection />;
       case "family_friends_links": return <FamilyFriendsLinksSection />;
