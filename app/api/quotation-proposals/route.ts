@@ -7,8 +7,11 @@ import { getCurrentUser } from "@/lib/auth";
 import QuotationProposal from "@/models/QuotationProposal";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-function isAdmin(session: Awaited<ReturnType<typeof getCurrentUser>>) {
+function isAdmin(
+  session: Awaited<ReturnType<typeof getCurrentUser>>
+) {
   return Boolean(session && session.role === "admin");
 }
 
@@ -16,9 +19,9 @@ function calculateTotals(events: any[], discount: number) {
   const subtotal = events.reduce(
     (sum, event) =>
       sum +
-      (event.services || []).reduce(
+      event.services.reduce(
         (eventSum: number, service: any) =>
-          eventSum + Number(service.quantity) * Number(service.unitPrice),
+          eventSum + service.quantity * service.unitPrice,
         0
       ),
     0
@@ -36,7 +39,10 @@ export async function GET() {
     const session = await getCurrentUser();
 
     if (!isAdmin(session)) {
-      return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+      return NextResponse.json(
+        { success: false, error: "Not authorized." },
+        { status: 403 }
+      );
     }
 
     await connectDB();
@@ -46,11 +52,12 @@ export async function GET() {
       .select("-publicToken")
       .lean();
 
-    return NextResponse.json({ proposals });
+    return NextResponse.json({ success: true, proposals });
   } catch (error) {
     console.error("Quotation proposal GET error:", error);
+
     return NextResponse.json(
-      { error: "Failed to load quotations" },
+      { success: false, error: "Failed to load quotations." },
       { status: 500 }
     );
   }
@@ -61,31 +68,72 @@ export async function POST(request: NextRequest) {
     const session = await getCurrentUser();
 
     if (!isAdmin(session)) {
-      return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+      return NextResponse.json(
+        { success: false, error: "Not authorized." },
+        { status: 403 }
+      );
+    }
+
+    if (!session?.userId || !mongoose.isValidObjectId(session.userId)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid admin session." },
+        { status: 401 }
+      );
     }
 
     await connectDB();
 
-    const body = await request.json();
+    let body: any;
+
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "Invalid JSON request body." },
+        { status: 400 }
+      );
+    }
 
     const clientName =
       typeof body.clientName === "string" ? body.clientName.trim() : "";
+
     const clientEmail =
       typeof body.clientEmail === "string"
         ? body.clientEmail.trim().toLowerCase()
         : "";
+
+    const clientPhone =
+      typeof body.clientPhone === "string"
+        ? body.clientPhone.trim()
+        : "";
+
     const title = typeof body.title === "string" ? body.title.trim() : "";
 
     if (!clientName || !clientEmail || !title) {
       return NextResponse.json(
-        { error: "Client name, email, and quotation title are required." },
+        {
+          success: false,
+          error: "Client name, email, and quotation title are required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (
+      clientName.length > 200 ||
+      clientEmail.length > 254 ||
+      clientPhone.length > 50 ||
+      title.length > 200
+    ) {
+      return NextResponse.json(
+        { success: false, error: "One or more fields are too long." },
         { status: 400 }
       );
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)) {
       return NextResponse.json(
-        { error: "Enter a valid client email address." },
+        { success: false, error: "Enter a valid client email address." },
         { status: 400 }
       );
     }
@@ -96,29 +144,43 @@ export async function POST(request: NextRequest) {
       body.events.length > 30
     ) {
       return NextResponse.json(
-        { error: "Add between 1 and 30 events." },
+        { success: false, error: "Add between 1 and 30 events." },
         { status: 400 }
       );
     }
 
     const events = body.events.map((event: any) => {
       if (
+        !event ||
         typeof event.eventName !== "string" ||
         !event.eventName.trim() ||
+        event.eventName.length > 200 ||
         !Array.isArray(event.services) ||
-        event.services.length === 0
+        event.services.length === 0 ||
+        event.services.length > 100
       ) {
-        throw new Error("Each event needs a name and at least one service.");
+        throw new Error(
+          "Each event needs a name and between 1 and 100 services."
+        );
+      }
+
+      if (
+        event.eventDate &&
+        Number.isNaN(Date.parse(event.eventDate))
+      ) {
+        throw new Error("An event has an invalid date.");
       }
 
       const services = event.services.map((service: any) => {
         const name =
           typeof service.name === "string" ? service.name.trim() : "";
+
         const quantity = Number(service.quantity);
         const unitPrice = Number(service.unitPrice);
 
         if (
           !name ||
+          name.length > 200 ||
           !Number.isInteger(quantity) ||
           quantity < 1 ||
           quantity > 10000 ||
@@ -126,7 +188,9 @@ export async function POST(request: NextRequest) {
           unitPrice < 0 ||
           unitPrice > 1_000_000_000
         ) {
-          throw new Error("One or more service items have invalid values.");
+          throw new Error(
+            "One or more service items have invalid values."
+          );
         }
 
         return {
@@ -141,14 +205,11 @@ export async function POST(request: NextRequest) {
         };
       });
 
-      const eventDate =
-        event.eventDate && !Number.isNaN(Date.parse(event.eventDate))
-          ? new Date(event.eventDate)
-          : undefined;
-
       return {
         eventName: event.eventName.trim().slice(0, 200),
-        eventDate,
+        eventDate: event.eventDate
+          ? new Date(event.eventDate)
+          : undefined,
         venue:
           typeof event.venue === "string"
             ? event.venue.trim().slice(0, 500)
@@ -165,7 +226,7 @@ export async function POST(request: NextRequest) {
       discount > 1_000_000_000
     ) {
       return NextResponse.json(
-        { error: "Enter a valid discount amount." },
+        { success: false, error: "Enter a valid discount amount." },
         { status: 400 }
       );
     }
@@ -174,7 +235,10 @@ export async function POST(request: NextRequest) {
 
     if (discount > totals.subtotal) {
       return NextResponse.json(
-        { error: "Discount cannot exceed the subtotal." },
+        {
+          success: false,
+          error: "Discount cannot exceed the subtotal.",
+        },
         { status: 400 }
       );
     }
@@ -185,6 +249,7 @@ export async function POST(request: NextRequest) {
             term.percentage === "" || term.percentage == null
               ? undefined
               : Number(term.percentage);
+
           const amount =
             term.amount === "" || term.amount == null
               ? undefined
@@ -201,6 +266,13 @@ export async function POST(request: NextRequest) {
             throw new Error("A payment term has an invalid amount.");
           }
 
+          if (
+            term.dueDate &&
+            Number.isNaN(Date.parse(term.dueDate))
+          ) {
+            throw new Error("A payment term has an invalid due date.");
+          }
+
           return {
             label:
               typeof term.label === "string"
@@ -208,10 +280,9 @@ export async function POST(request: NextRequest) {
                 : "",
             percentage,
             amount,
-            dueDate:
-              term.dueDate && !Number.isNaN(Date.parse(term.dueDate))
-                ? new Date(term.dueDate)
-                : undefined,
+            dueDate: term.dueDate
+              ? new Date(term.dueDate)
+              : undefined,
           };
         })
       : [];
@@ -229,10 +300,7 @@ export async function POST(request: NextRequest) {
       publicToken,
       clientName: clientName.slice(0, 200),
       clientEmail,
-      clientPhone:
-        typeof body.clientPhone === "string"
-          ? body.clientPhone.trim().slice(0, 50)
-          : "",
+      clientPhone: clientPhone.slice(0, 50),
       title: title.slice(0, 200),
       introduction:
         typeof body.introduction === "string"
@@ -254,15 +322,15 @@ export async function POST(request: NextRequest) {
             .map((item: string) => item.trim().slice(0, 2000))
         : [],
       validityDate:
-        body.validityDate && !Number.isNaN(Date.parse(body.validityDate))
+        body.validityDate &&
+        !Number.isNaN(Date.parse(body.validityDate))
           ? new Date(body.validityDate)
           : undefined,
       status,
-      createdBy: new mongoose.Types.ObjectId(session!.userId),
+      createdBy: new mongoose.Types.ObjectId(session.userId),
     });
 
-    const origin = request.nextUrl.origin;
-    const clientUrl = `${origin}/quotation/${publicToken}`;
+    const clientUrl = `${request.nextUrl.origin}/quotation/${publicToken}`;
 
     return NextResponse.json(
       {
@@ -277,16 +345,44 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to create quotation.";
+
+    const validationErrors = [
+      "Each event needs a name",
+      "An event has an invalid date",
+      "One or more service items have invalid values",
+      "A payment term has an invalid amount",
+      "A payment term has an invalid due date",
+    ];
+
     if (
       error instanceof Error &&
-      !error.message.includes("duplicate key")
+      validationErrors.some((item) => message.includes(item))
     ) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: message },
+        { status: 400 }
+      );
     }
 
     console.error("Quotation proposal POST error:", error);
+
+    if (
+      error instanceof Error &&
+      message.toLowerCase().includes("duplicate key")
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "A duplicate quotation number was generated. Please retry.",
+        },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to create quotation" },
+      { success: false, error: "Failed to create quotation." },
       { status: 500 }
     );
   }

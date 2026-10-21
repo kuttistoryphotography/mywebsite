@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 
 interface QuotationService {
   name: string;
-  price?: number;
+  quantity: number;
+  unitPrice: number;
+  total?: number;
   description?: string;
 }
 
@@ -12,6 +14,13 @@ interface QuotationEvent {
   eventDate?: string;
   venue?: string;
   services: QuotationService[];
+}
+
+interface PaymentTerm {
+  label: string;
+  percentage?: number;
+  amount?: number;
+  dueDate?: string;
 }
 
 interface Quotation {
@@ -24,7 +33,7 @@ interface Quotation {
   subtotal: number;
   discount: number;
   totalAmount: number;
-  paymentTerms: string[];
+  paymentTerms: PaymentTerm[];
   termsAndConditions: string[];
   validityDate?: string;
 }
@@ -58,10 +67,11 @@ export default async function QuotationPage({ params }: PageProps) {
 
   if (!/^[a-f0-9]{64}$/.test(token)) notFound();
 
+  // Use the incoming request's host rather than requiring a hard-coded URL.
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_SITE_URL is not configured.");
+    throw new Error("NEXT_PUBLIC_SITE_URL is not configured on Vercel.");
   }
 
   const response = await fetch(
@@ -76,7 +86,7 @@ export default async function QuotationPage({ params }: PageProps) {
   }
 
   const result = await response.json();
-  const quotation = result.quotation as Quotation;
+  const quotation = result.quotation as Quotation | undefined;
 
   if (!result.success || !quotation) notFound();
 
@@ -120,7 +130,9 @@ export default async function QuotationPage({ params }: PageProps) {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold">Event Details & Services</h2>
+            <h2 className="text-xl font-semibold">
+              Event Details &amp; Services
+            </h2>
 
             <div className="mt-5 space-y-6">
               {quotation.events.map((event, index) => (
@@ -128,7 +140,9 @@ export default async function QuotationPage({ params }: PageProps) {
                   key={`${event.eventName}-${index}`}
                   className="rounded-xl border border-gray-200 p-5 sm:p-6"
                 >
-                  <h3 className="text-lg font-semibold">{event.eventName}</h3>
+                  <h3 className="text-lg font-semibold">
+                    {event.eventName}
+                  </h3>
 
                   {event.eventDate && (
                     <p className="mt-2 text-sm text-gray-600">
@@ -150,18 +164,27 @@ export default async function QuotationPage({ params }: PageProps) {
                       >
                         <div>
                           <p className="font-medium">{service.name}</p>
+
                           {service.description && (
                             <p className="mt-1 text-sm text-gray-500">
                               {service.description}
                             </p>
                           )}
+
+                          {service.quantity > 1 && (
+                            <p className="mt-1 text-sm text-gray-500">
+                              Quantity: {service.quantity}
+                            </p>
+                          )}
                         </div>
 
-                        {typeof service.price === "number" && (
-                          <p className="shrink-0 font-medium">
-                            {formatCurrency(service.price)}
-                          </p>
-                        )}
+                        <p className="shrink-0 text-right font-medium">
+                          {formatCurrency(
+                            typeof service.total === "number"
+                              ? service.total
+                              : service.quantity * service.unitPrice
+                          )}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -170,7 +193,7 @@ export default async function QuotationPage({ params }: PageProps) {
             </div>
           </section>
 
-          {quotation.deliverables.length > 0 && (
+          {quotation.deliverables?.length > 0 && (
             <section>
               <h2 className="text-xl font-semibold">Deliverables</h2>
               <ul className="mt-4 list-disc space-y-2 pl-5 text-gray-700">
@@ -204,21 +227,32 @@ export default async function QuotationPage({ params }: PageProps) {
             </div>
           </section>
 
-          {quotation.paymentTerms.length > 0 && (
+          {quotation.paymentTerms?.length > 0 && (
             <section>
               <h2 className="text-xl font-semibold">Payment Terms</h2>
               <ol className="mt-4 list-decimal space-y-2 pl-5 text-gray-700">
                 {quotation.paymentTerms.map((term, index) => (
-                  <li key={`${term}-${index}`}>{term}</li>
+                  <li key={`${term.label}-${index}`}>
+                    {term.label}
+                    {typeof term.percentage === "number" && (
+                      <> — {term.percentage}%</>
+                    )}
+                    {typeof term.amount === "number" && (
+                      <> — {formatCurrency(term.amount)}</>
+                    )}
+                    {term.dueDate && (
+                      <> — Due: {formatDate(term.dueDate)}</>
+                    )}
+                  </li>
                 ))}
               </ol>
             </section>
           )}
 
-          {quotation.termsAndConditions.length > 0 && (
+          {quotation.termsAndConditions?.length > 0 && (
             <section>
               <h2 className="text-xl font-semibold">
-                Terms & Conditions
+                Terms &amp; Conditions
               </h2>
               <ol className="mt-4 list-decimal space-y-2 pl-5 text-gray-700">
                 {quotation.termsAndConditions.map((term, index) => (
