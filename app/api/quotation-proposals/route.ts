@@ -15,6 +15,141 @@ function isAdmin(
   return Boolean(session && session.role === "admin");
 }
 
+
+function createDefaultPageDesign() {
+  return {
+    brandName: "Kutti Story Photography",
+    tagline: "Capturing Life, One Story at a Time.",
+    logoUrl: "",
+    backgroundColor: "#f5f1e9",
+    accentColor: "#c6a66b",
+    textColor: "#242424",
+    fontFamily: "serif",
+    sections: [
+      {
+        id: "hero",
+        type: "hero",
+        visible: true,
+        title: "Your Wedding Story",
+        subtitle: "A timeless celebration of your love",
+        body: "Every beautiful beginning deserves to be remembered.",
+        layout: "cover",
+        backgroundColor: "#242424",
+        textColor: "#ffffff",
+        images: [],
+      },
+      {
+        id: "story",
+        type: "story",
+        visible: true,
+        title: "Your Story, Beautifully Told",
+        subtitle: "A celebration of your journey",
+        body: "We believe every wedding has a unique story. Our team captures the emotions, traditions and little moments that make your celebration unforgettable.",
+        layout: "centered",
+        backgroundColor: "#f5f1e9",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "gallery",
+        type: "gallery",
+        visible: true,
+        title: "Stories Through Our Lens",
+        subtitle: "A glimpse into our visual storytelling",
+        body: "",
+        layout: "masonry",
+        backgroundColor: "#ffffff",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "events",
+        type: "event",
+        visible: true,
+        title: "Your Wedding Celebrations",
+        subtitle: "Every moment, thoughtfully captured",
+        body: "",
+        layout: "cards",
+        backgroundColor: "#f5f1e9",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "services",
+        type: "services",
+        visible: true,
+        title: "Photography & Cinematic Films",
+        subtitle: "Coverage tailored to your celebration",
+        body: "",
+        layout: "cards",
+        backgroundColor: "#ffffff",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "deliverables",
+        type: "deliverables",
+        visible: true,
+        title: "Your Memories, Preserved",
+        subtitle: "The final collection you'll receive",
+        body: "",
+        layout: "grid",
+        backgroundColor: "#f5f1e9",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "pricing",
+        type: "pricing",
+        visible: true,
+        title: "Your Investment",
+        subtitle: "A clear overview of your collection",
+        body: "",
+        layout: "premium-card",
+        backgroundColor: "#242424",
+        textColor: "#ffffff",
+        images: [],
+      },
+      {
+        id: "payment",
+        type: "payment_terms",
+        visible: true,
+        title: "Payment Schedule",
+        subtitle: "A simple plan for your booking",
+        body: "",
+        layout: "timeline",
+        backgroundColor: "#ffffff",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "terms",
+        type: "terms",
+        visible: true,
+        title: "Booking Details",
+        subtitle: "Important information about your proposal",
+        body: "",
+        layout: "default",
+        backgroundColor: "#f5f1e9",
+        textColor: "#242424",
+        images: [],
+      },
+      {
+        id: "closing",
+        type: "closing",
+        visible: true,
+        title: "Let's Tell Your Story",
+        subtitle: "We would love to be part of your celebration",
+        body: "Thank you for considering Kutti Story Photography. We look forward to preserving your most meaningful moments.",
+        layout: "centered",
+        backgroundColor: "#242424",
+        textColor: "#ffffff",
+        images: [],
+      },
+    ],
+  };
+}
+
 function calculateTotals(events: any[], discount: number) {
   const subtotal = events.reduce(
     (sum, event) =>
@@ -306,6 +441,15 @@ export async function POST(request: NextRequest) {
         typeof body.introduction === "string"
           ? body.introduction.trim().slice(0, 5000)
           : "",
+      pageDesign: {
+        ...createDefaultPageDesign(),
+        ...(body.pageDesign ?? {}),
+        sections:
+            Array.isArray(body.pageDesign?.sections) &&
+            body.pageDesign.sections.length > 0
+            ? body.pageDesign.sections
+            : createDefaultPageDesign().sections,
+        },
       events,
       deliverables: Array.isArray(body.deliverables)
         ? body.deliverables
