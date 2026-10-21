@@ -212,7 +212,8 @@ export default function QuotationBuilderSection() {
       paymentTerms: paymentTermsText
         .split("\n")
         .map((item) => item.trim())
-        .filter(Boolean),
+        .filter(Boolean)
+        .map((label) => ({ label })),
       termsAndConditions: termsText
         .split("\n")
         .map((item) => item.trim())
