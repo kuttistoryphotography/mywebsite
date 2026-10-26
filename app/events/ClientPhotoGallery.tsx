@@ -1,6 +1,6 @@
 
 "use client";
-
+import { Save } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -73,7 +73,7 @@ export default function ClientPhotoGallery({
   const [selected, setSelected] = useState<Photo[]>([]);
   const [rejected, setRejected] = useState<Photo[]>([]);
   const [index, setIndex] = useState(0);
-
+  const [saveStatus, setSaveStatus] = useState("");
   const [review, setReview] = useState(false);
   const [reviewCountdown, setReviewCountdown] = useState(45);
   const [submitting, setSubmitting] = useState(false);
@@ -88,41 +88,194 @@ export default function ClientPhotoGallery({
 
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
 
-  // Restore selections independently of the currently loaded batch.
+  
+  // Restore progress from MongoDB and keep a local backup.
   useEffect(() => {
     if (!event.eventCode) return;
 
-    try {
-      const saved = localStorage.getItem(
-        `photo-selection-${event.eventCode}`
-      );
+    let cancelled = false;
+    const eventCode = event.eventCode;
+    const storageKey = `photo-selection-${eventCode}`;
 
-      if (saved) {
-        const parsed = JSON.parse(saved);
+    async function loadPhotosByIds(ids: string[]): Promise<Photo[]> {
+      const uniqueIds = [...new Set(ids)];
+      if (uniqueIds.length === 0) return [];
 
-        setSelected(
-          Array.isArray(parsed.selectedPhotos)
-            ? parsed.selectedPhotos
-            : []
-        );
+      const found = new Map<string, Photo>();
 
-        setRejected(
-          Array.isArray(parsed.rejectedPhotos)
-            ? parsed.rejectedPhotos
-            : []
-        );
-      } else {
-        setSelected([]);
-        setRejected([]);
+      for (const photo of photos) {
+        if (uniqueIds.includes(photo.id)) found.set(photo.id, photo);
       }
-    } catch (err) {
-      console.error("Failed to restore photo selection:", err);
-      setSelected([]);
-      setRejected([]);
+
+      let page = 1;
+      let totalPages = 1;
+
+      while (found.size < uniqueIds.length && page <= totalPages) {
+        const response = await fetch(
+          `/api/photo-selection/client/event?code=${encodeURIComponent(eventCode)}&page=${page}&limit=100`,
+          { cache: "no-store" }
+        );
+
+        if (!response.ok) {
+          throw new Error("Unable to load photos for saved progress.");
+        }
+
+        const data = await response.json();
+        totalPages = Number(data.pagination?.totalPages) || 1;
+
+        for (const item of Array.isArray(data.photos) ? data.photos : []) {
+          const photo: Photo = {
+            id: String(item.id),
+            filename: String(item.originalFilename || item.filename || ""),
+            uri: String(item.previewUrl || item.uri || item.thumbnailUrl || ""),
+            thumbnailUri: String(
+              item.thumbnailUrl || item.thumbnailUri || item.previewUrl || ""
+            ),
+          };
+
+          if (uniqueIds.includes(photo.id)) found.set(photo.id, photo);
+        }
+
+        page++;
+      }
+
+      return uniqueIds
+        .map((id) => found.get(id))
+        .filter((photo): photo is Photo => Boolean(photo));
     }
 
-    setSelectionRestoredFor(event.eventCode);
+    async function restoreProgress() {
+      try {
+        const response = await fetch(
+          `/api/photo-selection/client/progress?code=${encodeURIComponent(eventCode)}`,
+          { cache: "no-store" }
+        );
+
+        if (!response.ok) {
+          throw new Error("Unable to retrieve saved progress from MongoDB.");
+        }
+
+        const data = await response.json();
+        const progress = data.progress;
+
+        if (
+          !data.success ||
+          !Array.isArray(progress?.selectedPhotoIds) ||
+          !Array.isArray(progress?.rejectedPhotoIds)
+        ) {
+          throw new Error("Invalid saved progress response.");
+        }
+
+        if (progress.savedAt) {
+          const [restoredSelected, restoredRejected] = await Promise.all([
+            loadPhotosByIds(progress.selectedPhotoIds),
+            loadPhotosByIds(progress.rejectedPhotoIds),
+          ]);
+
+          if (cancelled) return;
+
+          setSelected(restoredSelected);
+          setRejected(restoredRejected);
+        } else {
+          // If MongoDB has no progress, use existing local selections.
+          let localSelected: Photo[] = [];
+          let localRejected: Photo[] = [];
+
+          try {
+            const raw = localStorage.getItem(storageKey);
+            if (raw) {
+              const saved = JSON.parse(raw);
+              localSelected = Array.isArray(saved.selectedPhotos)
+                ? saved.selectedPhotos
+                : [];
+              localRejected = Array.isArray(saved.rejectedPhotos)
+                ? saved.rejectedPhotos
+                : [];
+            }
+          } catch (localError) {
+            console.error("Unable to read local progress:", localError);
+          }
+
+          if (cancelled) return;
+
+          setSelected(localSelected);
+          setRejected(localRejected);
+
+          // Migrate existing local progress to MongoDB.
+          if (localSelected.length || localRejected.length) {
+            const migration = await fetch(
+              "/api/photo-selection/client/progress",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  code: eventCode,
+                  selectedPhotoIds: localSelected.map((photo) => photo.id),
+                  rejectedPhotoIds: localRejected.map((photo) => photo.id),
+                }),
+              }
+            );
+
+            if (!migration.ok) {
+              console.warn("Local progress could not be migrated.");
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Unable to restore MongoDB progress:", err);
+
+        // Keep the local backup usable if the server is unavailable.
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (raw && !cancelled) {
+            const saved = JSON.parse(raw);
+            setSelected(
+              Array.isArray(saved.selectedPhotos) ? saved.selectedPhotos : []
+            );
+            setRejected(
+              Array.isArray(saved.rejectedPhotos) ? saved.rejectedPhotos : []
+            );
+            setSaveStatus("Restored this device's backup; server sync failed.");
+          }
+        } catch (localError) {
+          console.error("Unable to restore local backup:", localError);
+        }
+      } finally {
+        if (!cancelled) setSelectionRestoredFor(eventCode);
+      }
+    }
+
+    setSelectionRestoredFor("");
+    void restoreProgress();
+
+    return () => {
+      cancelled = true;
+    };
   }, [event.eventCode]);
+
+  // Keep a local backup when the selection changes.
+  useEffect(() => {
+    if (
+      !event.eventCode ||
+      selectionRestoredFor !== event.eventCode
+    ) {
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        `photo-selection-${event.eventCode}`,
+        JSON.stringify({
+          selectedPhotos: selected,
+          rejectedPhotos: rejected,
+          savedAt: new Date().toISOString(),
+        })
+      );
+    } catch (err) {
+      console.error("Unable to save local progress:", err);
+    }
+  }, [event.eventCode, selected, rejected, selectionRestoredFor]);
+
 
   // Save selections without waiting for all photos to load.
   useEffect(() => {
@@ -322,6 +475,7 @@ export default function ClientPhotoGallery({
 
   function toggleSelect(photo: Photo) {
     setError("");
+    setSaveStatus("");
 
     if (selectedIds.has(photo.id)) {
       setSelected((previous) =>
@@ -346,6 +500,7 @@ export default function ClientPhotoGallery({
 
   function toggleReject(photo: Photo) {
     setError("");
+    setSaveStatus("");
 
     if (rejectedIds.has(photo.id)) {
       setRejected((previous) =>
@@ -418,6 +573,60 @@ export default function ClientPhotoGallery({
       );
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  
+  async function saveProgress() {
+    if (
+      !event.eventCode ||
+      selectionRestoredFor !== event.eventCode
+    ) {
+      setError("Progress is still loading. Please try again.");
+      return;
+    }
+
+    setError("");
+    setSaveStatus("");
+
+    try {
+      // Save a local backup first.
+      localStorage.setItem(
+        `photo-selection-${event.eventCode}`,
+        JSON.stringify({
+          selectedPhotos: selected,
+          rejectedPhotos: rejected,
+          savedAt: new Date().toISOString(),
+        })
+      );
+
+      const response = await fetch(
+        "/api/photo-selection/client/progress",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: event.eventCode,
+            selectedPhotoIds: selected.map((photo) => photo.id),
+            rejectedPhotoIds: rejected.map((photo) => photo.id),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to save progress to MongoDB.");
+      }
+
+      setSaveStatus("Progress saved successfully.");
+    } catch (err) {
+      console.error("Save progress failed:", err);
+      setError(
+        err instanceof Error
+          ? `${err.message} A local backup was kept on this device.`
+          : "Unable to save progress. A local backup was kept on this device."
+      );
     }
   }
 
@@ -785,6 +994,15 @@ export default function ClientPhotoGallery({
           </div>
 
           <button
+            type="button"
+            onClick={saveProgress}
+            className="flex items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-sm text-white/80 transition hover:bg-white/5"
+          >
+            <Save className="h-4 w-4" />
+            Save Progress
+          </button>
+
+          <button
             onClick={() => setReview(true)}
             className="flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-black hover:bg-amber-300"
           >
@@ -792,6 +1010,16 @@ export default function ClientPhotoGallery({
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
+
+        {saveStatus && (
+          <p
+            role="status"
+            aria-live="polite"
+            className="mb-3 text-right text-xs text-green-400"
+          >
+            {saveStatus}
+          </p>
+        )}
 
         {photos.length === 0 ? (
           <div className="rounded-2xl border border-white/10 p-12 text-center">
