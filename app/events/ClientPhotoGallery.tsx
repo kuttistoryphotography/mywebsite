@@ -994,15 +994,6 @@ export default function ClientPhotoGallery({
           </div>
 
           <button
-            type="button"
-            onClick={saveProgress}
-            className="flex items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-sm text-white/80 transition hover:bg-white/5"
-          >
-            <Save className="h-4 w-4" />
-            Save Progress
-          </button>
-
-          <button
             onClick={() => setReview(true)}
             className="flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-black hover:bg-amber-300"
           >
@@ -1268,7 +1259,7 @@ export default function ClientPhotoGallery({
             {error}
           </p>
         )}
-
+        
         <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={onBack}
@@ -1278,14 +1269,26 @@ export default function ClientPhotoGallery({
             Back
           </button>
 
-          <button
-            onClick={() => setReview(true)}
-            className="flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3 font-semibold text-black hover:bg-amber-300"
-          >
-            Review {selected.length} selected photos
-            <ArrowRight className="h-4 w-4" />
-          </button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={saveProgress}
+              className="flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3 font-semibold text-black transition-colors hover:bg-amber-300"
+            >
+              <Save className="h-4 w-4" />
+              Save Progress
+            </button>
+
+            <button
+              onClick={() => setReview(true)}
+              className="flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3 font-semibold text-black hover:bg-amber-300"
+            >
+              Review {selected.length} selected photos
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
+
       </section>
     </main>
   );
