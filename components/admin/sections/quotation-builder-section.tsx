@@ -389,12 +389,18 @@ export default function QuotationBuilderSection() {
             result.error || result.message || "Unable to save quotation."
         );
       }
-
+      
       setQuoteNumber(result.proposal?.quoteNumber || "");
 
       const generatedUrl = result.proposal?.clientUrl || "";
       setQuotationUrl(generatedUrl);
       setCopyMessage("");
+
+      if (status === "published" && !generatedUrl) {
+        setError(
+          "Quotation saved, but no client link was returned. Please check the publish API."
+        );
+      }
 
     } catch (err) {
       setError(
@@ -958,11 +964,14 @@ export default function QuotationBuilderSection() {
           className="mt-6 w-full rounded-xl bg-amber-500 px-5 py-3 font-semibold text-black transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {saving
-            ? "Saving quotation..."
+            ? status === "published"
+              ? "Generating quotation link..."
+              : "Saving draft..."
             : status === "published"
-              ? "Publish quotation"
-              : "Save draft"}
+              ? "Generate Quotation Link"
+              : "Save Draft"}
         </button>
+
       </section>
     </div>
   );
