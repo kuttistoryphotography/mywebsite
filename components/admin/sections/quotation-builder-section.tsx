@@ -824,7 +824,7 @@ export default function QuotationBuilderSection() {
                 </label>
 
                   <label className={labelClass}>
-                    Price (â‚¹) *
+                    Price ($) *
                     <input
                       type="number"
                       min="0"
@@ -910,11 +910,11 @@ export default function QuotationBuilderSection() {
         <div className="mt-5 space-y-3 text-sm">
           <div className="flex justify-between gap-4 text-zinc-300">
             <span>Subtotal</span>
-            <span>â‚¹{subtotal.toLocaleString("en-IN")}</span>
+            <span>${subtotal.toLocaleString("en-IN")}</span>
           </div>
 
           <label className={`${labelClass} block max-w-xs`}>
-            Discount (â‚¹)
+            Discount ($)
             <input
               type="number"
               min="0"
@@ -928,7 +928,7 @@ export default function QuotationBuilderSection() {
           <div className="flex justify-between gap-4 border-t border-zinc-700 pt-4 text-xl font-bold">
             <span>Total</span>
             <span className="text-amber-400">
-              â‚¹{total.toLocaleString("en-IN")}
+              ${total.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
