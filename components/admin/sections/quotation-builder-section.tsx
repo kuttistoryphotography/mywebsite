@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 
-
 type QuotationDesign = {
   brandName: string;
   tagline: string;
