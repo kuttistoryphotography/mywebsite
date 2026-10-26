@@ -84,6 +84,10 @@ export default function QuotationBuilderSection() {
   const [quotationUrl, setQuotationUrl] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
 
+  
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoUploadError, setLogoUploadError] = useState("");
+
   const subtotal = events.reduce(
     (eventTotal, event) =>
         eventTotal +
@@ -171,6 +175,63 @@ export default function QuotationBuilderSection() {
           : event
       )
     );
+  }
+  
+  async function handleLogoUpload(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setLogoUploadError("Please select an image file.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setLogoUploadError("Logo image must be 5 MB or smaller.");
+      return;
+    }
+
+    setLogoUploading(true);
+    setLogoUploadError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("context", "quote");
+      formData.append("label", "Quotation Brand Logo");
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success || !result.url) {
+        throw new Error(
+          result.error ||
+            result.errors?.[0]?.error ||
+            "Logo upload failed."
+        );
+      }
+
+      setPageDesign((current) => ({
+        ...current,
+        logoUrl: result.url,
+      }));
+    } catch (error) {
+      setLogoUploadError(
+        error instanceof Error
+          ? error.message
+          : "Unable to upload the logo."
+      );
+    } finally {
+      setLogoUploading(false);
+    }
   }
 
   async function saveQuotation() {
@@ -584,19 +645,48 @@ export default function QuotationBuilderSection() {
             </label>
 
             <label className={labelClass}>
-            Logo image URL
-            <input
+              Logo Image
+
+              <input
                 type="url"
                 className={inputClass}
                 value={pageDesign.logoUrl}
                 onChange={(e) =>
-                setPageDesign((current) => ({
+                  setPageDesign((current) => ({
                     ...current,
                     logoUrl: e.target.value,
-                }))
+                  }))
                 }
-                placeholder="https://..."
-            />
+                placeholder="Paste image URL or upload a logo below"
+              />
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                disabled={logoUploading}
+                className="mt-3 block w-full text-sm text-zinc-300 file:mr-4 file:rounded-lg file:border-0 file:bg-amber-500 file:px-4 file:py-2 file:font-semibold file:text-black hover:file:bg-amber-400 disabled:opacity-50"
+              />
+
+              {logoUploading && (
+                <p className="mt-2 text-sm text-amber-300">
+                  Uploading logo...
+                </p>
+              )}
+
+              {logoUploadError && (
+                <p className="mt-2 text-sm text-red-400" role="alert">
+                  {logoUploadError}
+                </p>
+              )}
+
+              {pageDesign.logoUrl && (
+                <img
+                  src={pageDesign.logoUrl}
+                  alt="Quotation logo preview"
+                  className="mt-3 max-h-24 max-w-48 rounded-lg border border-zinc-700 bg-white p-2 object-contain"
+                />
+              )}
             </label>
 
             <label className={labelClass}>
@@ -684,9 +774,19 @@ export default function QuotationBuilderSection() {
             <p className="text-xs uppercase tracking-[0.25em]">
             Quotation preview
             </p>
+            
+            {pageDesign.logoUrl && (
+              <img
+                src={pageDesign.logoUrl}
+                alt={`${pageDesign.brandName || "Brand"} logo`}
+                className="mb-4 max-h-20 max-w-48 object-contain"
+              />
+            )}
+
             <h3 className="mt-3 text-2xl font-semibold">
-            {pageDesign.brandName || "Your Brand Name"}
+              {pageDesign.brandName || "Your Brand Name"}
             </h3>
+
             <p className="mt-2 text-sm">{pageDesign.tagline}</p>
             <div
             className="mt-4 h-1 w-20 rounded"
