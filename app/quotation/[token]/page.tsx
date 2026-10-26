@@ -115,18 +115,18 @@ function SectionHeading({
   accentColor: string;
 }) {
   return (
-    <div className="mb-10 text-center">
+    <div className="mb-12 text-center">
       <div
-        className="mx-auto mb-4 h-px w-16"
+        className="mx-auto mb-5 h-px w-20"
         style={{ backgroundColor: accentColor }}
       />
 
-      <h2 className="text-3xl font-light tracking-wide md:text-5xl">
+      <h2 className="font-serif text-3xl font-normal uppercase leading-tight tracking-[0.08em] md:text-5xl">
         {title}
       </h2>
 
       {subtitle && (
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 opacity-70 md:text-base">
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 opacity-70 md:text-base">
           {subtitle}
         </p>
       )}
@@ -153,17 +153,17 @@ function ImageGallery({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {images.map((image, index) => (
         <figure key={`${image.url}-${index}`} className="group">
-          <div className="overflow-hidden rounded-sm">
+          <div className="overflow-hidden border border-[#dfd2bd] bg-[#eee5d7] p-1">
             <img
               src={image.url}
               alt={image.alt || `Wedding photograph ${index + 1}`}
               width={image.width || 1200}
               height={image.height || 900}
               loading="lazy"
-              className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="h-72 w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             />
           </div>
 
@@ -201,7 +201,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="relative flex min-h-[75vh] items-center justify-center overflow-hidden px-6 py-24 text-center"
+          className="relative flex min-h-[88vh] items-center justify-center overflow-hidden px-6 py-24 text-center md:min-h-screen"
           style={{
             ...sectionStyle,
             backgroundColor:
@@ -219,7 +219,7 @@ function renderSection(
             </>
           )}
 
-          <div className="relative z-10 mx-auto max-w-4xl">
+          <div className="relative z-10 mx-auto max-w-4xl border border-white/40 px-6 py-10 md:px-16 md:py-14">
             {design.logoUrl && (
               <img
                 src={design.logoUrl}
@@ -229,13 +229,13 @@ function renderSection(
             )}
 
             <p
-              className="mb-5 text-xs uppercase tracking-[0.35em]"
+              className="mb-6 text-[10px] uppercase tracking-[0.42em] md:text-xs"
               style={{ color: images[0]?.url ? "#ffffff" : accentColor }}
             >
               {design.brandName || "Kutti Story Photography"}
             </p>
 
-            <h1 className="text-4xl font-light leading-tight md:text-7xl">
+            <h1 className="font-serif text-4xl font-normal leading-[1.08] tracking-wide md:text-7xl">
               {heading || quotation.title}
             </h1>
 
@@ -250,7 +250,7 @@ function renderSection(
               style={{ backgroundColor: accentColor }}
             />
 
-            <p className="text-sm tracking-wide">
+            <p className="text-[10px] uppercase tracking-[0.28em]">
               A PERSONALIZED PHOTOGRAPHY PROPOSAL
             </p>
 
@@ -272,7 +272,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-4xl">
@@ -303,7 +303,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-7xl">
@@ -325,7 +325,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-5xl">
@@ -370,7 +370,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-6xl">
@@ -384,7 +384,7 @@ function renderSection(
               {quotation.events.map((event, eventIndex) => (
                 <article
                   key={`${event.name}-${eventIndex}`}
-                  className="rounded-sm border p-6 md:p-8"
+                  className="border border-[#d8c8b0] bg-white/35 p-6 md:p-8"
                   style={{ borderColor: `${accentColor}88` }}
                 >
                   <p
@@ -430,7 +430,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-4xl">
@@ -472,7 +472,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-3xl">
@@ -483,7 +483,7 @@ function renderSection(
             />
 
             <div
-              className="rounded-sm border p-6 md:p-10"
+              className="border border-[#cdb99a] bg-white/45 p-6 md:p-10"
               style={{ borderColor: `${accentColor}88` }}
             >
               <div className="space-y-5">
@@ -536,7 +536,7 @@ function renderSection(
                   <span className="text-lg">Total Investment</span>
 
                   <span
-                    className="text-3xl font-light md:text-4xl"
+                    className="font-serif text-3xl font-normal tracking-wide md:text-5xl"
                     style={{ color: accentColor }}
                   >
                     {formatCurrency(quotation.totalAmount)}
@@ -552,7 +552,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-4xl">
@@ -567,7 +567,7 @@ function renderSection(
                 {quotation.paymentTerms.map((term, index) => (
                   <article
                     key={`${term.label}-${index}`}
-                    className="border p-6"
+                    className="border border-[#d8c8b0] bg-white/35 p-6"
                     style={{ borderColor: `${accentColor}88` }}
                   >
                     <p
@@ -614,7 +614,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-4xl">
@@ -652,7 +652,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-24 text-center md:px-12 md:py-32"
+          className="px-6 py-28 text-center md:px-12 md:py-40"
           style={{
             ...sectionStyle,
             backgroundColor:
@@ -667,7 +667,7 @@ function renderSection(
               style={{ backgroundColor: accentColor }}
             />
 
-            <h2 className="text-3xl font-light md:text-5xl">
+            <h2 className="font-serif text-3xl font-normal uppercase tracking-[0.06em] md:text-5xl">
               {heading || "Let’s Tell Your Story"}
             </h2>
 
@@ -700,7 +700,7 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative px-6 py-20 md:px-12 md:py-28 lg:py-32"
           style={sectionStyle}
         >
           <div className="mx-auto max-w-4xl">
@@ -859,14 +859,14 @@ export default async function PublicQuotationPage({
 
   return (
     <main
-      className="min-h-screen"
+      className="min-h-screen overflow-hidden"
       style={{
         backgroundColor,
         color: textColor,
         fontFamily,
       }}
     >
-      <article>
+      <article className="mx-auto w-full max-w-[1800px]">
         {sections.map((section) =>
           renderSection(
             section,
@@ -879,7 +879,7 @@ export default async function PublicQuotationPage({
       </article>
 
       <footer
-        className="border-t px-6 py-10 text-center"
+        className="border-t px-6 py-12 text-center"
         style={{ borderColor: `${accentColor}66` }}
       >
         {design.logoUrl && (
