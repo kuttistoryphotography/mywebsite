@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useState } from "react";
@@ -81,6 +81,8 @@ export default function QuotationBuilderSection() {
   const [error, setError] = useState("");
 
   const [quoteNumber, setQuoteNumber] = useState("");
+  const [quotationUrl, setQuotationUrl] = useState("");
+  const [copyMessage, setCopyMessage] = useState("");
 
   const subtotal = events.reduce(
     (eventTotal, event) =>
@@ -390,6 +392,10 @@ export default function QuotationBuilderSection() {
 
       setQuoteNumber(result.proposal?.quoteNumber || "");
 
+      const generatedUrl = result.proposal?.clientUrl || "";
+      setQuotationUrl(generatedUrl);
+      setCopyMessage("");
+
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Something went wrong."
@@ -421,15 +427,64 @@ export default function QuotationBuilderSection() {
       )}
 
       {quoteNumber && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
+        <div className="space-y-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
           <p className="font-medium text-emerald-300">
             Quotation saved: {quoteNumber}
           </p>
 
+          {quotationUrl ? (
+            <div className="space-y-3">
+              <label className="block text-sm text-zinc-300">
+                Client quotation link
+                <input
+                  readOnly
+                  value={quotationUrl}
+                  onFocus={(e) => e.currentTarget.select()}
+                  className="mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+                />
+              </label>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(quotationUrl);
+                      setCopyMessage("Link copied successfully!");
+                    } catch {
+                      setCopyMessage("Copy failed. Select and copy the link above.");
+                    }
+                  }}
+                  className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-black hover:bg-amber-400"
+                >
+                  Copy Link
+                </button>
+
+                <a
+                  href={quotationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg border border-zinc-600 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800"
+                >
+                  Preview Quotation
+                </a>
+              </div>
+
+              {copyMessage && (
+                <p className="text-sm text-emerald-300" role="status">
+                  {copyMessage}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-zinc-300">
+              This quotation is saved as a draft. Publish it to generate a client link.
+            </p>
+          )}
         </div>
       )}
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
+<section className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
         <h2 className="text-lg font-semibold">Client Details</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <label className={labelClass}>
@@ -763,7 +818,7 @@ export default function QuotationBuilderSection() {
                 </label>
 
                   <label className={labelClass}>
-                    Price (₹) *
+                    Price (â‚¹) *
                     <input
                       type="number"
                       min="0"
@@ -849,11 +904,11 @@ export default function QuotationBuilderSection() {
         <div className="mt-5 space-y-3 text-sm">
           <div className="flex justify-between gap-4 text-zinc-300">
             <span>Subtotal</span>
-            <span>₹{subtotal.toLocaleString("en-IN")}</span>
+            <span>â‚¹{subtotal.toLocaleString("en-IN")}</span>
           </div>
 
           <label className={`${labelClass} block max-w-xs`}>
-            Discount (₹)
+            Discount (â‚¹)
             <input
               type="number"
               min="0"
@@ -867,7 +922,7 @@ export default function QuotationBuilderSection() {
           <div className="flex justify-between gap-4 border-t border-zinc-700 pt-4 text-xl font-bold">
             <span>Total</span>
             <span className="text-amber-400">
-              ₹{total.toLocaleString("en-IN")}
+              â‚¹{total.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
@@ -891,8 +946,8 @@ export default function QuotationBuilderSection() {
               setStatus(e.target.value as "draft" | "published")
             }
           >
-            <option value="draft">Draft — Admin only</option>
-            <option value="published">Published — Client link</option>
+            <option value="draft">Draft â€” Admin only</option>
+            <option value="published">Published â€” Client link</option>
           </select>
         </label>
 
@@ -912,3 +967,4 @@ export default function QuotationBuilderSection() {
     </div>
   );
 }
+
