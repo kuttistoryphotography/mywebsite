@@ -242,7 +242,7 @@ function renderSection(
           )}
 
           {/* Existing dynamic quotation content */}
-          <div className="relative z-10 mx-auto w-full max-w-5xl border border-[#c6a66b]/50 bg-[#fffdf8]/75 px-5 py-12 shadow-sm backdrop-blur-[2px] sm:px-10 sm:py-16 md:px-16 md:py-20">
+          <div className="relative z-10 mx-auto w-full max-w-5xl border border-[#c6a66b]/40 bg-[#fffdf8]/50 px-5 py-12 shadow-sm backdrop-blur-[1px] sm:px-10 sm:py-16 md:px-16 md:py-20">
             {design.logoUrl && (
               <img
                 src={design.logoUrl}
