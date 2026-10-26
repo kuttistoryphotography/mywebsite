@@ -991,6 +991,20 @@ export default function ClientPhotoGallery({
               {event.clientName} · {photos.length} of{" "}
               {event.totalPhotos} photos loaded
             </p>
+      
+            <div className="mt-4 flex items-center gap-3 overflow-hidden rounded-lg border border-amber-400/30 bg-amber-400/[0.07] px-3 py-3">
+              <span className="relative flex h-3 w-3 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-amber-400" />
+              </span>
+
+              <p className="text-xs font-medium leading-5 text-amber-200 sm:text-sm">
+                Reminder: After selecting every 10–20 photos, click{" "}
+                <strong className="text-amber-400">Save Progress</strong>{" "}
+                to protect your selections and avoid losing your progress.
+              </p>
+            </div>
+
           </div>
 
           <button
