@@ -248,6 +248,11 @@ async function editQuotation(id: string) {
     });
 
     const sections = design.sections || [];
+    console.log("EDIT QUOTATION:", proposal);
+    console.log("SAVED PAGE DESIGN:", proposal.pageDesign);
+    console.log("SAVED GALLERY SECTIONS:", sections.filter(
+      (section: { type: string }) => section.type === "gallery"
+    ));
     const gallerySection = sections.find(
       (section: { type: string }) => section.type === "gallery"
     );
