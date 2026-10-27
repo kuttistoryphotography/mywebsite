@@ -24,6 +24,7 @@ export async function GET(
     const quotation = await QuotationProposal.findOne({
       publicToken: token,
       status: "published",
+      linkRevoked: { $ne: true },
     })
       .select("-publicToken -createdBy -__v")
       .lean();

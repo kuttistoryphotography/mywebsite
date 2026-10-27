@@ -169,7 +169,7 @@ function calculateTotals(events: any[], discount: number) {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await getCurrentUser();
 
@@ -184,10 +184,34 @@ export async function GET() {
 
     const proposals = await QuotationProposal.find()
       .sort({ createdAt: -1 })
-      .select("-publicToken")
+      .select("+publicToken")
       .lean();
 
-    return NextResponse.json({ success: true, proposals });
+    const baseUrl = request.nextUrl.origin;
+
+    const links = proposals.map((proposal: any) => ({
+      id: String(proposal._id),
+      quoteNumber: proposal.quoteNumber,
+      clientName: proposal.clientName,
+      clientEmail: proposal.clientEmail,
+      title: proposal.title,
+      status: proposal.status,
+      linkRevoked: proposal.linkRevoked === true,
+      createdAt: proposal.createdAt,
+      updatedAt: proposal.updatedAt,
+      clientUrl: proposal.publicToken
+        ? `${baseUrl}/quotation/${proposal.publicToken}`
+        : null,
+    }));
+
+    return NextResponse.json(
+      { success: true, proposals: links, total: links.length },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Quotation proposal GET error:", error);
 

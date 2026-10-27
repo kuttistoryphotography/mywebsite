@@ -63,12 +63,12 @@ export interface IQuotationEvent {
 export interface IQuotationProposal extends Document {
   quoteNumber: string;
   publicToken: string;
-
+  linkRevoked: boolean;
   clientName: string;
   clientEmail: string;
   clientPhone?: string;
 
-    title: string;
+  title: string;
   introduction?: string;
 
   // Editable visual quotation page
@@ -190,11 +190,18 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
       unique: true,
       trim: true,
     },
+
     publicToken: {
       type: String,
       required: true,
       unique: true,
       select: false,
+    },
+
+    linkRevoked: {
+      type: Boolean,
+      default: false,
+      index: true,
     },
 
     clientName: { type: String, required: true, trim: true },
