@@ -774,7 +774,9 @@ export default async function PublicQuotationPage({
 
   try {
     const response = await fetch(
-      `${siteUrl.replace(/\/$/, "")}/api/quotation-proposals/${encodeURIComponent(token)}`,
+      
+    `${siteUrl.replace(/\/$/, "")}/api/quotation-proposals/public/${encodeURIComponent(token)}`,
+
       { cache: "no-store" },
     );
 
