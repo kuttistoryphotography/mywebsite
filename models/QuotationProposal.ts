@@ -63,7 +63,9 @@ export interface IQuotationEvent {
 export interface IQuotationProposal extends Document {
   quoteNumber: string;
   publicToken: string;
+
   linkRevoked: boolean;
+  
   clientName: string;
   clientEmail: string;
   clientPhone?: string;

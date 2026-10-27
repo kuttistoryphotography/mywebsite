@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -17,7 +17,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about-us" },
@@ -28,7 +27,6 @@ const navItems = [
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact-us" },
 ];
-
 
 const accountMenuItems = [
   { label: "My Account",    href: "/dashboard",                 icon: User },
@@ -173,7 +171,7 @@ export default function Header() {
           : "bg-transparent"
       }`}
     >
-      {/* â”€â”€â”€ INNER WRAPPER â”€â”€â”€ */}
+      {/* ─── INNER WRAPPER ─── */}
       <div className="
       w-full
       max-w-[1600px]
@@ -192,7 +190,7 @@ export default function Header() {
       justify-between
       gap-4
       ">
-        {/* â”€â”€ LOGO â”€â”€ */}
+        {/* ── LOGO ── */}
         <Link href="/" className="flex items-center flex-shrink-0 z-10 mr-8" >
           <Image
             src={logo}
@@ -212,7 +210,7 @@ export default function Header() {
           />
         </Link>
 
-        {/* â”€â”€ DESKTOP + LAPTOP NAV (lg 1024px+) â”€â”€ */}
+        {/* ── DESKTOP + LAPTOP NAV (lg 1024px+) ── */}
         <nav className="
         hidden
         lg:flex
@@ -243,7 +241,7 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* â”€â”€ TABLET NAV (md 768px â†’ lg 1023px): abbreviated â”€â”€ */}
+        {/* ── TABLET NAV (md 768px → lg 1023px): abbreviated ── */}
         <nav className="hidden md:flex lg:hidden items-center gap-0.5 flex-1 justify-center">
           {navItems.map((item) => (
             <Link
@@ -263,17 +261,17 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* â”€â”€ RIGHT: ACTIONS â”€â”€ */}
+        {/* ── RIGHT: ACTIONS ── */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
 
-          {/* Notification bell â€” desktop + tablet, admin only */}
+          {/* Notification bell — desktop + tablet, admin only */}
           {isAuthenticated && userRole === "admin" && (
             <div className="hidden md:flex">
               <NotificationBell className="text-white/70 hover:text-white transition-colors" />
             </div>
           )}
 
-          {/* Sign In â€” desktop + tablet */}
+          {/* Sign In — desktop + tablet */}
           {!isAuthenticated && (
             <Link
               href="/login"
@@ -284,7 +282,7 @@ export default function Header() {
             </Link>
           )}
 
-          {/* Account dropdown â€” desktop + tablet */}
+          {/* Account dropdown — desktop + tablet */}
           {isAuthenticated && (
             <div className="hidden md:block relative" ref={accountDropdownRef}>
               <button
@@ -342,16 +340,16 @@ export default function Header() {
             </div>
           )}
 
-          {/* Book Now â€” hidden on mobile (<md), shown md+ */}
+          {/* Book Now — hidden on mobile (<md), shown md+ */}
           <Link
             href="/booking"
             className="hidden md:inline-flex items-center gap-2 px-4 xl:px-6 2xl:px-8 py-2 xl:py-2.5 2xl:py-3 rounded-full bg-white text-black text-[10px] xl:text-[11px] font-bold uppercase tracking-widest hover:bg-amber-400 border border-white hover:border-amber-400 transition-all duration-400 whitespace-nowrap"
           >
             Book Now
-            <span className="text-base leading-none">â†’</span>
+            <span className="text-base leading-none">→</span>
           </Link>
 
-          {/* â”€â”€ MOBILE HAMBURGER (< md 768px) â”€â”€ */}
+          {/* ── MOBILE HAMBURGER (< md 768px) ── */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -377,10 +375,10 @@ export default function Header() {
         </div>
       </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* ═══════════════════════════════
           MOBILE FULL-SCREEN MENU OVERLAY
-          (320px â€“ 767px)
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+          (320px – 767px)
+      ══════════════════════════════ */}
       {mounted && isMobileMenuOpen &&
         createPortal(
           <div
@@ -398,7 +396,7 @@ export default function Header() {
             {/* Panel */}
             <div className="relative bg-[#0a0a0a] border-t border-white/10 h-full overflow-y-auto flex flex-col">
 
-              {/* â”€â”€ Nav links â”€â”€ */}
+              {/* ── Nav links ── */}
               <nav className="px-5 pt-6 pb-4 border-b border-white/[0.07]">
                 <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-white/30 mb-4 px-1">
                   Navigation
@@ -425,7 +423,7 @@ export default function Header() {
                 </div>
               </nav>
 
-              {/* â”€â”€ Account section â”€â”€ */}
+              {/* ── Account section ── */}
               <div className="px-5 pt-5 pb-4 border-b border-white/[0.07]">
                 <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-white/30 mb-4 px-1">
                   {isAuthenticated ? (userName ? `Hi, ${userName.split(" ")[0]}` : "My Account") : "Account"}
@@ -457,7 +455,7 @@ export default function Header() {
                 )}
               </div>
 
-              {/* â”€â”€ Bottom CTAs â”€â”€ */}
+              {/* ── Bottom CTAs ── */}
               <div className="px-5 py-5 mt-auto space-y-3">
                 {/* Admin notification bell */}
                 {isAuthenticated && userRole === "admin" && (
@@ -473,7 +471,7 @@ export default function Header() {
                   className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-white text-black text-sm font-bold uppercase tracking-widest hover:bg-amber-400 active:scale-[0.98] transition-all duration-300"
                 >
                   Book a Session
-                  <span className="text-lg leading-none">â†’</span>
+                  <span className="text-lg leading-none">→</span>
                 </Link>
 
                 {/* Sign out */}
