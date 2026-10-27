@@ -3,6 +3,10 @@
 
 import { useEffect, useState } from "react";
 
+import QuotationCategoryGallery, {
+  type QuotationGalleryCategory,
+} from "./QuotationCategoryGallery";
+
 type SharedQuotation = {
   id: string;
   quoteNumber: string;
@@ -103,6 +107,13 @@ export default function QuotationBuilderSection() {
   const [actionId, setActionId] = useState("");
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoUploadError, setLogoUploadError] = useState("");
+
+  const [galleryCategories, setGalleryCategories] =
+    useState<QuotationGalleryCategory[]>([
+      { id: "bride", title: "Bride Portraits", coverImage: "", photos: [] },
+      { id: "groom", title: "Groom Portraits", coverImage: "", photos: [] },
+      { id: "couple", title: "Couple Portraits", coverImage: "", photos: [] },
+    ]);
 
   const subtotal = events.reduce(
     (eventTotal, event) =>
@@ -409,16 +420,22 @@ export default function QuotationBuilderSection() {
             images: [],
             },
             {
-            id: "gallery",
-            type: "gallery",
-            visible: true,
-            title: "Stories Through Our Lens",
-            subtitle: "A glimpse into our visual storytelling",
-            body: "",
-            layout: "masonry",
-            backgroundColor: "#ffffff",
-            textColor: pageDesign.textColor,
-            images: [],
+              id: "gallery",
+              type: "gallery",
+              visible: true,
+              title: "Explore Our Photography",
+              subtitle: "Choose a collection to view our photographs",
+              body: "",
+              layout: "category-cards",
+              backgroundColor: "#ffffff",
+              textColor: pageDesign.textColor,
+              images: [],
+              categories: galleryCategories.map((category) => ({
+                id: category.id,
+                title: category.title,
+                coverImage: category.coverImage,
+                photos: category.photos.slice(0, 15),
+              })),
             },
             {
             id: "events",
@@ -729,7 +746,7 @@ export default function QuotationBuilderSection() {
         </div>
       </section>
 
-        <section className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
+      <section className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
         <h2 className="text-lg font-semibold">Design & Branding</h2>
         <p className="mt-1 text-sm text-zinc-400">
             Customize the appearance of your client quotation page.
@@ -908,7 +925,13 @@ export default function QuotationBuilderSection() {
             style={{ backgroundColor: pageDesign.accentColor }}
             />
         </div>
-        </section>
+      </section>
+
+      {/* Quotation Category Galleries */}
+      <QuotationCategoryGallery
+         categories={galleryCategories}
+         onChange={setGalleryCategories}
+      />
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

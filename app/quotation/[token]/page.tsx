@@ -1,6 +1,8 @@
 
 import { notFound } from "next/navigation";
 
+import PublicQuotationCategoryGallery from "@/components/quotation/PublicQuotationCategoryGallery";
+
 interface QuotationImage {
   url: string;
   alt?: string;
@@ -31,6 +33,13 @@ interface QuotationPaymentTerm {
   dueDate?: string;
 }
 
+interface QuotationGalleryCategory {
+  id: string;
+  title: string;
+  coverImage: string;
+  photos: string[];
+}
+
 interface QuotationPageSection {
   id: string;
   type: string;
@@ -42,6 +51,7 @@ interface QuotationPageSection {
   backgroundColor?: string;
   textColor?: string;
   images?: QuotationImage[];
+  categories?: QuotationGalleryCategory[];
 }
 
 interface QuotationPageDesign {
@@ -334,10 +344,18 @@ function renderSection(
               accentColor={accentColor}
             />
 
-            <ImageGallery
-              images={images}
-              accentColor={accentColor}
-            />
+            {section.categories?.length ? (
+              <PublicQuotationCategoryGallery
+                categories={section.categories}
+                accentColor={accentColor}
+              />
+            ) : (
+              <ImageGallery
+                images={images}
+                accentColor={accentColor}
+              />
+            )}
+
           </div>
         </section>
       );
