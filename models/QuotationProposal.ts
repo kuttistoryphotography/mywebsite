@@ -23,6 +23,13 @@ export interface IQuotationImage {
   height?: number;
 }
 
+export interface IQuotationGalleryCategory {
+  id: string;
+  title: string;
+  coverImage: string;
+  photos: string[];
+}
+
 export interface IQuotationPageSection {
   id: string;
   type: QuotationSectionType;
@@ -34,6 +41,7 @@ export interface IQuotationPageSection {
   backgroundColor?: string;
   textColor?: string;
   images: IQuotationImage[];
+  categories?: IQuotationGalleryCategory[];
 }
 
 export interface IQuotationPageDesign {
@@ -140,6 +148,20 @@ const QuotationPageSectionSchema = new Schema<IQuotationPageSection>(
     backgroundColor: { type: String, trim: true, default: "" },
     textColor: { type: String, trim: true, default: "" },
     images: { type: [QuotationImageSchema], default: [] },
+    categories: {
+      type: [
+        new Schema<IQuotationGalleryCategory>(
+          {
+            id: { type: String, required: true, trim: true },
+            title: { type: String, required: true, trim: true },
+            coverImage: { type: String, required: true, trim: true },
+            photos: { type: [String], default: [] },
+          },
+          { _id: false }
+        ),
+      ],
+      default: undefined,
+    },
   },
   { _id: false }
 );

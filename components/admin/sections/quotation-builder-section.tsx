@@ -97,6 +97,7 @@ export default function QuotationBuilderSection() {
   const [error, setError] = useState("");
 
   const [quoteNumber, setQuoteNumber] = useState("");
+  const [editingQuotationId, setEditingQuotationId] = useState<string | null>(null);
   const [quotationUrl, setQuotationUrl] = useState("");
   const [copyMessage, setCopyMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"generate" | "shared">("generate");
@@ -202,6 +203,120 @@ export default function QuotationBuilderSection() {
           : event
       )
     );
+  }
+
+  
+async function editQuotation(id: string) {
+  setActionId(id);
+  setSharedError("");
+  setSharedMessage("");
+
+  try {
+    const response = await fetch(`/api/quotation-proposals/${id}`, {
+      cache: "no-store",
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success || !result.proposal) {
+      throw new Error(result.error || "Unable to load quotation.");
+    }
+
+    const proposal = result.proposal;
+
+    setEditingQuotationId(id);
+    setClientName(proposal.clientName || "");
+    setClientEmail(proposal.clientEmail || "");
+    setClientPhone(proposal.clientPhone || "");
+    setTitle(proposal.title || "");
+    setIntroduction(proposal.introduction || "");
+    setQuoteNumber(proposal.quoteNumber || "");
+    setQuotationUrl(proposal.clientUrl || "");
+    setStatus(proposal.status === "published" ? "published" : "draft");
+    setDiscount(String(proposal.discount ?? 0));
+    setValidityDate(
+      proposal.validityDate
+        ? String(proposal.validityDate).slice(0, 10)
+        : ""
+    );
+
+    const design = proposal.pageDesign || {};
+    setPageDesign({
+      ...defaultQuotationDesign,
+      ...design,
+      logoUrl: design.logoUrl || "",
+    });
+
+    const sections = design.sections || [];
+    const gallerySection = sections.find(
+      (section: { type: string }) => section.type === "gallery"
+    );
+
+    if (gallerySection?.categories) {
+      setGalleryCategories(
+        gallerySection.categories.map(
+          (category: QuotationGalleryCategory) => ({
+            ...category,
+            photos: Array.isArray(category.photos) ? category.photos : [],
+          })
+        )
+      );
+    } else {
+      setGalleryCategories([
+        { id: "bride", title: "Bride Portraits", coverImage: "", photos: [] },
+        { id: "groom", title: "Groom Portraits", coverImage: "", photos: [] },
+        { id: "couple", title: "Couple Portraits", coverImage: "", photos: [] },
+      ]);
+    }
+
+    setEvents(
+      (proposal.events || []).map(
+        (event: {
+          eventName: string;
+          eventDate?: string;
+          venue?: string;
+          services: {
+            name: string;
+            description?: string;
+            quantity: number;
+            unitPrice: number;
+          }[];
+        }) => ({
+          eventName: event.eventName || "",
+          eventDate: event.eventDate
+            ? String(event.eventDate).slice(0, 10)
+            : "",
+          venue: event.venue || "",
+          services: (event.services || []).map((service) => ({
+            name: service.name || "",
+            description: service.description || "",
+            quantity: String(service.quantity ?? 1),
+            price: String(service.unitPrice ?? 0),
+          })),
+        })
+      )
+    );
+
+    setDeliverablesText((proposal.deliverables || []).join("\n"));
+      setPaymentTermsText(
+        (proposal.paymentTerms || [])
+          .map((term: { label: string }) => term.label)
+          .join("\n")
+      );
+      setTermsText((proposal.termsAndConditions || []).join("\n"));
+
+      setError("");
+      setCopyMessage("");
+      setActiveTab("generate");
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setSharedError(
+        err instanceof Error ? err.message : "Unable to load quotation."
+      );
+    } finally {
+      setActionId("");
+    }
   }
 
   async function loadSharedLinks() {
@@ -434,7 +549,7 @@ export default function QuotationBuilderSection() {
                 id: category.id,
                 title: category.title,
                 coverImage: category.coverImage,
-                photos: category.photos.slice(0, 15),
+                photos: category.photos,
               })),
             },
             {
@@ -558,11 +673,20 @@ export default function QuotationBuilderSection() {
     setSaving(true);
 
     try {
-      const response = await fetch("/api/quotation-proposals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        editingQuotationId
+          ? `/api/quotation-proposals/${editingQuotationId}`
+          : "/api/quotation-proposals",
+        {
+          method: editingQuotationId ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            editingQuotationId
+              ? { ...payload, action: "edit" }
+              : payload
+          ),
+        }
+      );
 
       const result = await response.json();
 
@@ -1268,6 +1392,15 @@ export default function QuotationBuilderSection() {
                         </div>
                       </div>
                     )}
+
+                    <button
+                      type="button"
+                      disabled={actionId === quotation.id}
+                      onClick={() => void editQuotation(quotation.id)}
+                      className="rounded-lg border border-sky-500/40 px-3 py-2 text-sm text-sky-300 hover:bg-sky-500/10 disabled:opacity-50"
+                    >
+                      {actionId === quotation.id ? "Loading..." : "Edit Quotation"}
+                    </button>
 
                     <div className="mt-4 flex flex-wrap gap-2 border-t border-zinc-800 pt-4">
                       {published && (
