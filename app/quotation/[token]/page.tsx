@@ -20,9 +20,9 @@ interface QuotationService {
 }
 
 interface QuotationEvent {
-  name: string;
-  date?: string;
-  description?: string;
+  eventName: string;
+  eventDate?: string;
+  venue?: string;
   services: QuotationService[];
 }
 
@@ -377,27 +377,53 @@ function renderSection(
             <div className="space-y-8">
               {quotation.events.map((event, index) => (
                 <article
-                  key={`${event.name}-${index}`}
-                  className="border-b pb-8"
+                  key={`${event.eventName}-${index}`}
+                  className="rounded-sm border p-6 md:p-8"
                   style={{ borderColor: `${accentColor}66` }}
                 >
-                  <div className="flex flex-col justify-between gap-3 sm:flex-row">
-                    <h3 className="text-2xl font-light">
-                      {event.name}
-                    </h3>
+                  <h3 className="text-2xl font-light">
+                    {event.eventName}
+                  </h3>
 
-                    {event.date && (
-                      <p className="text-sm opacity-70">
-                        {formatDate(event.date)}
-                      </p>
-                    )}
-                  </div>
-
-                  {event.description && (
-                    <p className="mt-3 leading-7 opacity-75">
-                      {event.description}
+                  {event.eventDate && (
+                    <p className="mt-3 text-sm opacity-70">
+                      Event Date: {formatDate(event.eventDate)}
                     </p>
                   )}
+
+                  {event.venue && (
+                    <p className="mt-2 text-sm opacity-70">
+                      Venue: {event.venue}
+                    </p>
+                  )}
+
+                  <div className="mt-5 space-y-3">
+                    {event.services.map((service, serviceIndex) => (
+                      <div
+                        key={`${service.name}-${serviceIndex}`}
+                        className="flex justify-between gap-4 border-t pt-3"
+                        style={{ borderColor: `${accentColor}44` }}
+                      >
+                        <div>
+                          <p className="font-medium">{service.name}</p>
+                          {service.description && (
+                            <p className="mt-1 text-sm opacity-70">
+                              {service.description}
+                            </p>
+                          )}
+                          <p className="mt-1 text-xs opacity-60">
+                            {service.quantity} × {formatCurrency(service.unitPrice)}
+                          </p>
+                        </div>
+
+                        <p className="whitespace-nowrap font-medium">
+                          {formatCurrency(
+                            service.total ?? service.unitPrice * service.quantity
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </article>
               ))}
             </div>
@@ -422,7 +448,7 @@ function renderSection(
             <div className="grid gap-6 md:grid-cols-2">
               {quotation.events.map((event, eventIndex) => (
                 <article
-                  key={`${event.name}-${eventIndex}`}
+                  key={`${event.eventName}-${eventIndex}`}
                   className="rounded-sm border p-6 md:p-8"
                   style={{ borderColor: `${accentColor}88` }}
                 >
@@ -430,31 +456,53 @@ function renderSection(
                     className="mb-3 text-xs uppercase tracking-[0.2em]"
                     style={{ color: accentColor }}
                   >
-                    {event.name}
+                    {event.eventName}
                   </p>
 
-                  <div className="space-y-5">
-                    {event.services.map((service, serviceIndex) => (
+                  <div className="space-y-6">
+                    {quotation.events.map((event, eventIndex) => (
                       <div
-                        key={`${service.name}-${serviceIndex}`}
-                        className="border-b pb-4 last:border-b-0"
+                        key={`${event.eventName}-${eventIndex}`}
+                        className="border-b pb-5"
                         style={{ borderColor: `${accentColor}44` }}
                       >
-                        <div className="flex items-start justify-between gap-4">
-                          <h3 className="font-medium">
-                            {service.name}
-                          </h3>
+                        <h3 className="text-lg font-medium">
+                          {event.eventName}
+                        </h3>
 
-                          <span className="whitespace-nowrap text-sm opacity-70">
-                            × {service.quantity}
-                          </span>
-                        </div>
-
-                        {service.description && (
-                          <p className="mt-2 text-sm leading-6 opacity-70">
-                            {service.description}
+                        {event.eventDate && (
+                          <p className="mt-1 text-sm opacity-70">
+                            Date: {formatDate(event.eventDate)}
                           </p>
                         )}
+
+                        {event.venue && (
+                          <p className="mt-1 text-sm opacity-70">
+                            Venue: {event.venue}
+                          </p>
+                        )}
+
+                        <div className="mt-3 space-y-3">
+                          {event.services.map((service, serviceIndex) => (
+                            <div
+                              key={`${service.name}-${serviceIndex}`}
+                              className="flex justify-between gap-4 text-sm"
+                            >
+                              <div>
+                                <p>{service.name}</p>
+                                <p className="mt-1 text-xs opacity-60">
+                                  {service.quantity} × {formatCurrency(service.unitPrice)}
+                                </p>
+                              </div>
+
+                              <span className="whitespace-nowrap">
+                                {formatCurrency(
+                                  service.total ?? service.unitPrice * service.quantity
+                                )}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -527,9 +575,9 @@ function renderSection(
             >
               <div className="space-y-5">
                 {quotation.events.map((event, eventIndex) => (
-                  <div key={`${event.name}-${eventIndex}`}>
+                  <div key={`${event.eventName}-${eventIndex}`}>
                     <h3 className="mb-3 text-lg font-medium">
-                      {event.name}
+                      {event.eventName}
                     </h3>
 
                     {event.services.map((service, serviceIndex) => (
