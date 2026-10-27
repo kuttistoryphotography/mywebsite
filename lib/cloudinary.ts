@@ -119,7 +119,12 @@ export async function uploadToCloudinary(
       uploadOptions,
       (error, result) => {
         if (error) {
-          console.error("[CLOUDINARY ERROR]", error);
+          console.error("[CLOUDINARY ERROR]", {
+            message: error.message,
+            name: error.name,
+            http_code: (error as any).http_code,
+          });
+
           reject(error);
           return;
         }
