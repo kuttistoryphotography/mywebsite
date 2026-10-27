@@ -296,7 +296,23 @@ export default function QuotationBuilderSection() {
         method: "POST",
         body: formData,
       });
-      const result = await response.json();
+      const responseText = await response.text();
+
+      let result: {
+        success?: boolean;
+        url?: string;
+        error?: string;
+        errors?: { error?: string }[];
+      };
+
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        console.error("Logo upload returned HTML:", responseText);
+        throw new Error(
+          `Upload failed (HTTP ${response.status}). Check the /api/upload endpoint and terminal error.`
+        );
+      }
 
       if (!response.ok || !result.success || !result.url) {
         throw new Error(
@@ -304,7 +320,15 @@ export default function QuotationBuilderSection() {
         );
       }
 
-      setPageDesign((current) => ({ ...current, logoUrl: result.url }));
+      if (!result.url) {
+        throw new Error("Logo upload succeeded, but no image URL was returned.");
+      }
+
+      setPageDesign((current) => ({
+        ...current,
+        logoUrl: result.url!,
+      }));
+      
     } catch (error) {
       setLogoUploadError(
         error instanceof Error ? error.message : "Unable to upload the logo."
@@ -1015,7 +1039,7 @@ export default function QuotationBuilderSection() {
                 </label>
 
                   <label className={labelClass}>
-                    Price (â‚¹) *
+                    Price ($) *
                     <input
                       type="number"
                       min="0"
@@ -1101,11 +1125,11 @@ export default function QuotationBuilderSection() {
         <div className="mt-5 space-y-3 text-sm">
           <div className="flex justify-between gap-4 text-zinc-300">
             <span>Subtotal</span>
-            <span>â‚¹{subtotal.toLocaleString("en-IN")}</span>
+            <span>${subtotal.toLocaleString("en-IN")}</span>
           </div>
 
           <label className={`${labelClass} block max-w-xs`}>
-            Discount (â‚¹)
+            Discount ($)
             <input
               type="number"
               min="0"
@@ -1119,7 +1143,7 @@ export default function QuotationBuilderSection() {
           <div className="flex justify-between gap-4 border-t border-zinc-700 pt-4 text-xl font-bold">
             <span>Total</span>
             <span className="text-amber-400">
-              â‚¹{total.toLocaleString("en-IN")}
+              ${total.toLocaleString("en-IN")}
             </span>
           </div>
         </div>
@@ -1240,4 +1264,3 @@ export default function QuotationBuilderSection() {
     </div>
   );
 }
-
