@@ -420,94 +420,99 @@ function renderSection(
         </section>
       );
 
-    case "services": {
-      const services = Array.isArray(section.items)
-        ? section.items
-        : typeof section.itemsText === "string"
-          ? section.itemsText
-              .split("\n")
-              .map((item) => item.trim())
-              .filter(Boolean)
-          : [];
+      case "services": {
+        const rawServices =
+          Array.isArray(section.items) && section.items.length > 0
+            ? section.items
+            : typeof section.itemsText === "string"
+              ? section.itemsText.split(/\r?\n/)
+              : [];
 
-      const servicesHeading = section.heading || heading || "OUR";
-      const servicesSubtitle = subtitle || "SERVICES";
-      const servicesFont =
-        section.fontFamily || design.fontFamily || "Georgia, serif";
+        // Also handle saved data where all services were joined into one line.
+        const services = rawServices
+          .flatMap((item) => item.split(/\r?\n|(?<=SHOOTS|PHOTOGRAPHY|VIDEOGRAPHY|STREAMING|FILM|EXPERIENCE|DRONE)\s+(?=[A-Z0-9])/))
+          .map((item) => item.trim())
+          .filter(Boolean);
 
-      const headingSize = Number(section.headingFontSize) || 46;
-      const listSize = Number(section.listFontSize) || 12;
+        const servicesHeading = section.heading || heading || "OUR";
+        const servicesSubtitle =
+          subtitle || "COVERAGE TAILORED TO YOUR CELEBRATION";
 
-      const headingColor =
-        section.headingColor || section.accentColor || accentColor;
-      const subtitleColor = section.subtitleColor || "#777777";
-      const itemColor = section.itemColor || section.textColor || textColor;
-      const bulletColor = section.accentColor || accentColor;
+        const servicesFont =
+          section.fontFamily || design.fontFamily || "Georgia, serif";
 
-      const serviceImage =
-        section.imageUrl || images[0]?.url || "/images/services-couple.png";
+        const headingSize = Number(section.headingFontSize) || 34;
+        const listSize = Number(section.listFontSize) || 12;
 
-      const serviceLogo = section.logoUrl || design.logoUrl;
+        const headingColor =
+          section.headingColor || section.accentColor || accentColor;
+        const subtitleColor = section.subtitleColor || "#111111";
+        const itemColor = section.itemColor || section.textColor || textColor;
+        const bulletColor = section.accentColor || accentColor;
 
-      return (
-        <section
-          key={section.id}
-          className="overflow-hidden px-5 py-16 sm:px-10 md:px-14 md:py-24"
-          style={{
-            ...sectionStyle,
-            backgroundColor: section.backgroundColor || "#ffffff",
-            fontFamily: servicesFont,
-          }}
-        >
-          <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2 md:gap-8">
-            <div className="relative z-10">
-              <div className="mb-8 text-center md:text-left">
-                <h2
-                  className="font-light leading-none tracking-tight"
-                  style={{
-                    color: headingColor,
-                    fontSize: `${headingSize}px`,
-                  }}
-                >
-                  {servicesHeading}
-                  <span style={{ color: itemColor }}>..</span>
-                </h2>
+        const serviceImage =
+          section.imageUrl || images[0]?.url || "/images/services-couple.png";
 
-                <p
-                  className="mt-1 uppercase leading-none tracking-wide"
-                  style={{
-                    color: subtitleColor,
-                    fontSize: `${Math.max(14, headingSize * 0.55)}px`,
-                  }}
-                >
-                  {servicesSubtitle}
-                </p>
+        const serviceLogo = section.logoUrl || design.logoUrl;
 
-                <div
-                  className="mx-auto mt-5 h-1 w-16 rounded-full md:mx-0"
-                  style={{ backgroundColor: bulletColor }}
-                />
-              </div>
+        return (
+          <section
+            key={section.id}
+            className="overflow-hidden bg-white px-5 py-12 sm:px-10 md:px-14 md:py-16"
+            style={{
+              ...sectionStyle,
+              backgroundColor: section.backgroundColor || "#ffffff",
+              fontFamily: servicesFont,
+            }}
+          >
+            <div className="mx-auto grid max-w-7xl items-center gap-8 md:grid-cols-2 md:gap-10">
+              <div className="relative z-10 min-w-0">
+                <div className="mb-6 text-center md:text-left">
+                  <h2
+                    className="font-light leading-none tracking-tight"
+                    style={{
+                      color: headingColor,
+                      fontSize: `${headingSize}px`,
+                    }}
+                  >
+                    {servicesHeading}
+                    <span style={{ color: itemColor }}>..</span>
+                  </h2>
 
-                <ul className="mx-auto max-w-lg space-y-2 md:mx-0">
+                  <p
+                    className="mt-2 max-w-md uppercase leading-tight tracking-wide"
+                    style={{
+                      color: subtitleColor,
+                      fontSize: `${Math.max(14, headingSize * 0.45)}px`,
+                    }}
+                  >
+                    {servicesSubtitle}
+                  </p>
+
+                  <div
+                    className="mx-auto mt-4 h-[3px] w-12 md:mx-0"
+                    style={{ backgroundColor: bulletColor }}
+                  />
+                </div>
+
+                <ul className="space-y-1">
                   {services.map((service, index) => (
                     <li
                       key={`${service}-${index}`}
                       className="flex items-start gap-2 text-left"
                       style={{
-                        color: section.itemColor || section.textColor || "#111111",
-                        fontFamily: section.fontFamily || "serif",
-                        fontSize: `${section.listFontSize || 12}px`,
-                        lineHeight: 1.5,
+                        color: itemColor,
+                        fontFamily: servicesFont,
+                        fontSize: `${listSize}px`,
+                        lineHeight: 1.6,
                       }}
                     >
                       <span
                         aria-hidden="true"
-                        className="mt-[0.45em] h-1 w-1 shrink-0"
-                        style={{
-                          backgroundColor: section.accentColor || "#e5a000",
-                        }}
+                        className="mt-[0.55em] h-1 w-1 shrink-0"
+                        style={{ backgroundColor: bulletColor }}
                       />
+
                       <span className="block min-w-0 flex-1">
                         {service}
                       </span>
@@ -515,32 +520,32 @@ function renderSection(
                   ))}
                 </ul>
 
-              {serviceLogo && (
-                <div className="mt-8 flex justify-center md:justify-start">
+                {serviceLogo && (
+                  <div className="mt-7 flex justify-center md:justify-start">
+                    <img
+                      src={serviceLogo}
+                      alt={design.brandName || "Photography logo"}
+                      className="h-16 w-16 object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="relative flex min-h-[350px] items-end justify-center md:min-h-[540px]">
+                {serviceImage && (
                   <img
-                    src={serviceLogo}
-                    alt={design.brandName || "Photography logo"}
-                    className="h-20 w-20 object-contain"
+                    src={serviceImage}
+                    alt="Wedding couple portrait"
+                    className="max-h-[540px] w-full object-contain object-bottom"
                     loading="lazy"
                   />
-                </div>
-              )}
+                )}
+              </div>
             </div>
-
-            <div className="relative flex min-h-[400px] items-end justify-center md:min-h-[620px]">
-              {serviceImage && (
-                <img
-                  src={serviceImage}
-                  alt="Wedding couple portrait"
-                  className="max-h-[620px] w-full object-contain object-bottom"
-                  loading="lazy"
-                />
-              )}
-            </div>
-          </div>
-        </section>
-      );
-    }
+          </section>
+        );
+      }
 
     case "deliverables":
       return (
