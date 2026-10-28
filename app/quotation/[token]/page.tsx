@@ -489,24 +489,31 @@ function renderSection(
                 />
               </div>
 
-              <ul className="mx-auto max-w-lg space-y-3 md:mx-0">
-                {services.map((service, index) => (
-                  <li
-                    key={`${service}-${index}`}
-                    className="flex items-start gap-3 font-medium tracking-[0.12em] sm:tracking-[0.16em]"
-                    style={{
-                      color: itemColor,
-                      fontSize: `${listSize}px`,
-                    }}
-                  >
-                    <span
-                      className="mt-[0.45em] h-1.5 w-1.5 shrink-0"
-                      style={{ backgroundColor: bulletColor }}
-                    />
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
+                <ul className="mx-auto max-w-lg space-y-2 md:mx-0">
+                  {services.map((service, index) => (
+                    <li
+                      key={`${service}-${index}`}
+                      className="flex items-start gap-2 text-left"
+                      style={{
+                        color: section.itemColor || section.textColor || "#111111",
+                        fontFamily: section.fontFamily || "serif",
+                        fontSize: `${section.listFontSize || 12}px`,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.45em] h-1 w-1 shrink-0"
+                        style={{
+                          backgroundColor: section.accentColor || "#e5a000",
+                        }}
+                      />
+                      <span className="block min-w-0 flex-1">
+                        {service}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
               {serviceLogo && (
                 <div className="mt-8 flex justify-center md:justify-start">
