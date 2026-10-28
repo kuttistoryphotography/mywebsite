@@ -459,50 +459,47 @@ function renderSection(
                     {event.eventName}
                   </p>
 
-                  <div className="space-y-6">
-                    {quotation.events.map((event, eventIndex) => (
+                  {event.eventDate && (
+                    <p className="mb-2 text-sm opacity-70">
+                      Date: {formatDate(event.eventDate)}
+                    </p>
+                  )}
+
+                  {event.venue && (
+                    <p className="mb-4 text-sm opacity-70">
+                      Venue: {event.venue}
+                    </p>
+                  )}
+
+                  <div className="space-y-4">
+                    {event.services.map((service, serviceIndex) => (
                       <div
-                        key={`${event.eventName}-${eventIndex}`}
-                        className="border-b pb-5"
+                        key={`${service.name}-${serviceIndex}`}
+                        className="border-b pb-4"
                         style={{ borderColor: `${accentColor}44` }}
                       >
-                        <h3 className="text-lg font-medium">
-                          {event.eventName}
-                        </h3>
-
-                        {event.eventDate && (
-                          <p className="mt-1 text-sm opacity-70">
-                            Date: {formatDate(event.eventDate)}
-                          </p>
-                        )}
-
-                        {event.venue && (
-                          <p className="mt-1 text-sm opacity-70">
-                            Venue: {event.venue}
-                          </p>
-                        )}
-
-                        <div className="mt-3 space-y-3">
-                          {event.services.map((service, serviceIndex) => (
-                            <div
-                              key={`${service.name}-${serviceIndex}`}
-                              className="flex justify-between gap-4 text-sm"
-                            >
-                              <div>
-                                <p>{service.name}</p>
-                                <p className="mt-1 text-xs opacity-60">
-                                  {service.quantity} × {formatCurrency(service.unitPrice)}
-                                </p>
-                              </div>
-
-                              <span className="whitespace-nowrap">
-                                {formatCurrency(
-                                  service.total ?? service.unitPrice * service.quantity
-                                )}
-                              </span>
-                            </div>
-                          ))}
+                        <div className="flex justify-between gap-4 text-sm">
+                          <span className="font-medium">
+                            {service.name}
+                          </span>
+                          <span className="whitespace-nowrap font-medium">
+                            {formatCurrency(
+                              service.total ??
+                                service.unitPrice * service.quantity
+                            )}
+                          </span>
                         </div>
+
+                        {service.description && (
+                          <p className="mt-1 text-sm opacity-70">
+                            {service.description}
+                          </p>
+                        )}
+
+                        <p className="mt-2 text-xs opacity-60">
+                          {service.quantity} ×{" "}
+                          {formatCurrency(service.unitPrice)}
+                        </p>
                       </div>
                     ))}
                   </div>
