@@ -531,8 +531,9 @@ async function editQuotation(id: string) {
       ...defaultServicesSectionDesign,
       ...(savedServicesSection || {}),
       itemsText: Array.isArray(savedServicesSection?.items)
-      ? savedServicesSection.items.join("\n")
-      : savedServicesSection?.itemsText || defaultServicesSectionDesign.itemsText,
+        ? savedServicesSection.items.join("\n")
+        : savedServicesSection?.itemsText ||
+          defaultServicesSectionDesign.itemsText,
     });
 
     console.log("EDIT QUOTATION:", proposal);
