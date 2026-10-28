@@ -85,6 +85,10 @@ export default function QuotationBuilderSection() {
     "Edited photographs\nCinematic wedding video\nPremium wedding album"
   );
   const [discount, setDiscount] = useState("0");
+  const [gstin, setGstin] = useState("");
+  const [gstRate, setGstRate] = useState("0");
+  const [additionalDiscountPercent, setAdditionalDiscountPercent] =
+    useState("0");
   const [validityDate, setValidityDate] = useState("");
   const [paymentTermsText, setPaymentTermsText] = useState(
     "50% advance to confirm the booking\nRemaining balance as agreed before delivery"
@@ -134,7 +138,32 @@ export default function QuotationBuilderSection() {
     Math.max(0, Number(discount) || 0)
   );
 
-  const total = subtotal - discountAmount;
+  const safeAdditionalDiscountPercent = Math.min(
+    100,
+    Math.max(0, Number(additionalDiscountPercent) || 0)
+  );
+
+  const additionalDiscountAmount = Math.round(
+    ((subtotal - discountAmount) *
+      safeAdditionalDiscountPercent) /
+      100
+  );
+
+  const taxableAmount = Math.max(
+    0,
+    subtotal - discountAmount - additionalDiscountAmount
+  );
+
+  const safeGstRate = Math.min(
+    100,
+    Math.max(0, Number(gstRate) || 0)
+  );
+
+  const gstAmount = Math.round(
+    (taxableAmount * safeGstRate) / 100
+  );
+
+  const total = taxableAmount + gstAmount;
 
   function updateEvent(
     eventIndex: number,
@@ -234,6 +263,12 @@ async function editQuotation(id: string) {
     setQuotationUrl(proposal.clientUrl || "");
     setStatus(proposal.status === "published" ? "published" : "draft");
     setDiscount(String(proposal.discount ?? 0));
+    setGstin(proposal.gstin || "");
+    setGstRate(String(proposal.gstRate ?? 0));
+
+    setAdditionalDiscountPercent(
+      String(proposal.additionalDiscountPercent ?? 0)
+    );
     setValidityDate(
       proposal.validityDate
         ? String(proposal.validityDate).slice(0, 10)
@@ -660,7 +695,19 @@ async function editQuotation(id: string) {
         .map((item) => item.trim())
         .filter(Boolean),
       subtotal,
+
       discount: discountAmount,
+
+      gstin: gstin.trim(),
+
+      gstRate: safeGstRate,
+
+      gstAmount,
+
+      additionalDiscountPercent: safeAdditionalDiscountPercent,
+
+      additionalDiscountAmount,
+
       totalAmount: total,
       paymentTerms: paymentTermsText
         .split("\n")
@@ -1291,6 +1338,61 @@ async function editQuotation(id: string) {
               onChange={(e) => setDiscount(e.target.value)}
             />
           </label>
+
+          <label className={`${labelClass} block max-w-xs`}>
+            Additional Discount (%)
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.5"
+              className={inputClass}
+              value={additionalDiscountPercent}
+              onChange={(e) =>
+                setAdditionalDiscountPercent(e.target.value)
+              }
+            />
+          </label>
+
+          <label className={`${labelClass} block max-w-xs`}>
+            GST (%)
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.5"
+              className={inputClass}
+              value={gstRate}
+              onChange={(e) => setGstRate(e.target.value)}
+            />
+          </label>
+
+          <label className={`${labelClass} block max-w-xs`}>
+            GSTIN (optional)
+            <input
+              type="text"
+              maxLength={50}
+              className={inputClass}
+              value={gstin}
+              onChange={(e) => setGstin(e.target.value)}
+              placeholder="Enter GSTIN"
+            />
+          </label>
+
+          <div className="flex justify-between gap-4 text-zinc-300">
+            <span>Additional discount</span>
+            <span>−₹{additionalDiscountAmount.toLocaleString("en-IN")}</span>
+          </div>
+
+          <div className="flex justify-between gap-4 text-zinc-300">
+            <span>Taxable amount</span>
+            <span>₹{taxableAmount.toLocaleString("en-IN")}</span>
+          </div>
+
+          <div className="flex justify-between gap-4 text-zinc-300">
+            <span>GST ({safeGstRate}%)</span>
+            <span>₹{gstAmount.toLocaleString("en-IN")}</span>
+          </div>
 
           <div className="flex justify-between gap-4 border-t border-zinc-700 pt-4 text-xl font-bold">
             <span>Total</span>

@@ -13,22 +13,64 @@ async function authorizeAdmin() {
   return Boolean(session && session.role === "admin");
 }
 
-function calculateTotals(events: any[], discount: number) {
+function calculateTotals(
+  events: any[],
+  discount: number,
+  gstRate: number = 0,
+  additionalDiscountPercent: number = 0
+) {
   const subtotal = events.reduce(
     (sum, event) =>
       sum +
-      event.services.reduce(
+      (event.services || []).reduce(
         (eventSum: number, service: any) =>
-          eventSum + service.quantity * service.unitPrice,
+          eventSum +
+          Math.max(0, Number(service.quantity) || 0) *
+            Math.max(
+              0,
+              Number(service.unitPrice ?? service.price) || 0
+            ),
         0
       ),
     0
   );
 
+  const fixedDiscount = Math.min(
+    subtotal,
+    Math.max(0, Number(discount) || 0)
+  );
+
+  const safeDiscountPercent = Math.min(
+    100,
+    Math.max(0, Number(additionalDiscountPercent) || 0)
+  );
+
+  const additionalDiscountAmount = Math.round(
+    ((subtotal - fixedDiscount) * safeDiscountPercent) / 100
+  );
+
+  const taxableAmount = Math.max(
+    0,
+    subtotal - fixedDiscount - additionalDiscountAmount
+  );
+
+  const safeGstRate = Math.min(
+    100,
+    Math.max(0, Number(gstRate) || 0)
+  );
+
+  const gstAmount = Math.round(
+    (taxableAmount * safeGstRate) / 100
+  );
+
   return {
     subtotal,
-    discount,
-    totalAmount: Math.max(0, subtotal - discount),
+    discount: fixedDiscount,
+    gstRate: safeGstRate,
+    gstAmount,
+    additionalDiscountPercent: safeDiscountPercent,
+    additionalDiscountAmount,
+    totalAmount: taxableAmount + gstAmount,
   };
 }
 
@@ -232,7 +274,32 @@ export async function PATCH(
       );
     }
 
-    const totals = calculateTotals(events, discount);
+    const gstRate = Number(body.gstRate ?? 0);
+
+    const additionalDiscountPercent = Number(
+      body.additionalDiscountPercent ?? 0
+    );
+
+    if (
+      !Number.isFinite(gstRate) ||
+      gstRate < 0 ||
+      gstRate > 100 ||
+      !Number.isFinite(additionalDiscountPercent) ||
+      additionalDiscountPercent < 0 ||
+      additionalDiscountPercent > 100
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Invalid GST or discount percentage." },
+        { status: 400 }
+      );
+    }
+
+    const totals = calculateTotals(
+      events,
+      discount,
+      gstRate,
+      additionalDiscountPercent
+    );
 
     if (discount > totals.subtotal) {
       return NextResponse.json(

@@ -150,22 +150,69 @@ function createDefaultPageDesign() {
   };
 }
 
-function calculateTotals(events: any[], discount: number) {
+function calculateTotals(
+  events: any[],
+  discount: number,
+  gstRate: number = 0,
+  additionalDiscountPercent: number = 0
+) {
   const subtotal = events.reduce(
-    (sum, event) =>
-      sum +
-      event.services.reduce(
-        (eventSum: number, service: any) =>
-          eventSum + service.quantity * service.unitPrice,
+    (eventTotal, event) =>
+      eventTotal +
+      (event.services || []).reduce(
+        (serviceTotal: number, service: any) =>
+          serviceTotal +
+          Math.max(0, Number(service.quantity) || 0) *
+            Math.max(
+              0,
+              Number(service.unitPrice ?? service.price) || 0
+            ),
         0
       ),
     0
   );
 
+  // Existing fixed discount in rupees
+  const fixedDiscount = Math.min(
+    subtotal,
+    Math.max(0, Number(discount) || 0)
+  );
+
+  // Additional percentage discount after fixed discount
+  const safeDiscountPercent = Math.min(
+    100,
+    Math.max(0, Number(additionalDiscountPercent) || 0)
+  );
+
+  const additionalDiscountAmount = Math.round(
+    ((subtotal - fixedDiscount) * safeDiscountPercent) / 100
+  );
+
+  // GST is calculated on the amount after both discounts
+  const taxableAmount = Math.max(
+    0,
+    subtotal - fixedDiscount - additionalDiscountAmount
+  );
+
+  const safeGstRate = Math.min(
+    100,
+    Math.max(0, Number(gstRate) || 0)
+  );
+
+  const gstAmount = Math.round(
+    (taxableAmount * safeGstRate) / 100
+  );
+
+  const totalAmount = taxableAmount + gstAmount;
+
   return {
     subtotal,
-    discount,
-    totalAmount: Math.max(0, subtotal - discount),
+    discount: fixedDiscount,
+    gstRate: safeGstRate,
+    gstAmount,
+    additionalDiscountPercent: safeDiscountPercent,
+    additionalDiscountAmount,
+    totalAmount,
   };
 }
 
@@ -390,7 +437,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totals = calculateTotals(events, discount);
+    const gstRate = Number(body.gstRate ?? 0);
+
+    const additionalDiscountPercent = Number(
+      body.additionalDiscountPercent ?? 0
+    );
+
+    if (
+      !Number.isFinite(gstRate) ||
+      gstRate < 0 ||
+      gstRate > 100
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Enter a valid GST percentage." },
+        { status: 400 }
+      );
+    }
+
+    if (
+      !Number.isFinite(additionalDiscountPercent) ||
+      additionalDiscountPercent < 0 ||
+      additionalDiscountPercent > 100
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Enter a valid additional discount percentage.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const totals = calculateTotals(
+      events,
+      discount,
+      gstRate,
+      additionalDiscountPercent
+    );
 
     if (discount > totals.subtotal) {
       return NextResponse.json(
@@ -461,6 +544,13 @@ export async function POST(request: NextRequest) {
       clientEmail,
       clientPhone: clientPhone.slice(0, 50),
       title: title.slice(0, 200),
+      
+      // GST registration number
+      gstin:
+        typeof body.gstin === "string"
+          ? body.gstin.trim().slice(0, 50)
+          : "",
+
       introduction:
         typeof body.introduction === "string"
           ? body.introduction.trim().slice(0, 5000)

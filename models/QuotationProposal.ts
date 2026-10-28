@@ -89,6 +89,16 @@ export interface IQuotationProposal extends Document {
   deliverables: string[];
   subtotal: number;
   discount: number;
+
+  // GST details
+  gstin?: string;
+  gstRate: number;
+  gstAmount: number;
+
+  // Additional percentage discount
+  additionalDiscountPercent: number;
+  additionalDiscountAmount: number;
+
   totalAmount: number;
 
   paymentTerms: {
@@ -251,9 +261,61 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
     events: { type: [QuotationEventSchema], default: [] },
 
     deliverables: { type: [String], default: [] },
-    subtotal: { type: Number, required: true, min: 0, default: 0 },
-    discount: { type: Number, min: 0, default: 0 },
-    totalAmount: { type: Number, required: true, min: 0, default: 0 },
+    subtotal: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+
+    // Existing fixed discount in rupees
+    discount: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    // GST registration number
+    gstin: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    // GST percentage
+    gstRate: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
+    },
+
+    gstAmount: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    // Additional discount percentage
+    additionalDiscountPercent: {
+      type: Number,
+      min: 0,
+      max: 100,
+      default: 0,
+    },
+
+    additionalDiscountAmount: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
+    totalAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
 
     paymentTerms: [
       {
