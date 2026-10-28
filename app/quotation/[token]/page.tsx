@@ -359,7 +359,7 @@ function renderSection(
           </div>
         </section>
       );
-
+    
     case "event":
       return (
         <section
@@ -369,12 +369,12 @@ function renderSection(
         >
           <div className="mx-auto max-w-5xl">
             <SectionHeading
-              title={heading || "Your Celebration"}
+              title={heading || "Your Wedding Celebrations"}
               subtitle={subtitle}
               accentColor={accentColor}
             />
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               {quotation.events.map((event, index) => (
                 <article
                   key={`${event.eventName}-${index}`}
@@ -396,34 +396,6 @@ function renderSection(
                       Venue: {event.venue}
                     </p>
                   )}
-
-                  <div className="mt-5 space-y-3">
-                    {event.services.map((service, serviceIndex) => (
-                      <div
-                        key={`${service.name}-${serviceIndex}`}
-                        className="flex justify-between gap-4 border-t pt-3"
-                        style={{ borderColor: `${accentColor}44` }}
-                      >
-                        <div>
-                          <p className="font-medium">{service.name}</p>
-                          {service.description && (
-                            <p className="mt-1 text-sm opacity-70">
-                              {service.description}
-                            </p>
-                          )}
-                          <p className="mt-1 text-xs opacity-60">
-                            {service.quantity} × {formatCurrency(service.unitPrice)}
-                          </p>
-                        </div>
-
-                        <p className="whitespace-nowrap font-medium">
-                          {formatCurrency(
-                            service.total ?? service.unitPrice * service.quantity
-                          )}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
                 </article>
               ))}
             </div>
