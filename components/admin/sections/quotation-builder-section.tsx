@@ -531,8 +531,8 @@ async function editQuotation(id: string) {
       ...defaultServicesSectionDesign,
       ...(savedServicesSection || {}),
       itemsText: Array.isArray(savedServicesSection?.items)
-        ? savedServicesSection.items.join("\\n")
-        : savedServicesSection?.itemsText || defaultServicesSectionDesign.itemsText,
+      ? savedServicesSection.items.join("\n")
+      : savedServicesSection?.itemsText || defaultServicesSectionDesign.itemsText,
     });
 
     console.log("EDIT QUOTATION:", proposal);
@@ -1140,7 +1140,7 @@ async function editQuotation(id: string) {
             textColor: servicesSectionDesign.itemColor,
             heading: servicesSectionDesign.heading,
             items: servicesSectionDesign.itemsText
-              .split("\\n")
+              .split(/\r?\n/)
               .map((item) => item.trim())
               .filter(Boolean),
             itemsText: servicesSectionDesign.itemsText,
@@ -2156,7 +2156,11 @@ async function editQuotation(id: string) {
           <div style={{ color: servicesSectionDesign.subtitleColor, fontSize: `${Math.max(14, Number(servicesSectionDesign.headingFontSize) * 0.55)}px` }}>{servicesSectionDesign.subtitle}</div>
           <div className="my-3 h-1 w-12" style={{ backgroundColor: servicesSectionDesign.accentColor }} />
           <ul className="space-y-2">
-            {servicesSectionDesign.itemsText.split("\\n").filter(Boolean).slice(0, 6).map((item, index) => (
+            {servicesSectionDesign.itemsText
+              .split(/\r?\n/)
+              .map((item) => item.trim())
+              .filter(Boolean)
+              .slice(0, 6).map((item, index) => (
               <li key={`${item}-${index}`} style={{ color: servicesSectionDesign.itemColor, fontSize: `${servicesSectionDesign.listFontSize}px` }}>▪ {item}</li>
             ))}
           </ul>
