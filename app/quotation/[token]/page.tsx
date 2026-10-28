@@ -409,83 +409,91 @@ function renderSection(
       );
 
     case "services":
-      return (
-        <section
-          key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
-          style={sectionStyle}
-        >
-          <div className="mx-auto max-w-6xl">
-            <SectionHeading
-              title={heading || "Photography & Cinematic Services"}
-              subtitle={subtitle}
-              accentColor={accentColor}
-            />
+      {
+        const services = [
+          "OUTDOOR & INDOOR SHOOTS",
+          "CANDID PHOTOGRAPHY",
+          "CANDID VIDEOGRAPHY",
+          "TRADITIONAL VIDEOGRAPHY",
+          "TRADITIONAL PHOTOGRAPHY",
+          "PRE-WEDDING SHOOT",
+          "POST-WEDDING SHOOT",
+          "IN-HOUSE STUDIO SHOOT",
+          "LIVE STREAMING",
+          "WEDDING FILM",
+          "360 DEGREE VR EXPERIENCE",
+          "HELICAM / DRONE",
+          "CRANE",
+        ];
 
-            <div className="grid gap-6 md:grid-cols-2">
-              {quotation.events.map((event, eventIndex) => (
-                <article
-                  key={`${event.eventName}-${eventIndex}`}
-                  className="rounded-sm border p-6 md:p-8"
-                  style={{ borderColor: `${accentColor}88` }}
-                >
-                  <p
-                    className="mb-3 text-xs uppercase tracking-[0.2em]"
-                    style={{ color: accentColor }}
-                  >
-                    {event.eventName}
+        return (
+          <section
+            key={section.id}
+            className="overflow-hidden bg-white px-5 py-16 text-neutral-900 sm:px-10 md:px-14 md:py-24"
+            style={sectionStyle}
+          >
+            <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2 md:gap-8">
+              {/* Left: Services list */}
+              <div className="relative z-10">
+                <div className="mb-8 text-center md:text-left">
+                  <h2 className="text-5xl font-light leading-none tracking-tight sm:text-6xl">
+                    <span style={{ color: "#ed2496" }}>
+                      OUR
+                    </span>
+                    <span className="ml-2 font-semibold text-neutral-800">
+                      ..
+                    </span>
+                  </h2>
+
+                  <p className="mt-1 text-3xl font-light uppercase leading-none tracking-wide text-neutral-500 sm:text-4xl">
+                    SERVICES
                   </p>
 
-                  {event.eventDate && (
-                    <p className="mb-2 text-sm opacity-70">
-                      Date: {formatDate(event.eventDate)}
-                    </p>
+                  <div
+                    className="mx-auto mt-5 h-1 w-16 rounded-full md:mx-0"
+                    style={{ backgroundColor: "#ed2496" }}
+                  />
+                </div>
+
+                <ul className="mx-auto max-w-lg space-y-3 sm:space-y-4 md:mx-0">
+                  {services.map((service) => (
+                    <li
+                      key={service}
+                      className="flex items-start gap-3 text-xs font-medium tracking-[0.12em] sm:text-sm sm:tracking-[0.16em]"
+                    >
+                      <span
+                        className="mt-1.5 h-1.5 w-1.5 shrink-0"
+                        style={{ backgroundColor: "#ed2496" }}
+                      />
+                      <span>{service}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 flex justify-center md:justify-start">
+                  {design.logoUrl && (
+                    <img
+                      src={design.logoUrl}
+                      alt={design.brandName || "Photography logo"}
+                      className="h-20 w-20 object-contain"
+                    />
                   )}
+                </div>
+              </div>
 
-                  {event.venue && (
-                    <p className="mb-4 text-sm opacity-70">
-                      Venue: {event.venue}
-                    </p>
-                  )}
-
-                  <div className="space-y-4">
-                    {event.services.map((service, serviceIndex) => (
-                      <div
-                        key={`${service.name}-${serviceIndex}`}
-                        className="border-b pb-4"
-                        style={{ borderColor: `${accentColor}44` }}
-                      >
-                        <div className="flex justify-between gap-4 text-sm">
-                          <span className="font-medium">
-                            {service.name}
-                          </span>
-                          <span className="whitespace-nowrap font-medium">
-                            {formatCurrency(
-                              service.total ??
-                                service.unitPrice * service.quantity
-                            )}
-                          </span>
-                        </div>
-
-                        {service.description && (
-                          <p className="mt-1 text-sm opacity-70">
-                            {service.description}
-                          </p>
-                        )}
-
-                        <p className="mt-2 text-xs opacity-60">
-                          {service.quantity} ×{" "}
-                          {formatCurrency(service.unitPrice)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </article>
-              ))}
+              {/* Right: Couple portrait */}
+              <div className="relative flex min-h-[400px] items-end justify-center md:min-h-[620px]">
+                <img
+                  src="/images/services-couple.png"
+                  alt="Wedding couple portrait"
+                  className="max-h-[620px] w-full object-contain object-bottom"
+                  loading="lazy"
+                />
+              </div>
             </div>
-          </div>
-        </section>
-      );
+          </section>
+        );
+      }
 
     case "deliverables":
       return (
