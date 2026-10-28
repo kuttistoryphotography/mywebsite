@@ -52,6 +52,18 @@ interface QuotationPageSection {
   textColor?: string;
   images?: QuotationImage[];
   categories?: QuotationGalleryCategory[];
+  heading?: string;
+  items?: string[];
+  itemsText?: string;
+  fontFamily?: string;
+  headingFontSize?: number;
+  listFontSize?: number;
+  headingColor?: string;
+  subtitleColor?: string;
+  itemColor?: string;
+  accentColor?: string;
+  imageUrl?: string;
+  logoUrl?: string;
 }
 
 interface QuotationPageDesign {
@@ -408,92 +420,120 @@ function renderSection(
         </section>
       );
 
-    case "services":
-      {
-        const services = [
-          "OUTDOOR & INDOOR SHOOTS",
-          "CANDID PHOTOGRAPHY",
-          "CANDID VIDEOGRAPHY",
-          "TRADITIONAL VIDEOGRAPHY",
-          "TRADITIONAL PHOTOGRAPHY",
-          "PRE-WEDDING SHOOT",
-          "POST-WEDDING SHOOT",
-          "IN-HOUSE STUDIO SHOOT",
-          "LIVE STREAMING",
-          "WEDDING FILM",
-          "360 DEGREE VR EXPERIENCE",
-          "HELICAM / DRONE",
-          "CRANE",
-        ];
+    case "services": {
+      const services = Array.isArray(section.items)
+        ? section.items
+        : typeof section.itemsText === "string"
+          ? section.itemsText
+              .split("\n")
+              .map((item) => item.trim())
+              .filter(Boolean)
+          : [];
 
-        return (
-          <section
-            key={section.id}
-            className="overflow-hidden bg-white px-5 py-16 text-neutral-900 sm:px-10 md:px-14 md:py-24"
-            style={sectionStyle}
-          >
-            <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2 md:gap-8">
-              {/* Left: Services list */}
-              <div className="relative z-10">
-                <div className="mb-8 text-center md:text-left">
-                  <h2 className="text-5xl font-light leading-none tracking-tight sm:text-6xl">
-                    <span style={{ color: "#ed2496" }}>
-                      OUR
-                    </span>
-                    <span className="ml-2 font-semibold text-neutral-800">
-                      ..
-                    </span>
-                  </h2>
+      const servicesHeading = section.heading || heading || "OUR";
+      const servicesSubtitle = subtitle || "SERVICES";
+      const servicesFont =
+        section.fontFamily || design.fontFamily || "Georgia, serif";
 
-                  <p className="mt-1 text-3xl font-light uppercase leading-none tracking-wide text-neutral-500 sm:text-4xl">
-                    SERVICES
-                  </p>
+      const headingSize = Number(section.headingFontSize) || 46;
+      const listSize = Number(section.listFontSize) || 12;
 
-                  <div
-                    className="mx-auto mt-5 h-1 w-16 rounded-full md:mx-0"
-                    style={{ backgroundColor: "#ed2496" }}
-                  />
-                </div>
+      const headingColor =
+        section.headingColor || section.accentColor || accentColor;
+      const subtitleColor = section.subtitleColor || "#777777";
+      const itemColor = section.itemColor || section.textColor || textColor;
+      const bulletColor = section.accentColor || accentColor;
 
-                <ul className="mx-auto max-w-lg space-y-3 sm:space-y-4 md:mx-0">
-                  {services.map((service) => (
-                    <li
-                      key={service}
-                      className="flex items-start gap-3 text-xs font-medium tracking-[0.12em] sm:text-sm sm:tracking-[0.16em]"
-                    >
-                      <span
-                        className="mt-1.5 h-1.5 w-1.5 shrink-0"
-                        style={{ backgroundColor: "#ed2496" }}
-                      />
-                      <span>{service}</span>
-                    </li>
-                  ))}
-                </ul>
+      const serviceImage =
+        section.imageUrl || images[0]?.url || "/images/services-couple.png";
 
-                <div className="mt-8 flex justify-center md:justify-start">
-                  {design.logoUrl && (
-                    <img
-                      src={design.logoUrl}
-                      alt={design.brandName || "Photography logo"}
-                      className="h-20 w-20 object-contain"
-                    />
-                  )}
-                </div>
+      const serviceLogo = section.logoUrl || design.logoUrl;
+
+      return (
+        <section
+          key={section.id}
+          className="overflow-hidden px-5 py-16 sm:px-10 md:px-14 md:py-24"
+          style={{
+            ...sectionStyle,
+            backgroundColor: section.backgroundColor || "#ffffff",
+            fontFamily: servicesFont,
+          }}
+        >
+          <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2 md:gap-8">
+            <div className="relative z-10">
+              <div className="mb-8 text-center md:text-left">
+                <h2
+                  className="font-light leading-none tracking-tight"
+                  style={{
+                    color: headingColor,
+                    fontSize: `${headingSize}px`,
+                  }}
+                >
+                  {servicesHeading}
+                  <span style={{ color: itemColor }}>..</span>
+                </h2>
+
+                <p
+                  className="mt-1 uppercase leading-none tracking-wide"
+                  style={{
+                    color: subtitleColor,
+                    fontSize: `${Math.max(14, headingSize * 0.55)}px`,
+                  }}
+                >
+                  {servicesSubtitle}
+                </p>
+
+                <div
+                  className="mx-auto mt-5 h-1 w-16 rounded-full md:mx-0"
+                  style={{ backgroundColor: bulletColor }}
+                />
               </div>
 
-              {/* Right: Couple portrait */}
-              <div className="relative flex min-h-[400px] items-end justify-center md:min-h-[620px]">
+              <ul className="mx-auto max-w-lg space-y-3 md:mx-0">
+                {services.map((service, index) => (
+                  <li
+                    key={`${service}-${index}`}
+                    className="flex items-start gap-3 font-medium tracking-[0.12em] sm:tracking-[0.16em]"
+                    style={{
+                      color: itemColor,
+                      fontSize: `${listSize}px`,
+                    }}
+                  >
+                    <span
+                      className="mt-[0.45em] h-1.5 w-1.5 shrink-0"
+                      style={{ backgroundColor: bulletColor }}
+                    />
+                    <span>{service}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {serviceLogo && (
+                <div className="mt-8 flex justify-center md:justify-start">
+                  <img
+                    src={serviceLogo}
+                    alt={design.brandName || "Photography logo"}
+                    className="h-20 w-20 object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="relative flex min-h-[400px] items-end justify-center md:min-h-[620px]">
+              {serviceImage && (
                 <img
-                  src="/images/services-couple.png"
+                  src={serviceImage}
                   alt="Wedding couple portrait"
                   className="max-h-[620px] w-full object-contain object-bottom"
                   loading="lazy"
                 />
-              </div>
+              )}
             </div>
-          </section>
-        );
-      }
+          </div>
+        </section>
+      );
+    }
 
     case "deliverables":
       return (
