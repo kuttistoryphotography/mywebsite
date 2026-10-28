@@ -1,7 +1,6 @@
 
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-
 export type QuotationSectionType =
   | "hero"
   | "story"
@@ -40,6 +39,21 @@ export interface IQuotationPageSection {
   layout?: string;
   backgroundColor?: string;
   textColor?: string;
+
+  // Services section content and design
+  heading?: string;
+  items?: string[];
+  itemsText?: string;
+  fontFamily?: string;
+  headingFontSize?: number;
+  listFontSize?: number;
+  headingColor?: string;
+  subtitleColor?: string;
+  itemColor?: string;
+  accentColor?: string;
+  imageUrl?: string;
+  logoUrl?: string;
+
   images: IQuotationImage[];
   categories?: IQuotationGalleryCategory[];
 }
@@ -71,9 +85,8 @@ export interface IQuotationEvent {
 export interface IQuotationProposal extends Document {
   quoteNumber: string;
   publicToken: string;
-
   linkRevoked: boolean;
-  
+
   clientName: string;
   clientEmail: string;
   clientPhone?: string;
@@ -81,21 +94,17 @@ export interface IQuotationProposal extends Document {
   title: string;
   introduction?: string;
 
-  // Editable visual quotation page
   pageDesign: IQuotationPageDesign;
-
   events: IQuotationEvent[];
 
   deliverables: string[];
   subtotal: number;
   discount: number;
 
-  // GST details
   gstin?: string;
   gstRate: number;
   gstAmount: number;
 
-  // Additional percentage discount
   additionalDiscountPercent: number;
   additionalDiscountAmount: number;
 
@@ -118,7 +127,6 @@ export interface IQuotationProposal extends Document {
   updatedAt: Date;
 }
 
-
 const QuotationImageSchema = new Schema<IQuotationImage>(
   {
     url: { type: String, required: true, trim: true },
@@ -129,6 +137,17 @@ const QuotationImageSchema = new Schema<IQuotationImage>(
   },
   { _id: false }
 );
+
+const QuotationGalleryCategorySchema =
+  new Schema<IQuotationGalleryCategory>(
+    {
+      id: { type: String, required: true, trim: true },
+      title: { type: String, required: true, trim: true },
+      coverImage: { type: String, required: true, trim: true },
+      photos: { type: [String], default: [] },
+    },
+    { _id: false }
+  );
 
 const QuotationPageSectionSchema = new Schema<IQuotationPageSection>(
   {
@@ -157,19 +176,28 @@ const QuotationPageSectionSchema = new Schema<IQuotationPageSection>(
     layout: { type: String, trim: true, default: "default" },
     backgroundColor: { type: String, trim: true, default: "" },
     textColor: { type: String, trim: true, default: "" },
+
+    // Services section content
+    heading: { type: String, trim: true, default: "" },
+    items: { type: [String], default: [] },
+    itemsText: { type: String, default: "" },
+
+    // Services section typography and colors
+    fontFamily: { type: String, trim: true, default: "" },
+    headingFontSize: { type: Number, min: 0 },
+    listFontSize: { type: Number, min: 0 },
+    headingColor: { type: String, trim: true, default: "" },
+    subtitleColor: { type: String, trim: true, default: "" },
+    itemColor: { type: String, trim: true, default: "" },
+    accentColor: { type: String, trim: true, default: "" },
+
+    // Services section images
+    imageUrl: { type: String, trim: true, default: "" },
+    logoUrl: { type: String, trim: true, default: "" },
+
     images: { type: [QuotationImageSchema], default: [] },
     categories: {
-      type: [
-        new Schema<IQuotationGalleryCategory>(
-          {
-            id: { type: String, required: true, trim: true },
-            title: { type: String, required: true, trim: true },
-            coverImage: { type: String, required: true, trim: true },
-            photos: { type: [String], default: [] },
-          },
-          { _id: false }
-        ),
-      ],
+      type: [QuotationGalleryCategorySchema],
       default: undefined,
     },
   },
@@ -239,7 +267,12 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
     },
 
     clientName: { type: String, required: true, trim: true },
-    clientEmail: { type: String, required: true, trim: true, lowercase: true },
+    clientEmail: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
     clientPhone: { type: String, trim: true },
 
     title: { type: String, required: true, trim: true },
@@ -261,6 +294,7 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
     events: { type: [QuotationEventSchema], default: [] },
 
     deliverables: { type: [String], default: [] },
+
     subtotal: {
       type: Number,
       required: true,
@@ -268,21 +302,18 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
       default: 0,
     },
 
-    // Existing fixed discount in rupees
     discount: {
       type: Number,
       min: 0,
       default: 0,
     },
 
-    // GST registration number
     gstin: {
       type: String,
       trim: true,
       default: "",
     },
 
-    // GST percentage
     gstRate: {
       type: Number,
       min: 0,
@@ -296,7 +327,6 @@ const QuotationProposalSchema = new Schema<IQuotationProposal>(
       default: 0,
     },
 
-    // Additional discount percentage
     additionalDiscountPercent: {
       type: Number,
       min: 0,
