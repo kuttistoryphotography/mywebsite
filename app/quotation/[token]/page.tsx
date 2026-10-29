@@ -1051,9 +1051,18 @@ export default async function PublicQuotationPage({
           },
           {
             id: "payment",
-            type: "payment_terms",
+            type: "custom",
             visible: true,
-            title: "Payment Schedule",
+            title: "Your Celebration, Our Commitment",
+            subtitle: "Thank You for Choosing Kutti Story Photography",
+            body:
+              "The value of the memories we create together is truly priceless.\n\n" +
+              "It is our pleasure to present our services for your upcoming special occasion. We sincerely appreciate the opportunity to be considered for your event and thank you for placing your trust in Kutti Story Photography.\n\n" +
+              "We look forward to delivering an exceptional experience and capturing your precious moments with creativity, care, and dedication.\n\n" +
+              "Terms & Conditions Apply",
+            layout: "centered",
+            backgroundColor: "#ffffff",
+            textColor: "#242424",
             images: [],
           },
           {

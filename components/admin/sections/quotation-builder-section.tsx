@@ -190,9 +190,10 @@ export default function QuotationBuilderSection() {
   const [validityDate, setValidityDate] = useState("");
 
   const [paymentTermsText, setPaymentTermsText] = useState(
-
-    "50% advance to confirm the booking\nRemaining balance as agreed before delivery"
-
+    "The value of the memories we create together is truly priceless.\n\n" +
+    "It is our pleasure to present our services for your upcoming special occasion. We sincerely appreciate the opportunity to be considered for your event and thank you for placing your trust in Kutti Story Photography.\n\n" +
+    "We look forward to delivering an exceptional experience and capturing your precious moments with creativity, care, and dedication.\n\n" +
+    "Terms & Conditions Apply"
   );
 
   const [termsText, setTermsText] = useState(
@@ -1242,16 +1243,13 @@ async function editQuotation(id: string) {
               visible: true,
               title: "Your Celebration, Our Commitment",
               subtitle: "Thank You for Choosing Kutti Story Photography",
-              body:
-                "The value of the memories we create together is truly priceless.\n\n" +
-                "It is our pleasure to present our services for your upcoming special occasion. We sincerely appreciate the opportunity to be considered for your event and thank you for placing your trust in Kutti Story Photography.\n\n" +
-                "We look forward to delivering an exceptional experience and capturing your precious moments with creativity, care, and dedication.\n\n" +
-                "TERMS & CONDITIONS APPLY",
+              body: paymentTermsText.trim(),
               layout: "centered",
               backgroundColor: "#ffffff",
               textColor: pageDesign.textColor,
               images: [],
             },
+
             {
 
             id: "terms",
@@ -2553,21 +2551,15 @@ async function editQuotation(id: string) {
           </label>
 
           <label className={labelClass}>
-
-            Payment terms
+            Closing Message
 
             <textarea
-
               className={inputClass}
-
-              rows={5}
-
+              rows={8}
               value={paymentTermsText}
-
               onChange={(e) => setPaymentTermsText(e.target.value)}
-
+              placeholder="Enter your closing message..."
             />
-
           </label>
 
           <label className={`${labelClass} sm:col-span-2`}>
