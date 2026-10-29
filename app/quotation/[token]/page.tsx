@@ -1,6 +1,8 @@
 
 import { notFound } from "next/navigation";
 
+import type { Metadata } from "next";
+
 import PublicQuotationCategoryGallery from "@/components/quotation/PublicQuotationCategoryGallery";
 
 interface QuotationImage {
@@ -896,6 +898,47 @@ function renderSection(
     default:
       return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { token } = await params;
+
+  const siteUrl = (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://www.kuttistoryphotography.com"
+  ).replace(/\/+$/, "");
+
+  const previewImage = `${siteUrl}/images/quotation-preview.png`;
+  const quotationUrl = `${siteUrl}/quotation/${encodeURIComponent(token)}`;
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: "Kutti Story Photography | Wedding Quotation",
+    description:
+      "Your Wedding Story, Beautifully Captured. Explore your personalized photography quotation from Kutti Story Photography.",
+    openGraph: {
+      title: "Kutti Story Photography",
+      description: "Your Wedding Story, Beautifully Captured",
+      url: quotationUrl,
+      siteName: "Kutti Story Photography",
+      images: [
+        {
+          url: previewImage,
+          alt: "Kutti Story Photography — Your Wedding Story, Beautifully Captured",
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Kutti Story Photography",
+      description: "Your Wedding Story, Beautifully Captured",
+      images: [previewImage],
+    },
+  };
 }
 
 export default async function PublicQuotationPage({
