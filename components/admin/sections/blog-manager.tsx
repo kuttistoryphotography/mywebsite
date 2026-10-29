@@ -83,14 +83,134 @@ const emptyForm = {
 };
 
 async function uploadToGoogleDrive(file: File): Promise<string> {
-  const fd = new FormData();
-  fd.append("file", file);
-  fd.append("context", "blog");
-  const res = await fetch("/api/upload", { method: "POST", body: fd });
-  const data = await res.json();
-  if (!data.success || !data.url) throw new Error(data.error || "Upload failed");
-  return data.url;
+  const isImage = file.type.startsWith("image/");
+
+  // Keep existing upload behavior for videos and other files.
+  if (!isImage) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("context", "blog");
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success || !result.url) {
+      throw new Error(
+        result.error || `Upload failed (HTTP ${response.status})`,
+      );
+    }
+
+    return result.url;
+  }
+
+  // Compress the image before sending it to Cloudinary.
+  async function compressImage(source: File): Promise<File> {
+    if (source.type === "image/svg+xml" || source.type === "image/gif") {
+      return source;
+    }
+
+    const bitmap = await createImageBitmap(source);
+
+    try {
+      const maxDimension = 1800;
+      const scale = Math.min(
+        1,
+        maxDimension / Math.max(bitmap.width, bitmap.height),
+      );
+
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+
+      const context = canvas.getContext("2d");
+
+      if (!context) {
+        throw new Error("Unable to process the selected image.");
+      }
+
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (result) =>
+            result
+              ? resolve(result)
+              : reject(new Error("Image compression failed.")),
+          "image/webp",
+          0.82,
+        );
+      });
+
+      return new File(
+        [blob],
+        `${source.name.replace(/\.[^.]+$/, "")}.webp`,
+        { type: "image/webp", lastModified: Date.now() },
+      );
+    } finally {
+      bitmap.close();
+    }
+  }
+
+  if (file.size > 25 * 1024 * 1024) {
+    throw new Error("Please select an image smaller than 25 MB.");
+  }
+
+  const uploadFile = await compressImage(file);
+
+  // Request a fresh, server-generated signature.
+  const signatureResponse = await fetch("/api/upload/signature", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ context: "blog" }),
+  });
+
+  const signatureData = await signatureResponse.json();
+
+  if (
+    !signatureResponse.ok ||
+    !signatureData.success ||
+    !signatureData.signature
+  ) {
+    throw new Error(
+      signatureData.error || "Could not authorize image upload.",
+    );
+  }
+
+  const formData = new FormData();
+  formData.append("file", uploadFile);
+  formData.append("api_key", signatureData.apiKey);
+  formData.append("timestamp", String(signatureData.timestamp));
+  formData.append("folder", signatureData.folder);
+  formData.append("signature", signatureData.signature);
+
+  const cloudinaryResponse = await fetch(
+    `https://api.cloudinary.com/v1_1/${encodeURIComponent(
+      signatureData.cloudName,
+    )}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    },
+  );
+
+  const cloudinaryResult = await cloudinaryResponse.json();
+
+  if (!cloudinaryResponse.ok || !cloudinaryResult.secure_url) {
+    console.error("[BLOG IMAGE UPLOAD] Cloudinary error:", cloudinaryResult);
+
+    throw new Error(
+      cloudinaryResult.error?.message ||
+        `Cloudinary upload failed (HTTP ${cloudinaryResponse.status}).`,
+    );
+  }
+
+  return cloudinaryResult.secure_url as string;
 }
+
 
 function PasteButton({ onPaste }: { onPaste: (text: string) => void }) {
   const [pasting, setPasting] = useState(false);
