@@ -914,9 +914,16 @@ export async function generateMetadata({
   const previewImage = `${siteUrl}/images/quotation-preview.png`;
   const quotationUrl = `${siteUrl}/quotation/${encodeURIComponent(token)}`;
 
+  
   return {
     metadataBase: new URL(siteUrl),
+
+    alternates: {
+      canonical: quotationUrl,
+    },
+
     title: "Kutti Story Photography | Wedding Quotation",
+
     description:
       "Your Wedding Story, Beautifully Captured. Explore your personalized photography quotation from Kutti Story Photography.",
     openGraph: {
