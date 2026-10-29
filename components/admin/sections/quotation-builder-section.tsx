@@ -2564,7 +2564,7 @@ async function editQuotation(id: string) {
 
           <label className={`${labelClass} sm:col-span-2`}>
 
-            Terms & conditions
+            Notes
 
             <textarea
 
