@@ -1237,29 +1237,21 @@ async function editQuotation(id: string) {
             },
 
             {
-
-            id: "payment",
-
-            type: "payment_terms",
-
-            visible: true,
-
-            title: "Payment Schedule",
-
-            subtitle: "A simple plan for your booking",
-
-            body: "",
-
-            layout: "timeline",
-
-            backgroundColor: "#ffffff",
-
-            textColor: pageDesign.textColor,
-
-            images: [],
-
+              id: "payment",
+              type: "custom",
+              visible: true,
+              title: "Your Celebration, Our Commitment",
+              subtitle: "Thank You for Choosing Kutti Story Photography",
+              body:
+                "The value of the memories we create together is truly priceless.\n\n" +
+                "It is our pleasure to present our services for your upcoming special occasion. We sincerely appreciate the opportunity to be considered for your event and thank you for placing your trust in Kutti Story Photography.\n\n" +
+                "We look forward to delivering an exceptional experience and capturing your precious moments with creativity, care, and dedication.\n\n" +
+                "TERMS & CONDITIONS APPLY",
+              layout: "centered",
+              backgroundColor: "#ffffff",
+              textColor: pageDesign.textColor,
+              images: [],
             },
-
             {
 
             id: "terms",
@@ -1268,7 +1260,7 @@ async function editQuotation(id: string) {
 
             visible: true,
 
-            title: "Booking Terms & conditions",
+            title: "Note",
 
             subtitle: "Important information about your proposal",
 
