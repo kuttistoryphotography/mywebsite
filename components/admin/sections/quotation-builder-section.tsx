@@ -1,6 +1,4 @@
-﻿
-
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -198,9 +196,12 @@ export default function QuotationBuilderSection() {
   );
 
   const [termsText, setTermsText] = useState(
-
-    "Booking is confirmed after advance payment.\nDeliverables will be provided as agreed in the quotation."
-
+    "A 50% advance payment is required to confirm the booking.\n" +
+    "The remaining 40% balance must be paid on the event day.\n" +
+    "The final 10% balance must be paid when album preparation begins.\n" +
+    "The quotation covers only the events and services specifically mentioned in this proposal.\n" +
+    "Additional events or coverage beyond the agreed scope may incur extra charges.\n" +
+    "Travel, food, and accommodation expenses must be taken care of by the client."
   );
 
   const [status, setStatus] = useState<"draft" | "published">("draft");
@@ -233,17 +234,41 @@ export default function QuotationBuilderSection() {
 
   const [logoUploadError, setLogoUploadError] = useState("");
 
+  const defaultGalleryCategories: QuotationGalleryCategory[] = [
+    {
+      id: "bride",
+      title: "Bride Portraits",
+      coverImage: "/images/quotation-galleries/bride/bride-01.webp",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) =>
+          `/images/quotation-galleries/bride/bride-${String(i + 1).padStart(2, "0")}.webp`
+      ),
+    },
+    {
+      id: "groom",
+      title: "Groom Portraits",
+      coverImage: "/images/quotation-galleries/groom/groom-01.webp",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) =>
+          `/images/quotation-galleries/groom/groom-${String(i + 1).padStart(2, "0")}.webp`
+      ),
+    },
+    {
+      id: "couple",
+      title: "Couple Portraits",
+      coverImage: "/images/quotation-galleries/couples/couple-01.webp",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) =>
+          `/images/quotation-galleries/couples/couple-${String(i + 1).padStart(2, "0")}.webp`
+      ),
+    },
+  ];
+
   const [galleryCategories, setGalleryCategories] =
-
-    useState<QuotationGalleryCategory[]>([
-
-      { id: "bride", title: "Bride Portraits", coverImage: "", photos: [] },
-
-      { id: "groom", title: "Groom Portraits", coverImage: "", photos: [] },
-
-      { id: "couple", title: "Couple Portraits", coverImage: "", photos: [] },
-
-    ]);
+    useState<QuotationGalleryCategory[]>(defaultGalleryCategories);
 
   const subtotal = events.reduce(
 
@@ -1243,7 +1268,7 @@ async function editQuotation(id: string) {
 
             visible: true,
 
-            title: "Booking Details",
+            title: "Booking Terms & conditions",
 
             subtitle: "Important information about your proposal",
 
@@ -2425,7 +2450,7 @@ async function editQuotation(id: string) {
 
                   <label className={labelClass}>
 
-                    Price ($) *
+                    Price (₹) *
 
                     <input
 
@@ -2585,13 +2610,13 @@ async function editQuotation(id: string) {
 
             <span>Subtotal</span>
 
-            <span>${subtotal.toLocaleString("en-IN")}</span>
+            <span>₹{subtotal.toLocaleString("en-IN")}</span>
 
           </div>
 
           <label className={`${labelClass} block max-w-xs`}>
 
-            Discount ($)
+            Discount (₹)
 
             <input
 
@@ -2714,9 +2739,7 @@ async function editQuotation(id: string) {
             <span>Total</span>
 
             <span className="text-amber-400">
-
-              ${total.toLocaleString("en-IN")}
-
+              ₹{total.toLocaleString("en-IN")}
             </span>
 
           </div>
