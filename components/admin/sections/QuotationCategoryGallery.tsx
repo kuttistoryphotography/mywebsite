@@ -129,6 +129,50 @@ export default function QuotationCategoryGallery({
       photos: category.photos.filter((url) => url !== photoUrl),
     }));
   }
+  
+  function loadDefaultImages(categoryId: string) {
+    const defaults: Record<
+      string,
+      { coverImage: string; photos: string[] }
+    > = {
+      bride: {
+        coverImage: "/images/quotation-galleries/bride/bride-01.webp",
+        photos: Array.from(
+          { length: 10 },
+          (_, i) =>
+            `/images/quotation-galleries/bride/bride-${String(i + 1).padStart(2, "0")}.webp`
+        ),
+      },
+      groom: {
+        coverImage: "/images/quotation-galleries/groom/groom-01.webp",
+        photos: Array.from(
+          { length: 10 },
+          (_, i) =>
+            `/images/quotation-galleries/groom/groom-${String(i + 1).padStart(2, "0")}.webp`
+        ),
+      },
+      couple: {
+        coverImage: "/images/quotation-galleries/couples/couple-01.webp",
+        photos: Array.from(
+          { length: 10 },
+          (_, i) =>
+            `/images/quotation-galleries/couples/couple-${String(i + 1).padStart(2, "0")}.webp`
+        ),
+      },
+    };
+
+    const selectedDefaults = defaults[categoryId];
+
+    if (!selectedDefaults) return;
+
+    updateCategory(categoryId, (category) => ({
+      ...category,
+      coverImage: selectedDefaults.coverImage,
+      photos: [...selectedDefaults.photos],
+    }));
+
+    setError("");
+  }
 
   return (
     <section className="space-y-5 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 sm:p-6">
@@ -229,7 +273,19 @@ export default function QuotationCategoryGallery({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <p className="text-sm font-medium text-zinc-300">Cover image</p>
+              <p className="text-sm font-medium text-zinc-300">
+                Cover image
+              </p>
+              
+                <button
+                  type="button"
+                  onClick={() => loadDefaultImages(activeCategory.id)}
+                  disabled={uploading}
+                  className="inline-flex rounded-lg border border-pink-500/50 px-4 py-2 text-sm font-semibold text-pink-300 hover:bg-pink-500/10 disabled:opacity-50"
+                >
+                  Load Default Images
+                </button>
+
               {activeCategory.coverImage && (
                 <img
                   src={activeCategory.coverImage}
