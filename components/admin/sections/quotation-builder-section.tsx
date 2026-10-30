@@ -189,7 +189,15 @@ export default function QuotationBuilderSection() {
 
   const [validityDate, setValidityDate] = useState("");
 
-  const [paymentTermsText, setPaymentTermsText] = useState(
+    const [closingTitle, setClosingTitle] = useState(
+    "Your Celebration, Our Commitment"
+  );
+
+  const [closingSubtitle, setClosingSubtitle] = useState(
+    "Thank You for Choosing Kutti Story Photography"
+  );
+
+  const [closingMessage, setClosingMessage] = useState(
     "The value of the memories we create together is truly priceless.\n\n" +
     "It is our pleasure to present our services for your upcoming special occasion. We sincerely appreciate the opportunity to be considered for your event and thank you for placing your trust in Kutti Story Photography.\n\n" +
     "We look forward to delivering an exceptional experience and capturing your precious moments with creativity, care, and dedication.\n\n" +
@@ -666,14 +674,22 @@ async function editQuotation(id: string) {
 
     setDeliverablesText((proposal.deliverables || []).join("\n"));
 
-      setPaymentTermsText(
+      const savedClosingSection = sections.find(
+        (section: { id: string }) => section.id === "payment"
+      );
 
-        (proposal.paymentTerms || [])
+      setClosingTitle(
+        savedClosingSection?.title || "Your Celebration, Our Commitment"
+      );
 
-          .map((term: { label: string }) => term.label)
+      setClosingSubtitle(
+        savedClosingSection?.subtitle ||
+          "Thank You for Choosing Kutti Story Photography"
+      );
 
-          .join("\n")
-
+      setClosingMessage(
+        savedClosingSection?.body ||
+          "Thank you for choosing Kutti Story Photography."
       );
 
       setTermsText((proposal.termsAndConditions || []).join("\n"));
@@ -1241,9 +1257,9 @@ async function editQuotation(id: string) {
               id: "payment",
               type: "custom",
               visible: true,
-              title: "Your Celebration, Our Commitment",
-              subtitle: "Thank You for Choosing Kutti Story Photography",
-              body: paymentTermsText.trim(),
+              title: closingTitle.trim(),
+              subtitle: closingSubtitle.trim(),
+              body: closingMessage.trim(),
               layout: "centered",
               backgroundColor: "#ffffff",
               textColor: pageDesign.textColor,
@@ -1347,16 +1363,6 @@ async function editQuotation(id: string) {
       additionalDiscountAmount,
 
       totalAmount: total,
-
-      paymentTerms: paymentTermsText
-
-        .split("\n")
-
-        .map((item) => item.trim())
-
-        .filter(Boolean)
-
-        .map((label) => ({ label })),
 
       termsAndConditions: termsText
 
@@ -2550,17 +2556,42 @@ async function editQuotation(id: string) {
 
           </label>
 
-          <label className={labelClass}>
-            Closing Message
+          <div className="sm:col-span-2 space-y-4 rounded-xl border border-zinc-700 p-4">
+            <h3 className="text-base font-semibold text-amber-400">
+              Closing Section — Content Editor
+            </h3>
 
-            <textarea
-              className={inputClass}
-              rows={8}
-              value={paymentTermsText}
-              onChange={(e) => setPaymentTermsText(e.target.value)}
-              placeholder="Enter your closing message..."
-            />
-          </label>
+            <label className={labelClass}>
+              Main Heading
+              <input
+                className={inputClass}
+                value={closingTitle}
+                onChange={(e) => setClosingTitle(e.target.value)}
+                placeholder="Your Celebration, Our Commitment"
+              />
+            </label>
+
+            <label className={labelClass}>
+              Subtitle
+              <input
+                className={inputClass}
+                value={closingSubtitle}
+                onChange={(e) => setClosingSubtitle(e.target.value)}
+                placeholder="Thank You for Choosing Kutti Story Photography"
+              />
+            </label>
+
+            <label className={labelClass}>
+              Closing Message
+              <textarea
+                className={inputClass}
+                rows={8}
+                value={closingMessage}
+                onChange={(e) => setClosingMessage(e.target.value)}
+                placeholder="Enter your closing message..."
+              />
+            </label>
+          </div>
 
           <label className={`${labelClass} sm:col-span-2`}>
 
