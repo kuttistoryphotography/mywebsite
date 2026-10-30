@@ -1050,6 +1050,13 @@ export default async function PublicQuotationPage({
             images: [],
           },
           {
+            id: "terms",
+            type: "terms",
+            visible: true,
+            title: "Terms & Conditions",
+            images: [],
+          },
+          {
             id: "payment",
             type: "custom",
             visible: true,
@@ -1065,13 +1072,7 @@ export default async function PublicQuotationPage({
             textColor: "#242424",
             images: [],
           },
-          {
-            id: "terms",
-            type: "terms",
-            visible: true,
-            title: "Terms & Conditions",
-            images: [],
-          },
+          
           {
             id: "closing",
             type: "closing",
