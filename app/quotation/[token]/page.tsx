@@ -950,6 +950,54 @@ export async function generateMetadata({
   };
 }
 
+function normalizeQuotationContent(
+  quotation: Quotation
+): Quotation {
+  const sections = quotation.pageDesign?.sections;
+
+  if (!sections?.length) return quotation;
+
+  const noteText = (quotation.termsAndConditions || []).join("\n").trim();
+
+  const paymentSectionIndex = sections.findIndex(
+    (section) => section.id === "payment"
+  );
+
+  if (paymentSectionIndex === -1) return quotation;
+
+  const paymentSection = sections[paymentSectionIndex];
+  const commitmentText = (paymentSection.body || "").trim();
+
+  const noteLooksLikeClosing =
+    /memories|pleasure|look forward|thank you|exceptional experience|terms\s*&\s*conditions apply/i.test(noteText);
+
+  const commitmentLooksLikePayment =
+    /advance payment|balance|paid|payment|album preparation|travel|food|accommodation|expenses|quotation covers/i.test(commitmentText);
+
+  // Swap only when the saved content is actually reversed.
+  if (!noteLooksLikeClosing || !commitmentLooksLikePayment) {
+    return quotation;
+  }
+
+  const updatedSections = sections.map((section, index) =>
+    index === paymentSectionIndex
+      ? { ...section, body: noteText }
+      : section
+  );
+
+  return {
+    ...quotation,
+    termsAndConditions: commitmentText
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean),
+    pageDesign: {
+      ...quotation.pageDesign,
+      sections: updatedSections,
+    },
+  };
+}
+
 export default async function PublicQuotationPage({
   params,
 }: PageProps) {
@@ -983,11 +1031,13 @@ export default async function PublicQuotationPage({
     notFound();
   }
 
-  const quotation = result.quotation;
+  const savedQuotation = result.quotation;
 
-  if (!result.success || !quotation) {
+  if (!result.success || !savedQuotation) {
     notFound();
   }
+
+  const quotation = normalizeQuotationContent(savedQuotation);
 
   const design = quotation.pageDesign ?? {};
 
