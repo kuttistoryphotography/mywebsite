@@ -1036,7 +1036,7 @@ async function editQuotation(id: string) {
 
       setError(
 
-        "Each event needs a name and at least one service with a valid price."
+        "Each event needs a name and at least one valid service."
 
       );
 
@@ -2435,7 +2435,7 @@ async function editQuotation(id: string) {
 
                   <label className={labelClass}>
 
-                    Price (₹) *
+                    Price (₹)
 
                     <input
 
