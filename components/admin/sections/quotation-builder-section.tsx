@@ -1148,109 +1148,122 @@ async function editQuotation(id: string) {
 
             {
 
-            id: "events",
+              id: "events",
 
-            type: "event",
+              type: "event",
 
-            visible: true,
+              visible: true,
 
-            title: "Your Wedding Celebrations",
+              title: "Your Wedding Celebrations",
 
-            subtitle: "Every moment, thoughtfully captured",
+              subtitle: "Every moment, thoughtfully captured",
 
-            body: "",
+              body: "",
 
-            layout: "cards",
+              layout: "cards",
 
-            backgroundColor: pageDesign.backgroundColor,
+              backgroundColor: pageDesign.backgroundColor,
 
-            textColor: pageDesign.textColor,
+              textColor: pageDesign.textColor,
 
-            images: [],
-
-            },
-
-            {
-
-            id: "services",
-            type: "services",
-            visible: true,
-            title: servicesSectionDesign.heading,
-            subtitle: servicesSectionDesign.subtitle,
-            body: "",
-            layout: "custom-list",
-            backgroundColor: servicesSectionDesign.backgroundColor,
-            textColor: servicesSectionDesign.itemColor,
-            heading: servicesSectionDesign.heading,
-            items: servicesSectionDesign.itemsText
-              .split(/\r?\n/)
-              .map((item) => item.trim())
-              .filter(Boolean),
-            itemsText: servicesSectionDesign.itemsText,
-            fontFamily: servicesSectionDesign.fontFamily,
-            headingFontSize: Number(servicesSectionDesign.headingFontSize) || 46,
-            listFontSize: Number(servicesSectionDesign.listFontSize) || 12,
-            headingColor: servicesSectionDesign.headingColor,
-            subtitleColor: servicesSectionDesign.subtitleColor,
-            itemColor: servicesSectionDesign.itemColor,
-            accentColor: servicesSectionDesign.accentColor,
-            imageUrl: servicesSectionDesign.imageUrl,
-            logoUrl: servicesSectionDesign.logoUrl,
-            images: servicesSectionDesign.imageUrl
-              ? [
-                  {
-                    url: servicesSectionDesign.imageUrl,
-                    alt: "Services section image",
-                  },
-                ]
-              : [],
-            },
-            {
-
-            id: "deliverables",
-
-            type: "deliverables",
-
-            visible: true,
-
-            title: "Your Memories, Preserved",
-
-            subtitle: "The final collection you'll receive",
-
-            body: "",
-
-            layout: "grid",
-
-            backgroundColor: pageDesign.backgroundColor,
-
-            textColor: pageDesign.textColor,
-
-            images: [],
+              images: [],
 
             },
 
             {
 
-            id: "pricing",
+              id: "services",
+              type: "services",
+              visible: true,
+              title: servicesSectionDesign.heading,
+              subtitle: servicesSectionDesign.subtitle,
+              body: "",
+              layout: "custom-list",
+              backgroundColor: servicesSectionDesign.backgroundColor,
+              textColor: servicesSectionDesign.itemColor,
+              heading: servicesSectionDesign.heading,
+              items: servicesSectionDesign.itemsText
+                .split(/\r?\n/)
+                .map((item) => item.trim())
+                .filter(Boolean),
+              itemsText: servicesSectionDesign.itemsText,
+              fontFamily: servicesSectionDesign.fontFamily,
+              headingFontSize: Number(servicesSectionDesign.headingFontSize) || 46,
+              listFontSize: Number(servicesSectionDesign.listFontSize) || 12,
+              headingColor: servicesSectionDesign.headingColor,
+              subtitleColor: servicesSectionDesign.subtitleColor,
+              itemColor: servicesSectionDesign.itemColor,
+              accentColor: servicesSectionDesign.accentColor,
+              imageUrl: servicesSectionDesign.imageUrl,
+              logoUrl: servicesSectionDesign.logoUrl,
+              images: servicesSectionDesign.imageUrl
+                ? [
+                    {
+                      url: servicesSectionDesign.imageUrl,
+                      alt: "Services section image",
+                    },
+                  ]
+                : [],
+            },
+            {
 
-            type: "pricing",
+              id: "deliverables",
 
-            visible: true,
+              type: "deliverables",
 
-            title: "Your Investment",
+              visible: true,
 
-            subtitle: "A clear overview of your collection",
+              title: "Your Memories, Preserved",
 
-            body: "",
+              subtitle: "The final collection you'll receive",
 
-            layout: "premium-card",
+              body: "",
 
-            backgroundColor: "#242424",
+              layout: "grid",
 
-            textColor: "#ffffff",
+              backgroundColor: pageDesign.backgroundColor,
 
-            images: [],
+              textColor: pageDesign.textColor,
 
+              images: [],
+
+            },
+
+            {
+
+              id: "pricing",
+
+              type: "pricing",
+
+              visible: true,
+
+              title: "Your Investment",
+
+              subtitle: "A clear overview of your collection",
+
+              body: "",
+
+              layout: "premium-card",
+
+              backgroundColor: "#242424",
+
+              textColor: "#ffffff",
+
+              images: [],
+
+            },
+
+            {
+              id: "terms",
+              type: "terms",
+              visible: true,
+              title: "Note",
+              subtitle: "Important information about your proposal",
+              body: "",
+              layout: "default",
+              backgroundColor: pageDesign.backgroundColor,
+              textColor: pageDesign.textColor,
+              images: [],
             },
 
             {
@@ -1268,49 +1281,25 @@ async function editQuotation(id: string) {
 
             {
 
-            id: "terms",
+              id: "closing",
 
-            type: "terms",
+              type: "closing",
 
-            visible: true,
+              visible: true,
 
-            title: "Note",
+              title: "Let's Tell Your Story",
 
-            subtitle: "Important information about your proposal",
+              subtitle: "We would love to be part of your celebration",
 
-            body: "",
+              body: "Thank you for considering Kutti Story Photography. We look forward to preserving your most meaningful moments.",
 
-            layout: "default",
+              layout: "centered",
 
-            backgroundColor: pageDesign.backgroundColor,
+              backgroundColor: "#242424",
 
-            textColor: pageDesign.textColor,
+              textColor: "#ffffff",
 
-            images: [],
-
-            },
-
-            {
-
-            id: "closing",
-
-            type: "closing",
-
-            visible: true,
-
-            title: "Let's Tell Your Story",
-
-            subtitle: "We would love to be part of your celebration",
-
-            body: "Thank you for considering Kutti Story Photography. We look forward to preserving your most meaningful moments.",
-
-            layout: "centered",
-
-            backgroundColor: "#242424",
-
-            textColor: "#ffffff",
-
-            images: [],
+              images: [],
 
             },
 
