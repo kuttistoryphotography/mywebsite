@@ -146,6 +146,9 @@ export async function DELETE(
       eventId: event._id,
     }).lean();
 
+    console.log("[EVENT DELETE] Starting:", id);
+    console.log("[EVENT DELETE] Photos:", photos.length);
+
     /* -------------------------------------------------------
        GET FILE MANAGER IDS
     ------------------------------------------------------- */
@@ -166,6 +169,9 @@ export async function DELETE(
             },
           }).lean()
         : [];
+
+    console.log("[EVENT DELETE] File IDs:", fileIds.length);
+    console.log("[EVENT DELETE] FileDocs:", fileDocs.length);
 
     /* -------------------------------------------------------
        DELETE CLOUDINARY FILES
@@ -208,6 +214,8 @@ export async function DELETE(
       });
     }
 
+    console.log("[EVENT DELETE] CloudinaryFile records deleted");
+
     /* -------------------------------------------------------
        DELETE FILE MANAGER RECORDS
     ------------------------------------------------------- */
@@ -220,6 +228,8 @@ export async function DELETE(
       });
     }
 
+    console.log("[EVENT DELETE] FileDoc records deleted");
+
     /* -------------------------------------------------------
        DELETE CLIENT DECISIONS
     ------------------------------------------------------- */
@@ -227,6 +237,8 @@ export async function DELETE(
     await PhotoSelectionDecision.deleteMany({
       eventId: event._id,
     });
+
+    console.log("[EVENT DELETE] Decisions deleted");
 
     /* -------------------------------------------------------
        DELETE SUBMISSION
@@ -236,6 +248,8 @@ export async function DELETE(
       eventId: event._id,
     });
 
+    console.log("[EVENT DELETE] Submissions deleted");
+
     /* -------------------------------------------------------
        DELETE PHOTO SELECTION PHOTOS
     ------------------------------------------------------- */
@@ -243,6 +257,8 @@ export async function DELETE(
     await PhotoSelectionPhoto.deleteMany({
       eventId: event._id,
     });
+
+    console.log("[EVENT DELETE] Photos deleted");
 
     /* -------------------------------------------------------
        DELETE EVENT
@@ -252,6 +268,8 @@ export async function DELETE(
       _id: event._id,
     });
 
+    console.log("[EVENT DELETE] Event deleted successfully");
+    
     /* -------------------------------------------------------
        SUCCESS
     ------------------------------------------------------- */
