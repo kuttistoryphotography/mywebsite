@@ -626,7 +626,9 @@ function renderSection(
                         </span>
 
                         <span className="whitespace-nowrap">
-                          {formatCurrency(service.total)}
+                          {Number(service.total) === 0
+                            ? "—"
+                            : formatCurrency(service.total)}
                         </span>
                       </div>
                     ))}
