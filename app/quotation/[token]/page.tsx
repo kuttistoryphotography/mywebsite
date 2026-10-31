@@ -610,88 +610,30 @@ function renderSection(
               style={{ borderColor: `${accentColor}88` }}
             >
               <div className="space-y-5">
-                
                 {quotation.events.map((event, eventIndex) => (
-                  <div
-                    key={`${event.eventName}-${eventIndex}`}
-                    className="mb-8 last:mb-0"
-                  >
-                    <h3
-                      className="mb-4 border-b pb-3 text-lg font-semibold uppercase tracking-wide"
-                      style={{
-                        color: accentColor,
-                        borderColor: `${accentColor}66`,
-                      }}
-                    >
+                  <div key={`${event.eventName}-${eventIndex}`}>
+                    <h3 className="mb-3 text-lg font-medium">
                       {event.eventName}
                     </h3>
 
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse text-sm">
-                        <thead>
-                          <tr
-                            style={{
-                              backgroundColor: accentColor,
-                              color: "#ffffff",
-                            }}
-                          >
-                            <th className="px-3 py-3 text-center font-semibold">
-                              S.No
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold">
-                              Services
-                            </th>
-                            <th className="px-3 py-3 text-center font-semibold">
-                              Cameras
-                            </th>
-                            <th className="px-3 py-3 text-right font-semibold">
-                              Amount
-                            </th>
-                          </tr>
-                        </thead>
+                    {event.services.map((service, serviceIndex) => (
+                      <div
+                        key={`${service.name}-${serviceIndex}`}
+                        className="flex justify-between gap-4 py-2 text-sm"
+                      >
+                        <span className="opacity-80">
+                          {service.name}
+                        </span>
 
-                        <tbody>
-                          {event.services.map((service, serviceIndex) => (
-                            <tr
-                              key={`${service.name}-${serviceIndex}`}
-                              className="border-b"
-                              style={{
-                                borderColor: `${accentColor}44`,
-                              }}
-                            >
-                              <td className="px-3 py-4 text-center opacity-70">
-                                {serviceIndex + 1}
-                              </td>
-
-                              <td className="px-3 py-4">
-                                <div className="font-medium">
-                                  {service.name}
-                                </div>
-
-                                {service.description && (
-                                  <div className="mt-1 text-xs opacity-60">
-                                    {service.description}
-                                  </div>
-                                )}
-                              </td>
-
-                              <td className="px-3 py-4 text-center tabular-nums">
-                                {service.quantity ?? 1}
-                              </td>
-
-                              <td className="whitespace-nowrap px-3 py-4 text-right tabular-nums">
-                                {Number(service.total) === 0
-                                  ? ""
-                                  : formatCurrency(service.total)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        <span className="whitespace-nowrap">
+                          {Number(service.total) === 0
+                            ? ""
+                            : formatCurrency(service.total)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 ))}
-
               </div>
 
               <div
