@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 import connectDB from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+
 import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { deleteFromPhotoCloudinary } from "@/lib/photo-cloudinary";
 
 import PhotoSelectionEvent from "@/models/PhotoSelectionEvent";
 import PhotoSelectionPhoto from "@/models/PhotoSelectionPhoto";
@@ -174,32 +176,76 @@ export async function DELETE(
     console.log("[EVENT DELETE] FileDocs:", fileDocs.length);
 
     /* -------------------------------------------------------
-       DELETE CLOUDINARY FILES
-    ------------------------------------------------------- */
+        DELETE CLOUDINARY FILES
+        Supports OLD and NEW Cloudinary accounts
+      ------------------------------------------------------- */
 
-    for (const file of fileDocs) {
-      if (!file.cloudinaryPublicId) {
-        continue;
+      const oldCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const newCloudName = process.env.PHOTO_CLOUDINARY_CLOUD_NAME;
+
+      for (const file of fileDocs) {
+        if (!file.cloudinaryPublicId) {
+          continue;
+        }
+
+        const photoUrl = file.cloudinaryUrl || "";
+        const resourceType = file.resourceType || "image";
+
+        try {
+          // OLD Cloudinary account
+          if (
+            oldCloudName &&
+            photoUrl.includes(
+              `res.cloudinary.com/${oldCloudName}/`
+            )
+          ) {
+            await deleteFromCloudinary(
+              file.cloudinaryPublicId,
+              resourceType
+            );
+
+            console.log(
+              "[EVENT DELETE] Deleted from OLD Cloudinary:",
+              file.cloudinaryPublicId
+            );
+          }
+
+          // NEW Photo Selector Cloudinary account
+          else if (
+            newCloudName &&
+            photoUrl.includes(
+              `res.cloudinary.com/${newCloudName}/`
+            )
+          ) {
+            await deleteFromPhotoCloudinary(
+              file.cloudinaryPublicId,
+              resourceType
+            );
+
+            console.log(
+              "[EVENT DELETE] Deleted from NEW Cloudinary:",
+              file.cloudinaryPublicId
+            );
+          }
+
+          // Account could not be identified
+          else {
+            console.error(
+              "[EVENT DELETE] Cloudinary account not identified:",
+              {
+                publicId: file.cloudinaryPublicId,
+                cloudinaryUrl: photoUrl,
+              }
+            );
+          }
+        } catch (error) {
+          console.error(
+            "[Photo Selection] Cloudinary delete failed:",
+            file.cloudinaryPublicId,
+            error
+          );
+        }
       }
-
-      try {
-        await deleteFromCloudinary(
-          file.cloudinaryPublicId,
-          file.resourceType || "image"
-        );
-      } catch (error) {
-        /*
-         * Continue deleting the database records even if
-         * one Cloudinary deletion fails.
-         */
-
-        console.error(
-          "[Photo Selection] Cloudinary delete failed:",
-          file.cloudinaryPublicId,
-          error
-        );
-      }
-    }
 
     /* -------------------------------------------------------
        DELETE CLOUDINARY REGISTRY RECORDS

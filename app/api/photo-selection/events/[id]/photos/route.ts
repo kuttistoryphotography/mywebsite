@@ -7,11 +7,16 @@ import { ensurePhotoSequenceInitialized } from "@/lib/photo-selection-sequence";
 import connectDB from "@/lib/db";
 
 import { getCurrentUser } from "@/lib/auth";
+
 import {
-  uploadToCloudinary,
   guessMimeType,
   deleteFromCloudinary,
 } from "@/lib/cloudinary";
+
+import {
+  uploadToPhotoCloudinary,
+  deleteFromPhotoCloudinary,
+} from "@/lib/photo-cloudinary";
 
 import { FileDoc } from "@/models/FileManager";
 import { CloudinaryFile } from "@/models/CloudinaryFile";
@@ -171,11 +176,10 @@ export async function POST(
     // --------------------------------------------------
 
     const cloudinaryResult =
-      await uploadToCloudinary(buffer, {
-        fileName: originalName,
-        mimeType,
-        context: "fm",
-      });
+    await uploadToPhotoCloudinary(buffer, {
+      fileName: originalName,
+      mimeType,
+    });
 
     uploadedPublicId = cloudinaryResult.publicId;
 
@@ -425,7 +429,7 @@ export async function POST(
             .lean();
 
           if (!photoReference) {
-            await deleteFromCloudinary(uploadedPublicId, "image");
+            await deleteFromPhotoCloudinary(uploadedPublicId, "image");
           }
         }
       } catch (cleanupError) {
@@ -653,10 +657,32 @@ export async function DELETE(
      */
 
     if (photo.cloudinaryPublicId) {
-      await deleteFromCloudinary(
-        photo.cloudinaryPublicId,
-        "image"
-      );
+      const oldCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const newCloudName = process.env.PHOTO_CLOUDINARY_CLOUD_NAME;
+
+      const photoUrl = photo.cloudinaryUrl || "";
+
+      if (
+        oldCloudName &&
+        photoUrl.includes(`res.cloudinary.com/${oldCloudName}/`)
+      ) {
+        await deleteFromCloudinary(
+          photo.cloudinaryPublicId,
+          "image"
+        );
+      } else if (
+        newCloudName &&
+        photoUrl.includes(`res.cloudinary.com/${newCloudName}/`)
+      ) {
+        await deleteFromPhotoCloudinary(
+          photo.cloudinaryPublicId,
+          "image"
+        );
+      } else {
+        throw new Error(
+          "Cannot identify the Cloudinary account for this photo. Database records were preserved."
+        );
+      }
     }
 
     /*
