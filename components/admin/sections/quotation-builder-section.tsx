@@ -2248,25 +2248,20 @@ async function editQuotation(id: string) {
             <div className="grid gap-4 sm:grid-cols-3">
 
               <label className={labelClass}>
-
-                Event name *
-
-                <input
-
+                Event category *
+                <select
                   className={inputClass}
-
                   value={event.eventName}
-
                   onChange={(e) =>
-
                     updateEvent(eventIndex, "eventName", e.target.value)
-
                   }
-
-                  placeholder="Wedding / Reception"
-
-                />
-
+                >
+                  <option value="">Select event category</option>
+                  <option value="Engagement">Engagement</option>
+                  <option value="Reception">Reception</option>
+                  <option value="Wedding">Wedding</option>
+                  <option value="Other Services">Other Services</option>
+                </select>
               </label>
 
               <label className={labelClass}>
@@ -2394,43 +2389,24 @@ async function editQuotation(id: string) {
                   </label>
 
                 <label className={labelClass}>
-
-                Quantity *
-
-                <input
-
+                  Cameras *
+                  <input
                     type="number"
-
                     min="1"
-
                     max="10000"
-
                     step="1"
-
                     className={inputClass}
-
                     value={service.quantity}
-
                     onChange={(e) =>
-
-                    updateService(
-
+                      updateService(
                         eventIndex,
-
                         serviceIndex,
-
                         "quantity",
-
                         e.target.value
-
-                    )
-
+                      )
                     }
-
                     placeholder="1"
-
-                />
-
+                  />
                 </label>
 
                   <label className={labelClass}>
