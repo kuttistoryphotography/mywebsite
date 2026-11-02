@@ -595,39 +595,77 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
-          style={sectionStyle}
+          className="relative isolate overflow-hidden px-4 py-16 sm:px-6 md:px-12 md:py-24"
+          style={{
+            ...sectionStyle,
+            backgroundImage: `
+              linear-gradient(
+                rgba(20, 16, 10, 0.35),
+                rgba(20, 16, 10, 0.45)
+              ),
+              url('/images/golden-floral-bg.png')
+            `,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
         >
-          <div className="mx-auto max-w-3xl">
-            <SectionHeading
-              title={heading || "Your Investment"}
-              subtitle={subtitle}
-              accentColor={accentColor}
-            />
+          {/* Small couple image: left bottom */}
+          <img
+            src="/images/quotation-couple.png"
+            alt="Couple"
+            className="
+              pointer-events-none absolute bottom-0 left-0 z-0
+              hidden w-[180px] object-contain object-bottom
+              opacity-90
+              lg:block
+              xl:w-[280px]
+            "
+          />
 
+          {/* Main content */}
+          <div className="relative z-10 mx-auto max-w-3xl">
+
+            {/* Centered heading */}
+            <div className="text-center">
+              <SectionHeading
+                title={heading || "Your Investment"}
+                subtitle={subtitle}
+                accentColor={accentColor}
+              />
+            </div>
+
+            {/* Quotation card */}
             <div
-              className="rounded-sm border p-6 md:p-10"
-              style={{ borderColor: `${accentColor}88` }}
+              className="rounded-sm border p-4 backdrop-blur-sm sm:p-6 md:p-8"
+              style={{
+                borderColor: `${accentColor}88`,
+                backgroundColor: "rgba(25, 25, 25, 0.88)",
+              }}
             >
-              <div className="space-y-5">
-                
+              <div className="space-y-6">
+
+                {/* Event breakdown */}
                 {quotation.events.map((event, eventIndex) => (
-                  <div
-                    key={`${event.eventName}-${eventIndex}`}
-                    className="mb-8 last:mb-0"
-                  >
+                  <div key={`${event.eventName}-${eventIndex}`}>
+
                     <h3
-                      className="mb-4 border-b pb-3 text-lg font-semibold uppercase tracking-wide"
+                      className="mb-3 border-b pb-3 text-sm font-semibold uppercase tracking-wide sm:text-base"
                       style={{
                         color: accentColor,
                         borderColor: `${accentColor}66`,
                       }}
                     >
                       {event.eventName}
+
+                      {event.eventDate && (
+                        <> - {formatDate(event.eventDate)}</>
+                      )}
                     </h3>
 
+                    {/* Services table */}
                     <div className="overflow-x-auto">
-                      <table className="w-full border-collapse text-sm">
+                      <table className="w-full min-w-[360px] border-collapse text-xs sm:text-sm">
                         <thead>
                           <tr
                             style={{
@@ -635,16 +673,19 @@ function renderSection(
                               color: "#ffffff",
                             }}
                           >
-                            <th className="px-3 py-3 text-center font-semibold">
+                            <th className="px-2 py-3 text-center sm:px-3">
                               S.No
                             </th>
-                            <th className="px-3 py-3 text-left font-semibold">
+
+                            <th className="px-2 py-3 text-left sm:px-3">
                               Services
                             </th>
-                            <th className="px-3 py-3 text-center font-semibold">
+
+                            <th className="px-2 py-3 text-center sm:px-3">
                               Cameras
                             </th>
-                            <th className="px-3 py-3 text-right font-semibold">
+
+                            <th className="px-2 py-3 text-right sm:px-3">
                               Amount
                             </th>
                           </tr>
@@ -659,30 +700,31 @@ function renderSection(
                                 borderColor: `${accentColor}44`,
                               }}
                             >
-                              <td className="px-3 py-4 text-center opacity-70">
+                              <td className="px-2 py-3 text-center sm:px-3">
                                 {serviceIndex + 1}
                               </td>
 
-                              <td className="px-3 py-4">
+                              <td className="px-2 py-3 sm:px-3">
                                 <div className="font-medium">
                                   {service.name}
                                 </div>
 
                                 {service.description && (
-                                  <div className="mt-1 text-xs opacity-60">
+                                  <p className="mt-1 text-xs opacity-60">
                                     {service.description}
-                                  </div>
+                                  </p>
                                 )}
                               </td>
 
-                              <td className="px-3 py-4 text-center tabular-nums">
+                              <td className="px-2 py-3 text-center sm:px-3">
                                 {service.quantity ?? 1}
                               </td>
 
-                              <td className="whitespace-nowrap px-3 py-4 text-right tabular-nums">
-                                {Number(service.total) === 0
-                                  ? ""
-                                  : formatCurrency(service.total)}
+                              <td className="whitespace-nowrap px-2 py-3 text-right sm:px-3">
+                                {formatCurrency(
+                                  service.total ??
+                                    service.unitPrice * service.quantity
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -691,19 +733,20 @@ function renderSection(
                     </div>
                   </div>
                 ))}
-
               </div>
 
+              {/* Existing pricing summary */}
               <div
-                className="mt-8 space-y-4 border-t pt-6"
+                className="mt-8 space-y-4 border-t pt-6 text-sm"
                 style={{ borderColor: `${accentColor}88` }}
               >
-                
-              <div className="flex justify-between gap-4">
-                 <span className="opacity-70">Subtotal</span>
-                 <span>{formatCurrency(quotation.subtotal)}</span>
-              </div>
+                {/* Subtotal */}
+                <div className="flex justify-between gap-4">
+                  <span className="opacity-70">Subtotal</span>
+                  <span>{formatCurrency(quotation.subtotal)}</span>
+                </div>
 
+                {/* Discount */}
                 {quotation.discount > 0 && (
                   <div className="flex justify-between gap-4">
                     <span className="opacity-70">Discount</span>
@@ -713,55 +756,70 @@ function renderSection(
                   </div>
                 )}
 
+                {/* Additional Discount */}
                 {(quotation.additionalDiscountPercent ?? 0) > 0 && (
                   <div className="flex justify-between gap-4">
                     <span className="opacity-70">
-                      Additional Discount ({quotation.additionalDiscountPercent}%)
+                      Additional Discount (
+                      {quotation.additionalDiscountPercent}%)
                     </span>
+
                     <span>
-                      −{formatCurrency(quotation.additionalDiscountAmount)}
+                      −{formatCurrency(
+                        quotation.additionalDiscountAmount
+                      )}
                     </span>
                   </div>
                 )}
 
+                {/* Taxable Amount */}
                 <div className="flex justify-between gap-4">
                   <span className="opacity-70">Taxable Amount</span>
+
                   <span>
                     {formatCurrency(
                       Math.max(
                         0,
-                        quotation.subtotal -
-                          quotation.discount -
+                        (quotation.subtotal ?? 0) -
+                          (quotation.discount ?? 0) -
                           (quotation.additionalDiscountAmount ?? 0)
                       )
                     )}
                   </span>
                 </div>
 
+                {/* GST */}
                 {(quotation.gstRate ?? 0) > 0 && (
                   <div className="flex justify-between gap-4">
                     <span className="opacity-70">
                       GST ({quotation.gstRate}%)
                     </span>
-                    <span>{formatCurrency(quotation.gstAmount)}</span>
+
+                    <span>
+                      {formatCurrency(quotation.gstAmount)}
+                    </span>
                   </div>
                 )}
 
+                {/* GSTIN */}
                 {quotation.gstin && (
-                  <div className="flex flex-wrap justify-between gap-4 text-sm">
+                  <div className="flex flex-wrap justify-between gap-4">
                     <span className="opacity-70">GSTIN</span>
                     <span>{quotation.gstin}</span>
                   </div>
                 )}
 
+                {/* Total */}
                 <div
                   className="flex flex-wrap items-center justify-between gap-4 border-t pt-6"
                   style={{ borderColor: `${accentColor}88` }}
                 >
-                  <span className="text-lg">Total Investment</span>
+                  <span className="text-base sm:text-lg">
+                    Total Investment
+                  </span>
 
                   <span
-                    className="text-3xl font-light md:text-4xl"
+                    className="text-2xl font-light sm:text-3xl md:text-4xl"
                     style={{ color: accentColor }}
                   >
                     {formatCurrency(quotation.totalAmount)}
