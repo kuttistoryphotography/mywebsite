@@ -17,8 +17,8 @@ interface QuotationService {
   name: string;
   description?: string;
   quantity: number;
-  unitPrice: number;
-  total: number;
+  unitPrice?: number | null;
+  total?: number | null;
 }
 
 interface QuotationEvent {
@@ -118,6 +118,23 @@ function formatCurrency(value: number | undefined): string {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(value ?? 0);
+}
+
+function getServiceAmount(service: QuotationService): number | null {
+  if (
+    service.unitPrice === undefined ||
+    service.unitPrice === null ||
+    service.unitPrice === 0 ||
+    service.unitPrice === ("" as unknown as number)
+  ) {
+    return null;
+  }
+
+  if (service.total !== undefined && service.total !== null) {
+    return service.total;
+  }
+
+  return service.unitPrice * (service.quantity ?? 1);
 }
 
 function formatDate(value?: string): string {
@@ -721,10 +738,9 @@ function renderSection(
                               </td>
 
                               <td className="whitespace-nowrap px-3 py-3 text-right">
-                                {formatCurrency(
-                                  service.total ??
-                                    service.unitPrice * service.quantity
-                                )}
+                                {getServiceAmount(service) !== null
+                                  ? formatCurrency(getServiceAmount(service)!)
+                                  : ""}
                               </td>
                             </tr>
                           ))}
@@ -764,10 +780,9 @@ function renderSection(
                                 </span>
 
                                 <span className="font-medium">
-                                  {formatCurrency(
-                                    service.total ??
-                                      service.unitPrice * service.quantity
-                                  )}
+                                  {getServiceAmount(service) !== null
+                                    ? formatCurrency(getServiceAmount(service)!)
+                                    : ""}
                                 </span>
                               </div>
                             </div>
