@@ -780,17 +780,6 @@ function renderSection(
                 ))}
               </div>
 
-              {design.logoUrl && (
-              <div className="mt-10 flex justify-center">
-                <img
-                  src={design.logoUrl}
-                  alt={design.brandName || "Kutti Story Photography"}
-                  className="max-h-24 w-auto max-w-52 object-contain"
-                  loading="lazy"
-                />
-              </div>
-            )}
-
               {/* Existing pricing summary */}
               <div
                 className="mt-8 space-y-4 border-t pt-6 text-sm"
@@ -891,6 +880,16 @@ function renderSection(
                   </span>
                 </div>
               </div>
+              {design.logoUrl && (
+                <div className="mt-10 flex justify-center">
+                  <img
+                    src={design.logoUrl}
+                    alt={design.brandName || "Kutti Story Photography"}
+                    className="max-h-24 w-auto max-w-52 object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
