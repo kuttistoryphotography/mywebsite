@@ -610,19 +610,7 @@ function renderSection(
             backgroundRepeat: "no-repeat",
           }}
         >
-          {/* Small couple image: left bottom */}
-          <img
-            src="/images/quotation-couple.png"
-            alt="Couple"
-            className="
-              pointer-events-none absolute bottom-0 left-0 z-0
-              hidden w-[180px] object-contain object-bottom
-              opacity-90
-              lg:block
-              xl:w-[280px]
-            "
-          />
-
+         
           {/* Main content */}
           <div className="relative z-10 mx-auto max-w-3xl">
 
