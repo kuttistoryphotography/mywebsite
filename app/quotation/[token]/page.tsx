@@ -706,7 +706,7 @@ function renderSection(
 
                 {quotation.discount > 0 && (
                   <div className="flex justify-between gap-4">
-                    <span className="opacity-70">Fixed Discount</span>
+                    <span className="opacity-70">Discount</span>
                     <span>
                       −{formatCurrency(quotation.discount)}
                     </span>
