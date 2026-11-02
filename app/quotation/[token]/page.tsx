@@ -612,7 +612,7 @@ function renderSection(
         >
          
           {/* Main content */}
-          <div className="relative z-10 mx-auto max-w-3xl">
+          <div className="relative z-10 mx-auto max-w-3xl pb-24">
 
             {/* Centered heading */}
             <div className="text-center">
@@ -625,7 +625,7 @@ function renderSection(
 
             {/* Quotation card */}
             <div
-              className="rounded-sm border p-4 backdrop-blur-sm sm:p-6 md:p-8"
+              className="relative z-10 rounded-sm border p-4 backdrop-blur-sm sm:p-6 md:p-8"
               style={{
                 borderColor: `${accentColor}88`,
                 backgroundColor: "rgba(25, 25, 25, 0.88)",
