@@ -595,179 +595,212 @@ function renderSection(
       return (
         <section
           key={section.id}
-          className="px-6 py-20 md:px-12 md:py-28"
+          className="relative overflow-hidden px-4 py-16 sm:px-6 md:px-12 md:py-20"
           style={sectionStyle}
         >
-          <div className="mx-auto max-w-3xl">
-            <SectionHeading
-              title={heading || "Your Investment"}
-              subtitle={subtitle}
-              accentColor={accentColor}
-            />
+          <div className="mx-auto max-w-7xl">
+            <div className="grid items-center gap-8 lg:grid-cols-[0.75fr_1.25fr] xl:gap-12">
 
-            <div
-              className="rounded-sm border p-6 md:p-10"
-              style={{ borderColor: `${accentColor}88` }}
-            >
-              <div className="space-y-5">
-                
-                {quotation.events.map((event, eventIndex) => (
-                  <div
-                    key={`${event.eventName}-${eventIndex}`}
-                    className="mb-8 last:mb-0"
-                  >
-                    <h3
-                      className="mb-4 border-b pb-3 text-lg font-semibold uppercase tracking-wide"
-                      style={{
-                        color: accentColor,
-                        borderColor: `${accentColor}66`,
-                      }}
-                    >
-                      {event.eventName}
-                    </h3>
-
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse text-sm">
-                        <thead>
-                          <tr
-                            style={{
-                              backgroundColor: accentColor,
-                              color: "#ffffff",
-                            }}
-                          >
-                            <th className="px-3 py-3 text-center font-semibold">
-                              S.No
-                            </th>
-                            <th className="px-3 py-3 text-left font-semibold">
-                              Services
-                            </th>
-                            <th className="px-3 py-3 text-center font-semibold">
-                              Cameras
-                            </th>
-                            <th className="px-3 py-3 text-right font-semibold">
-                              Amount
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {event.services.map((service, serviceIndex) => (
-                            <tr
-                              key={`${service.name}-${serviceIndex}`}
-                              className="border-b"
-                              style={{
-                                borderColor: `${accentColor}44`,
-                              }}
-                            >
-                              <td className="px-3 py-4 text-center opacity-70">
-                                {serviceIndex + 1}
-                              </td>
-
-                              <td className="px-3 py-4">
-                                <div className="font-medium">
-                                  {service.name}
-                                </div>
-
-                                {service.description && (
-                                  <div className="mt-1 text-xs opacity-60">
-                                    {service.description}
-                                  </div>
-                                )}
-                              </td>
-
-                              <td className="px-3 py-4 text-center tabular-nums">
-                                {service.quantity ?? 1}
-                              </td>
-
-                              <td className="whitespace-nowrap px-3 py-4 text-right tabular-nums">
-                                {Number(service.total) === 0
-                                  ? ""
-                                  : formatCurrency(service.total)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ))}
-
+              {/* LEFT: Couple PNG */}
+              <div className="order-2 flex items-end justify-center lg:order-1">
+                <img
+                  src="/images/quotation-couple.png"
+                  alt="Couple holding a guitar"
+                  className="h-auto w-full max-w-[380px] object-contain object-bottom sm:max-w-[450px] lg:max-w-full"
+                />
               </div>
 
-              <div
-                className="mt-8 space-y-4 border-t pt-6"
-                style={{ borderColor: `${accentColor}88` }}
-              >
-                
-              <div className="flex justify-between gap-4">
-                 <span className="opacity-70">Subtotal</span>
-                 <span>{formatCurrency(quotation.subtotal)}</span>
-              </div>
+              {/* RIGHT: Investment content */}
+              <div className="order-1 min-w-0 lg:order-2">
+                <SectionHeading
+                  title={heading || "Your Investment"}
+                  subtitle={subtitle}
+                  accentColor={accentColor}
+                />
 
-                {quotation.discount > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <span className="opacity-70">Discount</span>
-                    <span>
-                      −{formatCurrency(quotation.discount)}
-                    </span>
-                  </div>
-                )}
-
-                {(quotation.additionalDiscountPercent ?? 0) > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <span className="opacity-70">
-                      Additional Discount ({quotation.additionalDiscountPercent}%)
-                    </span>
-                    <span>
-                      −{formatCurrency(quotation.additionalDiscountAmount)}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex justify-between gap-4">
-                  <span className="opacity-70">Taxable Amount</span>
-                  <span>
-                    {formatCurrency(
-                      Math.max(
-                        0,
-                        quotation.subtotal -
-                          quotation.discount -
-                          (quotation.additionalDiscountAmount ?? 0)
-                      )
-                    )}
-                  </span>
-                </div>
-
-                {(quotation.gstRate ?? 0) > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <span className="opacity-70">
-                      GST ({quotation.gstRate}%)
-                    </span>
-                    <span>{formatCurrency(quotation.gstAmount)}</span>
-                  </div>
-                )}
-
-                {quotation.gstin && (
-                  <div className="flex flex-wrap justify-between gap-4 text-sm">
-                    <span className="opacity-70">GSTIN</span>
-                    <span>{quotation.gstin}</span>
-                  </div>
-                )}
-
+                {/* Quotation Card */}
                 <div
-                  className="flex flex-wrap items-center justify-between gap-4 border-t pt-6"
+                  className="rounded-sm border p-4 sm:p-6 md:p-8"
                   style={{ borderColor: `${accentColor}88` }}
                 >
-                  <span className="text-lg">Total Investment</span>
+                  <div className="space-y-6">
 
-                  <span
-                    className="text-3xl font-light md:text-4xl"
-                    style={{ color: accentColor }}
+                    {/* Event services */}
+                    {quotation.events.map((event, eventIndex) => (
+                      <div key={`${event.eventName}-${eventIndex}`}>
+                        <h3
+                          className="mb-4 border-b pb-3 text-base font-semibold uppercase tracking-wide sm:text-lg"
+                          style={{
+                            color: accentColor,
+                            borderColor: `${accentColor}66`,
+                          }}
+                        >
+                          {event.eventName}
+                          {event.eventDate
+                            ? ` - ${formatDate(event.eventDate)}`
+                            : ""}
+                        </h3>
+
+                        {/* Services table */}
+                        <div className="w-full overflow-x-auto">
+                          <table className="w-full min-w-[360px] border-collapse text-xs sm:text-sm">
+                            <thead>
+                              <tr
+                                style={{
+                                  backgroundColor: accentColor,
+                                  color: "#ffffff",
+                                }}
+                              >
+                                <th className="px-2 py-3 text-center sm:px-3">
+                                  S.No
+                                </th>
+                                <th className="px-2 py-3 text-left sm:px-3">
+                                  Services
+                                </th>
+                                <th className="px-2 py-3 text-center sm:px-3">
+                                  Cameras
+                                </th>
+                                <th className="px-2 py-3 text-right sm:px-3">
+                                  Amount
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {event.services.map((service, serviceIndex) => (
+                                <tr
+                                  key={`${service.name}-${serviceIndex}`}
+                                  className="border-b"
+                                  style={{
+                                    borderColor: `${accentColor}44`,
+                                  }}
+                                >
+                                  <td className="px-2 py-3 text-center sm:px-3">
+                                    {serviceIndex + 1}
+                                  </td>
+
+                                  <td className="px-2 py-3 sm:px-3">
+                                    <div className="font-medium">
+                                      {service.name}
+                                    </div>
+
+                                    {service.description && (
+                                      <p className="mt-1 text-xs opacity-60">
+                                        {service.description}
+                                      </p>
+                                    )}
+                                  </td>
+
+                                  <td className="px-2 py-3 text-center sm:px-3">
+                                    {service.quantity ?? 1}
+                                  </td>
+
+                                  <td className="whitespace-nowrap px-2 py-3 text-right sm:px-3">
+                                    {formatCurrency(
+                                      service.total ??
+                                        service.unitPrice * service.quantity
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+
+                  </div>
+
+                  {/* Pricing summary */}
+                  <div
+                    className="mt-8 space-y-4 border-t pt-6 text-sm"
+                    style={{ borderColor: `${accentColor}88` }}
                   >
-                    {formatCurrency(quotation.totalAmount)}
-                  </span>
+                    {/* Subtotal */}
+                    <div className="flex justify-between gap-4">
+                      <span className="opacity-70">Subtotal</span>
+                      <span>{formatCurrency(quotation.subtotal)}</span>
+                    </div>
+
+                    {/* Discount */}
+                    {quotation.discount > 0 && (
+                      <div className="flex justify-between gap-4">
+                        <span className="opacity-70">Discount</span>
+                        <span>
+                          −{formatCurrency(quotation.discount)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Additional Discount */}
+                    {(quotation.additionalDiscountPercent ?? 0) > 0 && (
+                      <div className="flex justify-between gap-4">
+                        <span className="opacity-70">
+                          Additional Discount (
+                          {quotation.additionalDiscountPercent}%)
+                        </span>
+
+                        <span>
+                          −{formatCurrency(quotation.additionalDiscountAmount)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Taxable Amount */}
+                    <div className="flex justify-between gap-4">
+                      <span className="opacity-70">Taxable Amount</span>
+
+                      <span>
+                        {formatCurrency(
+                          Math.max(
+                            0,
+                            (quotation.subtotal ?? 0) -
+                              (quotation.discount ?? 0) -
+                              (quotation.additionalDiscountAmount ?? 0)
+                          )
+                        )}
+                      </span>
+                    </div>
+
+                    {/* GST */}
+                    {(quotation.gstRate ?? 0) > 0 && (
+                      <div className="flex justify-between gap-4">
+                        <span className="opacity-70">
+                          GST ({quotation.gstRate}%)
+                        </span>
+
+                        <span>{formatCurrency(quotation.gstAmount)}</span>
+                      </div>
+                    )}
+
+                    {/* GSTIN */}
+                    {quotation.gstin && (
+                      <div className="flex flex-wrap justify-between gap-4">
+                        <span className="opacity-70">GSTIN</span>
+                        <span>{quotation.gstin}</span>
+                      </div>
+                    )}
+
+                    {/* Total Investment */}
+                    <div
+                      className="flex flex-wrap items-center justify-between gap-4 border-t pt-6"
+                      style={{ borderColor: `${accentColor}88` }}
+                    >
+                      <span className="text-base sm:text-lg">
+                        Total Investment
+                      </span>
+
+                      <span
+                        className="text-2xl font-light sm:text-3xl md:text-4xl"
+                        style={{ color: accentColor }}
+                      >
+                        {formatCurrency(quotation.totalAmount)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
         </section>
