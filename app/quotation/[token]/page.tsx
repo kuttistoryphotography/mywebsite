@@ -682,7 +682,7 @@ function renderSection(
                             </th>
 
                             <th className="px-3 py-3 text-center">
-                              Cameras
+                              Qty
                             </th>
 
                             <th className="px-3 py-3 text-right">
@@ -760,7 +760,7 @@ function renderSection(
 
                               <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs">
                                 <span>
-                                  Cameras: {service.quantity ?? 1}
+                                  Qty: {service.quantity ?? 1}
                                 </span>
 
                                 <span className="font-medium">
