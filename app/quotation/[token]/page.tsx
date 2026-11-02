@@ -627,34 +627,14 @@ function renderSection(
 
           {/* Main content */}
           <div className="relative z-10 mx-auto w-full max-w-3xl pb-40">
-            {/* Logo + Heading */}
-            <div className="mb-8 text-center">
-              {design.logoUrl && (
-                <img
-                  src={design.logoUrl}
-                  alt={design.brandName || "Kutti Story Photography"}
-                  className="mx-auto mb-5 max-h-20 w-auto max-w-48 object-contain"
-                  loading="lazy"
-                />
-              )}
-
+            {/* Heading */}
+            <div className="text-center">
               <SectionHeading
                 title={heading || "Your Investment"}
                 subtitle={subtitle}
                 accentColor={accentColor}
               />
             </div>
-
-            {design.logoUrl && (
-              <div className="mt-10 flex justify-center">
-                <img
-                  src={design.logoUrl}
-                  alt={design.brandName || "Kutti Story Photography"}
-                  className="max-h-24 w-auto max-w-52 object-contain"
-                  loading="lazy"
-                />
-              </div>
-            )}
 
             {/* Quotation card */}
             <div
@@ -795,6 +775,16 @@ function renderSection(
                         </div>
                       ))}
                     </div>
+                    {design.logoUrl && (
+                      <div className="mt-10 flex justify-center">
+                        <img
+                          src={design.logoUrl}
+                          alt={design.brandName || "Kutti Story Photography"}
+                          className="max-h-24 w-auto max-w-52 object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
