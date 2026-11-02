@@ -111,15 +111,12 @@ type Service = {
 };
 
 type EventItem = {
-
   eventName: string;
-
   eventDate: string;
-
   venue: string;
-
+  pricingMode: "package" | "individual";
+  packagePrice: string;
   services: Service[];
-
 };
 
 const emptyService = (): Service => ({
@@ -135,15 +132,12 @@ const emptyService = (): Service => ({
 });
 
 const emptyEvent = (): EventItem => ({
-
   eventName: "",
-
   eventDate: "",
-
   venue: "",
-
+  pricingMode: "individual",
+  packagePrice: "",
   services: [emptyService()],
-
 });
 
 const inputClass =
@@ -279,29 +273,22 @@ export default function QuotationBuilderSection() {
   const [galleryCategories, setGalleryCategories] =
     useState<QuotationGalleryCategory[]>(defaultGalleryCategories);
 
-  const subtotal = events.reduce(
+  const subtotal = events.reduce((eventTotal, event) => {
+    if (event.pricingMode === "package") {
+      return eventTotal + Math.max(0, Number(event.packagePrice) || 0);
+    }
 
-    (eventTotal, event) =>
-
-        eventTotal +
-
-        event.services.reduce(
-
+    return (
+      eventTotal +
+      event.services.reduce(
         (serviceTotal, service) =>
-
-            serviceTotal +
-
-            Math.max(0, Number(service.quantity) || 0) *
-
+          serviceTotal +
+          Math.max(0, Number(service.quantity) || 0) *
             Math.max(0, Number(service.price) || 0),
-
         0
-
-        ),
-
-    0
-
+      )
     );
+  }, 0);
 
   const discountAmount = Math.min(
 
@@ -619,57 +606,36 @@ async function editQuotation(id: string) {
     }
 
     setEvents(
-
       (proposal.events || []).map(
-
         (event: {
-
           eventName: string;
-
           eventDate?: string;
-
           venue?: string;
-
+          pricingMode?: "package" | "individual";
+          packagePrice?: number;
           services: {
-
             name: string;
-
             description?: string;
-
             quantity: number;
-
             unitPrice: number;
-
           }[];
-
         }) => ({
-
           eventName: event.eventName || "",
-
           eventDate: event.eventDate
-
             ? String(event.eventDate).slice(0, 10)
-
             : "",
-
           venue: event.venue || "",
-
+          pricingMode:
+            event.pricingMode === "package" ? "package" : "individual",
+          packagePrice: String(event.packagePrice ?? ""),
           services: (event.services || []).map((service) => ({
-
             name: service.name || "",
-
             description: service.description || "",
-
             quantity: String(service.quantity ?? 1),
-
             price: String(service.unitPrice ?? 0),
-
           })),
-
         })
-
       )
-
     );
 
     setDeliverablesText((proposal.deliverables || []).join("\n"));
@@ -1014,6 +980,15 @@ async function editQuotation(id: string) {
 
           !event.eventName.trim() ||
 
+          (
+            event.pricingMode === "package" &&
+            (
+              event.packagePrice.trim() === "" ||
+              !Number.isFinite(Number(event.packagePrice)) ||
+              Number(event.packagePrice) < 0
+            )
+          ) ||
+
           event.services.length === 0 ||
 
           event.services.some(
@@ -1022,11 +997,13 @@ async function editQuotation(id: string) {
 
               !service.name.trim() ||
 
-              service.price.trim() === "" ||
-
-              !Number.isFinite(Number(service.price)) ||
-
-              Number(service.price) < 0
+             event.pricingMode === "individual" &&
+              (
+                service.price.trim() === "" ||
+                !Number.isFinite(Number(service.price)) ||
+                Number(service.price) < 0
+              )
+              
 
           )
 
@@ -1308,26 +1285,26 @@ async function editQuotation(id: string) {
         },
 
       events: events.map((event) => ({
-
         eventName: event.eventName.trim(),
-
         eventDate: event.eventDate || undefined,
-
         venue: event.venue.trim(),
 
+        pricingMode: event.pricingMode,
+        packagePrice:
+          event.pricingMode === "package"
+            ? Number(event.packagePrice)
+            : 0,
+
         services: event.services.map((service) => ({
-
-            name: service.name.trim(),
-
-            description: service.description.trim(),
-
-            quantity: Number(service.quantity),
-
-            unitPrice: Number(service.price),
-
+          name: service.name.trim(),
+          description: service.description.trim(),
+          quantity: Number(service.quantity),
+          unitPrice:
+            event.pricingMode === "individual"
+              ? Number(service.price)
+              : 0,
         })),
-
-        })),
+      })),
 
       deliverables: deliverablesText
 
@@ -2245,7 +2222,7 @@ async function editQuotation(id: string) {
 
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
 
               <label className={labelClass}>
                 Event category *
@@ -2307,6 +2284,45 @@ async function editQuotation(id: string) {
                 />
 
               </label>
+
+              <label className={labelClass}>
+                Pricing Mode *
+                <select
+                  className={inputClass}
+                  value={event.pricingMode}
+                  onChange={(e) =>
+                    updateEvent(
+                      eventIndex,
+                      "pricingMode",
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="package">Package Price</option>
+                  <option value="individual">Individual Service Price</option>
+                </select>
+              </label>
+
+              {event.pricingMode === "package" && (
+                <label className={labelClass}>
+                  Package Price (₹) *
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    className={inputClass}
+                    value={event.packagePrice}
+                    onChange={(e) =>
+                      updateEvent(
+                        eventIndex,
+                        "packagePrice",
+                        e.target.value
+                      )
+                    }
+                    placeholder="100000"
+                  />
+                </label>
+              )}
 
             </div>
 
