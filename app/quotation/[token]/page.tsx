@@ -775,19 +775,21 @@ function renderSection(
                         </div>
                       ))}
                     </div>
-                    {design.logoUrl && (
-                      <div className="mt-10 flex justify-center">
-                        <img
-                          src={design.logoUrl}
-                          alt={design.brandName || "Kutti Story Photography"}
-                          className="max-h-24 w-auto max-w-52 object-contain"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
+                    
                   </div>
                 ))}
               </div>
+
+              {design.logoUrl && (
+              <div className="mt-10 flex justify-center">
+                <img
+                  src={design.logoUrl}
+                  alt={design.brandName || "Kutti Story Photography"}
+                  className="max-h-24 w-auto max-w-52 object-contain"
+                  loading="lazy"
+                />
+              </div>
+            )}
 
               {/* Existing pricing summary */}
               <div
