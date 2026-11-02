@@ -597,24 +597,37 @@ function renderSection(
           key={section.id}
           className="relative isolate overflow-hidden px-4 py-16 sm:px-6 md:px-12 md:py-24"
           style={{
-          ...sectionStyle,
-            backgroundImage: `
-              linear-gradient(
-                rgba(20, 16, 10, 0.25),
-                rgba(20, 16, 10, 0.35)
-              ),
-              url('/images/golden-floral-bg.png')
-            `,
-            backgroundSize: "100% 100%",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
+            ...sectionStyle,
+            backgroundColor: "#080604",
           }}
         >
-         
+          {/* Mobile black and gold background */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden"
+            style={{
+              backgroundImage: "url('/images/mobile-gold-bg.jpg')",
+            }}
+          />
+
+          {/* Desktop existing golden floral background */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 hidden bg-cover bg-center bg-no-repeat md:block"
+            style={{
+              backgroundImage: "url('/images/golden-floral-bg.png')",
+            }}
+          />
+
+          {/* Background overlay */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-black/25"
+          />
+
           {/* Main content */}
           <div className="relative z-10 mx-auto w-full max-w-3xl pb-40">
-
-            {/* Centered heading */}
+            {/* Heading */}
             <div className="text-center">
               <SectionHeading
                 title={heading || "Your Investment"}
@@ -625,18 +638,17 @@ function renderSection(
 
             {/* Quotation card */}
             <div
-              className="relative z-10 rounded-sm border p-4 backdrop-blur-sm sm:p-6 md:p-8"
+              className="relative rounded-sm border p-4 backdrop-blur-sm sm:p-6 md:p-8"
               style={{
                 borderColor: `${accentColor}88`,
-                backgroundColor: "rgba(25, 25, 25, 0.88)",
+                backgroundColor: "rgba(20, 20, 20, 0.90)",
               }}
             >
+              {/* Event breakdown */}
               <div className="space-y-6">
-
-                {/* Event breakdown */}
                 {quotation.events.map((event, eventIndex) => (
                   <div key={`${event.eventName}-${eventIndex}`}>
-
+                    {/* Event heading */}
                     <h3
                       className="mb-3 border-b pb-3 text-sm font-semibold uppercase tracking-wide sm:text-base"
                       style={{
@@ -651,103 +663,117 @@ function renderSection(
                       )}
                     </h3>
 
-                    {/* Services table */}
-                    <div>
-                      {/* Desktop table */}
-                      <div className="hidden overflow-x-auto sm:block">
-                        <table className="w-full border-collapse text-sm">
-                          <thead>
+                    {/* Desktop services table */}
+                    <div className="hidden overflow-x-auto sm:block">
+                      <table className="w-full border-collapse text-sm">
+                        <thead>
+                          <tr
+                            style={{
+                              backgroundColor: accentColor,
+                              color: "#ffffff",
+                            }}
+                          >
+                            <th className="px-3 py-3 text-center">
+                              S.No
+                            </th>
+
+                            <th className="px-3 py-3 text-left">
+                              Services
+                            </th>
+
+                            <th className="px-3 py-3 text-center">
+                              Cameras
+                            </th>
+
+                            <th className="px-3 py-3 text-right">
+                              Amount
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {event.services.map((service, serviceIndex) => (
                             <tr
+                              key={`${service.name}-${serviceIndex}`}
+                              className="border-b"
                               style={{
-                                backgroundColor: accentColor,
-                                color: "#ffffff",
+                                borderColor: `${accentColor}44`,
                               }}
                             >
-                              <th className="px-3 py-3 text-center">S.No</th>
-                              <th className="px-3 py-3 text-left">Services</th>
-                              <th className="px-3 py-3 text-center">Cameras</th>
-                              <th className="px-3 py-3 text-right">Amount</th>
-                            </tr>
-                          </thead>
+                              <td className="px-3 py-3 text-center">
+                                {serviceIndex + 1}
+                              </td>
 
-                          <tbody>
-                            {event.services.map((service, serviceIndex) => (
-                              <tr
-                                key={`${service.name}-${serviceIndex}`}
-                                className="border-b"
-                                style={{ borderColor: `${accentColor}44` }}
-                              >
-                                <td className="px-3 py-3 text-center">
-                                  {serviceIndex + 1}
-                                </td>
-
-                                <td className="px-3 py-3">
-                                  <div className="font-medium">{service.name}</div>
-
-                                  {service.description && (
-                                    <p className="mt-1 text-xs opacity-60">
-                                      {service.description}
-                                    </p>
-                                  )}
-                                </td>
-
-                                <td className="px-3 py-3 text-center">
-                                  {service.quantity ?? 1}
-                                </td>
-
-                                <td className="whitespace-nowrap px-3 py-3 text-right">
-                                  {formatCurrency(
-                                    service.total ??
-                                      service.unitPrice * service.quantity
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Mobile layout */}
-                      <div className="space-y-3 sm:hidden">
-                        {event.services.map((service, serviceIndex) => (
-                          <div
-                            key={`${service.name}-${serviceIndex}`}
-                            className="border-b pb-3"
-                            style={{ borderColor: `${accentColor}44` }}
-                          >
-                            <div className="flex items-start gap-2">
-                              <span className="text-xs opacity-60">
-                                {serviceIndex + 1}.
-                              </span>
-
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium">
+                              <td className="px-3 py-3">
+                                <div className="font-medium">
                                   {service.name}
-                                </p>
+                                </div>
 
                                 {service.description && (
                                   <p className="mt-1 text-xs opacity-60">
                                     {service.description}
                                   </p>
                                 )}
+                              </td>
 
-                                <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs">
-                                  <span>
-                                    Cameras: {service.quantity ?? 1}
-                                  </span>
+                              <td className="px-3 py-3 text-center">
+                                {service.quantity ?? 1}
+                              </td>
 
-                                  <span className="font-medium">
-                                    {formatCurrency(
-                                      service.total ??
-                                        service.unitPrice * service.quantity
-                                    )}
-                                  </span>
-                                </div>
+                              <td className="whitespace-nowrap px-3 py-3 text-right">
+                                {formatCurrency(
+                                  service.total ??
+                                    service.unitPrice * service.quantity
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Mobile services layout */}
+                    <div className="space-y-3 sm:hidden">
+                      {event.services.map((service, serviceIndex) => (
+                        <div
+                          key={`${service.name}-${serviceIndex}`}
+                          className="border-b pb-3"
+                          style={{
+                            borderColor: `${accentColor}44`,
+                          }}
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-xs opacity-60">
+                              {serviceIndex + 1}.
+                            </span>
+
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium">
+                                {service.name}
+                              </p>
+
+                              {service.description && (
+                                <p className="mt-1 text-xs opacity-60">
+                                  {service.description}
+                                </p>
+                              )}
+
+                              <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs">
+                                <span>
+                                  Cameras: {service.quantity ?? 1}
+                                </span>
+
+                                <span className="font-medium">
+                                  {formatCurrency(
+                                    service.total ??
+                                      service.unitPrice * service.quantity
+                                  )}
+                                </span>
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -756,7 +782,9 @@ function renderSection(
               {/* Existing pricing summary */}
               <div
                 className="mt-8 space-y-4 border-t pt-6 text-sm"
-                style={{ borderColor: `${accentColor}88` }}
+                style={{
+                  borderColor: `${accentColor}88`,
+                }}
               >
                 {/* Subtotal */}
                 <div className="flex justify-between gap-4">
@@ -768,6 +796,7 @@ function renderSection(
                 {quotation.discount > 0 && (
                   <div className="flex justify-between gap-4">
                     <span className="opacity-70">Discount</span>
+
                     <span>
                       −{formatCurrency(quotation.discount)}
                     </span>
@@ -792,7 +821,9 @@ function renderSection(
 
                 {/* Taxable Amount */}
                 <div className="flex justify-between gap-4">
-                  <span className="opacity-70">Taxable Amount</span>
+                  <span className="opacity-70">
+                    Taxable Amount
+                  </span>
 
                   <span>
                     {formatCurrency(
@@ -827,10 +858,12 @@ function renderSection(
                   </div>
                 )}
 
-                {/* Total */}
+                {/* Total Investment */}
                 <div
                   className="flex flex-wrap items-center justify-between gap-4 border-t pt-6"
-                  style={{ borderColor: `${accentColor}88` }}
+                  style={{
+                    borderColor: `${accentColor}88`,
+                  }}
                 >
                   <span className="text-base sm:text-lg">
                     Total Investment
@@ -838,7 +871,9 @@ function renderSection(
 
                   <span
                     className="text-2xl font-light sm:text-3xl md:text-4xl"
-                    style={{ color: accentColor }}
+                    style={{
+                      color: accentColor,
+                    }}
                   >
                     {formatCurrency(quotation.totalAmount)}
                   </span>
