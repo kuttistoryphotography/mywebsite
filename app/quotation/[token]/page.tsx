@@ -612,7 +612,7 @@ function renderSection(
         >
          
           {/* Main content */}
-          <div className="relative z-10 mx-auto max-w-3xl pb-24">
+          <div className="relative z-10 mx-auto w-full max-w-3xl pb-40">
 
             {/* Centered heading */}
             <div className="text-center">
@@ -652,72 +652,102 @@ function renderSection(
                     </h3>
 
                     {/* Services table */}
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[360px] border-collapse text-xs sm:text-sm">
-                        <thead>
-                          <tr
-                            style={{
-                              backgroundColor: accentColor,
-                              color: "#ffffff",
-                            }}
-                          >
-                            <th className="px-2 py-3 text-center sm:px-3">
-                              S.No
-                            </th>
-
-                            <th className="px-2 py-3 text-left sm:px-3">
-                              Services
-                            </th>
-
-                            <th className="px-2 py-3 text-center sm:px-3">
-                              Cameras
-                            </th>
-
-                            <th className="px-2 py-3 text-right sm:px-3">
-                              Amount
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {event.services.map((service, serviceIndex) => (
+                    <div>
+                      {/* Desktop table */}
+                      <div className="hidden overflow-x-auto sm:block">
+                        <table className="w-full border-collapse text-sm">
+                          <thead>
                             <tr
-                              key={`${service.name}-${serviceIndex}`}
-                              className="border-b"
                               style={{
-                                borderColor: `${accentColor}44`,
+                                backgroundColor: accentColor,
+                                color: "#ffffff",
                               }}
                             >
-                              <td className="px-2 py-3 text-center sm:px-3">
-                                {serviceIndex + 1}
-                              </td>
+                              <th className="px-3 py-3 text-center">S.No</th>
+                              <th className="px-3 py-3 text-left">Services</th>
+                              <th className="px-3 py-3 text-center">Cameras</th>
+                              <th className="px-3 py-3 text-right">Amount</th>
+                            </tr>
+                          </thead>
 
-                              <td className="px-2 py-3 sm:px-3">
-                                <div className="font-medium">
+                          <tbody>
+                            {event.services.map((service, serviceIndex) => (
+                              <tr
+                                key={`${service.name}-${serviceIndex}`}
+                                className="border-b"
+                                style={{ borderColor: `${accentColor}44` }}
+                              >
+                                <td className="px-3 py-3 text-center">
+                                  {serviceIndex + 1}
+                                </td>
+
+                                <td className="px-3 py-3">
+                                  <div className="font-medium">{service.name}</div>
+
+                                  {service.description && (
+                                    <p className="mt-1 text-xs opacity-60">
+                                      {service.description}
+                                    </p>
+                                  )}
+                                </td>
+
+                                <td className="px-3 py-3 text-center">
+                                  {service.quantity ?? 1}
+                                </td>
+
+                                <td className="whitespace-nowrap px-3 py-3 text-right">
+                                  {formatCurrency(
+                                    service.total ??
+                                      service.unitPrice * service.quantity
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile layout */}
+                      <div className="space-y-3 sm:hidden">
+                        {event.services.map((service, serviceIndex) => (
+                          <div
+                            key={`${service.name}-${serviceIndex}`}
+                            className="border-b pb-3"
+                            style={{ borderColor: `${accentColor}44` }}
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className="text-xs opacity-60">
+                                {serviceIndex + 1}.
+                              </span>
+
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium">
                                   {service.name}
-                                </div>
+                                </p>
 
                                 {service.description && (
                                   <p className="mt-1 text-xs opacity-60">
                                     {service.description}
                                   </p>
                                 )}
-                              </td>
 
-                              <td className="px-2 py-3 text-center sm:px-3">
-                                {service.quantity ?? 1}
-                              </td>
+                                <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs">
+                                  <span>
+                                    Cameras: {service.quantity ?? 1}
+                                  </span>
 
-                              <td className="whitespace-nowrap px-2 py-3 text-right sm:px-3">
-                                {formatCurrency(
-                                  service.total ??
-                                    service.unitPrice * service.quantity
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                                  <span className="font-medium">
+                                    {formatCurrency(
+                                      service.total ??
+                                        service.unitPrice * service.quantity
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ))}
