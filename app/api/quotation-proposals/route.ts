@@ -156,21 +156,22 @@ function calculateTotals(
   gstRate: number = 0,
   additionalDiscountPercent: number = 0
 ) {
-  const subtotal = events.reduce(
-    (eventTotal, event) =>
+  const subtotal = events.reduce((eventTotal, event) => {
+    if (event.pricingMode === "package") {
+      return eventTotal + Math.max(0, Number(event.packagePrice) || 0);
+    }
+
+    return (
       eventTotal +
       (event.services || []).reduce(
         (serviceTotal: number, service: any) =>
           serviceTotal +
           Math.max(0, Number(service.quantity) || 0) *
-            Math.max(
-              0,
-              Number(service.unitPrice ?? service.price) || 0
-            ),
+            Math.max(0, Number(service.unitPrice) || 0),
         0
-      ),
-    0
-  );
+      )
+    );
+  }, 0);
 
   // Existing fixed discount in rupees
   const fixedDiscount = Math.min(
@@ -382,7 +383,10 @@ export async function POST(request: NextRequest) {
           typeof service.name === "string" ? service.name.trim() : "";
 
         const quantity = Number(service.quantity);
-        const unitPrice = Number(service.unitPrice);
+        const unitPrice =
+          event.pricingMode === "package"
+            ? 0
+            : Number(service.unitPrice);
 
         if (
           !name ||
@@ -413,13 +417,24 @@ export async function POST(request: NextRequest) {
 
       return {
         eventName: event.eventName.trim().slice(0, 200),
+
         eventDate: event.eventDate
           ? new Date(event.eventDate)
           : undefined,
+
         venue:
           typeof event.venue === "string"
             ? event.venue.trim().slice(0, 500)
             : "",
+
+        pricingMode:
+          event.pricingMode === "package" ? "package" : "individual",
+
+        packagePrice:
+          event.pricingMode === "package"
+            ? Number(event.packagePrice) || 0
+            : 0,
+
         services,
       };
     });

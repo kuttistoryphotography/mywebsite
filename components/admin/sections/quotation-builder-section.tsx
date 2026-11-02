@@ -280,11 +280,14 @@ export default function QuotationBuilderSection() {
 
     return (
       eventTotal +
-      event.services.reduce(
-        (serviceTotal, service) =>
+      (event.services || []).reduce(
+        (serviceTotal: number, service: any) =>
           serviceTotal +
           Math.max(0, Number(service.quantity) || 0) *
-            Math.max(0, Number(service.price) || 0),
+            Math.max(
+              0,
+              Number(service.unitPrice ?? service.price) || 0
+            ),
         0
       )
     );
