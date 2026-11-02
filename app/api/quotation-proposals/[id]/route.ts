@@ -19,8 +19,12 @@ function calculateTotals(
   gstRate: number = 0,
   additionalDiscountPercent: number = 0
 ) {
-  const subtotal = events.reduce(
-    (sum, event) =>
+  const subtotal = events.reduce((sum, event) => {
+    if (event.pricingMode === "package") {
+      return sum + Math.max(0, Number(event.packagePrice) || 0);
+    }
+
+    return (
       sum +
       (event.services || []).reduce(
         (eventSum: number, service: any) =>
@@ -31,9 +35,9 @@ function calculateTotals(
               Number(service.unitPrice ?? service.price) || 0
             ),
         0
-      ),
-    0
-  );
+      )
+    );
+  }, 0);
 
   const fixedDiscount = Math.min(
     subtotal,
@@ -59,9 +63,7 @@ function calculateTotals(
     Math.max(0, Number(gstRate) || 0)
   );
 
-  const gstAmount = Math.round(
-    (taxableAmount * safeGstRate) / 100
-  );
+  const gstAmount = Math.round((taxableAmount * safeGstRate) / 100);
 
   return {
     subtotal,
@@ -250,13 +252,24 @@ export async function PATCH(
 
       return {
         eventName: event.eventName.trim().slice(0, 200),
+
         eventDate: event.eventDate
           ? new Date(event.eventDate)
           : undefined,
+
         venue:
           typeof event.venue === "string"
             ? event.venue.trim().slice(0, 500)
             : "",
+
+        pricingMode:
+          event.pricingMode === "package" ? "package" : "individual",
+
+        packagePrice:
+          event.pricingMode === "package"
+            ? Math.max(0, Number(event.packagePrice) || 0)
+            : 0,
+
         services,
       };
     });
