@@ -597,15 +597,15 @@ function renderSection(
           key={section.id}
           className="relative isolate overflow-hidden px-4 py-16 sm:px-6 md:px-12 md:py-24"
           style={{
-            ...sectionStyle,
+          ...sectionStyle,
             backgroundImage: `
               linear-gradient(
-                rgba(20, 16, 10, 0.35),
-                rgba(20, 16, 10, 0.45)
+                rgba(20, 16, 10, 0.25),
+                rgba(20, 16, 10, 0.35)
               ),
               url('/images/golden-floral-bg.png')
             `,
-            backgroundSize: "cover",
+            backgroundSize: "100% 100%",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
