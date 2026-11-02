@@ -417,11 +417,9 @@ export async function POST(request: NextRequest) {
 
       return {
         eventName: event.eventName.trim().slice(0, 200),
-
         eventDate: event.eventDate
           ? new Date(event.eventDate)
           : undefined,
-
         venue:
           typeof event.venue === "string"
             ? event.venue.trim().slice(0, 500)
