@@ -13,11 +13,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { CloudinaryFile } from '@/models/CloudinaryFile';
-import {
-  uploadToBlogCloudinary,
-} from "@/lib/blog-cloudinary";
 
 import { guessMimeType } from "@/lib/cloudinary";
+
+import { uploadToBlogCloudinary } from "@/lib/blog-cloudinary";
 
 export async function POST(request: NextRequest) {
   try {

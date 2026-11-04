@@ -1,23 +1,19 @@
+// lib/blog-cloudinary.ts
 
-import { v2 as cloudinary } from "cloudinary";
+import crypto from "crypto";
 import type { CloudinaryUploadResult } from "@/lib/cloudinary";
 
 const cloudName = process.env.BLOG_CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.BLOG_CLOUDINARY_API_KEY;
 const apiSecret = process.env.BLOG_CLOUDINARY_API_SECRET;
 
-if (!cloudName || !apiKey || !apiSecret) {
-  console.error(
-    "[BLOG CLOUDINARY CONFIG] Missing BLOG_CLOUDINARY_CLOUD_NAME, BLOG_CLOUDINARY_API_KEY, or BLOG_CLOUDINARY_API_SECRET"
-  );
+function validateBlogCloudinaryConfig() {
+  if (!cloudName || !apiKey || !apiSecret) {
+    throw new Error(
+      "Missing BLOG_CLOUDINARY_CLOUD_NAME, BLOG_CLOUDINARY_API_KEY, or BLOG_CLOUDINARY_API_SECRET."
+    );
+  }
 }
-
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-  secure: true,
-});
 
 function getResourceType(
   mimeType: string
@@ -27,6 +23,31 @@ function getResourceType(
   return "raw";
 }
 
+/**
+ * Cloudinary signature:
+ * Sort parameters alphabetically, join as key=value,
+ * append API secret, then SHA-1 hash.
+ */
+function generateSignature(
+  params: Record<string, string | number | boolean>
+): string {
+  validateBlogCloudinaryConfig();
+
+  const sortedParams = Object.keys(params)
+    .sort()
+    .map((key) => `${key}=${params[key]}`)
+    .join("&");
+
+  return crypto
+    .createHash("sha1")
+    .update(sortedParams + apiSecret)
+    .digest("hex");
+}
+
+/**
+ * Upload directly to the Blog Cloudinary account.
+ * Does not use or modify the shared Cloudinary SDK configuration.
+ */
 export async function uploadToBlogCloudinary(
   buffer: Buffer,
   options: {
@@ -35,16 +56,12 @@ export async function uploadToBlogCloudinary(
     context: "blog";
   }
 ): Promise<CloudinaryUploadResult> {
-  if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error(
-      "Blog Cloudinary environment variables are missing."
-    );
-  }
+  validateBlogCloudinaryConfig();
 
   const resourceType = getResourceType(options.mimeType);
+  const timestamp = Math.floor(Date.now() / 1000);
 
-  const ext =
-    options.fileName.split(".").pop()?.toLowerCase() || "";
+  const ext = options.fileName.split(".").pop()?.toLowerCase() || "";
 
   const baseName = options.fileName
     .replace(/\.[^.]+$/, "")
@@ -52,50 +69,64 @@ export async function uploadToBlogCloudinary(
     .substring(0, 80);
 
   const publicId = `${Date.now()}_${baseName}`;
-
   const folder = "blog";
 
-  const uploadOptions: Record<string, unknown> = {
+  const signedParams: Record<string, string | number | boolean> = {
+    timestamp,
     folder,
     public_id: publicId,
-    resource_type: resourceType,
     overwrite: false,
     access_mode: "public",
   };
 
+  const signature = generateSignature(signedParams);
+
+  const formData = new FormData();
+
+  formData.append("file", new Blob([new Uint8Array(buffer)], {
+    type: options.mimeType,
+  }));
+
+  formData.append("api_key", apiKey!);
+  formData.append("timestamp", String(timestamp));
+  formData.append("signature", signature);
+  formData.append("folder", folder);
+  formData.append("public_id", publicId);
+  formData.append("overwrite", "false");
+  formData.append("access_mode", "public");
+
   if (resourceType === "raw" && ext) {
-    uploadOptions.format = ext;
+    formData.append("format", ext);
   }
 
+  const uploadUrl =
+    `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+
   console.log("[BLOG CLOUDINARY UPLOAD]", {
+    cloudName,
     fileName: options.fileName,
-    mimeType: options.mimeType,
     resourceType,
     folder,
     size: buffer.length,
   });
 
-  const result = await new Promise<any>((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      uploadOptions,
-      (error, result) => {
-        if (error) {
-          console.error("[BLOG CLOUDINARY ERROR]", error);
-          reject(error);
-          return;
-        }
-
-        resolve(result);
-      }
-    );
-
-    uploadStream.end(buffer);
+  const response = await fetch(uploadUrl, {
+    method: "POST",
+    body: formData,
   });
 
-  if (!result?.secure_url) {
+  const result = await response.json();
+
+  if (!response.ok) {
+    console.error("[BLOG CLOUDINARY ERROR]", result);
+
     throw new Error(
-      "Blog Cloudinary upload completed without a secure URL."
+      result?.error?.message || "Blog Cloudinary upload failed."
     );
+  }
+
+  if (!result?.secure_url) {
+    throw new Error("Cloudinary returned no secure URL.");
   }
 
   const downloadUrl =
@@ -107,6 +138,7 @@ export async function uploadToBlogCloudinary(
       : result.secure_url;
 
   console.log("[BLOG CLOUDINARY SUCCESS]", {
+    cloudName,
     publicId: result.public_id,
     url: result.secure_url,
   });
@@ -127,26 +159,62 @@ export async function uploadToBlogCloudinary(
   };
 }
 
+/**
+ * Delete directly from the Blog Cloudinary account.
+ */
 export async function deleteFromBlogCloudinary(
   publicId: string,
   resourceType: "image" | "video" | "raw" = "image"
 ): Promise<void> {
   if (!publicId) return;
 
-  if (!cloudName || !apiKey || !apiSecret) {
+  validateBlogCloudinaryConfig();
+
+  const timestamp = Math.floor(Date.now() / 1000);
+
+  const signedParams = {
+    timestamp,
+    public_id: publicId,
+    invalidate: true,
+  };
+
+  const signature = generateSignature(signedParams);
+
+  const formData = new FormData();
+
+  formData.append("public_id", publicId);
+  formData.append("timestamp", String(timestamp));
+  formData.append("api_key", apiKey!);
+  formData.append("signature", signature);
+  formData.append("invalidate", "true");
+
+  const deleteUrl =
+    `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/destroy`;
+
+  const response = await fetch(deleteUrl, {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    console.error("[BLOG CLOUDINARY DELETE ERROR]", result);
+
     throw new Error(
-      "Blog Cloudinary environment variables are missing."
+      result?.error?.message || "Blog Cloudinary deletion failed."
     );
   }
 
-  try {
-    await cloudinary.uploader.destroy(publicId, {
-      resource_type: resourceType,
-      invalidate: true,
-    });
-  } catch (error: any) {
-    if (!error?.message?.includes("not found")) {
-      throw error;
-    }
+  if (result.result !== "ok" && result.result !== "not found") {
+    throw new Error(
+      `Cloudinary delete returned: ${result.result}`
+    );
   }
+
+  console.log("[BLOG CLOUDINARY DELETE]", {
+    cloudName,
+    publicId,
+    result: result.result,
+  });
 }
