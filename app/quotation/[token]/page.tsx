@@ -790,7 +790,6 @@ function renderSection(
                         </div>
                       ))}
                     </div>
-                    
                   </div>
                 ))}
               </div>

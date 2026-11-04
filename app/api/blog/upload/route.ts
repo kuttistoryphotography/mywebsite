@@ -13,7 +13,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { CloudinaryFile } from '@/models/CloudinaryFile';
-import { uploadToCloudinary, guessMimeType } from '@/lib/cloudinary';
+import {
+  uploadToBlogCloudinary,
+} from "@/lib/blog-cloudinary";
+
+import { guessMimeType } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,10 +48,10 @@ export async function POST(request: NextRequest) {
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
-      const result = await uploadToCloudinary(buffer, {
+      const result = await uploadToBlogCloudinary(buffer, {
         fileName: file.name,
         mimeType,
-        context:  'blog',
+        context: "blog",
       });
 
       const doc = await CloudinaryFile.create({
