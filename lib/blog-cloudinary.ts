@@ -1,3 +1,4 @@
+
 import { v2 as cloudinary } from "cloudinary";
 import type { CloudinaryUploadResult } from "@/lib/cloudinary";
 
@@ -6,7 +7,9 @@ const apiKey = process.env.BLOG_CLOUDINARY_API_KEY;
 const apiSecret = process.env.BLOG_CLOUDINARY_API_SECRET;
 
 if (!cloudName || !apiKey || !apiSecret) {
-  console.error("[BLOG CLOUDINARY] Missing blog Cloudinary credentials");
+  console.error(
+    "[BLOG CLOUDINARY CONFIG] Missing BLOG_CLOUDINARY_CLOUD_NAME, BLOG_CLOUDINARY_API_KEY, or BLOG_CLOUDINARY_API_SECRET"
+  );
 }
 
 cloudinary.config({
@@ -33,11 +36,15 @@ export async function uploadToBlogCloudinary(
   }
 ): Promise<CloudinaryUploadResult> {
   if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error("Blog Cloudinary credentials are missing.");
+    throw new Error(
+      "Blog Cloudinary environment variables are missing."
+    );
   }
 
   const resourceType = getResourceType(options.mimeType);
-  const ext = options.fileName.split(".").pop()?.toLowerCase() || "";
+
+  const ext =
+    options.fileName.split(".").pop()?.toLowerCase() || "";
 
   const baseName = options.fileName
     .replace(/\.[^.]+$/, "")
@@ -46,8 +53,10 @@ export async function uploadToBlogCloudinary(
 
   const publicId = `${Date.now()}_${baseName}`;
 
+  const folder = "blog";
+
   const uploadOptions: Record<string, unknown> = {
-    folder: "blog",
+    folder,
     public_id: publicId,
     resource_type: resourceType,
     overwrite: false,
@@ -58,18 +67,35 @@ export async function uploadToBlogCloudinary(
     uploadOptions.format = ext;
   }
 
+  console.log("[BLOG CLOUDINARY UPLOAD]", {
+    fileName: options.fileName,
+    mimeType: options.mimeType,
+    resourceType,
+    folder,
+    size: buffer.length,
+  });
+
   const result = await new Promise<any>((resolve, reject) => {
-    cloudinary.uploader.upload_stream(
+    const uploadStream = cloudinary.uploader.upload_stream(
       uploadOptions,
       (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
+        if (error) {
+          console.error("[BLOG CLOUDINARY ERROR]", error);
+          reject(error);
+          return;
+        }
+
+        resolve(result);
       }
-    ).end(buffer);
+    );
+
+    uploadStream.end(buffer);
   });
 
   if (!result?.secure_url) {
-    throw new Error("Blog Cloudinary did not return a secure URL.");
+    throw new Error(
+      "Blog Cloudinary upload completed without a secure URL."
+    );
   }
 
   const downloadUrl =
@@ -79,6 +105,11 @@ export async function uploadToBlogCloudinary(
           "/upload/fl_attachment/"
         )
       : result.secure_url;
+
+  console.log("[BLOG CLOUDINARY SUCCESS]", {
+    publicId: result.public_id,
+    url: result.secure_url,
+  });
 
   return {
     publicId: result.public_id,
@@ -91,7 +122,7 @@ export async function uploadToBlogCloudinary(
     width: result.width,
     height: result.height,
     duration: result.duration,
-    folderName: "blog",
+    folderName: folder,
     originalName: options.fileName,
   };
 }
@@ -102,8 +133,20 @@ export async function deleteFromBlogCloudinary(
 ): Promise<void> {
   if (!publicId) return;
 
-  await cloudinary.uploader.destroy(publicId, {
-    resource_type: resourceType,
-    invalidate: true,
-  });
+  if (!cloudName || !apiKey || !apiSecret) {
+    throw new Error(
+      "Blog Cloudinary environment variables are missing."
+    );
+  }
+
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+      invalidate: true,
+    });
+  } catch (error: any) {
+    if (!error?.message?.includes("not found")) {
+      throw error;
+    }
+  }
 }
