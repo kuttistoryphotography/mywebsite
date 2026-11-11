@@ -12,6 +12,10 @@ import { getCurrentUser } from "@/lib/auth";
 import ChatSession from "@/models/ChatSession";
 import ContactSettings from "@/models/ContactSettings";
 
+/* =========================================
+   CONTACT INFORMATION
+========================================= */
+
 interface ContactInfo {
   email: string;
   phone: string;
@@ -32,7 +36,8 @@ const DEFAULT_CONTACT: ContactInfo = {
   email: "kuttistoryphotography@gmail.com",
   phone: "+91 93420 13600, +91 99767 33600",
   whatsapp: "+91 93420 13600",
-  address: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
+  address:
+    "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
   city: "Madurai",
   state: "Tamil Nadu",
   pincode: "625001",
@@ -44,11 +49,14 @@ const DEFAULT_CONTACT: ContactInfo = {
   telegramUrl: "",
 };
 
+/* =========================================
+   SYSTEM PROMPT
+========================================= */
+
 async function buildSystemPrompt(): Promise<string> {
   let contact = { ...DEFAULT_CONTACT };
 
   try {
-    await connectDB();
     const settings = await ContactSettings.findOne().lean();
 
     if (settings) {
@@ -66,7 +74,9 @@ async function buildSystemPrompt(): Promise<string> {
     contact.city,
     contact.state,
     contact.pincode,
-  ].filter(Boolean).join(", ");
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   const socialLinks = [
     ["Instagram", contact.instagramUrl],
@@ -80,76 +90,219 @@ async function buildSystemPrompt(): Promise<string> {
     .join("\n");
 
   return `
-You are Kutti Story Assistant, the official customer support AI for Kutti Story Photography and Kutti Story Media.
+You are Kutti Story Assistant, the official AI customer support and sales assistant for Kutti Story Photography and Kutti Story Media.
 
-PERSONALITY:
+YOUR PERSONALITY:
 - Friendly, warm, professional and helpful.
 - Use simple English.
-- Keep answers short and conversational.
-- Use emojis naturally, but not excessively.
+- Keep responses short and conversational.
+- Use emojis naturally.
 - Never sound robotic.
+- Ask only ONE question at a time.
+- Never overwhelm customers with long messages.
 
-PHOTOGRAPHY SERVICES:
-- Wedding Photography
-- Candid Wedding Photography
-- Traditional Photography
-- Cinematic Wedding Videography
-- Pre-Wedding and Post-Wedding Shoots
-- Engagement Photography
-- Maternity and Baby Photography
-- Baby Shower and Birthday Photography
-- Portrait and Outdoor Photography
-- Corporate and Event Photography
-- Product and Commercial Photography
-- Drone and FPV Coverage
+========================================
+PHOTOGRAPHY SERVICES
+========================================
 
-KUTTI STORY MEDIA SERVICES:
-- Social Media Management
-- Digital Marketing
-- Content Creation
-- Instagram Reels and Short Videos
-- Influencer Marketing
-- Personal Branding
-- Graphic Design and Posters
-- Website Development
+Kutti Story Photography offers:
 
-STUDIO:
+1. Wedding Photography
+2. Candid Wedding Photography
+3. Traditional Photography
+4. Cinematic Wedding Videography
+5. Pre-Wedding Photography
+6. Post-Wedding Photography
+7. Engagement Photography
+8. Maternity Photography
+9. Baby Photography
+10. Baby Shower Photography
+11. Birthday Photography
+12. Portrait Photography
+13. Outdoor Photography
+14. Corporate Event Photography
+15. Product Photography
+16. Commercial Photography
+17. Drone Coverage
+18. FPV Coverage
+
+========================================
+KUTTI STORY MEDIA SERVICES
+========================================
+
+Kutti Story Media offers:
+
+1. Social Media Management
+2. Digital Marketing
+3. Content Creation
+4. Instagram Reels and Short Videos
+5. Influencer Marketing
+6. Personal Branding
+7. Graphic Design and Posters
+8. Website Development
+
+IMPORTANT:
+Always distinguish Kutti Story Media from Kutti Story Photography.
+
+========================================
+KUTTISTORY STUDIO SPACE
+========================================
+
+Services include:
 - Rental Studio Space
 - Podcast Studio
 - Interview Setup
 - Model Shoots
 - Product Shoots
 
-CONTACT INFORMATION:
+========================================
+CONTACT INFORMATION
+========================================
+
 Email: ${contact.email}
+
 Phone: ${contact.phone}
+
 WhatsApp: ${contact.whatsapp}
+
 Address: ${fullAddress}
+
 Business Hours: ${contact.businessHours}
 
 SOCIAL MEDIA:
+
 ${socialLinks || "Please contact our team for social media links."}
 
-IMPORTANT RULES:
+========================================
+CUSTOMER HANDLING RULES
+========================================
 
-1. If customers ask about photography, explain the relevant services.
-2. If customers ask about Social Media, explain Kutti Story Media services. Do not confuse these services with photography bookings.
-3. If customers ask about packages or pricing, say:
+1. GREETINGS
+
+If a customer says Hi, Hello, Good Morning, etc., reply warmly.
+
+Example:
+"Hi! 👋 Welcome to Kutti Story. How can I help you today?"
+
+2. PRICING ENQUIRIES
+
+If a customer asks about package prices without specifying a service, ask:
+
+"Sure! 😊 Which service are you interested in?
+
+Wedding / Pre-Wedding / Birthday / Baby Shoot / Other"
+
+Ask only one question.
+
+3. PHOTOGRAPHY PACKAGE ENQUIRIES
+
+If the customer specifies a photography service, ask about their requirements and event date.
+
+Do not invent prices.
+
+Use this response when exact pricing is unavailable:
+
 "Our packages are customized to your requirements. Please share your needs and our team will help you with the right quotation."
-4. Never invent prices, discounts, availability or offers.
-5. For booking enquiries, ask for their event type and preferred date.
-6. For availability, ask for their preferred event date.
-7. Typical gallery delivery is 2–4 weeks after the event.
-8. For contact enquiries, provide all contact details together.
-9. For unknown information, politely direct customers to WhatsApp.
-10. Ask only one question at a time.
-11. Keep normal replies concise, ideally 2–5 sentences.
-12. Do not repeat the welcome message in every response.
-13. Help customers take the next step towards an enquiry or booking.
+
+4. SOCIAL MEDIA ENQUIRIES
+
+If customers ask about social media services, explain the relevant Kutti Story Media services.
+
+Ask:
+
+"Are you looking for Social Media Management, Digital Marketing or Reels & Content Creation?"
+
+Do not confuse social media services with photography packages.
+
+5. LIVE AGENT HANDOVER
+
+If customers say:
+- Connect with live agent
+- Talk to human
+- Speak to staff
+- Customer support
+- I need a real person
+- I want to talk to your team
+
+Immediately reply:
+
+"Of course! 😊 Our team is ready to help you.
+
+Connect directly with our team:
+
+📲 WhatsApp: ${contact.whatsapp}
+
+📧 Email: ${contact.email}
+
+We'll be happy to assist you!"
+
+Do not continue asking sales questions after offering live-agent contact.
+
+Never claim that a human agent has joined this chat.
+
+6. BOOKING ENQUIRIES
+
+Ask the customer for:
+- Event type
+- Preferred event date
+
+Ask one question at a time.
+
+Guide customers to WhatsApp or the booking page.
+
+7. AVAILABILITY
+
+If customers ask about availability, request their preferred event date.
+
+Never claim a date is available without confirmation from the team.
+
+8. CONTACT ENQUIRIES
+
+If customers request contact information, provide:
+- Phone
+- WhatsApp
+- Email
+- Address
+- Business hours
+- Available social media links
+
+9. GALLERY DELIVERY
+
+Typical gallery delivery is 2–4 weeks after the event.
+
+10. UNKNOWN INFORMATION
+
+If you do not know an answer, politely direct customers to WhatsApp.
+
+11. SALES CONVERSION
+
+Help customers take the next step towards an enquiry or booking.
+
+Do not pressure customers.
+
+12. IMPORTANT RESTRICTIONS
+
+- Never invent prices.
+- Never invent discounts.
+- Never invent booking availability.
+- Never invent customer testimonials.
+- Never promise services that are not listed.
+- Never claim that a booking is confirmed without confirmation.
+
+13. RESPONSE STYLE
+
+- Normal replies: 2–5 sentences.
+- Keep simple questions short.
+- Ask only one question at a time.
+- Do not repeat the welcome message in every response.
+- Use natural conversational language.
 `;
 }
 
-/* POST: Send chatbot message */
+/* =========================================
+   POST: CHAT MESSAGE
+========================================= */
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -160,7 +313,8 @@ export async function POST(request: NextRequest) {
         : "";
 
     const sessionId =
-      typeof body?.sessionId === "string" && body.sessionId.length <= 150
+      typeof body?.sessionId === "string" &&
+      body.sessionId.length <= 150
         ? body.sessionId
         : crypto.randomUUID();
 
@@ -184,7 +338,7 @@ export async function POST(request: NextRequest) {
       console.error("OPENROUTER_API_KEY is missing");
 
       return NextResponse.json(
-        { error: "AI configuration is missing. Please contact support." },
+        { error: "AI API configuration is missing" },
         { status: 500 }
       );
     }
@@ -215,10 +369,15 @@ export async function POST(request: NextRequest) {
 
     const systemPrompt = await buildSystemPrompt();
 
+    /* =========================================
+       OPENROUTER API
+    ========================================= */
+
     const aiRes = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
@@ -227,17 +386,27 @@ export async function POST(request: NextRequest) {
             "https://kuttistoryphotography.com",
           "X-Title": "Kutti Story Assistant",
         },
+
         body: JSON.stringify({
           model: "openai/gpt-4o-mini",
+
           messages: [
-            { role: "system", content: systemPrompt },
+            {
+              role: "system",
+              content: systemPrompt,
+            },
             ...history,
-            { role: "user", content: message },
+            {
+              role: "user",
+              content: message,
+            },
           ],
+
           stream: true,
           temperature: 0.7,
           max_tokens: 700,
         }),
+
         signal: request.signal,
       }
     );
@@ -245,7 +414,7 @@ export async function POST(request: NextRequest) {
     if (!aiRes.ok) {
       const errorText = await aiRes.text();
 
-      console.error("OpenRouter Error:", {
+      console.error("OpenRouter API Error:", {
         status: aiRes.status,
         response: errorText,
       });
@@ -253,7 +422,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "AI service unavailable. Please try again.",
-          status: aiRes.status,
         },
         { status: 502 }
       );
@@ -266,7 +434,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    /* =========================================
+       SAVE USER MESSAGE
+    ========================================= */
+
+    session.messages.push({
+      role: "user",
+      content: message,
+      timestamp: new Date(),
+    });
+
+    await session.save();
+
+    /* =========================================
+       STREAMING RESPONSE
+    ========================================= */
+
     const encoder = new TextEncoder();
+
     let fullResponse = "";
 
     const stream = new ReadableStream({
@@ -279,7 +464,9 @@ export async function POST(request: NextRequest) {
 
         const send = (data: object) => {
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
+            encoder.encode(
+              `data: ${JSON.stringify(data)}\n\n`
+            )
           );
         };
 
@@ -297,11 +484,17 @@ export async function POST(request: NextRequest) {
 
             if (parsed.error) {
               streamFailed = true;
-              console.error("OpenRouter stream error:", parsed.error);
+
+              console.error(
+                "OpenRouter Stream Error:",
+                parsed.error
+              );
+
               return;
             }
 
-            const text = parsed?.choices?.[0]?.delta?.content;
+            const text =
+              parsed?.choices?.[0]?.delta?.content;
 
             if (typeof text === "string" && text.length > 0) {
               fullResponse += text;
@@ -318,9 +511,12 @@ export async function POST(request: NextRequest) {
 
             if (done) break;
 
-            buffer += decoder.decode(value, { stream: true });
+            buffer += decoder.decode(value, {
+              stream: true,
+            });
 
             const lines = buffer.split(/\r?\n/);
+
             buffer = lines.pop() || "";
 
             for (const line of lines) {
@@ -334,30 +530,26 @@ export async function POST(request: NextRequest) {
             processLine(buffer);
           }
 
-          if (streamFailed && !fullResponse.trim()) {
-            send({
-              text: "Sorry, our AI service is temporarily unavailable. Please try again.",
-            });
-          }
+          if (!fullResponse.trim()) {
+            fullResponse = streamFailed
+              ? "Sorry, our AI service is temporarily unavailable. Please try again."
+              : "Sorry, I couldn't generate a response. Please try again.";
 
-          if (!fullResponse.trim() && !streamFailed) {
-            send({
-              text: "Sorry, I couldn't generate a response. Please try again.",
-            });
+            send({ text: fullResponse });
           }
 
         } catch (error) {
-          if (!request.signal.aborted) {
-            console.error("Chatbot streaming error:", error);
+          console.error("Chatbot streaming error:", error);
 
-            if (!fullResponse.trim()) {
-              try {
-                send({
-                  text: "Sorry, connection interrupted. Please try again.",
-                });
-              } catch {}
-            }
+          if (!fullResponse.trim()) {
+            fullResponse =
+              "Sorry, connection interrupted. Please try again.";
+
+            try {
+              send({ text: fullResponse });
+            } catch {}
           }
+
         } finally {
           try {
             if (fullResponse.trim()) {
@@ -370,33 +562,23 @@ export async function POST(request: NextRequest) {
               await session.save();
             }
           } catch (error) {
-            console.error("Chat history save error:", error);
+            console.error(
+              "Chat history save error:",
+              error
+            );
           }
 
           try {
             send({ done: true });
             controller.close();
           } catch {
-            // Client may have disconnected.
+            // Client disconnected.
           }
 
           reader.releaseLock();
         }
       },
-
-      async cancel() {
-        // The client disconnected.
-      },
     });
-
-    // Save user message after the AI request was accepted.
-    session.messages.push({
-      role: "user",
-      content: message,
-      timestamp: new Date(),
-    });
-
-    await session.save();
 
     return new Response(stream, {
       headers: {
@@ -411,25 +593,35 @@ export async function POST(request: NextRequest) {
     console.error("Chatbot POST Error:", error);
 
     return NextResponse.json(
-      { error: "Failed to process message. Please try again." },
+      {
+        error: "Failed to process message. Please try again.",
+      },
       { status: 500 }
     );
   }
 }
 
-/* GET: Load chat history */
+/* =========================================
+   GET: CHAT HISTORY
+========================================= */
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+
     const sessionId = searchParams.get("sessionId");
 
     if (!sessionId) {
-      return NextResponse.json({ messages: [] });
+      return NextResponse.json({
+        messages: [],
+      });
     }
 
     await connectDB();
 
-    const session = await ChatSession.findOne({ sessionId });
+    const session = await ChatSession.findOne({
+      sessionId,
+    });
 
     return NextResponse.json({
       messages: session?.messages || [],
