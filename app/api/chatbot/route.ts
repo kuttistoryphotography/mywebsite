@@ -1,3 +1,4 @@
+
 import "server-only";
 
 export const runtime = "nodejs";
@@ -11,145 +12,258 @@ import { getCurrentUser } from "@/lib/auth";
 import ChatSession from "@/models/ChatSession";
 import ContactSettings from "@/models/ContactSettings";
 
-/* ─── Build system prompt with live contact data from DB ─── */
+interface ContactInfo {
+  email: string;
+  phone: string;
+  whatsapp: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  businessHours: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  youtubeUrl: string;
+  twitterUrl: string;
+  telegramUrl: string;
+}
+
+const DEFAULT_CONTACT: ContactInfo = {
+  email: "kuttistoryphotography@gmail.com",
+  phone: "+91 93420 13600, +91 99767 33600",
+  whatsapp: "+91 93420 13600",
+  address: "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple",
+  city: "Madurai",
+  state: "Tamil Nadu",
+  pincode: "625001",
+  businessHours: "Mon – Sat: 9 AM – 7 PM",
+  instagramUrl: "",
+  facebookUrl: "",
+  youtubeUrl: "",
+  twitterUrl: "",
+  telegramUrl: "",
+};
+
 async function buildSystemPrompt(): Promise<string> {
-  let contact = {
-    email:         "kuttistoryphotography@gmail.com",
-    phone:         "+91 93420 13600, +91 99767 33600",
-    whatsapp:      "+91 93420 13600",
-    address:       "52/32 South Mada Street, Near Koodal Azhagar Perumal Temple, Madurai, Tamil Nadu 625001",
-    city:          "Madurai",
-    state:         "Tamil Nadu",
-    pincode:       "625001",
-    businessHours: "Mon – Sat: 9 AM – 7 PM",
-    instagramUrl:  "",
-    facebookUrl:   "",
-    youtubeUrl:    "",
-    twitterUrl:    "",
-    telegramUrl:   "",
-  };
+  let contact = { ...DEFAULT_CONTACT };
 
   try {
+    await connectDB();
     const settings = await ContactSettings.findOne().lean();
-    if (settings) contact = { ...contact, ...settings };
-  } catch {
-    // fall back to defaults silently
+
+    if (settings) {
+      contact = {
+        ...contact,
+        ...(settings as Partial<ContactInfo>),
+      };
+    }
+  } catch (error) {
+    console.error("Contact settings error:", error);
   }
 
-  // Build the address string
-  const addressParts = [
+  const fullAddress = [
     contact.address,
     contact.city,
     contact.state,
     contact.pincode,
-  ].filter(Boolean);
-  const fullAddress = addressParts.join(", ");
+  ].filter(Boolean).join(", ");
 
-  // Build social links block — only include lines that have a value
-  const socialLines: string[] = [];
-  if (contact.instagramUrl) socialLines.push(`  • Instagram: ${contact.instagramUrl}`);
-  if (contact.facebookUrl)  socialLines.push(`  • Facebook:  ${contact.facebookUrl}`);
-  if (contact.youtubeUrl)   socialLines.push(`  • YouTube:   ${contact.youtubeUrl}`);
-  if (contact.twitterUrl)   socialLines.push(`  • X/Twitter: ${contact.twitterUrl}`);
-  if (contact.telegramUrl)  socialLines.push(`  • Telegram:  ${contact.telegramUrl}`);
-  const socialBlock = socialLines.length
-    ? `Social media:\n${socialLines.join("\n")}`
-    : "";
+  const socialLinks = [
+    ["Instagram", contact.instagramUrl],
+    ["Facebook", contact.facebookUrl],
+    ["YouTube", contact.youtubeUrl],
+    ["X/Twitter", contact.twitterUrl],
+    ["Telegram", contact.telegramUrl],
+  ]
+    .filter(([, url]) => Boolean(url))
+    .map(([name, url]) => `${name}: ${url}`)
+    .join("\n");
 
   return `
-You are a warm, knowledgeable assistant for Kutti Story Photography — a professional photography studio.
+You are Kutti Story Assistant, the official customer support AI for Kutti Story Photography and Kutti Story Media.
 
-Studio specialties:
-- Wedding & pre-wedding photography/videography
-- Outdoor & portrait shoots
-- Baby & kids shoots
-- Product & commercial photography
-- Corporate events & ads
-- Food photography
+PERSONALITY:
+- Friendly, warm, professional and helpful.
+- Use simple English.
+- Keep answers short and conversational.
+- Use emojis naturally, but not excessively.
+- Never sound robotic.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CONTACT INFORMATION (always use these exact values — they come live from the database):
+PHOTOGRAPHY SERVICES:
+- Wedding Photography
+- Candid Wedding Photography
+- Traditional Photography
+- Cinematic Wedding Videography
+- Pre-Wedding and Post-Wedding Shoots
+- Engagement Photography
+- Maternity and Baby Photography
+- Baby Shower and Birthday Photography
+- Portrait and Outdoor Photography
+- Corporate and Event Photography
+- Product and Commercial Photography
+- Drone and FPV Coverage
 
-  📧 Email:          ${contact.email}
-  📞 Phone:          ${contact.phone}
-  💬 WhatsApp:       ${contact.whatsapp}
-  📍 Address:        ${fullAddress}
-  🕐 Business Hours: ${contact.businessHours}
-${socialBlock ? `\n${socialBlock}` : ""}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+KUTTI STORY MEDIA SERVICES:
+- Social Media Management
+- Digital Marketing
+- Content Creation
+- Instagram Reels and Short Videos
+- Influencer Marketing
+- Personal Branding
+- Graphic Design and Posters
+- Website Development
+
+STUDIO:
+- Rental Studio Space
+- Podcast Studio
+- Interview Setup
+- Model Shoots
+- Product Shoots
+
+CONTACT INFORMATION:
+Email: ${contact.email}
+Phone: ${contact.phone}
+WhatsApp: ${contact.whatsapp}
+Address: ${fullAddress}
+Business Hours: ${contact.businessHours}
+
+SOCIAL MEDIA:
+${socialLinks || "Please contact our team for social media links."}
 
 IMPORTANT RULES:
-1. When a client asks for contact information, phone number, email, WhatsApp, address, social media, or how to reach us — ALWAYS reply with ALL of the contact details above in a single, well-formatted message. Never give just one piece; give everything together.
-2. Format the contact reply clearly using the emoji labels shown above so it is easy to scan.
-3. For pricing always say: "Our packages are customized to your needs — please request a quote and our team will get back to you within 24 hours."
-4. For bookings: guide them to use the booking page or contact us directly via WhatsApp or phone.
-5. For availability: ask them to reach out with their preferred date.
-6. Gallery delivery is typically 2–4 weeks after the event.
-7. Be concise, warm, and encouraging. End responses by inviting further questions or suggesting they book/request a quote.
+
+1. If customers ask about photography, explain the relevant services.
+2. If customers ask about Social Media, explain Kutti Story Media services. Do not confuse these services with photography bookings.
+3. If customers ask about packages or pricing, say:
+"Our packages are customized to your requirements. Please share your needs and our team will help you with the right quotation."
+4. Never invent prices, discounts, availability or offers.
+5. For booking enquiries, ask for their event type and preferred date.
+6. For availability, ask for their preferred event date.
+7. Typical gallery delivery is 2–4 weeks after the event.
+8. For contact enquiries, provide all contact details together.
+9. For unknown information, politely direct customers to WhatsApp.
+10. Ask only one question at a time.
+11. Keep normal replies concise, ideally 2–5 sentences.
+12. Do not repeat the welcome message in every response.
+13. Help customers take the next step towards an enquiry or booking.
 `;
 }
 
-/* ─── POST — chat message ─── */
+/* POST: Send chatbot message */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const message   = body?.message?.trim();
-    const sessionId = body?.sessionId || crypto.randomUUID();
+    const message =
+      typeof body?.message === "string"
+        ? body.message.trim()
+        : "";
+
+    const sessionId =
+      typeof body?.sessionId === "string" && body.sessionId.length <= 150
+        ? body.sessionId
+        : crypto.randomUUID();
 
     if (!message) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    if (message.length > 4000) {
+      return NextResponse.json(
+        { error: "Message is too long" },
+        { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.OPENROUTER_API_KEY;
+
+    if (!apiKey) {
+      console.error("OPENROUTER_API_KEY is missing");
+
+      return NextResponse.json(
+        { error: "AI configuration is missing. Please contact support." },
+        { status: 500 }
+      );
     }
 
     await connectDB();
 
-    // Find or create session
     let session = await ChatSession.findOne({ sessionId });
+
     if (!session) {
       const currentUser = await getCurrentUser();
+
       session = await ChatSession.create({
         sessionId,
-        userId:   currentUser?.userId || null,
+        userId: currentUser?.userId || null,
         messages: [],
       });
     }
 
-    // Last 20 messages for context
     const history = (session.messages || [])
       .slice(-20)
-      .map((m: any) => ({ role: m.role, content: m.content }));
+      .filter((m: any) =>
+        ["user", "assistant"].includes(m.role)
+      )
+      .map((m: any) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
-    // Save user message immediately
-    session.messages.push({ role: "user", content: message, timestamp: new Date() });
-    await session.save();
-
-    // Build system prompt with live contact data
     const systemPrompt = await buildSystemPrompt();
 
-    // OpenRouter request
-    const aiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type":  "application/json",
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer":  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-        "X-Title":       "Kuttistory AI",
-      },
-      body: JSON.stringify({
-        model:    "openai/gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...history,
-          { role: "user",   content: message },
-        ],
-        stream: true,
-      }),
-    });
+    const aiRes = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer":
+            process.env.NEXT_PUBLIC_SITE_URL ||
+            "https://kuttistoryphotography.com",
+          "X-Title": "Kutti Story Assistant",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-4o-mini",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...history,
+            { role: "user", content: message },
+          ],
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 700,
+        }),
+        signal: request.signal,
+      }
+    );
 
     if (!aiRes.ok) {
       const errorText = await aiRes.text();
-      console.error("OpenRouter API Error:", errorText);
-      return NextResponse.json({ error: "AI service unavailable" }, { status: 500 });
+
+      console.error("OpenRouter Error:", {
+        status: aiRes.status,
+        response: errorText,
+      });
+
+      return NextResponse.json(
+        {
+          error: "AI service unavailable. Please try again.",
+          status: aiRes.status,
+        },
+        { status: 502 }
+      );
+    }
+
+    if (!aiRes.body) {
+      return NextResponse.json(
+        { error: "AI returned an empty response" },
+        { status: 502 }
+      );
     }
 
     const encoder = new TextEncoder();
@@ -157,78 +271,176 @@ export async function POST(request: NextRequest) {
 
     const stream = new ReadableStream({
       async start(controller) {
-        const reader  = aiRes.body!.getReader();
+        const reader = aiRes.body!.getReader();
         const decoder = new TextDecoder();
+
+        let buffer = "";
+        let streamFailed = false;
+
+        const send = (data: object) => {
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify(data)}\n\n`)
+          );
+        };
+
+        const processLine = (line: string) => {
+          const trimmed = line.trim();
+
+          if (!trimmed.startsWith("data:")) return;
+
+          const data = trimmed.slice(5).trim();
+
+          if (!data || data === "[DONE]") return;
+
+          try {
+            const parsed = JSON.parse(data);
+
+            if (parsed.error) {
+              streamFailed = true;
+              console.error("OpenRouter stream error:", parsed.error);
+              return;
+            }
+
+            const text = parsed?.choices?.[0]?.delta?.content;
+
+            if (typeof text === "string" && text.length > 0) {
+              fullResponse += text;
+              send({ text });
+            }
+          } catch (error) {
+            console.error("Stream parsing error:", error);
+          }
+        };
 
         try {
           while (true) {
             const { done, value } = await reader.read();
+
             if (done) break;
 
-            const chunk = decoder.decode(value, { stream: true });
-            for (const line of chunk.split("\n")) {
-              if (!line.startsWith("data: ")) continue;
-              const data = line.replace("data: ", "").trim();
-              if (!data || data === "[DONE]") continue;
-              try {
-                const parsed = JSON.parse(data);
-                const text   = parsed?.choices?.[0]?.delta?.content;
-                if (text) {
-                  fullResponse += text;
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
-                }
-              } catch { /* ignore malformed chunks */ }
+            buffer += decoder.decode(value, { stream: true });
+
+            const lines = buffer.split(/\r?\n/);
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              processLine(line);
             }
           }
-        } catch (streamError) {
-          console.error("Streaming Error:", streamError);
+
+          buffer += decoder.decode();
+
+          if (buffer.trim()) {
+            processLine(buffer);
+          }
+
+          if (streamFailed && !fullResponse.trim()) {
+            send({
+              text: "Sorry, our AI service is temporarily unavailable. Please try again.",
+            });
+          }
+
+          if (!fullResponse.trim() && !streamFailed) {
+            send({
+              text: "Sorry, I couldn't generate a response. Please try again.",
+            });
+          }
+
+        } catch (error) {
+          if (!request.signal.aborted) {
+            console.error("Chatbot streaming error:", error);
+
+            if (!fullResponse.trim()) {
+              try {
+                send({
+                  text: "Sorry, connection interrupted. Please try again.",
+                });
+              } catch {}
+            }
+          }
         } finally {
-          // Persist assistant reply
-          if (fullResponse.trim()) {
-            try {
+          try {
+            if (fullResponse.trim()) {
               session.messages.push({
-                role:      "assistant",
-                content:   fullResponse.trim(),
+                role: "assistant",
+                content: fullResponse.trim(),
                 timestamp: new Date(),
               });
+
               await session.save();
-            } catch (saveError) {
-              console.error("Failed to save assistant message:", saveError);
             }
+          } catch (error) {
+            console.error("Chat history save error:", error);
           }
-          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-          controller.close();
+
+          try {
+            send({ done: true });
+            controller.close();
+          } catch {
+            // Client may have disconnected.
+          }
+
+          reader.releaseLock();
         }
       },
+
+      async cancel() {
+        // The client disconnected.
+      },
     });
+
+    // Save user message after the AI request was accepted.
+    session.messages.push({
+      role: "user",
+      content: message,
+      timestamp: new Date(),
+    });
+
+    await session.save();
 
     return new Response(stream, {
       headers: {
-        "Content-Type":      "text/event-stream",
-        "Cache-Control":     "no-cache, no-transform",
-        "Connection":        "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "Connection": "keep-alive",
         "X-Accel-Buffering": "no",
       },
     });
+
   } catch (error) {
-    console.error("Chatbot Error:", error);
-    return NextResponse.json({ error: "Failed to process message" }, { status: 500 });
+    console.error("Chatbot POST Error:", error);
+
+    return NextResponse.json(
+      { error: "Failed to process message. Please try again." },
+      { status: 500 }
+    );
   }
 }
 
-/* ─── GET — chat history ─── */
+/* GET: Load chat history */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) return NextResponse.json({ messages: [] });
+    if (!sessionId) {
+      return NextResponse.json({ messages: [] });
+    }
 
     await connectDB();
 
     const session = await ChatSession.findOne({ sessionId });
-    return NextResponse.json({ messages: session?.messages || [] });
-  } catch {
-    return NextResponse.json({ messages: [] });
+
+    return NextResponse.json({
+      messages: session?.messages || [],
+    });
+
+  } catch (error) {
+    console.error("Chatbot GET Error:", error);
+
+    return NextResponse.json(
+      { messages: [] },
+      { status: 500 }
+    );
   }
 }
