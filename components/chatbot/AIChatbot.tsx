@@ -151,16 +151,25 @@ export default function AIChatbot() {
       if (!open) setUnread((n) => n + 1);
     } catch (err: any) {
       if (err?.name === "AbortError") return;
+
+      console.error("Kutti Story Chatbot Error:", err);
+
+      const errorMessage =
+        err?.message || "Unknown connection error";
+
       setMessages((prev) => {
         const updated = [...prev];
+
         updated[updated.length - 1] = {
           ...updated[updated.length - 1],
-          content: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+          content: `Sorry! ${errorMessage}`,
         };
+
         return updated;
       });
     } finally {
       setStreaming(false);
+      abortRef.current = null;
     }
   }, [input, streaming, sessionId, open]);
 
