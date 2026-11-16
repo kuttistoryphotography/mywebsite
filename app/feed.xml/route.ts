@@ -86,7 +86,11 @@ export async function GET() {
               ? `
                 <enclosure
                   url="${escapeXml(image)}"
-                  type="image/jpeg"
+                  type="${image.toLowerCase().split("?")[0].endsWith(".webp")
+                    ? "image/webp"
+                    : image.toLowerCase().split("?")[0].endsWith(".png")
+                    ? "image/png"
+                    : "image/jpeg"}"
                 />
                 <media:content
                   url="${escapeXml(image)}"
