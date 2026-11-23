@@ -78,13 +78,11 @@ function formatPrice(price: number) {
 
 function displayItem(item: CatalogueItem | string) {
   if (typeof item === "string") return item;
-
   return item.name;
 }
 
 function itemDescription(item: CatalogueItem | string) {
   if (typeof item === "string") return "";
-
   return item.description || "";
 }
 
@@ -178,7 +176,9 @@ export default function WeddingCataloguePage() {
           "Wedding Package Enquiry"
         )}&body=${encodeURIComponent(message)}`;
       } else {
-        alert("Contact details are not available. Please contact our studio.");
+        alert(
+          "Contact details are not available. Please contact our studio."
+        );
       }
 
       return;
@@ -196,6 +196,7 @@ export default function WeddingCataloguePage() {
       <main className="flex min-h-screen items-center justify-center bg-[#F8F5EF]">
         <div className="text-center">
           <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-[#C6A15B] border-t-transparent" />
+
           <p className="text-sm tracking-[0.2em] text-[#14233B]">
             LOADING YOUR WEDDING EXPERIENCE
           </p>
@@ -217,7 +218,8 @@ export default function WeddingCataloguePage() {
           </h1>
 
           <p className="mt-4 text-sm leading-7 text-gray-600">
-            {error || "This wedding catalogue link is invalid, expired or revoked."}
+            {error ||
+              "This wedding catalogue link is invalid, expired or revoked."}
           </p>
 
           <p className="mt-6 text-xs text-gray-400">
@@ -240,7 +242,10 @@ export default function WeddingCataloguePage() {
 
       <section
         className="relative flex min-h-[85vh] flex-col items-center justify-center px-6 py-24 text-center"
-        style={{ backgroundColor: theme.primary, color: "#FFFFFF" }}
+        style={{
+          backgroundColor: theme.primary,
+          color: "#FFFFFF",
+        }}
       >
         <div
           className="absolute inset-5 border opacity-40 sm:inset-10"
@@ -309,40 +314,42 @@ export default function WeddingCataloguePage() {
         </div>
       </section>
 
-      {/* INTRODUCTION */}
-
-      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
-        <p
-          className="text-xs tracking-[0.35em]"
-          style={{ color: theme.secondary }}
-        >
-          OUR COLLECTION
-        </p>
-
-        <h2
-          className="mt-5 font-serif text-3xl sm:text-5xl"
-          style={{ color: theme.primary }}
-        >
-          Your Story. Our Frames.
-        </h2>
-
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-gray-600">
-          Discover our wedding photography and cinematic film
-          collections, thoughtfully designed to preserve every
-          beautiful moment of your celebration.
-        </p>
-      </section>
-
-      {/* ALL 10 PACKAGES */}
+      {/* INTRODUCTION + PACKAGE HEADING */}
 
       <section
         id="packages"
-        className="mx-auto max-w-7xl scroll-mt-8 px-5 pb-24 sm:px-8"
+        className="mx-auto max-w-7xl scroll-mt-8 px-5 pb-16 pt-16 sm:px-8 sm:pt-20"
       >
-        <div className="mb-14 grid grid-cols-1 items-center gap-8 md:grid-cols-[1fr_320px] lg:grid-cols-[1fr_360px]">
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(300px,440px)] lg:gap-12">
 
-          {/* Wedding Packages Heading */}
-          <div className="py-8 text-center">
+          {/* LEFT: BOTH TEXT SECTIONS */}
+
+          <div className="py-6 text-center md:text-left">
+            <p
+              className="text-xs tracking-[0.35em]"
+              style={{ color: theme.secondary }}
+            >
+              OUR COLLECTION
+            </p>
+
+            <h2
+              className="mt-5 font-serif text-3xl sm:text-5xl"
+              style={{ color: theme.primary }}
+            >
+              Your Story. Our Frames.
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-gray-600 md:mx-0">
+              Discover our wedding photography and cinematic film
+              collections, thoughtfully designed to preserve every
+              beautiful moment of your celebration.
+            </p>
+
+            <div
+              className="mx-auto my-8 h-px w-20 md:mx-0"
+              style={{ backgroundColor: theme.secondary }}
+            />
+
             <p
               className="text-xs tracking-[0.35em]"
               style={{ color: theme.secondary }}
@@ -362,18 +369,22 @@ export default function WeddingCataloguePage() {
             </p>
           </div>
 
-          {/* Transparent Wedding Couple PNG */}
-          <div className="flex h-[380px] items-center justify-center md:h-[420px]">
+          {/* RIGHT: ORIGINAL WEDDING COUPLE PNG */}
+
+          <div className="flex w-full items-center justify-center">
             <img
               src="/images/wedding-catalogue-couple.png"
               alt="Traditional Tamil wedding couple"
-              className="h-full w-full object-contain"
-              loading="lazy"
+              className="h-auto max-h-[560px] w-full max-w-[440px] object-contain object-center"
+              loading="eager"
             />
           </div>
-
         </div>
+      </section>
 
+      {/* ALL 10 PACKAGES */}
+
+      <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="space-y-12">
           {data.templates.map((pkg, index) => (
             <article
@@ -391,7 +402,8 @@ export default function WeddingCataloguePage() {
                       className="text-xs tracking-[0.3em]"
                       style={{ color: theme.secondary }}
                     >
-                      {pkg.category.toUpperCase()} COLLECTION · {String(index + 1).padStart(2, "0")}
+                      {pkg.category.toUpperCase()} COLLECTION ·{" "}
+                      {String(index + 1).padStart(2, "0")}
                     </p>
 
                     <h3 className="mt-4 font-serif text-3xl sm:text-4xl">
