@@ -339,9 +339,10 @@ export default function WeddingCataloguePage() {
         id="packages"
         className="mx-auto max-w-7xl scroll-mt-8 px-5 pb-24 sm:px-8"
       >
-        <div className="relative mb-14">
-          {/* Heading */}
-          <div className="text-center lg:pr-64">
+        <div className="mb-14 grid grid-cols-1 items-center gap-8 md:grid-cols-[1fr_320px] lg:grid-cols-[1fr_360px]">
+
+          {/* Wedding Packages Heading */}
+          <div className="py-8 text-center">
             <p
               className="text-xs tracking-[0.35em]"
               style={{ color: theme.secondary }}
@@ -361,15 +362,16 @@ export default function WeddingCataloguePage() {
             </p>
           </div>
 
-          {/* Wedding Couple Image */}
-          <div className="mt-8 flex justify-center lg:absolute lg:right-0 lg:top-1/2 lg:mt-0 lg:w-64 lg:-translate-y-1/2">
+          {/* Transparent Wedding Couple PNG */}
+          <div className="flex h-[380px] items-center justify-center md:h-[420px]">
             <img
               src="/images/wedding-catalogue-couple.png"
               alt="Traditional Tamil wedding couple"
-              className="h-auto max-h-[390px] w-full max-w-[260px] object-contain"
+              className="h-full w-full object-contain"
               loading="lazy"
             />
           </div>
+
         </div>
 
         <div className="space-y-12">
