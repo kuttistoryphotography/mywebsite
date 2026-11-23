@@ -7,6 +7,7 @@ import FinalPackageShare from "@/models/FinalPackageShare";
 import FinalPackageSettings from "@/models/FinalPackageSettings";
 import FinalPackageTemplate from "@/models/FinalPackageTemplate";
 import FinalPackageAddon from "@/models/FinalPackageAddon";
+import ContactSettings from "@/models/ContactSettings";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,10 @@ export async function GET(
 
     if (!share) {
       return NextResponse.json(
-        { success: false, message: "This catalogue link is unavailable or revoked." },
+        {
+          success: false,
+          message: "This catalogue link is unavailable or revoked.",
+        },
         { status: 404 }
       );
     }
@@ -51,13 +55,23 @@ export async function GET(
       new Date(share.expiresAt).getTime() <= Date.now()
     ) {
       return NextResponse.json(
-        { success: false, message: "This catalogue link has expired." },
+        {
+          success: false,
+          message: "This catalogue link has expired.",
+        },
         { status: 410 }
       );
     }
 
-    const [settings, templates, addons] = await Promise.all([
+    const [
+      settings,
+      contact,
+      templates,
+      addons,
+    ] = await Promise.all([
       FinalPackageSettings.findOne().lean(),
+
+      ContactSettings.findOne().lean(),
 
       FinalPackageTemplate.find({ isActive: true })
         .sort({ sortOrder: 1, createdAt: 1 })
@@ -68,23 +82,56 @@ export async function GET(
         .lean(),
     ]);
 
-    const safeSettings = settings
-      ? {
-          businessName: settings.businessName,
-          tagline: settings.tagline,
-          logo: settings.logo,
-          phone: settings.phone,
-          whatsappNumber: settings.whatsappNumber,
-          email: settings.email,
-          address: settings.address,
-          gstPercentage: settings.gstPercentage,
-          advancePercentage: settings.advancePercentage,
-          balancePaymentText: settings.balancePaymentText,
-          defaultTermsAndConditions:
-            settings.defaultTermsAndConditions,
-          theme: settings.theme,
-        }
-      : null;
+    const contactAddress = contact
+      ? [
+          contact.address,
+          contact.city,
+          contact.state,
+          contact.pincode,
+        ]
+          .filter(Boolean)
+          .join(", ")
+      : "";
+
+    const safeSettings =
+      settings || contact
+        ? {
+            businessName:
+              settings?.businessName || "KuttiStory Photography",
+
+            tagline: settings?.tagline,
+            logo: settings?.logo,
+
+            phone:
+              contact?.phone ||
+              settings?.phone ||
+              "",
+
+            whatsappNumber:
+              contact?.whatsapp ||
+              settings?.whatsappNumber ||
+              "",
+
+            email:
+              contact?.email ||
+              settings?.email ||
+              "",
+
+            address:
+              contactAddress ||
+              settings?.address ||
+              "",
+
+            gstPercentage: settings?.gstPercentage,
+            advancePercentage: settings?.advancePercentage,
+            balancePaymentText: settings?.balancePaymentText,
+
+            defaultTermsAndConditions:
+              settings?.defaultTermsAndConditions,
+
+            theme: settings?.theme,
+          }
+        : null;
 
     const safeTemplates = templates.map((template) => ({
       templateCode: template.templateCode,
