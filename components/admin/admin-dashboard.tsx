@@ -57,6 +57,7 @@ import PhotographyCategoriesSection from "./sections/photography-categories-sect
 import FaqSection from "./sections/faq-section";
 import BookingSettingsSection from "./sections/booking-settings-section";
 import FamilyFriendsLinksSection from "./sections/family-friends-links-section";
+import FinalPackageCatalogueSection from "./sections/final-package-catalogue-section";
 
 const sidebarTabs = [
   { id: "quotes", label: "Quotes", icon: FileText },
@@ -218,32 +219,7 @@ export default function AdminDashboard() {
         return <QuotationBuilderSection />;
 
       case "final_package_catalogue":
-        return (
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                Final Package Catalogue
-              </h1>
-              <p className="text-sm text-zinc-400 mt-1">
-                Manage your Final Package templates and add-ons.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Package className="w-6 h-6 text-amber-400" />
-                <h2 className="text-lg font-semibold text-white">
-                  Catalogue Management
-                </h2>
-              </div>
-
-              <p className="text-sm text-zinc-400">
-                The catalogue management screen will be connected here in the
-                next step. Your existing Quotation Builder remains unchanged.
-              </p>
-            </div>
-          </div>
-        );
+        return <FinalPackageCatalogueSection />;
 
       case "bookings":
         return <BookingsSection />;
