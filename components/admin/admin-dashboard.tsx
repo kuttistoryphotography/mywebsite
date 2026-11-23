@@ -1,14 +1,36 @@
+
 "use client";
+
 import PhotoSelectionSection from "./sections/photo-selection-section";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  Users, Calendar, CreditCard, FileText, Bell, Settings,
-  FolderOpen, ChevronRight, Search, LogOut, Camera, Menu, X,
+  Users,
+  Calendar,
+  CreditCard,
+  FileText,
+  Bell,
+  Settings,
+  FolderOpen,
+  ChevronRight,
+  ChevronDown,
+  LogOut,
+  Camera,
+  Menu,
+  X,
   Link2,
-  Receipt, Globe, Image, BookOpen, Quote, Layers, Phone, Star,
+  Receipt,
+  Globe,
+  Image,
+  BookOpen,
+  Quote,
+  Layers,
+  Phone,
+  Star,
   HelpCircle,
+  Package,
 } from "lucide-react";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import QuotationBuilderSection from "./sections/quotation-builder-section";
@@ -37,44 +59,38 @@ import BookingSettingsSection from "./sections/booking-settings-section";
 import FamilyFriendsLinksSection from "./sections/family-friends-links-section";
 
 const sidebarTabs = [
-  { id: "quotes",         label: "Quotes",           icon: FileText   },
-  { id: "bookings",       label: "Bookings",          icon: Calendar   },
-  { id: "clients",        label: "Clients",           icon: Users      },
-  { id: "payments",       label: "Payments",          icon: CreditCard },
-  { id: "invoices",       label: "Invoices",          icon: Receipt    },
-  { id: "photography_categories", label: "Photography Categories", icon: Camera     },
-  { id: "content",        label: "Portfolio",         icon: Camera     },
-  { id: "albums",         label: "Albums",            icon: Layers     },
-  { id: "reviews",        label: "Reviews",           icon: Star       },
-  { id: "services",       label: "Services",          icon: BookOpen   },
-  { id: "homepage",       label: "Homepage",          icon: Globe      },
-  { id: "about",          label: "About Page",        icon: Image      },
-  { id: "monthly_quotes", label: "Monthly Quotes",    icon: Quote      },
-  { id: "calendar",       label: "Calendar",          icon: Calendar   },
-  { id: "files",          label: "Files",             icon: FolderOpen },
-  { id: "notifications",  label: "Notifications",     icon: Bell       },
-  { id: "support",        label: "Support Tickets",   icon: HelpCircle },
-  { id: "settings",       label: "Settings",          icon: Settings   },
-  { id: "contact",        label: "Contact Details",   icon: Phone      },
-  { id: "faq", label: "FAQ Page", icon: HelpCircle },
+  { id: "quotes", label: "Quotes", icon: FileText },
+  { id: "bookings", label: "Bookings", icon: Calendar },
+  { id: "clients", label: "Clients", icon: Users },
+  { id: "payments", label: "Payments", icon: CreditCard },
+  { id: "invoices", label: "Invoices", icon: Receipt },
   {
-    id: "booking_settings",
-    label: "Booking Settings",
-    icon: Image,
-  },
-  {
-    id: "photo_selection",
-    label: "Photo Selection",
+    id: "photography_categories",
+    label: "Photography Categories",
     icon: Camera,
   },
+  { id: "content", label: "Portfolio", icon: Camera },
+  { id: "albums", label: "Albums", icon: Layers },
+  { id: "reviews", label: "Reviews", icon: Star },
+  { id: "services", label: "Services", icon: BookOpen },
+  { id: "homepage", label: "Homepage", icon: Globe },
+  { id: "about", label: "About Page", icon: Image },
+  { id: "monthly_quotes", label: "Monthly Quotes", icon: Quote },
+  { id: "calendar", label: "Calendar", icon: Calendar },
+  { id: "files", label: "Files", icon: FolderOpen },
+  { id: "notifications", label: "Notifications", icon: Bell },
+  { id: "support", label: "Support Tickets", icon: HelpCircle },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "contact", label: "Contact Details", icon: Phone },
+  { id: "faq", label: "FAQ Page", icon: HelpCircle },
+  { id: "booking_settings", label: "Booking Settings", icon: Image },
+  { id: "photo_selection", label: "Photo Selection", icon: Camera },
   {
     id: "family_friends_links",
     label: "Family & Friends Memories Link",
     icon: Link2,
   },
-  
   { id: "quotation_builder", label: "Quotation Builder", icon: FileText },
-
 ];
 
 const UNREAD_THROTTLE_MS = 60_000;
@@ -83,12 +99,20 @@ export default function AdminDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabFromUrl = searchParams.get("tab");
+
   const [activeTab, setActiveTab] = useState("quotes");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isQuotationMenuOpen, setIsQuotationMenuOpen] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
-  const [adminUser, setAdminUser] = useState<{ firstName?: string; email?: string; avatarUrl?: string } | null>(null);
+
+  const [adminUser, setAdminUser] = useState<{
+    firstName?: string;
+    email?: string;
+    avatarUrl?: string;
+  } | null>(null);
+
   const lastFetchedAt = React.useRef<number>(0);
 
   const fetchUnreadCount = async () => {
@@ -97,48 +121,86 @@ export default function AdminDashboard() {
         fetch("/api/notifications?unread=true"),
         fetch("/api/support"),
       ]);
+
       if (notifRes.ok) {
         const data = await notifRes.json();
         setUnreadNotificationCount(Number(data.unreadCount || 0));
       }
+
       if (supportRes.ok) {
         const data = await supportRes.json();
-        const unread = (data.tickets || []).reduce((sum: number, t: any) => sum + (t.adminUnread || 0), 0);
+        const unread = (data.tickets || []).reduce(
+          (sum: number, t: any) => sum + (t.adminUnread || 0),
+          0
+        );
         setUnreadSupportCount(unread);
       }
+
       lastFetchedAt.current = Date.now();
     } catch {}
   };
 
   useEffect(() => {
     fetchUnreadCount();
-    fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setAdminUser(d.user); }).catch(() => {});
+
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user) setAdminUser(d.user);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     const onFocus = () => {
-      if (Date.now() - lastFetchedAt.current > UNREAD_THROTTLE_MS) fetchUnreadCount();
+      if (Date.now() - lastFetchedAt.current > UNREAD_THROTTLE_MS) {
+        fetchUnreadCount();
+      }
     };
+
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
   }, []);
 
   useEffect(() => {
-    if (tabFromUrl && sidebarTabs.some((t) => t.id === tabFromUrl)) {
+    if (
+      tabFromUrl &&
+      (sidebarTabs.some((t) => t.id === tabFromUrl) ||
+        tabFromUrl === "final_package_catalogue")
+    ) {
       setActiveTab(tabFromUrl);
+
+      if (tabFromUrl === "final_package_catalogue") {
+        setIsQuotationMenuOpen(true);
+      }
     }
   }, [tabFromUrl]);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     setIsSidebarOpen(false);
+
+    if (
+      tabId === "quotation_builder" ||
+      tabId === "final_package_catalogue"
+    ) {
+      setIsQuotationMenuOpen(true);
+    }
+
     router.push(`/admin?tab=${tabId}`, { scroll: false });
-    if (tabId === "notifications") setUnreadNotificationCount(0);
-    if (tabId === "support") setUnreadSupportCount(0);
+
+    if (tabId === "notifications") {
+      setUnreadNotificationCount(0);
+    }
+
+    if (tabId === "support") {
+      setUnreadSupportCount(0);
+    }
   };
 
   const handleLogout = async () => {
     setLoggingOut(true);
+
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       router.push("/login");
@@ -149,32 +211,108 @@ export default function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "quotes": return <QuotesSection />;
-      case "quotation_builder": return <QuotationBuilderSection />;
-      case "bookings": return <BookingsSection />;
-      case "clients": return <ClientsSection />;
-      case "family_friends_links": return <FamilyFriendsLinksSection />;
-      case "payments": return <PaymentsSection />;
-      case "invoices": return <InvoicesPanel openModalSignal={0} />;
-      case "photography_categories": return <PhotographyCategoriesSection />;
-      case "content": return <ContentSection />;
-      case "albums": return <AlbumsSection />;
-      case "reviews": return <ReviewsSection />;
-      case "services": return <ServicesSection />;
-      case "homepage": return <HomepageSection />;
+      case "quotes":
+        return <QuotesSection />;
+
+      case "quotation_builder":
+        return <QuotationBuilderSection />;
+
+      case "final_package_catalogue":
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                Final Package Catalogue
+              </h1>
+              <p className="text-sm text-zinc-400 mt-1">
+                Manage your Final Package templates and add-ons.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <Package className="w-6 h-6 text-amber-400" />
+                <h2 className="text-lg font-semibold text-white">
+                  Catalogue Management
+                </h2>
+              </div>
+
+              <p className="text-sm text-zinc-400">
+                The catalogue management screen will be connected here in the
+                next step. Your existing Quotation Builder remains unchanged.
+              </p>
+            </div>
+          </div>
+        );
+
+      case "bookings":
+        return <BookingsSection />;
+
+      case "clients":
+        return <ClientsSection />;
+
+      case "family_friends_links":
+        return <FamilyFriendsLinksSection />;
+
+      case "payments":
+        return <PaymentsSection />;
+
+      case "invoices":
+        return <InvoicesPanel openModalSignal={0} />;
+
+      case "photography_categories":
+        return <PhotographyCategoriesSection />;
+
+      case "content":
+        return <ContentSection />;
+
+      case "albums":
+        return <AlbumsSection />;
+
+      case "reviews":
+        return <ReviewsSection />;
+
+      case "services":
+        return <ServicesSection />;
+
+      case "homepage":
+        return <HomepageSection />;
+
       case "booking_settings":
-      return <BookingSettingsSection />;
-      case "about":    return <AboutSection />;
-      case "monthly_quotes": return <MonthlyQuotesSection />;
-      case "calendar": return <CalendarSection />;
-      case "files": return <FilesSection />;
-      case "notifications": return <NotificationsSection />;
-      case "settings": return <SettingsSection />;
-      case "contact": return <ContactSection />;
-      case "support": return <SupportSection />;
-      case "faq": return <FaqSection />;
-      case "photo_selection": return <PhotoSelectionSection />;
-      default: return <QuotesSection />;
+        return <BookingSettingsSection />;
+
+      case "about":
+        return <AboutSection />;
+
+      case "monthly_quotes":
+        return <MonthlyQuotesSection />;
+
+      case "calendar":
+        return <CalendarSection />;
+
+      case "files":
+        return <FilesSection />;
+
+      case "notifications":
+        return <NotificationsSection />;
+
+      case "settings":
+        return <SettingsSection />;
+
+      case "contact":
+        return <ContactSection />;
+
+      case "support":
+        return <SupportSection />;
+
+      case "faq":
+        return <FaqSection />;
+
+      case "photo_selection":
+        return <PhotoSelectionSection />;
+
+      default:
+        return <QuotesSection />;
     }
   };
 
@@ -189,37 +327,119 @@ export default function AdminDashboard() {
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-zinc-900 rounded-lg border border-zinc-800"
       >
-        {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        {isSidebarOpen ? (
+          <X className="w-5 h-5" />
+        ) : (
+          <Menu className="w-5 h-5" />
+        )}
       </button>
 
       {/* Overlay */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/60 z-30 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
 
-      {/* SIDEBAR */}
-      <aside className={cn(
-        "fixed top-0 left-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col z-40 transition-transform duration-300",
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      )}>
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed top-0 left-0 h-full w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col z-40 transition-transform duration-300",
+          isSidebarOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        )}
+      >
         {/* Brand */}
         <div className="px-5 py-5 border-b border-zinc-800">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
               <Camera className="w-4 h-4 text-black" />
             </div>
+
             <div>
               <p className="font-bold text-sm text-white">Kutti Story</p>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Admin</p>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-widest">
+                Admin
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Nav */}
+        {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           {sidebarTabs.map((tab) => {
             const Icon = tab.icon;
+
+            if (tab.id === "quotation_builder") {
+              const quotationActive =
+                activeTab === "quotation_builder" ||
+                activeTab === "final_package_catalogue";
+
+              return (
+                <div key={tab.id} className="space-y-1">
+                  <div
+                    className={cn(
+                      "w-full flex items-center rounded-xl transition-all duration-150",
+                      quotationActive
+                        ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                        : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                    )}
+                  >
+                    <button
+                      onClick={() => handleTabChange("quotation_builder")}
+                      className="flex-1 flex items-center gap-3 px-3 py-2.5 text-sm font-medium"
+                    >
+                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <span className="flex-1 text-left">{tab.label}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setIsQuotationMenuOpen(!isQuotationMenuOpen)
+                      }
+                      className="px-3 py-2.5"
+                      aria-label="Toggle Quotation Builder submenu"
+                    >
+                      {isQuotationMenuOpen ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+
+                  {isQuotationMenuOpen && (
+                    <div className="ml-4 pl-3 border-l border-zinc-700 space-y-1">
+                      <button
+                        onClick={() =>
+                          handleTabChange("final_package_catalogue")
+                        }
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all",
+                          activeTab === "final_package_catalogue"
+                            ? "bg-amber-500/10 text-amber-400"
+                            : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                        )}
+                      >
+                        <Package className="w-4 h-4 flex-shrink-0" />
+                        <span className="flex-1 text-left">
+                          Final Package Catalogue
+                        </span>
+                        {activeTab === "final_package_catalogue" && (
+                          <ChevronRight className="w-3 h-3" />
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             const isActive = activeTab === tab.id;
+
             return (
               <button
                 key={tab.id}
@@ -232,18 +452,29 @@ export default function AdminDashboard() {
                 )}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
+
                 <span className="flex-1 text-left">{tab.label}</span>
-                {tab.id === "notifications" && unreadNotificationCount > 0 && (
-                  <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
-                    {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
-                  </span>
-                )}
+
+                {tab.id === "notifications" &&
+                  unreadNotificationCount > 0 && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                      {unreadNotificationCount > 99
+                        ? "99+"
+                        : unreadNotificationCount}
+                    </span>
+                  )}
+
                 {tab.id === "support" && unreadSupportCount > 0 && (
                   <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-black text-[10px] font-bold animate-pulse">
-                    {unreadSupportCount > 99 ? "99+" : unreadSupportCount}
+                    {unreadSupportCount > 99
+                      ? "99+"
+                      : unreadSupportCount}
                   </span>
                 )}
-                {isActive && <ChevronRight className="w-3 h-3 opacity-50" />}
+
+                {isActive && (
+                  <ChevronRight className="w-3 h-3 opacity-50" />
+                )}
               </button>
             );
           })}
@@ -253,14 +484,26 @@ export default function AdminDashboard() {
         <div className="px-4 py-4 border-t border-zinc-800">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="w-8 h-8">
-              {adminUser?.avatarUrl && <AvatarImage src={adminUser.avatarUrl} />}
-              <AvatarFallback className="bg-amber-500 text-black text-xs font-bold">{initials}</AvatarFallback>
+              {adminUser?.avatarUrl && (
+                <AvatarImage src={adminUser.avatarUrl} />
+              )}
+
+              <AvatarFallback className="bg-amber-500 text-black text-xs font-bold">
+                {initials}
+              </AvatarFallback>
             </Avatar>
+
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{adminUser?.firstName || "Admin"}</p>
-              <p className="text-[11px] text-zinc-500 truncate">{adminUser?.email || ""}</p>
+              <p className="text-sm font-medium text-white truncate">
+                {adminUser?.firstName || "Admin"}
+              </p>
+
+              <p className="text-[11px] text-zinc-500 truncate">
+                {adminUser?.email || ""}
+              </p>
             </div>
           </div>
+
           <button
             onClick={handleLogout}
             disabled={loggingOut}
@@ -272,12 +515,10 @@ export default function AdminDashboard() {
         </div>
       </aside>
 
-      {/* MAIN */}
+      {/* Main */}
       <main className="flex-1 lg:ml-64 min-h-screen">
         <div className="p-4 sm:p-6 lg:p-8 pt-16 lg:pt-8">
-          <div className="max-w-7xl mx-auto">
-            {renderContent()}
-          </div>
+          <div className="max-w-7xl mx-auto">{renderContent()}</div>
         </div>
       </main>
     </div>
