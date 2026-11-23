@@ -15,6 +15,13 @@ import {
   Power,
 } from "lucide-react";
 
+
+type TemplateItem = {
+  name: string;
+  description?: string;
+  quantity: number;
+};
+
 type PackageTemplate = {
   _id: string;
   templateCode: string;
@@ -22,11 +29,12 @@ type PackageTemplate = {
   category: "basic" | "standard" | "premium" | "vip";
   description: string;
   basePrice: number;
-  services: string[];
-  deliverables: string[];
+  services: TemplateItem[];
+  deliverables: TemplateItem[];
   isActive: boolean;
   sortOrder: number;
 };
+
 
 type PackageAddon = {
   _id: string;
@@ -71,6 +79,37 @@ function formatPrice(value: number) {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(Number(value) || 0);
+}
+
+function formatTemplateItems(items: TemplateItem[] = []) {
+  return items
+    .map((item) => {
+      if (typeof item === "string") return item;
+
+      return [
+        item.name || "",
+        item.quantity ?? 1,
+        item.description || "",
+      ].join(" | ");
+    })
+    .join("\n");
+}
+
+function parseTemplateItems(text: string): TemplateItem[] {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split("|").map((part) => part.trim());
+
+      return {
+        name: parts[0] || "",
+        quantity: Math.max(0, Number(parts[1]) || 1),
+        description: parts.slice(2).join(" | "),
+      };
+    })
+    .filter((item) => item.name.length > 0);
 }
 
 function getErrorMessage(data: unknown, fallback: string) {
@@ -168,14 +207,14 @@ export default function FinalPackageCatalogueSection() {
     setEditingId(item._id);
 
     setTemplateForm({
-      templateCode: item.templateCode || "",
-      packageName: item.packageName || "",
-      category: item.category || "basic",
-      description: item.description || "",
-      basePrice: String(item.basePrice ?? ""),
-      servicesText: (item.services || []).join("\n"),
-      deliverablesText: (item.deliverables || []).join("\n"),
-      sortOrder: String(item.sortOrder ?? 0),
+        templateCode: item.templateCode || "",
+        packageName: item.packageName || "",
+        category: item.category || "basic",
+        description: item.description || "",
+        basePrice: String(item.basePrice ?? ""),
+        servicesText: formatTemplateItems(item.services || []),
+        deliverablesText: formatTemplateItems(item.deliverables || []),
+        sortOrder: String(item.sortOrder ?? 0),
     });
 
     setAddonForm(emptyAddon);
@@ -183,7 +222,7 @@ export default function FinalPackageCatalogueSection() {
     setFormOpen(true);
     setError("");
     setSuccess("");
-  };
+    };
 
   const openNewAddon = () => {
     setFormMode("create");
@@ -228,14 +267,8 @@ export default function FinalPackageCatalogueSection() {
       category: templateForm.category,
       description: templateForm.description.trim(),
       basePrice: Number(templateForm.basePrice),
-      services: templateForm.servicesText
-        .split("\n")
-        .map((value) => value.trim())
-        .filter(Boolean),
-      deliverables: templateForm.deliverablesText
-        .split("\n")
-        .map((value) => value.trim())
-        .filter(Boolean),
+      services: parseTemplateItems(templateForm.servicesText),
+      deliverables: parseTemplateItems(templateForm.deliverablesText),
       sortOrder: Number(templateForm.sortOrder) || 0,
     };
 
