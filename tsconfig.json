@@ -37,7 +37,7 @@
     "**/*.jsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "components/admin/sections/final-package-catalogue-section.tsx"  ],
 
   "exclude": [
     "node_modules",

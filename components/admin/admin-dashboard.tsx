@@ -219,7 +219,7 @@ export default function AdminDashboard() {
         return <QuotationBuilderSection />;
 
       case "final_package_catalogue":
-        return <FinalPackageCatalogueSection />;
+      return <FinalPackageCatalogueSection />;
 
       case "bookings":
         return <BookingsSection />;

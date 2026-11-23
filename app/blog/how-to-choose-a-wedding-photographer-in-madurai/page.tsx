@@ -23,6 +23,7 @@ export default function ChooseWeddingPhotographerPage() {
 
       <h2 className="text-3xl font-bold mt-10 mb-4">
         1. Review Their Portfolio
+        
       </h2>
 
       <p>

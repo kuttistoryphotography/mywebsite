@@ -339,24 +339,37 @@ export default function WeddingCataloguePage() {
         id="packages"
         className="mx-auto max-w-7xl scroll-mt-8 px-5 pb-24 sm:px-8"
       >
-        <div className="mb-14 text-center">
-          <p
-            className="text-xs tracking-[0.35em]"
-            style={{ color: theme.secondary }}
-          >
-            FIND YOUR PERFECT COLLECTION
-          </p>
+        <div className="relative mb-14">
+          {/* Heading */}
+          <div className="text-center lg:pr-64">
+            <p
+              className="text-xs tracking-[0.35em]"
+              style={{ color: theme.secondary }}
+            >
+              FIND YOUR PERFECT COLLECTION
+            </p>
 
-          <h2
-            className="mt-4 font-serif text-3xl sm:text-5xl"
-            style={{ color: theme.primary }}
-          >
-            Wedding Packages
-          </h2>
+            <h2
+              className="mt-4 font-serif text-3xl sm:text-5xl"
+              style={{ color: theme.primary }}
+            >
+              Wedding Packages
+            </h2>
 
-          <p className="mt-4 text-sm text-gray-500">
-            {data.counts.templates} exclusive collections
-          </p>
+            <p className="mt-4 text-sm text-gray-500">
+              {data.counts.templates} exclusive collections
+            </p>
+          </div>
+
+          {/* Wedding Couple Image */}
+          <div className="mt-8 flex justify-center lg:absolute lg:right-0 lg:top-1/2 lg:mt-0 lg:w-64 lg:-translate-y-1/2">
+            <img
+              src="/images/wedding-catalogue-couple.png"
+              alt="Traditional Tamil wedding couple"
+              className="h-auto max-h-[390px] w-full max-w-[260px] object-contain"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         <div className="space-y-12">
