@@ -13,6 +13,10 @@ import {
   Check,
   AlertCircle,
   Power,
+  Link,
+  Copy,
+  History,
+  Ban,
 } from "lucide-react";
 
 
@@ -45,6 +49,14 @@ type PackageAddon = {
   defaultPrice: number;
   isActive: boolean;
   sortOrder: number;
+};
+
+type CatalogueShare = {
+  id: string;
+  status: "active" | "revoked" | "expired";
+  createdAt: string;
+  expiresAt?: string | null;
+  revokedAt?: string | null;
 };
 
 type CatalogueTab = "all" | "templates" | "addons";
@@ -129,6 +141,12 @@ export default function FinalPackageCatalogueSection() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [search, setSearch] = useState("");
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareHistoryLoading, setShareHistoryLoading] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [shareHistory, setShareHistory] = useState<CatalogueShare[]>([]);
+  const [shareError, setShareError] = useState("");
+  const [shareSuccess, setShareSuccess] = useState("");
 
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>("create");
@@ -411,6 +429,116 @@ export default function FinalPackageCatalogueSection() {
     }
   };
 
+  const createCatalogueShare = async () => {
+    setShareLoading(true);
+    setShareError("");
+    setShareSuccess("");
+    setShareUrl("");
+
+    try {
+        const response = await fetch(
+        "/api/final-packages/catalogue-share",
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({}),
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        throw new Error(
+            getErrorMessage(data, "Unable to create catalogue link.")
+        );
+        }
+
+        setShareUrl(data.shareUrl);
+        setShareSuccess("Your wedding catalogue link is ready.");
+        await loadShareHistory();
+    } catch (err) {
+        setShareError(
+        err instanceof Error ? err.message : "Unable to create link."
+        );
+    } finally {
+        setShareLoading(false);
+    }
+    };
+
+    const loadShareHistory = async () => {
+    setShareHistoryLoading(true);
+    setShareError("");
+
+    try {
+        const response = await fetch(
+        "/api/final-packages/catalogue-share/history",
+        { cache: "no-store" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        throw new Error(
+            getErrorMessage(data, "Unable to load share history.")
+        );
+        }
+
+        setShareHistory(
+        Array.isArray(data.shares) ? data.shares : []
+        );
+    } catch (err) {
+        setShareError(
+        err instanceof Error ? err.message : "Unable to load history."
+        );
+    } finally {
+        setShareHistoryLoading(false);
+    }
+    };
+
+    const revokeCatalogueShare = async (id: string) => {
+    const confirmed = window.confirm(
+        "Are you sure you want to revoke this catalogue link? Clients will no longer be able to open it."
+    );
+
+    if (!confirmed) return;
+
+    setShareError("");
+    setShareSuccess("");
+
+    try {
+        const response = await fetch(
+        `/api/final-packages/catalogue-share/${id}`,
+        { method: "DELETE" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+        throw new Error(
+            getErrorMessage(data, "Unable to revoke catalogue link.")
+        );
+        }
+
+        setShareSuccess("Catalogue link revoked successfully.");
+        await loadShareHistory();
+    } catch (err) {
+        setShareError(
+        err instanceof Error ? err.message : "Unable to revoke link."
+        );
+    }
+    };
+
+    const copyCatalogueShare = async () => {
+    if (!shareUrl) return;
+
+    try {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareSuccess("Catalogue link copied successfully.");
+    } catch {
+        setShareError("Unable to copy. Please copy the link manually.");
+    }
+    };
+
   const query = search.trim().toLowerCase();
 
   const filteredTemplates = templates.filter((item) =>
@@ -488,6 +616,139 @@ export default function FinalPackageCatalogueSection() {
           iconBg="bg-blue-500/10"
         />
       </div>
+
+      {/* PRIVATE WEDDING CATALOGUE SHARING */}
+        <section className="space-y-4 rounded-2xl border border-amber-500/30 bg-zinc-900 p-5">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+            <div className="flex items-center gap-2">
+                <Link className="h-5 w-5 text-amber-400" />
+                <h2 className="text-lg font-semibold text-white">
+                Private Wedding Catalogue Sharing
+                </h2>
+            </div>
+
+            <p className="mt-2 text-sm text-zinc-400">
+                Generate a private link to share all active 2026 wedding packages
+                and add-ons with your clients.
+            </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+            <button
+                type="button"
+                onClick={() => void createCatalogueShare()}
+                disabled={shareLoading}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
+            >
+                <Link className="h-4 w-4" />
+                {shareLoading ? "Generating..." : "Generate Share Link"}
+            </button>
+
+            <button
+                type="button"
+                onClick={() => void loadShareHistory()}
+                disabled={shareHistoryLoading}
+                className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800"
+            >
+                <History className="h-4 w-4" />
+                {shareHistoryLoading ? "Loading..." : "Link History"}
+            </button>
+            </div>
+        </div>
+
+        {shareError && (
+            <p className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+            {shareError}
+            </p>
+        )}
+
+        {shareSuccess && (
+            <p className="rounded-lg bg-emerald-500/10 p-3 text-sm text-emerald-300">
+            {shareSuccess}
+            </p>
+        )}
+
+        {shareUrl && (
+            <div className="space-y-3 rounded-xl border border-emerald-500/30 bg-zinc-950 p-4">
+            <p className="text-sm font-medium text-emerald-400">
+                Your private catalogue link is ready
+            </p>
+
+            <input
+                readOnly
+                value={shareUrl}
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-3 text-sm text-white"
+                onFocus={(event) => event.target.select()}
+            />
+
+            <button
+                type="button"
+                onClick={() => void copyCatalogueShare()}
+                className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500"
+            >
+                <Copy className="h-4 w-4" />
+                Copy Link
+            </button>
+
+            <p className="text-xs text-zinc-500">
+                Save this link now. For security, the complete link cannot be
+                recovered from history later.
+            </p>
+            </div>
+        )}
+
+        {shareHistory.length > 0 && (
+            <div className="space-y-3 border-t border-zinc-800 pt-5">
+            <h3 className="font-semibold text-white">
+                Previously Generated Links
+            </h3>
+
+            {shareHistory.map((share) => (
+                <div
+                key={share.id}
+                className="flex flex-col justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-4 sm:flex-row sm:items-center"
+                >
+                <div>
+                    <p className="text-sm font-medium text-white">
+                    Created: {new Date(share.createdAt).toLocaleString("en-IN")}
+                    </p>
+
+                    <p className="mt-1 text-xs text-zinc-400">
+                    Expires:{" "}
+                    {share.expiresAt
+                        ? new Date(share.expiresAt).toLocaleString("en-IN")
+                        : "Never"}
+                    </p>
+
+                    <span
+                    className={`mt-2 inline-block rounded-full px-2 py-1 text-xs ${
+                        share.status === "active"
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : share.status === "expired"
+                            ? "bg-amber-500/10 text-amber-400"
+                            : "bg-red-500/10 text-red-400"
+                    }`}
+                    >
+                    {share.status.toUpperCase()}
+                    </span>
+                </div>
+
+                {share.status === "active" && (
+                    <button
+                    type="button"
+                    onClick={() => void revokeCatalogueShare(share.id)}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-500/30 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"
+                    >
+                    <Ban className="h-4 w-4" />
+                    Revoke Link
+                    </button>
+                )}
+                </div>
+            ))}
+            </div>
+        )}
+        </section>
 
       {/* TABS AND SEARCH */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
