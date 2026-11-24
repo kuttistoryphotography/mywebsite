@@ -240,94 +240,80 @@ export default function WeddingCataloguePage() {
     >
      
       {/* HERO SECTION */}
-      <section
-        className="relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
-        style={{
-          backgroundColor: theme.primary,
-          color: "#FFFFFF",
-        }}
-      >
-        {/* TRANSPARENT BLUE SILK DECORATION */}
-        <div
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-          aria-hidden="true"
+      
+        <section
+          className="relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
+          style={{
+            backgroundColor: theme.primary,
+            color: "#FFFFFF",
+            backgroundImage: "url('/images/wedding-hero-decoration.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center center",
+            backgroundRepeat: "no-repeat",
+          }}
         >
-          <img
-            src="/images/wedding-hero-decoration.png"
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-center opacity-75 sm:object-left-bottom"
-            loading="eager"
-          />
-        </div>
+          {/* DARK OVERLAY FOR TEXT READABILITY */}
+          <div className="absolute inset-0 z-0 bg-[#10213B]/15 pointer-events-none" />
 
-        {/* GOLD BORDER */}
-        <div
-          className="pointer-events-none absolute inset-5 z-10 border opacity-50 sm:inset-8 lg:inset-10"
-          style={{ borderColor: theme.secondary }}
-        />
+          {/* HERO CONTENT */}
+          <div className="relative z-20 mx-auto max-w-4xl">
+            {settings?.logo && (
+              <img
+                src={settings.logo}
+                alt={businessName}
+                className="mx-auto mb-8 max-h-24 max-w-48 object-contain"
+              />
+            )}
 
-        {/* HERO CONTENT */}
-        <div className="relative z-20 mx-auto max-w-4xl">
-          {settings?.logo && (
-            <img
-              src={settings.logo}
-              alt={businessName}
-              className="mx-auto mb-8 max-h-24 max-w-48 object-contain"
-            />
-          )}
-
-          <p
-            className="text-xs tracking-[0.45em] sm:text-sm"
-            style={{ color: theme.secondary }}
-          >
-            {businessName.toUpperCase()}
-          </p>
-
-          <div
-            className="mx-auto my-8 h-px w-24"
-            style={{ backgroundColor: theme.secondary }}
-          />
-
-          <p
-            className="mb-5 text-xs tracking-[0.35em] sm:text-sm"
-            style={{ color: theme.secondary }}
-          >
-            THE 2026 COLLECTION
-          </p>
-
-          <h1 className="font-serif text-4xl leading-tight sm:text-6xl lg:text-7xl">
-            Wedding Photography
-            <br />
-            <span
-              className="italic"
+            <p
+              className="text-xs tracking-[0.45em] sm:text-sm"
               style={{ color: theme.secondary }}
             >
-              &amp; Cinematic Films
-            </span>
-          </h1>
+              {businessName.toUpperCase()}
+            </p>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-8 text-white/80 sm:text-base">
-            Every wedding is a unique story. We preserve your
-            memories through traditional photography, candid
-            moments and cinematic storytelling.
-          </p>
+            <div
+              className="mx-auto my-8 h-px w-24"
+              style={{ backgroundColor: theme.secondary }}
+            />
 
-          <p
-            className="mt-12 text-xs tracking-[0.25em]"
-            style={{ color: theme.secondary }}
-          >
-            CAPTURING YOUR BEST MOMENTS
-          </p>
+            <p
+              className="mb-5 text-xs tracking-[0.35em] sm:text-sm"
+              style={{ color: theme.secondary }}
+            >
+              THE 2026 COLLECTION
+            </p>
 
-          <a
-            href="#packages"
-            className="mt-12 inline-flex border px-9 py-4 text-xs tracking-[0.2em] transition hover:bg-white hover:text-[#14233B]"
-            style={{ borderColor: theme.secondary }}
-          >
-            EXPLORE PACKAGES ↓
-          </a>
-        </div>
-      </section>
+            <h1 className="font-serif text-4xl leading-tight sm:text-6xl lg:text-7xl">
+              Wedding Photography
+              <br />
+              <span className="italic" style={{ color: theme.secondary }}>
+                &amp; Cinematic Films
+              </span>
+            </h1>
+
+            <p className="mx-auto mt-8 max-w-2xl text-sm leading-8 text-white/90 sm:text-base">
+              Every wedding is a unique story. We preserve your
+              memories through traditional photography, candid
+              moments and cinematic storytelling.
+            </p>
+
+            <p
+              className="mt-12 text-xs tracking-[0.25em]"
+              style={{ color: theme.secondary }}
+            >
+              CAPTURING YOUR BEST MOMENTS
+            </p>
+
+            <a
+              href="#packages"
+              className="mt-12 inline-flex border px-9 py-4 text-xs tracking-[0.2em] transition hover:bg-white hover:text-[#14233B]"
+              style={{ borderColor: theme.secondary }}
+            >
+              EXPLORE PACKAGES ↓
+            </a>
+          </div>
+        </section>
 
 
       {/* INTRODUCTION + PACKAGE HEADING */}
