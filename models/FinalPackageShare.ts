@@ -3,6 +3,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface IFinalPackageShare extends Document {
   tokenHash: string;
+  tokenEncrypted?: string | null;
   status: "active" | "revoked";
   expiresAt?: Date | null;
   createdBy: string;
@@ -17,6 +18,11 @@ const FinalPackageShareSchema = new Schema<IFinalPackageShare>(
       type: String,
       required: true,
       unique: true,
+    },
+    tokenEncrypted: {
+      type: String,
+      default: null,
+      select: false,
     },
     status: {
       type: String,

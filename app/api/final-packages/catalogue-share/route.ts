@@ -1,12 +1,42 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { randomBytes, createHash } from "crypto";
+import {
+  randomBytes,
+  createHash,
+  createCipheriv,
+} from "crypto";
 
 import connectDB from "@/lib/db";
 import FinalPackageShare from "@/models/FinalPackageShare";
 import { requireFinalPackageAdmin } from "@/lib/final-package/admin-auth";
 
 export const dynamic = "force-dynamic";
+
+function encryptToken(token: string) {
+  const keyHex = process.env.FINAL_PACKAGE_TOKEN_ENCRYPTION_KEY;
+
+  if (!keyHex || !/^[a-fA-F0-9]{64}$/.test(keyHex)) {
+    throw new Error("Invalid catalogue token encryption key.");
+  }
+
+  const key = Buffer.from(keyHex, "hex");
+  const iv = randomBytes(12);
+
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+
+  const encrypted = Buffer.concat([
+    cipher.update(token, "utf8"),
+    cipher.final(),
+  ]);
+
+  const authTag = cipher.getAuthTag();
+
+  return [
+    iv.toString("base64url"),
+    authTag.toString("base64url"),
+    encrypted.toString("base64url"),
+  ].join(".");
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,11 +87,14 @@ export async function POST(request: NextRequest) {
       .update(rawToken)
       .digest("hex");
 
+    const tokenEncrypted = encryptToken(rawToken);
+
     const createdShare = await FinalPackageShare.create({
-        tokenHash,
-        status: "active",
-        expiresAt,
-        createdBy: user.userId,
+      tokenHash,
+      tokenEncrypted,
+      status: "active",
+      expiresAt,
+      createdBy: user.userId,
     });
 
     const shareUrl = `${request.nextUrl.origin}/p/wedding/${rawToken}`;

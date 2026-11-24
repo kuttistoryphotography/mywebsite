@@ -562,6 +562,34 @@ export default function FinalPackageCatalogueSection() {
       }
     };
 
+    const copyHistoryCatalogueShare = async (id: string) => {
+      setShareError("");
+      setShareSuccess("");
+
+      try {
+        const response = await fetch(
+          `/api/final-packages/catalogue-share/${id}/copy`,
+          { method: "GET", cache: "no-store" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.shareUrl) {
+          throw new Error(
+            getErrorMessage(data, "Unable to retrieve catalogue link.")
+          );
+        }
+
+        await navigator.clipboard.writeText(data.shareUrl);
+
+        setShareSuccess("Catalogue link copied successfully.");
+      } catch (err) {
+        setShareError(
+          err instanceof Error ? err.message : "Unable to copy catalogue link."
+        );
+      }
+    };
+
     const copyCatalogueShare = async () => {
     if (!shareUrl) return;
 
@@ -766,20 +794,33 @@ export default function FinalPackageCatalogueSection() {
                     >
                     {share.status.toUpperCase()}
                     </span>
-                </div>
+                </div>    
 
                   <div className="flex flex-wrap items-center gap-2">
                     {share.status === "active" && (
-                      <button
-                        onClick={() => void revokeCatalogueShare(share.id)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/20"
-                      >
-                        <Ban className="h-4 w-4" />
-                        Revoke Link
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => void copyHistoryCatalogueShare(share.id)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-400 transition hover:bg-emerald-500/20"
+                        >
+                          <Copy className="h-4 w-4" />
+                          Copy Link
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => void revokeCatalogueShare(share.id)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/20"
+                        >
+                          <Ban className="h-4 w-4" />
+                          Revoke Link
+                        </button>
+                      </>
                     )}
 
                     <button
+                      type="button"
                       onClick={() => void deleteCatalogueShare(share.id)}
                       className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
                     >
@@ -787,7 +828,7 @@ export default function FinalPackageCatalogueSection() {
                       Delete
                     </button>
                   </div>
-
+                  
                 </div>
             ))}
             </div>
