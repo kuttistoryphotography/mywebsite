@@ -120,3 +120,65 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { user, response } = await requireFinalPackageAdmin();
+
+    if (response) return response;
+
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "Authentication required." },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+
+    const { id } = await context.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid share ID." },
+        { status: 400 }
+      );
+    }
+
+    const share = await FinalPackageShare.findById(id);
+
+    if (!share) {
+      return NextResponse.json(
+        { success: false, message: "Share link not found." },
+        { status: 404 }
+      );
+    }
+
+    if (share.status === "revoked") {
+      return NextResponse.json({
+        success: true,
+        message: "This link has already been revoked.",
+      });
+    }
+
+    share.status = "revoked";
+    share.revokedAt = new Date();
+
+    await share.save();
+
+    return NextResponse.json({
+      success: true,
+      message: "Catalogue share link revoked successfully.",
+    });
+  } catch (error) {
+    console.error("Revoke catalogue share error:", error);
+
+    return NextResponse.json(
+      { success: false, message: "Unable to revoke catalogue link." },
+      { status: 500 }
+    );
+  }
+}
