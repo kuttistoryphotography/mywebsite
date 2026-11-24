@@ -615,21 +615,34 @@ export default function WeddingCataloguePage() {
       {/* PAYMENT TERMS */}
 
       <section className="mx-auto max-w-4xl px-6 py-24">
-        <div className="text-center">
-          <p
-            className="text-xs tracking-[0.35em]"
-            style={{ color: theme.secondary }}
-          >
-            BOOKING INFORMATION
-          </p>
+        
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
+          <div className="flex items-center justify-center">
+            <img
+              src="/images/payment-terms-couple.png"
+              alt="KuttiStory Photography couple portrait"
+              className="h-auto max-h-[260px] w-full max-w-[220px] object-contain"
+              loading="lazy"
+            />
+          </div>
 
-          <h2
-            className="mt-4 font-serif text-3xl sm:text-5xl"
-            style={{ color: theme.primary }}
-          >
-            Payment & Terms
-          </h2>
+          <div className="py-6 text-center md:text-left">
+            <p
+              className="text-xs tracking-[0.35em]"
+              style={{ color: theme.secondary }}
+            >
+              BOOKING INFORMATION
+            </p>
+
+            <h2
+              className="mt-4 font-serif text-3xl sm:text-5xl"
+              style={{ color: theme.primary }}
+            >
+              Payment & Terms
+            </h2>
+          </div>
         </div>
+
 
         <div className="mt-12 space-y-5">
           <div className="border bg-white p-7">
