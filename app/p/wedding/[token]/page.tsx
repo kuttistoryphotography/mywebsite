@@ -545,25 +545,38 @@ export default function WeddingCataloguePage() {
         style={{ backgroundColor: "#EEE9DF" }}
       >
         <div className="mx-auto max-w-6xl">
-          <div className="text-center">
-            <p
-              className="text-xs tracking-[0.35em]"
-              style={{ color: theme.secondary }}
-            >
-              PERSONALISE YOUR EXPERIENCE
-            </p>
+          
+          <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_300px]">
+            <div className="py-8 text-center md:text-left">
+              <p
+                className="text-xs tracking-[0.35em]"
+                style={{ color: theme.secondary }}
+              >
+                PERSONALISE YOUR EXPERIENCE
+              </p>
 
-            <h2
-              className="mt-4 font-serif text-3xl sm:text-5xl"
-              style={{ color: theme.primary }}
-            >
-              Additional Services
-            </h2>
+              <h2
+                className="mt-4 font-serif text-3xl sm:text-5xl"
+                style={{ color: theme.primary }}
+              >
+                Additional Services
+              </h2>
 
-            <p className="mt-4 text-sm text-gray-500">
-              Enhance your celebration with our optional add-ons.
-            </p>
+              <p className="mt-4 text-sm text-gray-500">
+                Enhance your celebration with our optional add-ons.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center">
+              <img
+                src="/images/additional-services-bride.png"
+                alt="KuttiStory Photography bride portrait"
+                className="h-auto max-h-[320px] w-full max-w-[260px] object-contain"
+                loading="lazy"
+              />
+            </div>
           </div>
+
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {data.addons.map((addon) => (
