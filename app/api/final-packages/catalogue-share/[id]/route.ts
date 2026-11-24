@@ -58,7 +58,7 @@ export async function GET() {
   }
 }
 
-// Revoke an individual catalogue link
+// Permanently delete an individual catalogue share record
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -86,40 +86,32 @@ export async function DELETE(
       );
     }
 
-    const share = await FinalPackageShare.findById(id);
+    const deletedShare = await FinalPackageShare.findByIdAndDelete(id);
 
-    if (!share) {
+    if (!deletedShare) {
       return NextResponse.json(
         { success: false, message: "Share link not found." },
         { status: 404 }
       );
     }
 
-    if (share.status === "revoked") {
-      return NextResponse.json({
-        success: true,
-        message: "This link has already been revoked.",
-      });
-    }
-
-    share.status = "revoked";
-    share.revokedAt = new Date();
-
-    await share.save();
-
     return NextResponse.json({
       success: true,
-      message: "Catalogue share link revoked successfully.",
+      message: "Catalogue share record permanently deleted.",
     });
   } catch (error) {
-    console.error("Revoke catalogue share error:", error);
+    console.error("Delete catalogue share error:", error);
 
     return NextResponse.json(
-      { success: false, message: "Unable to revoke catalogue link." },
+      {
+        success: false,
+        message: "Unable to delete catalogue share record.",
+      },
       { status: 500 }
     );
   }
 }
+
 
 export async function PATCH(
   request: NextRequest,

@@ -17,6 +17,7 @@ import {
   Copy,
   History,
   Ban,
+  Trash2,
 } from "lucide-react";
 
 
@@ -507,8 +508,8 @@ export default function FinalPackageCatalogueSection() {
 
     try {
         const response = await fetch(
-        `/api/final-packages/catalogue-share/${id}`,
-        { method: "DELETE" }
+          `/api/final-packages/catalogue-share/${id}`,
+          { method: "PATCH" }
         );
 
         const data = await response.json();
@@ -526,6 +527,39 @@ export default function FinalPackageCatalogueSection() {
         err instanceof Error ? err.message : "Unable to revoke link."
         );
     }
+    };
+
+    const deleteCatalogueShare = async (id: string) => {
+      const confirmed = window.confirm(
+        "Permanently delete this catalogue link from history? This action cannot be undone."
+      );
+
+      if (!confirmed) return;
+
+      setShareError("");
+      setShareSuccess("");
+
+      try {
+        const response = await fetch(
+          `/api/final-packages/catalogue-share/${id}`,
+          { method: "DELETE" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(
+            getErrorMessage(data, "Unable to delete catalogue link.")
+          );
+        }
+
+        setShareSuccess("Catalogue link permanently deleted.");
+        await loadShareHistory();
+      } catch (err) {
+        setShareError(
+          err instanceof Error ? err.message : "Unable to delete link."
+        );
+      }
     };
 
     const copyCatalogueShare = async () => {
@@ -734,16 +768,26 @@ export default function FinalPackageCatalogueSection() {
                     </span>
                 </div>
 
-                {share.status === "active" && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {share.status === "active" && (
+                      <button
+                        onClick={() => void revokeCatalogueShare(share.id)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition hover:bg-amber-500/20"
+                      >
+                        <Ban className="h-4 w-4" />
+                        Revoke Link
+                      </button>
+                    )}
+
                     <button
-                    type="button"
-                    onClick={() => void revokeCatalogueShare(share.id)}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-500/30 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"
+                      onClick={() => void deleteCatalogueShare(share.id)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
                     >
-                    <Ban className="h-4 w-4" />
-                    Revoke Link
+                      <Trash2 className="h-4 w-4" />
+                      Delete
                     </button>
-                )}
+                  </div>
+
                 </div>
             ))}
             </div>
