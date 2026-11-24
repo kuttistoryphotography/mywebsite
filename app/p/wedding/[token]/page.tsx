@@ -238,21 +238,36 @@ export default function WeddingCataloguePage() {
         color: theme.text,
       }}
     >
+     
       {/* HERO SECTION */}
-
       <section
-        className="relative flex min-h-[85vh] flex-col items-center justify-center px-6 py-24 text-center"
+        className="relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
         style={{
           backgroundColor: theme.primary,
           color: "#FFFFFF",
         }}
       >
+        {/* TRANSPARENT BLUE SILK DECORATION */}
         <div
-          className="absolute inset-5 border opacity-40 sm:inset-10"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          aria-hidden="true"
+        >
+          <img
+            src="/images/wedding-hero-decoration.png"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-center opacity-75 sm:object-left-bottom"
+            loading="eager"
+          />
+        </div>
+
+        {/* GOLD BORDER */}
+        <div
+          className="pointer-events-none absolute inset-5 z-10 border opacity-50 sm:inset-8 lg:inset-10"
           style={{ borderColor: theme.secondary }}
         />
 
-        <div className="relative z-10 mx-auto max-w-4xl">
+        {/* HERO CONTENT */}
+        <div className="relative z-20 mx-auto max-w-4xl">
           {settings?.logo && (
             <img
               src={settings.logo}
@@ -287,11 +302,11 @@ export default function WeddingCataloguePage() {
               className="italic"
               style={{ color: theme.secondary }}
             >
-              & Cinematic Films
+              &amp; Cinematic Films
             </span>
           </h1>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-8 text-white/75 sm:text-base">
+          <p className="mx-auto mt-8 max-w-2xl text-sm leading-8 text-white/80 sm:text-base">
             Every wedding is a unique story. We preserve your
             memories through traditional photography, candid
             moments and cinematic storytelling.
@@ -313,6 +328,7 @@ export default function WeddingCataloguePage() {
           </a>
         </div>
       </section>
+
 
       {/* INTRODUCTION + PACKAGE HEADING */}
 
