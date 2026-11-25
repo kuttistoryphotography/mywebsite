@@ -242,7 +242,7 @@ export default function WeddingCataloguePage() {
       
       {/* HERO SECTION */}
       <section
-        className="relative isolate flex min-h-[720px] sm:min-h-[780px] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
+        className="relative isolate flex min-h-screen min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
         style={{
           backgroundColor: theme.primary,
           color: "#FFFFFF",
