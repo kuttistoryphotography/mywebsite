@@ -423,12 +423,7 @@ export default function WeddingCataloguePage() {
               style={{ backgroundColor: theme.primary }}
             >
               {/* TOP-RIGHT BLUE RIBBON */}
-              <img
-                src="/images/wedding-blue-ribbon.png"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute right-1 top-1 z-30 h-auto w-16 rotate-[12deg] object-contain sm:-right-3 sm:-top-3 sm:w-28 md:-right-5 md:-top-5 md:w-36 lg:-right-8 lg:-top-8 lg:w-40"
-              />
+              
 
               <div className="flex flex-col justify-between gap-6 pr-12 sm:flex-row sm:items-center sm:pr-20">
                 <div>
@@ -541,13 +536,7 @@ export default function WeddingCataloguePage() {
               </div>
 
               {/* BOTTOM-LEFT FLOWER BOUQUET */}
-              <img
-                src="/images/wedding-flower.png"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-2 left-1 z-30 h-auto w-20 object-contain sm:-bottom-4 sm:-left-3 sm:w-32 md:-bottom-5 md:-left-5 md:w-40 lg:-bottom-7 lg:-left-7 lg:w-48"
-                loading="lazy"
-              />
+              
             </div>
 
             {/* PACKAGE FOOTER */}
