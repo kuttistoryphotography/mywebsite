@@ -237,54 +237,66 @@ export default function WeddingCataloguePage() {
         backgroundColor: theme.background,
         color: theme.text,
       }}
-    >
-     
+    >     
       
-      {/* HERO SECTION */}
+      {/* RESPONSIVE WEDDING CATALOGUE HERO */}
       <section
-        className="relative isolate flex min-h-screen min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
+        className="relative isolate flex min-h-[760px] min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 py-24 text-center text-white sm:px-8"
         style={{
           backgroundColor: theme.primary,
-          color: "#FFFFFF",
           backgroundImage: "url('/images/wedding-hero-decoration.png')",
-          backgroundSize: "100% 100%",
+          backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        {/* SUBTLE OVERLAY */}
-        <div className="pointer-events-none absolute inset-0 z-0 bg-[#10213B]/5" />
+        {/* Subtle overlay */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(12,29,52,0.08), rgba(12,29,52,0.16))",
+          }}
+        />
 
-        {/* HERO CONTENT */}
-        <div className="relative z-20 mx-auto max-w-4xl">
+        {/* Champagne gold frame */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-3 z-10 border sm:inset-5 md:inset-8"
+          style={{ borderColor: `${theme.secondary}B3` }}
+        />
+
+        {/* Hero content */}
+        <div className="relative z-20 mx-auto w-full max-w-5xl py-8 sm:py-12">
           {settings?.logo && (
             <img
               src={settings.logo}
               alt={businessName}
-              className="mx-auto mb-8 max-h-24 max-w-48 object-contain"
+              className="mx-auto mb-6 max-h-16 max-w-36 object-contain sm:mb-8 sm:max-h-20 sm:max-w-48"
             />
           )}
 
           <p
-            className="text-xs tracking-[0.45em] sm:text-sm"
+            className="text-[10px] tracking-[0.35em] sm:text-xs sm:tracking-[0.45em]"
             style={{ color: theme.secondary }}
           >
             {businessName.toUpperCase()}
           </p>
 
           <div
-            className="mx-auto my-8 h-px w-24"
+            className="mx-auto my-6 h-px w-20 sm:my-8 sm:w-24"
             style={{ backgroundColor: theme.secondary }}
           />
 
           <p
-            className="mb-5 text-xs tracking-[0.35em] sm:text-sm"
+            className="mb-5 text-[10px] tracking-[0.3em] sm:text-xs sm:tracking-[0.35em]"
             style={{ color: theme.secondary }}
           >
             THE 2026 COLLECTION
           </p>
 
-          <h1 className="font-serif text-4xl leading-tight sm:text-6xl lg:text-7xl">
+          <h1 className="font-serif text-4xl font-normal leading-tight sm:text-5xl md:text-6xl lg:text-7xl">
             Wedding Photography
             <br />
             <span className="italic" style={{ color: theme.secondary }}>
@@ -292,14 +304,14 @@ export default function WeddingCataloguePage() {
             </span>
           </h1>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-8 text-white/90 sm:text-base">
+          <p className="mx-auto mt-7 max-w-2xl text-xs leading-7 text-white/90 sm:mt-8 sm:text-sm sm:leading-8 md:text-base">
             Every wedding is a unique story. We preserve your
             memories through traditional photography, candid
             moments and cinematic storytelling.
           </p>
 
           <p
-            className="mt-12 text-xs tracking-[0.25em]"
+            className="mt-9 text-[10px] tracking-[0.22em] sm:mt-12 sm:text-xs sm:tracking-[0.25em]"
             style={{ color: theme.secondary }}
           >
             CAPTURING YOUR BEST MOMENTS
@@ -307,15 +319,13 @@ export default function WeddingCataloguePage() {
 
           <a
             href="#packages"
-            className="mt-12 inline-flex border px-9 py-4 text-xs tracking-[0.2em] transition hover:bg-white hover:text-[#14233B]"
+            className="mt-9 inline-flex min-h-12 items-center justify-center border px-7 py-3 text-[10px] tracking-[0.16em] transition duration-300 hover:bg-white hover:text-[#14233B] sm:mt-12 sm:px-9 sm:py-4 sm:text-xs sm:tracking-[0.2em]"
             style={{ borderColor: theme.secondary }}
           >
             EXPLORE PACKAGES ↓
           </a>
         </div>
       </section>
-
-
 
       {/* INTRODUCTION + PACKAGE HEADING */}
 
