@@ -414,15 +414,15 @@ export default function WeddingCataloguePage() {
           {data.templates.map((pkg, index) => (
             <article
               key={pkg.templateCode}
-              className="relative overflow-hidden border bg-white shadow-sm"
+              className="relative overflow-visible border bg-white shadow-sm"
               style={{ borderColor: `${theme.secondary}66` }}
             >
-              {/* BLUE ORGANZA RIBBON */}
+              {/* BLUE ORGANZA BOW — TOP RIGHT CORNER */}
                 <img
                   src="/images/wedding-blue-ribbon.png"
                   alt=""
                   aria-hidden="true"
-                  className="pointer-events-none absolute right-3 top-2 z-30 h-auto w-24 object-contain sm:right-5 sm:top-3 sm:w-32 md:w-40"
+                  className="pointer-events-none absolute -right-9 -top-12 z-40 h-auto w-28 object-contain sm:-right-11 sm:-top-14 sm:w-36 md:w-40"
                 />
   
               <div
