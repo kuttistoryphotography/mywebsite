@@ -538,13 +538,26 @@ export default function WeddingCataloguePage() {
               </div>
 
               <div
-                className="flex flex-col items-center justify-between gap-5 border-t px-7 py-6 sm:flex-row sm:px-10"
+                className="relative flex min-h-[150px] flex-col items-center justify-between gap-4 overflow-hidden border-t px-5 py-5 sm:flex-row sm:px-10"
                 style={{ borderColor: `${theme.secondary}66` }}
               >
-                <p className="text-xs text-gray-500">
-                  {pkg.packageName} · {formatPrice(pkg.basePrice)}
-                </p>
+                {/* Decorative flower on the left */}
+                <div className="flex w-full items-center gap-3 sm:w-auto sm:gap-4">
+                  <img
+                    src="/images/wedding-flower.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-[105px] w-[72px] shrink-0 object-contain object-center sm:h-[125px] sm:w-[88px]"
+                    loading="lazy"
+                    style={{ mixBlendMode: "multiply" }}
+                  />
 
+                  <p className="text-xs text-gray-500">
+                    {pkg.packageName} · {formatPrice(pkg.basePrice)}
+                  </p>
+                </div>
+
+                {/* Enquiry button */}
                 <button
                   type="button"
                   onClick={() =>
