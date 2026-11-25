@@ -422,7 +422,7 @@ export default function WeddingCataloguePage() {
                   src="/images/wedding-blue-ribbon.png"
                   alt=""
                   aria-hidden="true"
-                  className="pointer-events-none absolute -right-9 -top-12 z-40 h-auto w-28 object-contain sm:-right-11 sm:-top-14 sm:w-36 md:w-40"
+                  className="pointer-events-none absolute -right-7 -top-9 z-40 h-auto w-24 rotate-[12deg] object-contain sm:-right-9 sm:-top-11 sm:w-32 md:w-36"
                 />
   
               <div
