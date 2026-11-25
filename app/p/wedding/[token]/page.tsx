@@ -689,11 +689,11 @@ export default function WeddingCataloguePage() {
             </p>
           </div>
 
-          <div className="flex justify-center px-4 py-8">
+          <div className="flex w-full justify-center px-4 py-8 sm:py-10">
             <img
               src="/images/terms-elephant-frame.png"
               alt="KuttiStory Photography - Terms and Conditions"
-              className="h-auto max-h-[620px] w-full max-w-[420px] object-contain"
+              className="h-auto max-h-[850px] w-full max-w-[720px] object-contain"
               loading="lazy"
             />
           </div>
