@@ -239,7 +239,7 @@ export default function WeddingCataloguePage() {
       }}
     >     
       
-            {/* WEDDING CATALOGUE HERO — QUOTATION COVER STYLE */}
+      {/* WEDDING CATALOGUE HERO — QUOTATION COVER STYLE */}
       <section
         className="relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 pb-8 pt-24 text-center text-white sm:px-8 sm:pb-12 sm:pt-28"
         style={{
@@ -412,174 +412,168 @@ export default function WeddingCataloguePage() {
       <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="space-y-12">
           {data.templates.map((pkg, index) => (
-            <article
-              key={pkg.templateCode}
-              className="relative overflow-visible border bg-white shadow-sm"
-              style={{ borderColor: `${theme.secondary}66` }}
+            
+          <article
+            key={pkg.templateCode}
+            className="relative overflow-visible border border-[#C6A15B]/70 bg-white shadow-[0_18px_40px_rgba(20,35,59,0.14)]"
+          >
+            {/* NAVY HEADER */}
+            <div
+              className="relative overflow-visible p-7 text-white sm:p-10"
+              style={{ backgroundColor: theme.primary }}
             >
-              {/* BLUE ORGANZA BOW — TOP RIGHT CORNER */}
-                <img
-                  src="/images/wedding-blue-ribbon.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -right-7 -top-9 z-40 h-auto w-24 rotate-[12deg] object-contain sm:-right-9 sm:-top-11 sm:w-32 md:w-36"
-                />
-  
-              <div
-                className="p-7 text-white sm:p-10"
-                style={{ backgroundColor: theme.primary }}
-              >
-                <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
-                  <div>
-                    <p
-                      className="text-xs tracking-[0.3em]"
-                      style={{ color: theme.secondary }}
-                    >
-                      {pkg.category.toUpperCase()} COLLECTION ·{" "}
-                      {String(index + 1).padStart(2, "0")}
-                    </p>
+              {/* TOP-RIGHT BLUE RIBBON */}
+              <img
+                src="/images/wedding-blue-ribbon.png"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-8 -top-10 z-30 h-auto w-40 rotate-[12deg] object-contain sm:-right-14 sm:-top-12.5 sm:w-67"
+              />
 
-                    <h3 className="mt-4 font-serif text-3xl sm:text-4xl">
-                      {pkg.packageName}
-                    </h3>
-
-                    {pkg.description && (
-                      <p className="mt-3 text-sm text-white/70">
-                        {pkg.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="sm:text-right">
-                    <p className="text-xs tracking-[0.2em] text-white/60">
-                      PACKAGE INVESTMENT
-                    </p>
-
-                    <p
-                      className="mt-2 text-3xl font-serif sm:text-4xl"
-                      style={{ color: theme.secondary }}
-                    >
-                      {formatPrice(pkg.basePrice)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-10 p-7 sm:grid-cols-2 sm:p-10">
+              <div className="flex flex-col justify-between gap-6 pr-12 sm:flex-row sm:items-center sm:pr-20">
                 <div>
-                  <h4
-                    className="border-b pb-4 font-serif text-xl"
-                    style={{
-                      color: theme.primary,
-                      borderColor: `${theme.secondary}66`,
-                    }}
+                  <p
+                    className="text-xs tracking-[0.3em]"
+                    style={{ color: theme.secondary }}
                   >
-                    Event Day Crew
-                  </h4>
+                    {pkg.category.toUpperCase()} COLLECTION ·{" "}
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
 
-                  <div className="mt-5 space-y-4">
-                    {pkg.services.map((item, itemIndex) => (
-                      <div
-                        key={`${pkg.templateCode}-service-${itemIndex}`}
-                        className="flex items-start justify-between gap-4 text-sm"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {displayItem(item)}
-                          </p>
+                  <h3 className="mt-4 font-serif text-3xl sm:text-4xl">
+                    {pkg.packageName}
+                  </h3>
 
-                          {itemDescription(item) && (
-                            <p className="mt-1 text-xs text-gray-500">
-                              {itemDescription(item)}
-                            </p>
-                          )}
-                        </div>
-
-                        {itemQuantity(item) !== null && (
-                          <span className="shrink-0 text-sm text-gray-500">
-                            × {itemQuantity(item)}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  {pkg.description && (
+                    <p className="mt-3 text-sm text-white/70">
+                      {pkg.description}
+                    </p>
+                  )}
                 </div>
 
-                <div>
-                  <h4
-                    className="border-b pb-4 font-serif text-xl"
-                    style={{
-                      color: theme.primary,
-                      borderColor: `${theme.secondary}66`,
-                    }}
+                <div className="sm:text-right">
+                  <p className="text-xs tracking-[0.2em] text-white/60">
+                    PACKAGE INVESTMENT
+                  </p>
+
+                  <p
+                    className="mt-2 font-serif text-3xl sm:text-4xl"
+                    style={{ color: theme.secondary }}
                   >
-                    Package Deliverables
-                  </h4>
-
-                  <div className="mt-5 space-y-4">
-                    {pkg.deliverables.map((item, itemIndex) => (
-                      <div
-                        key={`${pkg.templateCode}-deliverable-${itemIndex}`}
-                        className="flex items-start justify-between gap-4 text-sm"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {displayItem(item)}
-                          </p>
-
-                          {itemDescription(item) && (
-                            <p className="mt-1 text-xs text-gray-500">
-                              {itemDescription(item)}
-                            </p>
-                          )}
-                        </div>
-
-                        {itemQuantity(item) !== null && (
-                          <span className="shrink-0 text-sm text-gray-500">
-                            × {itemQuantity(item)}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div
-                className="relative flex min-h-[150px] flex-col items-center justify-between gap-4 overflow-hidden border-t px-5 py-5 sm:flex-row sm:px-10"
-                style={{ borderColor: `${theme.secondary}66` }}
-              >
-                {/* Decorative flower on the left */}
-                <div className="flex w-full items-center gap-3 sm:w-auto sm:gap-4">
-                  <img
-                    src="/images/wedding-flower.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-[105px] w-[72px] shrink-0 object-contain object-center sm:h-[125px] sm:w-[88px]"
-                    loading="lazy"
-                    style={{ mixBlendMode: "multiply" }}
-                  />
-
-                  <p className="text-xs text-gray-500">
-                    {pkg.packageName} · {formatPrice(pkg.basePrice)}
+                    {formatPrice(pkg.basePrice)}
                   </p>
                 </div>
-
-                {/* Enquiry button */}
-                <button
-                  type="button"
-                  onClick={() =>
-                    openWhatsApp(
-                      `Hello ${businessName}, I am interested in the ${pkg.packageName} (${formatPrice(pkg.basePrice)}) wedding package. Please share more details.`
-                    )
-                  }
-                  className="w-full px-8 py-4 text-xs tracking-[0.15em] text-white transition hover:opacity-90 sm:w-auto"
-                  style={{ backgroundColor: theme.primary }}
-                >
-                  ENQUIRE ABOUT THIS PACKAGE →
-                </button>
               </div>
-            </article>
+            </div>
+
+            {/* PACKAGE CONTENT */}
+            <div className="relative grid gap-10 px-7 pb-28 pt-7 sm:grid-cols-2 sm:px-10 sm:pb-32 sm:pt-10">
+              <div>
+                <h4
+                  className="border-b pb-4 font-serif text-xl"
+                  style={{
+                    color: theme.primary,
+                    borderColor: `${theme.secondary}66`,
+                  }}
+                >
+                  Event Day Crew
+                </h4>
+
+                <div className="mt-5 space-y-4">
+                  {pkg.services.map((item, itemIndex) => (
+                    <div
+                      key={`${pkg.templateCode}-service-${itemIndex}`}
+                      className="flex items-start justify-between gap-4 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium">{displayItem(item)}</p>
+                        {itemDescription(item) && (
+                          <p className="mt-1 text-xs text-gray-500">
+                            {itemDescription(item)}
+                          </p>
+                        )}
+                      </div>
+
+                      {itemQuantity(item) !== null && (
+                        <span className="shrink-0 text-sm text-gray-500">
+                          × {itemQuantity(item)}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4
+                  className="border-b pb-4 font-serif text-xl"
+                  style={{
+                    color: theme.primary,
+                    borderColor: `${theme.secondary}66`,
+                  }}
+                >
+                  Package Deliverables
+                </h4>
+
+                <div className="mt-5 space-y-4">
+                  {pkg.deliverables.map((item, itemIndex) => (
+                    <div
+                      key={`${pkg.templateCode}-deliverable-${itemIndex}`}
+                      className="flex items-start justify-between gap-4 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium">{displayItem(item)}</p>
+                        {itemDescription(item) && (
+                          <p className="mt-1 text-xs text-gray-500">
+                            {itemDescription(item)}
+                          </p>
+                        )}
+                      </div>
+
+                      {itemQuantity(item) !== null && (
+                        <span className="shrink-0 text-sm text-gray-500">
+                          × {itemQuantity(item)}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* BOTTOM-LEFT FLOWER BOUQUET */}
+              <img
+                src="/images/wedding-flower.png"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-5 -left-7 z-30 h-auto w-45 object-contain sm:-bottom-7 sm:-left-25 sm:w-54"
+                loading="lazy"
+              />
+            </div>
+
+            {/* PACKAGE FOOTER */}
+            <div
+              className="relative flex min-h-[100px] flex-col items-center justify-between gap-4 border-t px-5 py-5 sm:flex-row sm:px-10"
+              style={{ borderColor: `${theme.secondary}66` }}
+            >
+              <p className="pl-2 text-xs text-gray-500">
+                {pkg.packageName} · {formatPrice(pkg.basePrice)}
+              </p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  openWhatsApp(
+                    `Hello ${businessName}, I am interested in the ${pkg.packageName} (${formatPrice(pkg.basePrice)}) wedding package. Please share more details.`
+                  )
+                }
+                className="w-full px-8 py-4 text-xs tracking-[0.15em] text-white transition hover:opacity-90 sm:w-auto"
+                style={{ backgroundColor: theme.primary }}
+              >
+                ENQUIRE ABOUT THIS PACKAGE →
+              </button>
+            </div>
+          </article>
+
           ))}
         </div>
       </section>
