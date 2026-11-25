@@ -239,87 +239,99 @@ export default function WeddingCataloguePage() {
       }}
     >     
       
-      {/* RESPONSIVE WEDDING CATALOGUE HERO */}
+            {/* WEDDING CATALOGUE HERO — QUOTATION COVER STYLE */}
       <section
-        className="relative isolate flex min-h-[760px] min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 py-24 text-center text-white sm:px-8"
+        className="relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 pb-8 pt-24 text-center text-white sm:px-8 sm:pb-12 sm:pt-28"
         style={{
-          backgroundColor: theme.primary,
+          backgroundColor: "#0B1D36",
           backgroundImage: "url('/images/wedding-hero-decoration.png')",
           backgroundSize: "cover",
-          backgroundPosition: "center center",
+          backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        {/* Subtle overlay */}
+        {/* Dark overlay for readability */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(12,29,52,0.08), rgba(12,29,52,0.16))",
+              "linear-gradient(135deg, rgba(5,20,40,0.42), rgba(8,29,55,0.58))",
           }}
         />
 
-        {/* Champagne gold frame */}
+        {/* Main quotation-style cover panel */}
         <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-3 z-10 border sm:inset-5 md:inset-8"
-          style={{ borderColor: `${theme.secondary}B3` }}
-        />
-
-        {/* Hero content */}
-        <div className="relative z-20 mx-auto w-full max-w-5xl py-8 sm:py-12">
-          {settings?.logo && (
-            <img
-              src={settings.logo}
-              alt={businessName}
-              className="mx-auto mb-6 max-h-16 max-w-36 object-contain sm:mb-8 sm:max-h-20 sm:max-w-48"
-            />
-          )}
+          className="relative z-10 flex min-h-[660px] w-full max-w-5xl flex-col items-center justify-center border px-5 py-12 sm:min-h-[700px] sm:px-10 sm:py-16 md:px-16"
+          style={{
+            borderColor: `${theme.secondary}CC`,
+            backgroundColor: "rgba(7, 25, 48, 0.58)",
+            boxShadow: "0 20px 80px rgba(0,0,0,0.18)",
+          }}
+        >
+          {/* Logo */}
+          <img
+            src={settings?.logo || "/images/kutti-story-logo-white.png"}
+            alt={businessName}
+            className="mb-8 h-auto max-h-20 w-auto max-w-[150px] object-contain sm:mb-10 sm:max-h-24 sm:max-w-[180px]"
+          />
 
           <p
-            className="text-[10px] tracking-[0.35em] sm:text-xs sm:tracking-[0.45em]"
+            className="text-[10px] tracking-[0.3em] sm:text-xs sm:tracking-[0.4em]"
             style={{ color: theme.secondary }}
           >
             {businessName.toUpperCase()}
           </p>
 
+          {/* Main title */}
+          <h1 className="mt-7 max-w-4xl font-serif text-4xl font-normal leading-[1.15] text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl">
+            Wedding Photography
+            <br />
+            <span
+              className="mt-2 inline-block italic"
+              style={{ color: theme.secondary }}
+            >
+              Package
+            </span>
+          </h1>
+
+          <p className="mt-7 max-w-2xl font-serif text-lg leading-relaxed text-white/90 sm:mt-9 sm:text-2xl">
+            Capturing Life, One Story at a Time.
+          </p>
+
+          {/* Gold divider */}
           <div
-            className="mx-auto my-6 h-px w-20 sm:my-8 sm:w-24"
+            className="my-8 h-px w-16 sm:my-9 sm:w-20"
             style={{ backgroundColor: theme.secondary }}
           />
 
           <p
-            className="mb-5 text-[10px] tracking-[0.3em] sm:text-xs sm:tracking-[0.35em]"
+            className="max-w-xl text-[10px] leading-6 tracking-[0.18em] sm:text-xs sm:tracking-[0.25em]"
             style={{ color: theme.secondary }}
           >
-            THE 2026 COLLECTION
+            A PERSONALIZED PHOTOGRAPHY COLLECTION
           </p>
 
-          <h1 className="font-serif text-4xl font-normal leading-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            Wedding Photography
-            <br />
-            <span className="italic" style={{ color: theme.secondary }}>
-              &amp; Cinematic Films
-            </span>
-          </h1>
+          {/* Catalogue details */}
+          <div className="mt-10 space-y-3 text-sm leading-6 text-white/85 sm:mt-12 sm:text-base">
+            <p>
+              Discover our{" "}
+              <span className="font-semibold text-white">
+                {data.counts.templates} wedding collections
+              </span>
+            </p>
+            <p>
+              Photography · Candid Moments · Cinematic Films
+            </p>
+            <p className="text-xs text-white/60 sm:text-sm">
+              {data.counts.addons} optional services available
+            </p>
+          </div>
 
-          <p className="mx-auto mt-7 max-w-2xl text-xs leading-7 text-white/90 sm:mt-8 sm:text-sm sm:leading-8 md:text-base">
-            Every wedding is a unique story. We preserve your
-            memories through traditional photography, candid
-            moments and cinematic storytelling.
-          </p>
-
-          <p
-            className="mt-9 text-[10px] tracking-[0.22em] sm:mt-12 sm:text-xs sm:tracking-[0.25em]"
-            style={{ color: theme.secondary }}
-          >
-            CAPTURING YOUR BEST MOMENTS
-          </p>
-
+          {/* Explore packages */}
           <a
             href="#packages"
-            className="mt-9 inline-flex min-h-12 items-center justify-center border px-7 py-3 text-[10px] tracking-[0.16em] transition duration-300 hover:bg-white hover:text-[#14233B] sm:mt-12 sm:px-9 sm:py-4 sm:text-xs sm:tracking-[0.2em]"
+            className="mt-10 inline-flex min-h-12 items-center justify-center border px-8 py-3 text-[10px] tracking-[0.16em] text-white transition duration-300 hover:bg-white hover:text-[#14233B] sm:mt-12 sm:px-10 sm:py-4 sm:text-xs sm:tracking-[0.2em]"
             style={{ borderColor: theme.secondary }}
           >
             EXPLORE PACKAGES ↓
