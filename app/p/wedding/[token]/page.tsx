@@ -417,16 +417,14 @@ export default function WeddingCataloguePage() {
               className="relative overflow-hidden border bg-white shadow-sm"
               style={{ borderColor: `${theme.secondary}66` }}
             >
-              {/* 3D GOLD RIBBON */}
-              <div className="pointer-events-none absolute right-[-34px] top-[30px] z-20 rotate-45">
-                <div className="relative bg-gradient-to-b from-[#F8DF9B] via-[#D6A84F] to-[#A87528] px-12 py-2 shadow-[0_5px_12px_rgba(0,0,0,0.35)]">
-                  <span className="text-[10px] font-bold tracking-[0.2em] text-[#14233B]">
-                    FEATURED
-                  </span>
-                </div>
-                <div className="absolute -bottom-2 left-0 -z-10 border-b-[8px] border-l-[8px] border-b-[#80551F] border-l-transparent" />
-                <div className="absolute -bottom-2 right-0 -z-10 border-b-[8px] border-r-[8px] border-b-[#80551F] border-r-transparent" />
-              </div>
+              {/* BLUE ORGANZA RIBBON */}
+                <img
+                  src="/images/wedding-blue-ribbon.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="pointer-events-none absolute right-3 top-2 z-30 h-auto w-24 object-contain sm:right-5 sm:top-3 sm:w-32 md:w-40"
+                />
+  
               <div
                 className="p-7 text-white sm:p-10"
                 style={{ backgroundColor: theme.primary }}
