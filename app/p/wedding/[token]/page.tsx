@@ -722,7 +722,7 @@ export default function WeddingCataloguePage() {
           We look forward to being part of your special celebration.
         </p>
 
-        <div className="relative mx-auto mt-10 w-full max-w-[560px]">
+        <div className="relative mx-auto mt-8 w-full max-w-[440px]">
           <img
             src="/images/contact-paper-foliage.png"
             alt=""
