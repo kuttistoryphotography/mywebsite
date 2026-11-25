@@ -689,43 +689,13 @@ export default function WeddingCataloguePage() {
             </p>
           </div>
 
-          <div className="border bg-white p-7">
-            <h3
-              className="font-serif text-xl"
-              style={{ color: theme.primary }}
-            >
-              Terms & Conditions
-            </h3>
-
-            <div className="mt-5 space-y-3">
-              {(settings?.defaultTermsAndConditions || [
-                "50% advance payment is required to confirm the booking.",
-                "Remaining 50% must be paid on or before the event day.",
-                "Booking confirmation is subject to advance payment and date availability.",
-                "Additional services or requirements beyond the selected package will be charged separately.",
-                "Event timings and coverage schedules will be shared in advance.",
-                "Extra hours may incur additional charges.",
-                "Outdoor shoots are subject to weather, location permissions and availability.",
-                "Travel, accommodation and location expenses, if applicable, will be charged separately.",
-                "Event date or location changes must be communicated in advance and are subject to availability.",
-                "Album design will be shared for client approval before printing.",
-                "Revisions are subject to the agreed revision policy.",
-                "Final edited photos and videos will be delivered digitally or through an agreed storage medium.",
-                "RAW files will be provided on the client's own hard disk as specified.",
-                "Delivery timelines will be communicated based on the selected package and project requirements.",
-                "All bookings are subject to KuttiStory Photography terms and conditions.",
-              ]).map((term, index) => (
-                <p
-                  key={index}
-                  className="flex gap-3 text-sm leading-7 text-gray-600"
-                >
-                  <span style={{ color: theme.secondary }}>
-                    {String(index + 1).padStart(2, "0")}.
-                  </span>
-                  {term}
-                </p>
-              ))}
-            </div>
+          <div className="flex justify-center px-2 py-6">
+            <img
+              src="/images/terms-elephant-frame.png"
+              alt="KuttiStory Photography - Terms and Conditions"
+              className="h-auto w-full max-w-[650px] object-contain"
+              loading="lazy"
+            />
           </div>
         </div>
       </section>
