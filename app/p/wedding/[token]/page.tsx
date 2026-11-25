@@ -722,18 +722,25 @@ export default function WeddingCataloguePage() {
           We look forward to being part of your special celebration.
         </p>
 
-        <button
-          type="button"
-          onClick={() =>
-            openWhatsApp(
-              `Hello ${businessName}, I viewed your 2026 Wedding Photography & Cinematic Film Catalogue. I would like to discuss my wedding photography requirements.`
-            )
-          }
-          className="mt-10 border px-10 py-5 text-xs tracking-[0.2em] transition hover:bg-white hover:text-[#14233B]"
-          style={{ borderColor: theme.secondary }}
-        >
-          CONTACT US ON WHATSAPP
-        </button>
+        <div className="relative mx-auto mt-10 w-full max-w-[560px]">
+          <img
+            src="/images/contact-paper-foliage.png"
+            alt=""
+            className="h-auto w-full object-contain"
+          />
+
+          <button
+            type="button"
+            onClick={() =>
+              openWhatsApp(
+                `Hello ${businessName}, I viewed your 2026 Wedding Photography & Cinematic Film Catalogue. I would like to discuss my wedding photography requirements.`
+              )
+            }
+            className="absolute left-[54%] top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap border border-[#C6A15B] px-5 py-3 text-[10px] font-semibold tracking-[0.12em] text-[#14233B] transition hover:bg-[#14233B] hover:text-white sm:px-8 sm:py-4 sm:text-xs"
+          >
+            CONTACT US ON WHATSAPP
+          </button>
+        </div>
 
         <div
           className="mx-auto my-12 h-px max-w-xs"
