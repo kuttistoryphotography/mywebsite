@@ -37,6 +37,7 @@ export async function PATCH(
       "packageName",
       "category",
       "description",
+      "eventType",
       "basePrice",
       "services",
       "deliverables",
@@ -79,6 +80,18 @@ export async function PATCH(
         !VALID_CATEGORIES.includes(updates.category)
       )
     ) {
+    if (
+      "eventType" in updates &&
+      (
+        typeof updates.eventType !== "string" ||
+        !["wedding", "engagement"].includes(updates.eventType)
+      )
+    ) {
+      return NextResponse.json(
+        { success: false, message: "Invalid event type." },
+        { status: 400 }
+      );
+    }
       return NextResponse.json(
         { success: false, message: "Invalid package category." },
         { status: 400 }

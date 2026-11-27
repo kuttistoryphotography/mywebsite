@@ -139,6 +139,7 @@ export async function GET(
       templateCode: template.templateCode,
       packageName: template.packageName,
       category: template.category,
+      eventType: template.eventType || "wedding",
       description: template.description,
       basePrice: template.basePrice,
       services: template.services,

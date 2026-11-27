@@ -30,6 +30,7 @@ type TemplateItem = {
 type PackageTemplate = {
   _id: string;
   templateCode: string;
+  eventType: "wedding" | "engagement";
   packageName: string;
   category: "basic" | "standard" | "premium" | "vip";
   description: string;
@@ -96,12 +97,17 @@ const defaultCatalogueLayout: CatalogueLayout = {
   showContact: true,
 };
 
-type CatalogueTab = "all" | "templates" | "addons";
+type CatalogueTab =
+  | "all"
+  | "wedding"
+  | "engagement"
+  | "addons";
 type FormMode = "create" | "edit";
 
 const emptyTemplate = {
   templateCode: "",
   packageName: "",
+  eventType: "wedding" as PackageTemplate["eventType"],
   category: "basic" as PackageTemplate["category"],
   description: "",
   basePrice: "",
@@ -335,8 +341,12 @@ export default function FinalPackageCatalogueSection() {
     setFormMode("create");
     setEditingId(null);
     setTemplateForm(emptyTemplate);
+    setTemplateForm({
+      ...emptyTemplate,
+      eventType: activeTab === "engagement" ? "engagement" : "wedding",
+    });
     setAddonForm(emptyAddon);
-    setActiveTab("templates");
+    setActiveTab(activeTab === "engagement" ? "engagement" : "wedding");
     setFormOpen(true);
     setError("");
     setSuccess("");
@@ -349,6 +359,7 @@ export default function FinalPackageCatalogueSection() {
     setTemplateForm({
         templateCode: item.templateCode || "",
         packageName: item.packageName || "",
+        eventType: item.eventType || "wedding",
         category: item.category || "basic",
         description: item.description || "",
         basePrice: String(item.basePrice ?? ""),
@@ -358,7 +369,7 @@ export default function FinalPackageCatalogueSection() {
     });
 
     setAddonForm(emptyAddon);
-    setActiveTab("templates");
+    setActiveTab(item.eventType === "engagement" ? "engagement" : "wedding");
     setFormOpen(true);
     setError("");
     setSuccess("");
@@ -404,6 +415,7 @@ export default function FinalPackageCatalogueSection() {
     const payload = {
       templateCode: templateForm.templateCode.trim(),
       packageName: templateForm.packageName.trim(),
+      eventType: templateForm.eventType,
       category: templateForm.category,
       description: templateForm.description.trim(),
       basePrice: Number(templateForm.basePrice),
@@ -730,6 +742,18 @@ export default function FinalPackageCatalogueSection() {
       .includes(query)
   );
 
+  const visibleTemplates = filteredTemplates.filter((item) => {
+    if (activeTab === "wedding") {
+      return !item.eventType || item.eventType === "wedding";
+    }
+
+    if (activeTab === "engagement") {
+      return item.eventType === "engagement";
+    }
+
+    return true;
+  });
+
   const filteredAddons = addons.filter((item) =>
     `${item.name} ${item.addonCode} ${item.category}`
       .toLowerCase()
@@ -982,15 +1006,27 @@ export default function FinalPackageCatalogueSection() {
           </TabButton>
 
           <TabButton
-            active={activeTab === "templates"}
+            active={activeTab === "wedding"}
             onClick={() => {
-              setActiveTab("templates");
+              setActiveTab("wedding");
               setFormOpen(false);
               setSearch("");
             }}
           >
             <Package className="h-4 w-4" />
-            Templates
+            Wedding Templates
+          </TabButton>
+
+          <TabButton
+            active={activeTab === "engagement"}
+            onClick={() => {
+              setActiveTab("engagement");
+              setFormOpen(false);
+              setSearch("");
+            }}
+          >
+            <Package className="h-4 w-4" />
+            Engagement Templates
           </TabButton>
 
           <TabButton
@@ -1042,21 +1078,21 @@ export default function FinalPackageCatalogueSection() {
             <button
               type="button"
               onClick={
-                activeTab === "templates"
+                activeTab === "wedding" || activeTab === "engagement"
                   ? openNewTemplate
                   : openNewAddon
               }
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-black hover:bg-amber-400"
             >
               <Plus className="h-4 w-4" />
-              Add {activeTab === "templates" ? "Template" : "Add-on"}
+              Add {activeTab === "addons" ? "Add-on" : "Template"}
             </button>
           )}
         </div>
       </div>
 
       {/* TEMPLATE FORM */}
-      {formOpen && activeTab === "templates" && (
+      {formOpen && (activeTab === "wedding" || activeTab === "engagement") && (
         <form
           onSubmit={saveTemplate}
           className="space-y-4 rounded-2xl border border-amber-500/30 bg-zinc-900 p-5"
@@ -1099,6 +1135,22 @@ export default function FinalPackageCatalogueSection() {
                 placeholder="Basic Package 01"
                 className={fieldClass}
               />
+            </FormField>
+
+            <FormField label="Event Type">
+              <select
+                value={templateForm.eventType}
+                onChange={(e) =>
+                  setTemplateForm({
+                    ...templateForm,
+                    eventType: e.target.value as PackageTemplate["eventType"],
+                  })
+                }
+                className={fieldClass}
+              >
+                <option value="wedding">Wedding</option>
+                <option value="engagement">Engagement</option>
+              </select>
             </FormField>
 
             <FormField label="Category">
@@ -1328,25 +1380,29 @@ export default function FinalPackageCatalogueSection() {
       ) : (
         <div className="space-y-6">
           {/* PACKAGE TEMPLATES */}
-          {(activeTab === "all" || activeTab === "templates") && (
+          {(activeTab === "all" || activeTab === "wedding" || activeTab === "engagement") && (
             <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
               <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
                 <div>
                   <h2 className="font-semibold text-white">
-                    Package Templates
+                    {activeTab === "engagement"
+                      ? "Engagement Templates"
+                      : activeTab === "wedding"
+                        ? "Wedding Templates"
+                        : "Package Templates"}
                   </h2>
                   <p className="mt-1 text-xs text-zinc-500">
-                    {filteredTemplates.length} package templates
+                    {visibleTemplates.length} package templates
                   </p>
                 </div>
                 <Package className="h-5 w-5 text-amber-400" />
               </div>
 
-              {filteredTemplates.length === 0 ? (
+              {visibleTemplates.length === 0 ? (
                 <EmptyState text="No package templates found." />
               ) : (
                 <div className="divide-y divide-zinc-800">
-                  {filteredTemplates.map((item) => (
+                  {visibleTemplates.map((item) => (
                     <div
                       key={item._id}
                       className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"

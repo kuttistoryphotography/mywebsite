@@ -6,7 +6,7 @@ import { requireFinalPackageAdmin } from "@/lib/final-package/admin-auth";
 
 const VALID_CATEGORIES = ["basic", "standard", "premium", "vip"];
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { response } = await requireFinalPackageAdmin();
 
@@ -14,7 +14,23 @@ export async function GET() {
 
     await connectDB();
 
-    const templates = await FinalPackageTemplate.find()
+    const { searchParams } = new URL(request.url);
+    const eventType = searchParams.get("eventType");
+
+    const filter: Record<string, string> = {};
+
+    if (eventType) {
+      if (!["wedding", "engagement"].includes(eventType)) {
+        return NextResponse.json(
+          { success: false, message: "Invalid event type." },
+          { status: 400 }
+        );
+      }
+
+      filter.eventType = eventType;
+    }
+
+    const templates = await FinalPackageTemplate.find(filter)
       .sort({ sortOrder: 1, createdAt: -1 })
       .lean();
 
@@ -57,6 +73,17 @@ export async function POST(request: NextRequest) {
         ? body.category.trim().toLowerCase()
         : "";
 
+    const eventType =
+      typeof body.eventType === "string"
+        ? body.eventType.trim().toLowerCase()
+        : "wedding";
+
+    if (!["wedding", "engagement"].includes(eventType)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid event type." },
+        { status: 400 }
+      );
+    }
     const description =
       typeof body.description === "string"
         ? body.description.trim()
@@ -111,6 +138,7 @@ export async function POST(request: NextRequest) {
       templateCode,
       packageName,
       category,
+      eventType,
       description,
       basePrice,
       services,

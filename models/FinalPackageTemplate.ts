@@ -11,6 +11,8 @@ export type PackageCategory =
   | "premium"
   | "vip";
 
+export type PackageEventType = "wedding" | "engagement";
+
 export interface ITemplateService {
   name: string;
   description?: string;
@@ -25,6 +27,7 @@ export interface ITemplateDeliverable {
 
 export interface IFinalPackageTemplate extends Document {
   templateCode: string;
+  eventType: PackageEventType;
   packageName: string;
   category: PackageCategory;
   description: string;
@@ -39,6 +42,8 @@ export interface IFinalPackageTemplate extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+
 
 // --------------------------------------------------
 // SCHEMA
@@ -65,6 +70,15 @@ const FinalPackageTemplateSchema =
         type: String,
         enum: ["basic", "standard", "premium", "vip"],
         required: true,
+      },
+
+      eventType: {
+        type: String,
+        enum: ["wedding", "engagement"],
+        default: "wedding",
+        required: true,
+        lowercase: true,
+        trim: true,
       },
 
       description: {

@@ -13,6 +13,7 @@ type CatalogueItem = {
 type PackageTemplate = {
   templateCode: string;
   packageName: string;
+  eventType: "wedding" | "engagement";
   category: string;
   description?: string;
   basePrice: number;
@@ -119,6 +120,10 @@ export default function WeddingCataloguePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [activeEventType, setActiveEventType] = useState<
+    "wedding" | "engagement"
+  >("wedding");
+
   useEffect(() => {
     if (!token) return;
 
@@ -168,6 +173,10 @@ export default function WeddingCataloguePage() {
   }, [token]);
 
   const settings = data?.settings;
+
+  const visibleTemplates = (data?.templates || []).filter(
+    (pkg) => (pkg.eventType || "wedding") === activeEventType
+  );
 
   const layout = {
     heroBackgroundImage:
@@ -235,7 +244,7 @@ export default function WeddingCataloguePage() {
     if (!whatsappNumber) {
       if (settings?.email) {
         window.location.href = `mailto:${settings.email}?subject=${encodeURIComponent(
-          "Wedding Package Enquiry"
+          `${activeEventType === "engagement" ? "Engagement" : "Wedding"} Package Enquiry`
         )}&body=${encodeURIComponent(message)}`;
       } else {
         alert(
@@ -260,7 +269,7 @@ export default function WeddingCataloguePage() {
           <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-[#C6A15B] border-t-transparent" />
 
           <p className="text-sm tracking-[0.2em] text-[#14233B]">
-            LOADING YOUR WEDDING EXPERIENCE
+            LOADING YOUR PHOTOGRAPHY EXPERIENCE
           </p>
         </div>
       </main>
@@ -281,7 +290,7 @@ export default function WeddingCataloguePage() {
 
           <p className="mt-4 text-sm leading-7 text-gray-600">
             {error ||
-              "This wedding catalogue link is invalid, expired or revoked."}
+              "This catalogue link is invalid, expired or revoked."}
           </p>
 
           <p className="mt-6 text-xs text-gray-400">
@@ -347,7 +356,9 @@ export default function WeddingCataloguePage() {
 
           {/* Main title */}
           <h1 className="mt-7 max-w-4xl font-serif text-4xl font-normal leading-[1.15] text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl">
-            Wedding Photography
+            {activeEventType === "engagement"
+              ? "Engagement Photography"
+              : "Wedding Photography"}
             <br />
             <span
               className="mt-2 inline-block italic"
@@ -379,11 +390,13 @@ export default function WeddingCataloguePage() {
             <p>
               Discover our{" "}
               <span className="font-semibold text-white">
-                {data.counts.templates} wedding collections
+                {visibleTemplates.length} {activeEventType} collections
               </span>
             </p>
             <p>
-              Photography · Candid Moments · Cinematic Films
+              {activeEventType === "engagement"
+                ? "Engagement Photography · Candid Moments · Cinematic Films"
+                : "Wedding Photography · Candid Moments · Cinematic Films"}
             </p>
             <p className="text-xs text-white/60 sm:text-sm">
               {data.counts.addons} optional services available
@@ -402,6 +415,38 @@ export default function WeddingCataloguePage() {
       </section>
 
       {/* INTRODUCTION + PACKAGE HEADING */}
+
+      <div className="mb-10 flex justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => setActiveEventType("wedding")}
+          className={`border px-7 py-3 text-xs font-semibold tracking-wider transition ${
+            activeEventType === "wedding"
+              ? "bg-[#14233B] text-white"
+              : "border-[#C6A15B] bg-white text-[#14233B]"
+          }`}
+          style={{
+            borderColor: theme.secondary,
+          }}
+        >
+          WEDDING
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveEventType("engagement")}
+          className={`border px-7 py-3 text-xs font-semibold tracking-wider transition ${
+            activeEventType === "engagement"
+              ? "bg-[#14233B] text-white"
+              : "border-[#C6A15B] bg-white text-[#14233B]"
+          }`}
+          style={{
+            borderColor: theme.secondary,
+          }}
+        >
+          ENGAGEMENT
+        </button>
+      </div>
 
       <section
         id="packages"
@@ -427,9 +472,9 @@ export default function WeddingCataloguePage() {
             </h2>
 
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-gray-600 md:mx-0">
-              Discover our wedding photography and cinematic film
-              collections, thoughtfully designed to preserve every
-              beautiful moment of your celebration.
+              {activeEventType === "engagement"
+                ? "Discover our engagement photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."
+                : "Discover our wedding photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."}
             </p>
 
             <div
@@ -448,11 +493,13 @@ export default function WeddingCataloguePage() {
               className="mt-4 font-serif text-3xl sm:text-5xl"
               style={{ color: theme.primary }}
             >
-              Wedding Packages
+              {activeEventType === "engagement"
+                ? "Engagement Packages"
+                : "Wedding Packages"}
             </h2>
 
             <p className="mt-4 text-sm text-gray-500">
-              {data.counts.templates} exclusive collections
+              {visibleTemplates.length} exclusive collections
             </p>
           </div>
 
@@ -460,7 +507,7 @@ export default function WeddingCataloguePage() {
 
           <div className="flex w-full items-center justify-center">
             <img
-              src="/images/wedding-catalogue-couple.png"
+              src={layout.coupleImage}
               alt="Traditional Tamil wedding couple"
               className="h-auto max-h-[560px] w-full max-w-[440px] object-contain object-center"
               loading="eager"
@@ -473,7 +520,20 @@ export default function WeddingCataloguePage() {
 
       <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="space-y-12">
-          {data.templates.map((pkg, index) => (
+          {visibleTemplates.length === 0 && (
+            <div className="border border-[#C6A15B]/50 bg-white px-6 py-16 text-center">
+              <h3 className="font-serif text-2xl text-[#14233B]">
+                {activeEventType === "engagement"
+                  ? "Engagement Packages Coming Soon"
+                  : "Wedding Packages Coming Soon"}
+              </h3>
+              <p className="mt-3 text-sm text-gray-500">
+                Please contact our studio for more details.
+              </p>
+            </div>
+          )}
+
+          {visibleTemplates.map((pkg, index) => (
             
           <article
             key={pkg.templateCode}
@@ -614,7 +674,7 @@ export default function WeddingCataloguePage() {
                 type="button"
                 onClick={() =>
                   openWhatsApp(
-                    `Hello ${businessName}, I am interested in the ${pkg.packageName} (${formatPrice(pkg.basePrice)}) wedding package. Please share more details.`
+                    `Hello ${businessName}, I am interested in the ${pkg.packageName} (${formatPrice(pkg.basePrice)}) ${activeEventType} package. Please share more details.`
                   )
                 }
                 className="w-full px-8 py-4 text-xs tracking-[0.15em] text-white transition hover:opacity-90 sm:w-auto"
@@ -660,7 +720,7 @@ export default function WeddingCataloguePage() {
 
             <div className="flex items-center justify-center">
               <img
-                src="/images/additional-services-bride.png"
+                src={layout.addonsImage}
                 alt="KuttiStory Photography bride portrait"
                 className="h-auto max-h-[320px] w-full max-w-[260px] object-contain"
                 loading="lazy"
@@ -710,7 +770,7 @@ export default function WeddingCataloguePage() {
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
           <div className="flex items-center justify-center">
             <img
-              src="/images/payment-terms-couple.png"
+              src={layout.paymentImage}
               alt="KuttiStory Photography couple portrait"
               className="h-auto max-h-[260px] w-full max-w-[220px] object-contain"
               loading="lazy"
@@ -757,7 +817,7 @@ export default function WeddingCataloguePage() {
 
           <div className="flex w-full justify-center px-4 py-8 sm:py-10">
             <img
-              src="/images/terms-elephant-frame.png"
+              src={layout.termsImage}
               alt="KuttiStory Photography - Terms and Conditions"
               className="h-auto max-h-[850px] w-full max-w-[720px] object-contain"
               loading="lazy"
@@ -784,13 +844,14 @@ export default function WeddingCataloguePage() {
         </h2>
 
         <p className="mx-auto mt-6 max-w-xl text-sm leading-8 text-white/70">
-          Thank you for exploring our wedding collections.
-          We look forward to being part of your special celebration.
+          {activeEventType === "engagement"
+            ? "Thank you for exploring our engagement collections. We look forward to being part of your special celebration."
+            : "Thank you for exploring our wedding collections. We look forward to being part of your special celebration."}
         </p>
 
         <div className="relative mx-auto mt-8 w-full max-w-[440px]">
           <img
-            src="/images/contact-paper-foliage.png"
+            src={layout.contactImage}
             alt=""
             className="h-auto w-full object-contain"
           />
@@ -799,7 +860,7 @@ export default function WeddingCataloguePage() {
             type="button"
             onClick={() =>
               openWhatsApp(
-                `Hello ${businessName}, I viewed your 2026 Wedding Photography & Cinematic Film Catalogue. I would like to discuss my wedding photography requirements.`
+                `Hello ${businessName}, I viewed your 2026 ${activeEventType === "engagement" ? "Engagement" : "Wedding"} Photography & Cinematic Film Catalogue. I would like to discuss my ${activeEventType} photography requirements.`
               )
             }
             className="absolute left-[54%] top-[56%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap border border-[#C6A15B] px-5 py-3 text-[10px] font-semibold tracking-[0.12em] text-[#14233B] transition hover:bg-[#14233B] hover:text-white sm:px-8 sm:py-4 sm:text-xs"
