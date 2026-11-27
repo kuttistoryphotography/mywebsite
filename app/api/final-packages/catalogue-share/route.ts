@@ -9,6 +9,7 @@ import {
 import connectDB from "@/lib/db";
 import FinalPackageShare from "@/models/FinalPackageShare";
 import { requireFinalPackageAdmin } from "@/lib/final-package/admin-auth";
+import FinalPackageSettings from "@/models/FinalPackageSettings";
 
 export const dynamic = "force-dynamic";
 
@@ -53,13 +54,17 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
-    let expiresAt: Date | null = null;
+      let expiresAt: Date | null = null;
+      let body: Record<string, unknown> = {};
 
-    try {
-      const body = await request.json();
+      try {
+        body = await request.json();
+      } catch {
+        // Empty request body is allowed.
+      }
 
-      if (body?.expiresAt) {
-        const parsedDate = new Date(body.expiresAt);
+      if (body.expiresAt) {
+        const parsedDate = new Date(String(body.expiresAt));
 
         if (Number.isNaN(parsedDate.getTime())) {
           return NextResponse.json(
@@ -77,9 +82,18 @@ export async function POST(request: NextRequest) {
 
         expiresAt = parsedDate;
       }
-    } catch {
-      // No expiry date means the link does not expire.
-    }
+
+      const eventType =
+        body.eventType === "engagement" ? "engagement" : "wedding";
+
+      const currentSettings = await FinalPackageSettings.findOne().lean();
+
+      const layout =
+        body.layout &&
+        typeof body.layout === "object" &&
+        !Array.isArray(body.layout)
+          ? body.layout
+          : currentSettings?.layout || null;
 
     const rawToken = randomBytes(32).toString("base64url");
 
@@ -95,6 +109,8 @@ export async function POST(request: NextRequest) {
       status: "active",
       expiresAt,
       createdBy: user.userId,
+      eventType,
+      layout,
     });
 
     const shareUrl = `${request.nextUrl.origin}/p/wedding/${rawToken}`;

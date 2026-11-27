@@ -71,6 +71,7 @@ type CatalogueSettings = {
 
 type CatalogueData = {
   success: boolean;
+  eventType: "wedding" | "engagement";
   settings: CatalogueSettings | null;
   templates: PackageTemplate[];
   addons: CatalogueAddon[];
@@ -150,6 +151,9 @@ export default function WeddingCataloguePage() {
 
         if (!cancelled) {
           setData(result);
+          setActiveEventType(
+            result.eventType === "engagement" ? "engagement" : "wedding"
+          );
         }
       } catch (err) {
         if (!cancelled) {

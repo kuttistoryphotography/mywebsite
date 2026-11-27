@@ -131,7 +131,7 @@ export async function GET(
 
             theme: settings?.theme,
 
-            layout: settings?.layout,
+            layout: share.layout || settings?.layout,
           }
         : null;
 
@@ -160,6 +160,7 @@ export async function GET(
       {
         success: true,
         settings: safeSettings,
+        eventType: share.eventType || "wedding",
         templates: safeTemplates,
         addons: safeAddons,
         counts: {

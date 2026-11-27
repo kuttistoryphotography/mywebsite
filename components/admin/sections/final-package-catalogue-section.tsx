@@ -578,7 +578,10 @@ export default function FinalPackageCatalogueSection() {
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({}),
+            body: JSON.stringify({
+              layout: layoutForm,
+              eventType: activeTab === "engagement" ? "engagement" : "wedding",
+            }),
         }
         );
 

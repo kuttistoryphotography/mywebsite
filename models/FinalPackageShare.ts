@@ -7,6 +7,8 @@ export interface IFinalPackageShare extends Document {
   status: "active" | "revoked";
   expiresAt?: Date | null;
   createdBy: string;
+  eventType?: "wedding" | "engagement";
+  layout?: Record<string, unknown> | null;
   revokedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +39,15 @@ const FinalPackageShareSchema = new Schema<IFinalPackageShare>(
     createdBy: {
       type: String,
       required: true,
+    },
+    eventType: {
+      type: String,
+      enum: ["wedding", "engagement"],
+      default: "wedding",
+    },
+    layout: {
+      type: Schema.Types.Mixed,
+      default: null,
     },
     revokedAt: {
       type: Date,
