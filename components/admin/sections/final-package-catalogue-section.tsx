@@ -1475,7 +1475,7 @@ export default function FinalPackageCatalogueSection() {
       )}
           {layoutEditorOpen && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-              <div className="w-full max-w-3xl rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl">
+              <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto overscroll-contain rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">
                     Edit Page Layout
