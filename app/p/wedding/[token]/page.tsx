@@ -42,13 +42,30 @@ type CatalogueSettings = {
   advancePercentage?: number;
   balancePaymentText?: string;
   defaultTermsAndConditions?: string[];
-  theme?: {
-    primary?: string;
-    secondary?: string;
-    background?: string;
-    text?: string;
+    theme?: {
+      primary?: string;
+      secondary?: string;
+      background?: string;
+      text?: string;
+    };
+    layout?: {
+      heroBackgroundImage?: string;
+      heroLogo?: string;
+      coupleImage?: string;
+      ribbonImage?: string;
+      flowerImage?: string;
+      addonsImage?: string;
+      paymentImage?: string;
+      termsImage?: string;
+      contactImage?: string;
+      showHero?: boolean;
+      showIntroduction?: boolean;
+      showPackages?: boolean;
+      showAddons?: boolean;
+      showPaymentTerms?: boolean;
+      showContact?: boolean;
+    };
   };
-};
 
 type CatalogueData = {
   success: boolean;
@@ -152,6 +169,51 @@ export default function WeddingCataloguePage() {
 
   const settings = data?.settings;
 
+  const layout = {
+    heroBackgroundImage:
+      settings?.layout?.heroBackgroundImage ||
+      "/images/wedding-hero-decoration.png",
+
+    heroLogo:
+      settings?.layout?.heroLogo ||
+      "/images/kutti-story-logo-white.png",
+
+    coupleImage:
+      settings?.layout?.coupleImage ||
+      "/images/wedding-catalogue-couple.png",
+
+    ribbonImage:
+      settings?.layout?.ribbonImage ||
+      "/images/wedding-blue-ribbon.png",
+
+    flowerImage:
+      settings?.layout?.flowerImage ||
+      "/images/wedding-flower.png",
+
+    addonsImage:
+      settings?.layout?.addonsImage ||
+      "/images/additional-services-bride.png",
+
+    paymentImage:
+      settings?.layout?.paymentImage ||
+      "/images/payment-terms-couple.png",
+
+    termsImage:
+      settings?.layout?.termsImage ||
+      "/images/terms-elephant-frame.png",
+
+    contactImage:
+      settings?.layout?.contactImage ||
+      "/images/contact-paper-foliage.png",
+
+    showHero: settings?.layout?.showHero ?? true,
+    showIntroduction: settings?.layout?.showIntroduction ?? true,
+    showPackages: settings?.layout?.showPackages ?? true,
+    showAddons: settings?.layout?.showAddons ?? true,
+    showPaymentTerms: settings?.layout?.showPaymentTerms ?? true,
+    showContact: settings?.layout?.showContact ?? true,
+  };
+
   const theme = {
     primary: settings?.theme?.primary || DEFAULT_THEME.primary,
     secondary: settings?.theme?.secondary || DEFAULT_THEME.secondary,
@@ -244,7 +306,7 @@ export default function WeddingCataloguePage() {
         className="relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 pb-8 pt-24 text-center text-white sm:px-8 sm:pb-12 sm:pt-28"
         style={{
           backgroundColor: "#0B1D36",
-          backgroundImage: "url('/images/wedding-hero-decoration.png')",
+          backgroundImage: `url('${layout.heroBackgroundImage}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -271,7 +333,7 @@ export default function WeddingCataloguePage() {
         >
           {/* Logo */}
           <img
-            src={settings?.logo || "/images/kutti-story-logo-white.png"}
+            src={layout.heroLogo || settings?.logo || "/images/kutti-story-logo-white.png"}
             alt={businessName}
             className="mb-8 h-auto max-h-20 w-auto max-w-[150px] object-contain sm:mb-10 sm:max-h-24 sm:max-w-[180px]"
           />

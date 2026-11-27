@@ -60,6 +60,42 @@ type CatalogueShare = {
   revokedAt?: string | null;
 };
 
+type CatalogueLayout = {
+  heroBackgroundImage: string;
+  heroLogo: string;
+  coupleImage: string;
+  ribbonImage: string;
+  flowerImage: string;
+  addonsImage: string;
+  paymentImage: string;
+  termsImage: string;
+  contactImage: string;
+  showHero: boolean;
+  showIntroduction: boolean;
+  showPackages: boolean;
+  showAddons: boolean;
+  showPaymentTerms: boolean;
+  showContact: boolean;
+}; 
+
+const defaultCatalogueLayout: CatalogueLayout = {
+  heroBackgroundImage: "/images/wedding-hero-decoration.png",
+  heroLogo: "/images/kutti-story-logo-white.png",
+  coupleImage: "/images/wedding-catalogue-couple.png",
+  ribbonImage: "/images/wedding-blue-ribbon.png",
+  flowerImage: "/images/wedding-flower.png",
+  addonsImage: "/images/additional-services-bride.png",
+  paymentImage: "/images/payment-terms-couple.png",
+  termsImage: "/images/terms-elephant-frame.png",
+  contactImage: "/images/contact-paper-foliage.png",
+  showHero: true,
+  showIntroduction: true,
+  showPackages: true,
+  showAddons: true,
+  showPaymentTerms: true,
+  showContact: true,
+};
+
 type CatalogueTab = "all" | "templates" | "addons";
 type FormMode = "create" | "edit";
 
@@ -155,6 +191,91 @@ export default function FinalPackageCatalogueSection() {
 
   const [templateForm, setTemplateForm] = useState(emptyTemplate);
   const [addonForm, setAddonForm] = useState(emptyAddon);
+  const [layoutEditorOpen, setLayoutEditorOpen] = useState(false);
+
+  const [layoutForm, setLayoutForm] =
+  useState<CatalogueLayout>(defaultCatalogueLayout);
+
+  const [layoutLoading, setLayoutLoading] = useState(false);
+  const [layoutSaving, setLayoutSaving] = useState(false);
+  const [layoutError, setLayoutError] = useState("");
+  const [layoutSuccess, setLayoutSuccess] = useState("");
+
+  useEffect(() => {
+    if (!layoutEditorOpen) return;
+
+    let cancelled = false;
+
+    const loadLayout = async () => {
+      setLayoutLoading(true);
+      setLayoutError("");
+      setLayoutSuccess("");
+
+      try {
+        const response = await fetch("/api/final-packages/settings");
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Unable to load layout settings.");
+        }
+
+        if (!cancelled) {
+          setLayoutForm({
+            ...defaultCatalogueLayout,
+            ...(result.settings?.layout || {}),
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setLayoutError(
+            error instanceof Error ? error.message : "Unable to load layout settings."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLayoutLoading(false);
+        }
+      }
+    };
+
+    void loadLayout();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [layoutEditorOpen]);
+
+  const saveLayout = async () => {
+    setLayoutSaving(true);
+    setLayoutError("");
+    setLayoutSuccess("");
+
+    try {
+      const response = await fetch("/api/final-packages/settings", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          layout: layoutForm,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Unable to save layout settings.");
+      }
+
+      setLayoutSuccess("Page layout saved successfully.");
+    } catch (error) {
+      setLayoutError(
+        error instanceof Error ? error.message : "Unable to save layout settings."
+      );
+    } finally {
+      setLayoutSaving(false);
+    }
+  };
 
   const loadCatalogue = useCallback(async () => {
     setLoading(true);
@@ -632,17 +753,28 @@ export default function FinalPackageCatalogueSection() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => void loadCatalogue()}
-          disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-50"
-        >
-          <RefreshCw
-            className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
-          />
-          Refresh
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setLayoutEditorOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-sm font-medium text-amber-400 transition hover:bg-amber-500/20"
+          >
+            <Pencil className="h-4 w-4" />
+            Edit Page Layout
+          </button>
+
+          <button
+            type="button"
+            onClick={() => void loadCatalogue()}
+            disabled={loading}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* ALERTS */}
@@ -1341,9 +1473,241 @@ export default function FinalPackageCatalogueSection() {
           )}
         </div>
       )}
-    </div>
-  );
-}
+          {layoutEditorOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+              <div className="w-full max-w-3xl rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-white">
+                    Edit Page Layout
+                  </h2>
+
+                  <button
+                    type="button"
+                    onClick={() => setLayoutEditorOpen(false)}
+                    className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <p className="mt-2 text-sm text-zinc-400">
+                  Customize catalogue images and section visibility.
+                </p>
+
+                <div className="mt-6 grid gap-4">
+                  <FormField label="Hero Background Image">
+                    <input
+                      type="text"
+                      value={layoutForm.heroBackgroundImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          heroBackgroundImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/wedding-hero-decoration.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Hero Logo">
+                    <input
+                      type="text"
+                      value={layoutForm.heroLogo}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          heroLogo: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/kutti-story-logo-white.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Couple Image">
+                    <input
+                      type="text"
+                      value={layoutForm.coupleImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          coupleImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/wedding-catalogue-couple.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Ribbon Image">
+                    <input
+                      type="text"
+                      value={layoutForm.ribbonImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          ribbonImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/wedding-blue-ribbon.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Flower Image">
+                    <input
+                      type="text"
+                      value={layoutForm.flowerImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          flowerImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/wedding-flower.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Add-ons Image">
+                    <input
+                      type="text"
+                      value={layoutForm.addonsImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          addonsImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/additional-services-bride.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Payment Terms Image">
+                    <input
+                      type="text"
+                      value={layoutForm.paymentImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          paymentImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/payment-terms-couple.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Terms & Conditions Image">
+                    <input
+                      type="text"
+                      value={layoutForm.termsImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          termsImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/terms-elephant-frame.png"
+                    />
+                  </FormField>
+
+                  <FormField label="Contact Image">
+                    <input
+                      type="text"
+                      value={layoutForm.contactImage}
+                      onChange={(e) =>
+                        setLayoutForm((prev) => ({
+                          ...prev,
+                          contactImage: e.target.value,
+                        }))
+                      }
+                      className={fieldClass}
+                      placeholder="/images/contact-paper-foliage.png"
+                    />
+                  </FormField>
+
+                  <div className="mt-6 border-t border-zinc-700 pt-5">
+                    <h3 className="mb-4 text-sm font-semibold text-white">
+                      Section Visibility
+                    </h3>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      {([
+                        ["showHero", "Hero Section"],
+                        ["showIntroduction", "Introduction"],
+                        ["showPackages", "Wedding Packages"],
+                        ["showAddons", "Additional Services"],
+                        ["showPaymentTerms", "Payment Terms"],
+                        ["showContact", "Contact Section"],
+                      ] as const).map(([key, label]) => (
+                        <label
+                          key={key}
+                          className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-950 p-3 text-sm text-zinc-300"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={layoutForm[key]}
+                            onChange={(e) =>
+                              setLayoutForm((prev) => ({
+                                ...prev,
+                                [key]: e.target.checked,
+                              }))
+                            }
+                            className="h-4 w-4 accent-amber-500"
+                          />
+                          {label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setLayoutEditorOpen(false)}
+                      className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => void saveLayout()}
+                      disabled={layoutSaving || layoutLoading}
+                      className="rounded-xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
+                    >
+                      {layoutSaving ? "Saving..." : "Save Layout"}
+                    </button>
+                  </div>
+                </div>
+
+                {layoutLoading && (
+                  <p className="mt-6 text-sm text-amber-400">
+                    Loading layout settings...
+                  </p>
+                )}
+
+                {layoutError && (
+                  <p className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-400">
+                    {layoutError}
+                  </p>
+                )}
+
+                {layoutSuccess && (
+                  <p className="mt-4 rounded-lg bg-emerald-500/10 p-3 text-sm text-emerald-400">
+                    {layoutSuccess}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
 
 /* REUSABLE COMPONENTS */
 

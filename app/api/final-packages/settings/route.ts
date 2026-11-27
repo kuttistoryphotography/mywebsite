@@ -17,6 +17,7 @@ const ALLOWED_FIELDS = [
   "balancePaymentText",
   "defaultTermsAndConditions",
   "theme",
+  "layout",
 ] as const;
 
 const THEME_FIELDS = [
@@ -74,6 +75,8 @@ export async function PATCH(request: NextRequest) {
     const updates: Record<string, unknown> = {};
 
     for (const field of ALLOWED_FIELDS) {
+      if (field === "layout") continue;
+
       if (Object.prototype.hasOwnProperty.call(body, field)) {
         updates[field] = body[field];
       }
@@ -194,6 +197,69 @@ export async function PATCH(request: NextRequest) {
       }
 
       updates.theme = cleanTheme;
+    }
+
+    if (body.layout !== undefined) {
+      if (
+        !body.layout ||
+        typeof body.layout !== "object" ||
+        Array.isArray(body.layout)
+      ) {
+        return NextResponse.json(
+          { success: false, message: "Invalid layout settings" },
+          { status: 400 }
+        );
+      }
+
+      const imageFields = [
+        "heroBackgroundImage",
+        "heroLogo",
+        "coupleImage",
+        "ribbonImage",
+        "flowerImage",
+        "addonsImage",
+        "paymentImage",
+        "termsImage",
+        "contactImage",
+      ];
+
+      const visibilityFields = [
+        "showHero",
+        "showIntroduction",
+        "showPackages",
+        "showAddons",
+        "showPaymentTerms",
+        "showContact",
+      ];
+
+      for (const field of imageFields) {
+        if (body.layout[field] !== undefined) {
+          if (
+            typeof body.layout[field] !== "string" ||
+            body.layout[field].length > 500
+          ) {
+            return NextResponse.json(
+              { success: false, message: `Invalid layout field: ${field}` },
+              { status: 400 }
+            );
+          }
+
+          updates[`layout.${field}`] = body.layout[field].trim();
+        }
+      }
+
+      for (const field of visibilityFields) {
+        if (body.layout[field] !== undefined) {
+          if (typeof body.layout[field] !== "boolean") {
+            return NextResponse.json(
+              { success: false, message: `Invalid layout field: ${field}` },
+              { status: 400 }
+            );
+          }
+
+          updates[`layout.${field}`] = body.layout[field];
+        }
+      }
     }
 
     const settings = await FinalPackageSettings.findOneAndUpdate(

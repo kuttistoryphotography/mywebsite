@@ -130,6 +130,8 @@ export async function GET(
               settings?.defaultTermsAndConditions,
 
             theme: settings?.theme,
+
+            layout: settings?.layout,
           }
         : null;
 
