@@ -82,7 +82,7 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    if (Object.keys(updates).length === 0) {
+    if (Object.keys(updates).length === 0 && body.layout === undefined) {
       return NextResponse.json(
         { success: false, message: "No valid settings provided." },
         { status: 400 }
