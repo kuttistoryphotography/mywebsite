@@ -62,6 +62,7 @@ type CatalogueSettings = {
       showHero?: boolean;
       showIntroduction?: boolean;
       showPackages?: boolean;
+      showEngagementPackages?: boolean;
       showAddons?: boolean;
       showPaymentTerms?: boolean;
       showContact?: boolean;
@@ -218,6 +219,8 @@ export default function WeddingCataloguePage() {
     showHero: settings?.layout?.showHero ?? true,
     showIntroduction: settings?.layout?.showIntroduction ?? true,
     showPackages: settings?.layout?.showPackages ?? true,
+    showEngagementPackages:
+      settings?.layout?.showEngagementPackages ?? true,
     showAddons: settings?.layout?.showAddons ?? true,
     showPaymentTerms: settings?.layout?.showPaymentTerms ?? true,
     showContact: settings?.layout?.showContact ?? true,
@@ -518,7 +521,10 @@ export default function WeddingCataloguePage() {
 
       {/* ALL 10 PACKAGES */}
 
-      <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
+      {(activeEventType === "engagement"
+        ? layout.showEngagementPackages
+        : layout.showPackages) && (
+        <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="space-y-12">
           {visibleTemplates.length === 0 && (
             <div className="border border-[#C6A15B]/50 bg-white px-6 py-16 text-center">
@@ -688,9 +694,11 @@ export default function WeddingCataloguePage() {
           ))}
         </div>
       </section>
+      )}
 
       {/* ADD-ONS */}
 
+      {layout.showAddons && (
       <section
         className="px-5 py-24 sm:px-8"
         style={{ backgroundColor: "#EEE9DF" }}
@@ -762,9 +770,11 @@ export default function WeddingCataloguePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* PAYMENT TERMS */}
 
+      {layout.showPaymentTerms && (
       <section className="mx-auto max-w-4xl px-6 py-24">
         
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:gap-8">
@@ -825,9 +835,11 @@ export default function WeddingCataloguePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* CONTACT / CLOSING */}
 
+      {layout.showContact && (
       <footer
         className="px-6 py-24 text-center text-white"
         style={{ backgroundColor: theme.primary }}
@@ -906,6 +918,7 @@ export default function WeddingCataloguePage() {
           © {new Date().getFullYear()} {businessName}. ALL RIGHTS RESERVED.
         </p>
       </footer>
+      )}
     </main>
   );
 }

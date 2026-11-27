@@ -74,6 +74,7 @@ type CatalogueLayout = {
   showHero: boolean;
   showIntroduction: boolean;
   showPackages: boolean;
+  showEngagementPackages: boolean;
   showAddons: boolean;
   showPaymentTerms: boolean;
   showContact: boolean;
@@ -92,6 +93,7 @@ const defaultCatalogueLayout: CatalogueLayout = {
   showHero: true,
   showIntroduction: true,
   showPackages: true,
+  showEngagementPackages: true,
   showAddons: true,
   showPaymentTerms: true,
   showContact: true,
@@ -1696,6 +1698,7 @@ export default function FinalPackageCatalogueSection() {
                         ["showHero", "Hero Section"],
                         ["showIntroduction", "Introduction"],
                         ["showPackages", "Wedding Packages"],
+                        ["showEngagementPackages", "Engagement Packages"],
                         ["showAddons", "Additional Services"],
                         ["showPaymentTerms", "Payment Terms"],
                         ["showContact", "Contact Section"],
