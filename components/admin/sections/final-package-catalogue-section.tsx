@@ -275,7 +275,8 @@ export default function FinalPackageCatalogueSection() {
         throw new Error(result.message || "Unable to save layout settings.");
       }
 
-      setLayoutSuccess("Page layout saved successfully.");
+      setLayoutEditorOpen(false);
+      await createCatalogueShare();
     } catch (error) {
       setLayoutError(
         error instanceof Error ? error.message : "Unable to save layout settings."
@@ -1736,10 +1737,12 @@ export default function FinalPackageCatalogueSection() {
                     <button
                       type="button"
                       onClick={() => void saveLayout()}
-                      disabled={layoutSaving || layoutLoading}
+                      disabled={layoutSaving || layoutLoading || shareLoading}
                       className="rounded-xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
                     >
-                      {layoutSaving ? "Saving..." : "Save Layout"}
+                      {layoutSaving || shareLoading
+                        ? "Saving & Generating..."
+                        : "Save & Generate Link"}
                     </button>
                   </div>
                 </div>
