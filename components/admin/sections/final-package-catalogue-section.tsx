@@ -254,37 +254,17 @@ export default function FinalPackageCatalogueSection() {
   }, [layoutEditorOpen]);
 
   const saveLayout = async () => {
-    setLayoutSaving(true);
-    setLayoutError("");
-    setLayoutSuccess("");
+  setLayoutSaving(true);
+  setLayoutError("");
+  setLayoutSuccess("");
+  setLayoutEditorOpen(false);
 
-    try {
-      const response = await fetch("/api/final-packages/settings", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          layout: layoutForm,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to save layout settings.");
-      }
-
-      setLayoutEditorOpen(false);
-      await createCatalogueShare();
-    } catch (error) {
-      setLayoutError(
-        error instanceof Error ? error.message : "Unable to save layout settings."
-      );
-    } finally {
-      setLayoutSaving(false);
-    }
-  };
+  try {
+    await createCatalogueShare();
+  } finally {
+    setLayoutSaving(false);
+  }
+};
 
   const loadCatalogue = useCallback(async () => {
     setLoading(true);
@@ -861,7 +841,7 @@ export default function FinalPackageCatalogueSection() {
             <div className="flex flex-wrap gap-2">
             <button
                 type="button"
-                onClick={() => void createCatalogueShare()}
+                onClick={() => setLayoutEditorOpen(true)}
                 disabled={shareLoading}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-black hover:bg-amber-400 disabled:opacity-50"
             >

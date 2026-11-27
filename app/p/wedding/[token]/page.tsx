@@ -122,9 +122,7 @@ export default function WeddingCataloguePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [activeEventType, setActiveEventType] = useState<
-    "wedding" | "engagement"
-  >("wedding");
+  const activeEventType = data?.eventType || "wedding";
 
   useEffect(() => {
     if (!token) return;
@@ -151,10 +149,8 @@ export default function WeddingCataloguePage() {
 
         if (!cancelled) {
           setData(result);
-          setActiveEventType(
-            result.eventType === "engagement" ? "engagement" : "wedding"
-          );
         }
+
       } catch (err) {
         if (!cancelled) {
           setError(
@@ -422,38 +418,6 @@ export default function WeddingCataloguePage() {
       </section>
 
       {/* INTRODUCTION + PACKAGE HEADING */}
-
-      <div className="mb-10 flex justify-center gap-3">
-        <button
-          type="button"
-          onClick={() => setActiveEventType("wedding")}
-          className={`border px-7 py-3 text-xs font-semibold tracking-wider transition ${
-            activeEventType === "wedding"
-              ? "bg-[#14233B] text-white"
-              : "border-[#C6A15B] bg-white text-[#14233B]"
-          }`}
-          style={{
-            borderColor: theme.secondary,
-          }}
-        >
-          WEDDING
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveEventType("engagement")}
-          className={`border px-7 py-3 text-xs font-semibold tracking-wider transition ${
-            activeEventType === "engagement"
-              ? "bg-[#14233B] text-white"
-              : "border-[#C6A15B] bg-white text-[#14233B]"
-          }`}
-          style={{
-            borderColor: theme.secondary,
-          }}
-        >
-          ENGAGEMENT
-        </button>
-      </div>
 
       <section
         id="packages"
