@@ -160,6 +160,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Final Package templates POST error:", error);
 
+      if (error instanceof Error) {
+        console.error("Error details:", error.message);
+      }
+
     return NextResponse.json(
       { success: false, message: "Unable to create package template." },
       { status: 500 }
