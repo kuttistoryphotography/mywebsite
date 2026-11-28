@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const filter: Record<string, string> = {};
 
     if (eventType) {
-      if (!["wedding", "engagement"].includes(eventType)) {
+      if (!["wedding", "engagement", "reception"].includes(eventType)) {
         return NextResponse.json(
           { success: false, message: "Invalid event type." },
           { status: 400 }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         ? body.eventType.trim().toLowerCase()
         : "wedding";
 
-    if (!["wedding", "engagement"].includes(eventType)) {
+    if (!["wedding", "engagement", "reception"].includes(eventType)) {
       return NextResponse.json(
         { success: false, message: "Invalid event type." },
         { status: 400 }
