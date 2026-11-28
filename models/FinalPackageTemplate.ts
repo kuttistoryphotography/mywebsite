@@ -11,7 +11,7 @@ export type PackageCategory =
   | "premium"
   | "vip";
 
-export type PackageEventType = "wedding" | "engagement";
+export type PackageEventType = "wedding" | "engagement" | "reception";
 
 export interface ITemplateService {
   name: string;

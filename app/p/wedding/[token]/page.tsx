@@ -13,7 +13,7 @@ type CatalogueItem = {
 type PackageTemplate = {
   templateCode: string;
   packageName: string;
-  eventType: "wedding" | "engagement";
+  eventType: "wedding" | "engagement" | "reception";
   category: string;
   description?: string;
   basePrice: number;
@@ -43,12 +43,19 @@ type CatalogueSettings = {
   advancePercentage?: number;
   balancePaymentText?: string;
   defaultTermsAndConditions?: string[];
+    receptionSettings?: {
+      advancePercentage?: number;
+      balancePaymentText?: string;
+      defaultTermsAndConditions?: string[];
+    };
+
     theme?: {
       primary?: string;
       secondary?: string;
       background?: string;
       text?: string;
     };
+
     layout?: {
       heroBackgroundImage?: string;
       heroLogo?: string;
@@ -63,6 +70,26 @@ type CatalogueSettings = {
       showIntroduction?: boolean;
       showPackages?: boolean;
       showEngagementPackages?: boolean;
+      showReceptionPackages?: boolean;
+      showAddons?: boolean;
+      showPaymentTerms?: boolean;
+      showContact?: boolean;
+    };
+
+    receptionLayout?: {
+      heroBackgroundImage?: string;
+      heroLogo?: string;
+      coupleImage?: string;
+      ribbonImage?: string;
+      flowerImage?: string;
+      addonsImage?: string;
+      paymentImage?: string;
+      termsImage?: string;
+      contactImage?: string;
+      showHero?: boolean;
+      showIntroduction?: boolean;
+      showPackages?: boolean;
+      showReceptionPackages?: boolean;
       showAddons?: boolean;
       showPaymentTerms?: boolean;
       showContact?: boolean;
@@ -71,7 +98,7 @@ type CatalogueSettings = {
 
 type CatalogueData = {
   success: boolean;
-  eventType: "wedding" | "engagement";
+  eventType: "wedding" | "engagement" | "reception";
   settings: CatalogueSettings | null;
   templates: PackageTemplate[];
   addons: CatalogueAddon[];
@@ -179,51 +206,55 @@ export default function WeddingCataloguePage() {
     (pkg) => (pkg.eventType || "wedding") === activeEventType
   );
 
+  const selectedLayout = settings?.layout;
+
   const layout = {
     heroBackgroundImage:
-      settings?.layout?.heroBackgroundImage ||
+      selectedLayout?.heroBackgroundImage ||
       "/images/wedding-hero-decoration.png",
 
     heroLogo:
-      settings?.layout?.heroLogo ||
+      selectedLayout?.heroLogo ||
       "/images/kutti-story-logo-white.png",
 
     coupleImage:
-      settings?.layout?.coupleImage ||
+      selectedLayout?.coupleImage ||
       "/images/wedding-catalogue-couple.png",
 
     ribbonImage:
-      settings?.layout?.ribbonImage ||
+      selectedLayout?.ribbonImage ||
       "/images/wedding-blue-ribbon.png",
 
     flowerImage:
-      settings?.layout?.flowerImage ||
+      selectedLayout?.flowerImage ||
       "/images/wedding-flower.png",
 
     addonsImage:
-      settings?.layout?.addonsImage ||
+      selectedLayout?.addonsImage ||
       "/images/additional-services-bride.png",
 
     paymentImage:
-      settings?.layout?.paymentImage ||
+      selectedLayout?.paymentImage ||
       "/images/payment-terms-couple.png",
 
     termsImage:
-      settings?.layout?.termsImage ||
+      selectedLayout?.termsImage ||
       "/images/terms-elephant-frame.png",
 
     contactImage:
-      settings?.layout?.contactImage ||
+      selectedLayout?.contactImage ||
       "/images/contact-paper-foliage.png",
 
-    showHero: settings?.layout?.showHero ?? true,
-    showIntroduction: settings?.layout?.showIntroduction ?? true,
-    showPackages: settings?.layout?.showPackages ?? true,
+    showHero: selectedLayout?.showHero ?? true,
+    showIntroduction: selectedLayout?.showIntroduction ?? true,
+    showPackages: selectedLayout?.showPackages ?? true,
     showEngagementPackages:
-      settings?.layout?.showEngagementPackages ?? true,
-    showAddons: settings?.layout?.showAddons ?? true,
-    showPaymentTerms: settings?.layout?.showPaymentTerms ?? true,
-    showContact: settings?.layout?.showContact ?? true,
+      selectedLayout?.showEngagementPackages ?? true,
+    showReceptionPackages:
+      selectedLayout?.showReceptionPackages ?? true,
+    showAddons: selectedLayout?.showAddons ?? true,
+    showPaymentTerms: selectedLayout?.showPaymentTerms ?? true,
+    showContact: selectedLayout?.showContact ?? true,
   };
 
   const theme = {
@@ -247,7 +278,7 @@ export default function WeddingCataloguePage() {
     if (!whatsappNumber) {
       if (settings?.email) {
         window.location.href = `mailto:${settings.email}?subject=${encodeURIComponent(
-          `${activeEventType === "engagement" ? "Engagement" : "Wedding"} Package Enquiry`
+          `${activeEventType === "reception" ? "Reception" : activeEventType === "engagement" ? "Engagement" : "Wedding"} Package Enquiry`
         )}&body=${encodeURIComponent(message)}`;
       } else {
         alert(
@@ -314,6 +345,7 @@ export default function WeddingCataloguePage() {
     >     
       
       {/* WEDDING CATALOGUE HERO — QUOTATION COVER STYLE */}
+      {layout.showHero && (
       <section
         className="relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden px-4 pb-8 pt-24 text-center text-white sm:px-8 sm:pb-12 sm:pt-28"
         style={{
@@ -359,9 +391,11 @@ export default function WeddingCataloguePage() {
 
           {/* Main title */}
           <h1 className="mt-7 max-w-4xl font-serif text-4xl font-normal leading-[1.15] text-white sm:mt-8 sm:text-5xl md:text-6xl lg:text-7xl">
-            {activeEventType === "engagement"
-              ? "Engagement Photography"
-              : "Wedding Photography"}
+            {activeEventType === "reception"
+              ? "Reception Photography"
+              : activeEventType === "engagement"
+                ? "Engagement Photography"
+                : "Wedding Photography"}
             <br />
             <span
               className="mt-2 inline-block italic"
@@ -397,9 +431,11 @@ export default function WeddingCataloguePage() {
               </span>
             </p>
             <p>
-              {activeEventType === "engagement"
-                ? "Engagement Photography · Candid Moments · Cinematic Films"
-                : "Wedding Photography · Candid Moments · Cinematic Films"}
+              {activeEventType === "reception"
+                ? "Reception Photography · Candid Moments · Cinematic Films"
+                : activeEventType === "engagement"
+                  ? "Engagement Photography · Candid Moments · Cinematic Films"
+                  : "Wedding Photography · Candid Moments · Cinematic Films"}
             </p>
             <p className="text-xs text-white/60 sm:text-sm">
               {data.counts.addons} optional services available
@@ -416,90 +452,118 @@ export default function WeddingCataloguePage() {
           </a>
         </div>
       </section>
+      )}
 
       {/* INTRODUCTION + PACKAGE HEADING */}
 
+      {(layout.showIntroduction ||
+        (activeEventType === "reception"
+          ? layout.showReceptionPackages
+          : activeEventType === "engagement"
+            ? layout.showEngagementPackages
+            : layout.showPackages)) && (
       <section
         id="packages"
         className="mx-auto max-w-7xl scroll-mt-8 px-5 pb-16 pt-16 sm:px-8 sm:pt-20"
       >
-        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(300px,440px)] lg:gap-12">
+          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(300px,440px)] lg:gap-12">
 
-          {/* LEFT: BOTH TEXT SECTIONS */}
+            {/* LEFT: BOTH TEXT SECTIONS */}
 
-          <div className="py-6 text-center md:text-left">
-            <p
-              className="text-xs tracking-[0.35em]"
-              style={{ color: theme.secondary }}
-            >
-              OUR COLLECTION
-            </p>
+            <div className="py-6 text-center md:text-left">
+              {layout.showIntroduction && (
+                <>
+                  <p
+                    className="text-xs tracking-[0.35em]"
+                    style={{ color: theme.secondary }}
+                  >
+                    OUR COLLECTION
+                  </p>
 
-            <h2
-              className="mt-5 font-serif text-3xl sm:text-5xl"
-              style={{ color: theme.primary }}
-            >
-              Your Story. Our Frames.
-            </h2>
+                  <h2
+                    className="mt-5 font-serif text-3xl sm:text-5xl"
+                    style={{ color: theme.primary }}
+                  >
+                    Your Story. Our Frames.
+                  </h2>
 
-            <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-gray-600 md:mx-0">
-              {activeEventType === "engagement"
-                ? "Discover our engagement photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."
-                : "Discover our wedding photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."}
-            </p>
+                  <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-gray-600 md:mx-0">
+                    {activeEventType === "reception"
+                      ? "Discover our reception photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."
+                      : activeEventType === "engagement"
+                        ? "Discover our engagement photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."
+                        : "Discover our wedding photography and cinematic film collections, thoughtfully designed to preserve every beautiful moment of your celebration."}
+                  </p>
+                </>
+              )}
 
-            <div
-              className="mx-auto my-8 h-px w-20 md:mx-0"
-              style={{ backgroundColor: theme.secondary }}
-            />
+              <div
+                className="mx-auto my-8 h-px w-20 md:mx-0"
+                style={{ backgroundColor: theme.secondary }}
+              />
 
-            <p
-              className="text-xs tracking-[0.35em]"
-              style={{ color: theme.secondary }}
-            >
-              FIND YOUR PERFECT COLLECTION
-            </p>
+                {(activeEventType === "reception"
+                  ? layout.showReceptionPackages
+                  : activeEventType === "engagement"
+                    ? layout.showEngagementPackages
+                    : layout.showPackages) && (
+                <>
+                  <p
+                    className="text-xs tracking-[0.35em]"
+                    style={{ color: theme.secondary }}
+                  >
+                    FIND YOUR PERFECT COLLECTION
+                  </p>
 
-            <h2
-              className="mt-4 font-serif text-3xl sm:text-5xl"
-              style={{ color: theme.primary }}
-            >
-              {activeEventType === "engagement"
-                ? "Engagement Packages"
-                : "Wedding Packages"}
-            </h2>
+                  <h2
+                    className="mt-4 font-serif text-3xl sm:text-5xl"
+                    style={{ color: theme.primary }}
+                  >
+                    {activeEventType === "reception"
+                      ? "Reception Packages"
+                      : activeEventType === "engagement"
+                        ? "Engagement Packages"
+                        : "Wedding Packages"}
+                  </h2>
 
-            <p className="mt-4 text-sm text-gray-500">
-              {visibleTemplates.length} exclusive collections
-            </p>
+                  <p className="mt-4 text-sm text-gray-500">
+                    {visibleTemplates.length} exclusive collections
+                  </p>
+                </>
+              )}
+            </div>
+
+            {/* RIGHT: ORIGINAL WEDDING COUPLE PNG */}
+
+            <div className="flex w-full items-center justify-center">
+              <img
+                src={layout.coupleImage}
+                alt="Traditional Tamil wedding couple"
+                className="h-auto max-h-[560px] w-full max-w-[440px] object-contain object-center"
+                loading="eager"
+              />
+            </div>
           </div>
-
-          {/* RIGHT: ORIGINAL WEDDING COUPLE PNG */}
-
-          <div className="flex w-full items-center justify-center">
-            <img
-              src={layout.coupleImage}
-              alt="Traditional Tamil wedding couple"
-              className="h-auto max-h-[560px] w-full max-w-[440px] object-contain object-center"
-              loading="eager"
-            />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ALL 10 PACKAGES */}
 
-      {(activeEventType === "engagement"
-        ? layout.showEngagementPackages
-        : layout.showPackages) && (
+      {(activeEventType === "reception"
+        ? layout.showReceptionPackages
+        : activeEventType === "engagement"
+          ? layout.showEngagementPackages
+          : layout.showPackages) && (
         <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="space-y-12">
           {visibleTemplates.length === 0 && (
             <div className="border border-[#C6A15B]/50 bg-white px-6 py-16 text-center">
               <h3 className="font-serif text-2xl text-[#14233B]">
-                {activeEventType === "engagement"
-                  ? "Engagement Packages Coming Soon"
-                  : "Wedding Packages Coming Soon"}
+                {activeEventType === "reception"
+                  ? "Reception Packages Coming Soon"
+                  : activeEventType === "engagement"
+                    ? "Engagement Packages Coming Soon"
+                    : "Wedding Packages Coming Soon"}
               </h3>
               <p className="mt-3 text-sm text-gray-500">
                 Please contact our studio for more details.
@@ -783,24 +847,48 @@ export default function WeddingCataloguePage() {
             </h3>
 
             <p className="mt-4 text-sm leading-7 text-gray-600">
-              {settings?.advancePercentage ?? 50}% advance payment
+              {activeEventType === "reception"
+                ? settings?.receptionSettings?.advancePercentage ?? 50
+                : settings?.advancePercentage ?? 50}% advance payment
               is required to confirm the booking.
             </p>
 
             <p className="mt-2 text-sm leading-7 text-gray-600">
-              {settings?.balancePaymentText ||
+              {(activeEventType === "reception"
+                ? settings?.receptionSettings?.balancePaymentText
+                : settings?.balancePaymentText) ||
                 "Remaining balance to be paid on or before the event day."}
             </p>
           </div>
 
-          <div className="flex w-full justify-center px-4 py-8 sm:py-10">
-            <img
-              src={layout.termsImage}
-              alt="KuttiStory Photography - Terms and Conditions"
-              className="h-auto max-h-[850px] w-full max-w-[720px] object-contain"
-              loading="lazy"
-            />
-          </div>
+           {activeEventType === "reception" &&
+          (settings?.receptionSettings?.defaultTermsAndConditions || []).length > 0 ? (
+            <div className="border bg-white p-7">
+              <h3
+                className="font-serif text-xl"
+                style={{ color: theme.primary }}
+              >
+                Reception Terms & Conditions
+              </h3>
+
+              <ol className="mt-5 list-decimal space-y-3 pl-5 text-sm leading-7 text-gray-600">
+                {(settings?.receptionSettings?.defaultTermsAndConditions || []).map(
+                  (term, index) => (
+                    <li key={index}>{term}</li>
+                  )
+                )}
+              </ol>
+            </div>
+          ) : (
+            <div className="flex w-full justify-center px-4 py-8 sm:py-10">
+              <img
+                src={layout.termsImage}
+                alt="KuttiStory Photography - Terms and Conditions"
+                className="h-auto max-h-[850px] w-full max-w-[720px] object-contain"
+                loading="lazy"
+              />
+            </div>
+          )}
         </div>
       </section>
       )}
@@ -824,9 +912,11 @@ export default function WeddingCataloguePage() {
         </h2>
 
         <p className="mx-auto mt-6 max-w-xl text-sm leading-8 text-white/70">
-          {activeEventType === "engagement"
-            ? "Thank you for exploring our engagement collections. We look forward to being part of your special celebration."
-            : "Thank you for exploring our wedding collections. We look forward to being part of your special celebration."}
+          {activeEventType === "reception"
+            ? "Thank you for exploring our reception collections. We look forward to being part of your special celebration."
+            : activeEventType === "engagement"
+              ? "Thank you for exploring our engagement collections. We look forward to being part of your special celebration."
+              : "Thank you for exploring our wedding collections. We look forward to being part of your special celebration."}
         </p>
 
         <div className="relative mx-auto mt-8 w-full max-w-[440px]">
@@ -840,7 +930,7 @@ export default function WeddingCataloguePage() {
             type="button"
             onClick={() =>
               openWhatsApp(
-                `Hello ${businessName}, I viewed your 2026 ${activeEventType === "engagement" ? "Engagement" : "Wedding"} Photography & Cinematic Film Catalogue. I would like to discuss my ${activeEventType} photography requirements.`
+                `Hello ${businessName}, I viewed your 2026 ${activeEventType === "reception" ? "Reception" : activeEventType === "engagement" ? "Engagement" : "Wedding"} Photography & Cinematic Film Catalogue. I would like to discuss my ${activeEventType} photography requirements.`
               )
             }
             className="absolute left-[54%] top-[56%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap border border-[#C6A15B] px-5 py-3 text-[10px] font-semibold tracking-[0.12em] text-[#14233B] transition hover:bg-[#14233B] hover:text-white sm:px-8 sm:py-4 sm:text-xs"

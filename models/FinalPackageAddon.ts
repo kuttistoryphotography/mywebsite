@@ -2,6 +2,7 @@
 import mongoose, { Schema, Model } from "mongoose";
 
 export interface IFinalPackageAddon {
+  eventType: "shared" | "reception";
   addonCode: string;
   name: string;
   description?: string;
@@ -14,8 +15,14 @@ export interface IFinalPackageAddon {
 }
 
 const FinalPackageAddonSchema = new Schema<IFinalPackageAddon>(
-  {
-    addonCode: {
+    {
+      eventType: {
+        type: String,
+        enum: ["shared", "reception"],
+        default: "shared",
+      },
+
+      addonCode: {
       type: String,
       required: true,
       unique: true,

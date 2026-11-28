@@ -84,7 +84,11 @@ export async function POST(request: NextRequest) {
       }
 
       const eventType =
-        body.eventType === "engagement" ? "engagement" : "wedding";
+        body.eventType === "engagement"
+          ? "engagement"
+          : body.eventType === "reception"
+            ? "reception"
+            : "wedding";
 
       const currentSettings = await FinalPackageSettings.findOne().lean();
 

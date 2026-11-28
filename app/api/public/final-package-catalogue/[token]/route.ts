@@ -73,11 +73,24 @@ export async function GET(
 
       ContactSettings.findOne().lean(),
 
-      FinalPackageTemplate.find({ isActive: true })
+      FinalPackageTemplate.find({
+        isActive: true,
+        eventType: share.eventType || "wedding",
+      })
         .sort({ sortOrder: 1, createdAt: 1 })
         .lean(),
 
-      FinalPackageAddon.find({ isActive: true })
+      FinalPackageAddon.find({
+        isActive: true,
+        ...(share.eventType === "reception"
+          ? { eventType: "reception" }
+          : {
+              $or: [
+                { eventType: "shared" },
+                { eventType: { $exists: false } },
+              ],
+            }),
+      })
         .sort({ sortOrder: 1, createdAt: 1 })
         .lean(),
     ]);
@@ -123,15 +136,32 @@ export async function GET(
               "",
 
             gstPercentage: settings?.gstPercentage,
-            advancePercentage: settings?.advancePercentage,
-            balancePaymentText: settings?.balancePaymentText,
+            advancePercentage:
+              share.eventType === "reception"
+                ? settings?.receptionSettings?.advancePercentage
+                : settings?.advancePercentage,
+
+            balancePaymentText:
+              share.eventType === "reception"
+                ? settings?.receptionSettings?.balancePaymentText
+                : settings?.balancePaymentText,
+
+            receptionSettings:
+              share.eventType === "reception"
+                ? settings?.receptionSettings
+                : undefined,
 
             defaultTermsAndConditions:
-              settings?.defaultTermsAndConditions,
+              share.eventType === "reception"
+                ? settings?.receptionSettings?.defaultTermsAndConditions
+                : settings?.defaultTermsAndConditions,
 
             theme: settings?.theme,
 
-            layout: share.layout || settings?.layout,
+            layout:
+              share.eventType === "reception"
+                ? share.layout || settings?.receptionLayout || settings?.layout
+                : share.layout || settings?.layout,
           }
         : null;
 

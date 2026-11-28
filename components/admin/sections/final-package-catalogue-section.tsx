@@ -30,7 +30,7 @@ type TemplateItem = {
 type PackageTemplate = {
   _id: string;
   templateCode: string;
-  eventType: "wedding" | "engagement";
+  eventType: "wedding" | "engagement" | "reception";
   packageName: string;
   category: "basic" | "standard" | "premium" | "vip";
   description: string;
@@ -44,6 +44,7 @@ type PackageTemplate = {
 
 type PackageAddon = {
   _id: string;
+  eventType: "shared" | "reception";
   addonCode: string;
   name: string;
   description: string;
@@ -74,7 +75,7 @@ type CatalogueLayout = {
   showHero: boolean;
   showIntroduction: boolean;
   showPackages: boolean;
-  showEngagementPackages: boolean;
+  showReceptionPackages: boolean;
   showAddons: boolean;
   showPaymentTerms: boolean;
   showContact: boolean;
@@ -93,7 +94,7 @@ const defaultCatalogueLayout: CatalogueLayout = {
   showHero: true,
   showIntroduction: true,
   showPackages: true,
-  showEngagementPackages: true,
+  showReceptionPackages: true,
   showAddons: true,
   showPaymentTerms: true,
   showContact: true,
@@ -103,6 +104,7 @@ type CatalogueTab =
   | "all"
   | "wedding"
   | "engagement"
+  | "reception"
   | "addons";
 type FormMode = "create" | "edit";
 
@@ -119,6 +121,7 @@ const emptyTemplate = {
 };
 
 const emptyAddon = {
+  eventType: "shared" as PackageAddon["eventType"],
   addonCode: "",
   name: "",
   description: "",
@@ -209,6 +212,111 @@ export default function FinalPackageCatalogueSection() {
   const [layoutError, setLayoutError] = useState("");
   const [layoutSuccess, setLayoutSuccess] = useState("");
 
+  const [receptionAdvancePercentage, setReceptionAdvancePercentage] =
+  useState("50");
+  const [receptionBalancePaymentText, setReceptionBalancePaymentText] =
+    useState("Remaining balance payable on or before the event day.");
+  const [receptionTermsText, setReceptionTermsText] = useState("");
+  const [receptionSettingsLoading, setReceptionSettingsLoading] = useState(false);
+  const [receptionSettingsSaving, setReceptionSettingsSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadReceptionSettings = async () => {
+      setReceptionSettingsLoading(true);
+
+      try {
+        const response = await fetch("/api/final-packages/settings", {
+          cache: "no-store",
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || "Unable to load Reception settings."
+          );
+        }
+
+        if (!cancelled) {
+          const reception = result.settings?.receptionSettings;
+
+          setReceptionAdvancePercentage(
+            String(reception?.advancePercentage ?? 50)
+          );
+          setReceptionBalancePaymentText(
+            reception?.balancePaymentText ||
+              "Remaining balance payable on or before the event day."
+          );
+          setReceptionTermsText(
+            (reception?.defaultTermsAndConditions || []).join("\n")
+          );
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setLayoutError(
+            error instanceof Error
+              ? error.message
+              : "Unable to load Reception settings."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setReceptionSettingsLoading(false);
+        }
+      }
+    };
+
+    void loadReceptionSettings();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const saveReceptionSettings = async () => {
+    setReceptionSettingsSaving(true);
+    setLayoutError("");
+    setLayoutSuccess("");
+
+    try {
+      const response = await fetch("/api/final-packages/settings", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          receptionSettings: {
+            advancePercentage: Number(receptionAdvancePercentage),
+            balancePaymentText: receptionBalancePaymentText,
+            defaultTermsAndConditions: receptionTermsText
+              .split("\n")
+              .map((term) => term.trim())
+              .filter(Boolean),
+          },
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message || "Unable to save Reception settings."
+        );
+      }
+
+      setLayoutSuccess("Reception payment and terms settings saved successfully.");
+    } catch (error) {
+      setLayoutError(
+        error instanceof Error
+          ? error.message
+          : "Unable to save Reception settings."
+      );
+    } finally {
+      setReceptionSettingsSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (!layoutEditorOpen) return;
 
@@ -228,9 +336,14 @@ export default function FinalPackageCatalogueSection() {
         }
 
         if (!cancelled) {
+          const selectedLayout =
+            activeTab === "reception"
+              ? result.settings?.receptionLayout
+              : result.settings?.layout;
+
           setLayoutForm({
             ...defaultCatalogueLayout,
-            ...(result.settings?.layout || {}),
+            ...(selectedLayout || {}),
           });
         }
       } catch (error) {
@@ -251,20 +364,48 @@ export default function FinalPackageCatalogueSection() {
     return () => {
       cancelled = true;
     };
-  }, [layoutEditorOpen]);
+  }, [layoutEditorOpen, activeTab]);
 
   const saveLayout = async () => {
-  setLayoutSaving(true);
-  setLayoutError("");
-  setLayoutSuccess("");
-  setLayoutEditorOpen(false);
+    setLayoutSaving(true);
+    setLayoutError("");
+    setLayoutSuccess("");
 
-  try {
-    await createCatalogueShare();
-  } finally {
-    setLayoutSaving(false);
-  }
-};
+    try {
+      if (activeTab === "reception") {
+        const response = await fetch("/api/final-packages/settings", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            receptionLayout: layoutForm,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || "Unable to save Reception layout."
+          );
+        }
+
+        setLayoutSuccess("Reception layout saved successfully.");
+      }
+
+      setLayoutEditorOpen(false);
+      await createCatalogueShare();
+    } catch (error) {
+      setLayoutError(
+        error instanceof Error
+          ? error.message
+          : "Unable to save catalogue layout."
+      );
+    } finally {
+      setLayoutSaving(false);
+    }
+  };
 
   const loadCatalogue = useCallback(async () => {
     setLoading(true);
@@ -326,10 +467,21 @@ export default function FinalPackageCatalogueSection() {
     setTemplateForm(emptyTemplate);
     setTemplateForm({
       ...emptyTemplate,
-      eventType: activeTab === "engagement" ? "engagement" : "wedding",
+      eventType:
+        activeTab === "engagement"
+          ? "engagement"
+          : activeTab === "reception"
+            ? "reception"
+            : "wedding",
     });
     setAddonForm(emptyAddon);
-    setActiveTab(activeTab === "engagement" ? "engagement" : "wedding");
+    setActiveTab(
+      activeTab === "engagement"
+        ? "engagement"
+        : activeTab === "reception"
+          ? "reception"
+          : "wedding"
+    );
     setFormOpen(true);
     setError("");
     setSuccess("");
@@ -352,7 +504,13 @@ export default function FinalPackageCatalogueSection() {
     });
 
     setAddonForm(emptyAddon);
-    setActiveTab(item.eventType === "engagement" ? "engagement" : "wedding");
+    setActiveTab(
+      item.eventType === "engagement"
+        ? "engagement"
+        : item.eventType === "reception"
+          ? "reception"
+          : "wedding"
+    );
     setFormOpen(true);
     setError("");
     setSuccess("");
@@ -374,6 +532,7 @@ export default function FinalPackageCatalogueSection() {
     setEditingId(item._id);
 
     setAddonForm({
+      eventType: item.eventType || "shared",
       addonCode: item.addonCode || "",
       name: item.name || "",
       description: item.description || "",
@@ -446,6 +605,7 @@ export default function FinalPackageCatalogueSection() {
     setSuccess("");
 
     const payload = {
+      eventType: addonForm.eventType,
       addonCode: addonForm.addonCode.trim(),
       name: addonForm.name.trim(),
       description: addonForm.description.trim(),
@@ -560,7 +720,12 @@ export default function FinalPackageCatalogueSection() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               layout: layoutForm,
-              eventType: activeTab === "engagement" ? "engagement" : "wedding",
+              eventType:
+                activeTab === "engagement"
+                  ? "engagement"
+                  : activeTab === "reception"
+                    ? "reception"
+                    : "wedding",
             }),
         }
         );
@@ -574,7 +739,15 @@ export default function FinalPackageCatalogueSection() {
         }
 
         setShareUrl(data.shareUrl);
-        setShareSuccess("Your wedding catalogue link is ready.");
+        setShareSuccess(
+          `Your ${
+            activeTab === "reception"
+              ? "Reception"
+              : activeTab === "engagement"
+                ? "Engagement"
+                : "Wedding"
+          } catalogue link is ready.`
+        );
         await loadShareHistory();
     } catch (err) {
         setShareError(
@@ -735,6 +908,10 @@ export default function FinalPackageCatalogueSection() {
 
     if (activeTab === "engagement") {
       return item.eventType === "engagement";
+    }
+
+    if (activeTab === "reception") {
+      return item.eventType === "reception";
     }
 
     return true;
@@ -977,7 +1154,73 @@ export default function FinalPackageCatalogueSection() {
         )}
         </section>
 
+      {/* RECEPTION PAYMENT AND TERMS SETTINGS */}
+      <section className="space-y-4 rounded-2xl border border-purple-500/30 bg-zinc-900 p-5">
+        <div>
+          <h2 className="text-lg font-semibold text-white">
+            Reception Payment & Terms Settings
+          </h2>
+          <p className="mt-1 text-sm text-zinc-400">
+            These settings apply only to Reception catalogue links.
+          </p>
+        </div>
+
+        {receptionSettingsLoading ? (
+          <p className="text-sm text-zinc-400">
+            Loading Reception settings...
+          </p>
+        ) : (
+          <>
+            <FormField label="Advance Payment Percentage (%)">
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={receptionAdvancePercentage}
+                onChange={(e) =>
+                  setReceptionAdvancePercentage(e.target.value)
+                }
+                className={fieldClass}
+              />
+            </FormField>
+
+            <FormField label="Balance Payment Instructions">
+              <textarea
+                rows={3}
+                value={receptionBalancePaymentText}
+                onChange={(e) =>
+                  setReceptionBalancePaymentText(e.target.value)
+                }
+                className={fieldClass}
+              />
+            </FormField>
+
+            <FormField label="Reception Terms & Conditions (one per line)">
+              <textarea
+                rows={7}
+                value={receptionTermsText}
+                onChange={(e) => setReceptionTermsText(e.target.value)}
+                placeholder={"Advance payment is non-refundable.\nAny additional services will be charged separately."}
+                className={fieldClass}
+              />
+            </FormField>
+
+            <button
+              type="button"
+              onClick={() => void saveReceptionSettings()}
+              disabled={receptionSettingsSaving}
+              className="rounded-xl bg-purple-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:opacity-50"
+            >
+              {receptionSettingsSaving
+                ? "Saving..."
+                : "Save Reception Settings"}
+            </button>
+          </>
+        )}
+      </section>
+
       {/* TABS AND SEARCH */}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap rounded-xl border border-zinc-800 bg-zinc-900 p-1">
           <TabButton
@@ -1013,6 +1256,18 @@ export default function FinalPackageCatalogueSection() {
           >
             <Package className="h-4 w-4" />
             Engagement Templates
+          </TabButton>
+
+          <TabButton
+            active={activeTab === "reception"}
+            onClick={() => {
+              setActiveTab("reception");
+              setFormOpen(false);
+              setSearch("");
+            }}
+          >
+            <Package className="h-4 w-4" />
+            Reception Templates
           </TabButton>
 
           <TabButton
@@ -1064,7 +1319,9 @@ export default function FinalPackageCatalogueSection() {
             <button
               type="button"
               onClick={
-                activeTab === "wedding" || activeTab === "engagement"
+                activeTab === "wedding" ||
+                activeTab === "engagement" ||
+                activeTab === "reception"
                   ? openNewTemplate
                   : openNewAddon
               }
@@ -1078,7 +1335,11 @@ export default function FinalPackageCatalogueSection() {
       </div>
 
       {/* TEMPLATE FORM */}
-      {formOpen && (activeTab === "wedding" || activeTab === "engagement") && (
+      {formOpen && (
+        activeTab === "wedding" ||
+        activeTab === "engagement" ||
+        activeTab === "reception"
+      ) && (
         <form
           onSubmit={saveTemplate}
           className="space-y-4 rounded-2xl border border-amber-500/30 bg-zinc-900 p-5"
@@ -1136,6 +1397,7 @@ export default function FinalPackageCatalogueSection() {
               >
                 <option value="wedding">Wedding</option>
                 <option value="engagement">Engagement</option>
+                <option value="reception">Reception</option>
               </select>
             </FormField>
 
@@ -1256,6 +1518,22 @@ export default function FinalPackageCatalogueSection() {
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
+            <FormField label="Event Type">
+              <select
+                value={addonForm.eventType}
+                onChange={(e) =>
+                  setAddonForm({
+                    ...addonForm,
+                    eventType: e.target.value as PackageAddon["eventType"],
+                  })
+                }
+                className={fieldClass}
+              >
+                <option value="shared">Shared (Wedding & Engagement)</option>
+                <option value="reception">Reception Only</option>
+              </select>
+            </FormField>
+
             <FormField label="Add-on Code">
               <input
                 required
@@ -1366,16 +1644,21 @@ export default function FinalPackageCatalogueSection() {
       ) : (
         <div className="space-y-6">
           {/* PACKAGE TEMPLATES */}
-          {(activeTab === "all" || activeTab === "wedding" || activeTab === "engagement") && (
+          {(activeTab === "all" ||
+            activeTab === "wedding" ||
+            activeTab === "engagement" ||
+            activeTab === "reception") && (
             <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
               <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
                 <div>
                   <h2 className="font-semibold text-white">
                     {activeTab === "engagement"
                       ? "Engagement Templates"
-                      : activeTab === "wedding"
-                        ? "Wedding Templates"
-                        : "Package Templates"}
+                      : activeTab === "reception"
+                        ? "Reception Templates"
+                        : activeTab === "wedding"
+                          ? "Wedding Templates"
+                          : "Package Templates"}
                   </h2>
                   <p className="mt-1 text-xs text-zinc-500">
                     {visibleTemplates.length} package templates
@@ -1682,7 +1965,7 @@ export default function FinalPackageCatalogueSection() {
                         ["showHero", "Hero Section"],
                         ["showIntroduction", "Introduction"],
                         ["showPackages", "Wedding Packages"],
-                        ["showEngagementPackages", "Engagement Packages"],
+                        ["showReceptionPackages", "Reception Packages"],
                         ["showAddons", "Additional Services"],
                         ["showPaymentTerms", "Payment Terms"],
                         ["showContact", "Contact Section"],

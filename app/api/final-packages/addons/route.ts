@@ -102,6 +102,7 @@ export async function POST(request: NextRequest) {
     }
 
     const addon = await FinalPackageAddon.create({
+      eventType: body.eventType === "reception" ? "reception" : "shared",
       addonCode,
       name,
       description,

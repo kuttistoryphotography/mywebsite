@@ -32,6 +32,7 @@ export async function PATCH(
     const body = await request.json();
 
     const allowedFields = [
+      "eventType",
       "name",
       "description",
       "category",
@@ -46,6 +47,17 @@ export async function PATCH(
       if (Object.prototype.hasOwnProperty.call(body, field)) {
         updates[field] = body[field];
       }
+    }
+
+    if (
+      "eventType" in updates &&
+      updates.eventType !== "shared" &&
+      updates.eventType !== "reception"
+    ) {
+      return NextResponse.json(
+        { success: false, message: "Invalid add-on event type." },
+        { status: 400 }
+      );
     }
 
     if (Object.keys(updates).length === 0) {
